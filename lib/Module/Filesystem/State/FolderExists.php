@@ -3,10 +3,12 @@
 namespace Phpactor\Extension\Maestro\Module\Filesystem\State;
 
 use Phpactor\Extension\Maestro\Model\StateMachine\State;
+use Phpactor\Extension\Maestro\Module\System\ConfigLoaded;
 
 class FolderExists implements State
 {
     const NAME = 'filesystem.folder_exists';
+    const VAR_PACKAGE_WORKSPACE = 'filesystem.package_workspace';
 
     /**
      * @var RepositoryWorkspace
@@ -26,8 +28,8 @@ class FolderExists implements State
     public function execute(Context $context): void
     {
         $context->set(
-            'filesystem.workspace',
-            $this->workspace->createPackageWorkspace($context->packageName())
+            self::VAR_PACKAGE_WORKSPACE,
+            $this->workspace->createPackageWorkspace($context->get(ConfigLoaded::VAR_PACKAGE_NAME))
         );
     }
 
@@ -41,5 +43,8 @@ class FolderExists implements State
 
     public function dependsOn(): array
     {
+        return [
+            ConfigLoaded::NAME
+        ];
     }
 }

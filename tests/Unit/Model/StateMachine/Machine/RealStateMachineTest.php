@@ -1,15 +1,15 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Tests\Unit\Model\StateMachine;
+namespace Phpactor\Extension\Maestro\Tests\Unit\Model\StateMachine\Machine;
 
 use PHPUnit\Framework\TestCase;
 use Phpactor\Extension\Maestro\Model\StateMachine\Exception\CircularReferenceDetected;
 use Phpactor\Extension\Maestro\Model\StateMachine\Exception\PredicateNotSatisfied;
 use Phpactor\Extension\Maestro\Model\StateMachine\Exception\StateNotFound;
-use Phpactor\Extension\Maestro\Model\StateMachine\StateMachine;
+use Phpactor\Extension\Maestro\Model\StateMachine\Machine\RealStateMachine;
 use Phpactor\Extension\Maestro\Model\StateMachine\State\CallbackStateBuilder;
 
-class StateMachineTest extends TestCase
+class RealStateMachineTest extends TestCase
 {
     const EXAMPLE_STATE1 = 'foo';
     const EXAMPLE_STATE2 = 'state2';
@@ -101,8 +101,8 @@ class StateMachineTest extends TestCase
         $machine = $this->create([ $state1, $state2 ])->goto(self::EXAMPLE_STATE2);
     }
 
-    private function create(array $states): StateMachine
+    private function create(array $states): RealStateMachine
     {
-        return new StateMachine($states);
+        return new RealStateMachine($states);
     }
 }

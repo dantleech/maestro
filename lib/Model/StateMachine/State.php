@@ -6,11 +6,11 @@ interface State
 {
     public function name(): string;
 
-    public function execute(): void;
+    public function execute(Context $context): void;
 
-    public function rollback(): void;
+    public function rollback(Context $context): void;
 
-    public function predicate(): bool;
+    public function predicate(Context $context): bool;
 
     public function dependsOn(): array;
 }

@@ -26,9 +26,10 @@ class StateMachine
 
     public function goto(string $name): self
     {
+        $context = new Context();
         $state = $this->getState($name);
 
-        $this->satisfy($state);
+        $this->satisfy($state, $context);
 
         $this->state = $state;
         return $this;
@@ -56,7 +57,7 @@ class StateMachine
         return $this->states[$name];
     }
 
-    private function satisfy(State $state, array $seen = [])
+    private function satisfy(State $state, Context $context, array $seen = [])
     {
         $seen[$state->name()] = true;
 
@@ -69,14 +70,14 @@ class StateMachine
             }
 
             $dependency = $this->getState($dependencyName);
-            $this->satisfy($dependency, $seen);
+            $this->satisfy($dependency, $context, $seen);
         }
 
-        if (!$state->predicate()) {
-            $state->execute();
+        if (!$state->predicate($context)) {
+            $state->execute($context);
         }
         
-        if (!$state->predicate()) {
+        if (!$state->predicate($context)) {
             throw new PredicateNotSatisfied(sprintf(
                 'Predicate for state "%s" was not satisfied after execution',
                 $state->name()

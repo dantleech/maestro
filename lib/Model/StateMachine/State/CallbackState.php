@@ -2,6 +2,7 @@
 
 namespace Phpactor\Extension\Maestro\Model\StateMachine\State;
 
+use Phpactor\Extension\Maestro\Model\StateMachine\Context;
 use Phpactor\Extension\Maestro\Model\StateMachine\State;
 
 class CallbackState implements State
@@ -51,14 +52,14 @@ class CallbackState implements State
         return $this->name;
     }
 
-    public function execute(): void
+    public function execute(Context $context): void
     {
-        call_user_func($this->execute);
+        call_user_func($this->execute, $context);
     }
 
-    public function rollback(): void
+    public function rollback(Context $context): void
     {
-        call_user_func($this->rollback);
+        call_user_func($this->rollback, $context);
     }
 
     public function dependsOn(): array
@@ -66,8 +67,8 @@ class CallbackState implements State
         return $this->dependsOn;
     }
 
-    public function predicate(): bool
+    public function predicate(Context $context): bool
     {
-        return call_user_func($this->predicate);
+        return call_user_func($this->predicate, $context);
     }
 }

@@ -53,7 +53,7 @@ class CallbackState implements State
 
     public function execute(): void
     {
-        call_user_func($this->callback);
+        call_user_func($this->execute);
     }
 
     public function rollback(): void

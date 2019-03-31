@@ -3,7 +3,7 @@
 namespace Phpactor\Extension\Maestro\Unit;
 
 use Amp\Process\Process;
-use Phpactor\Extension\Maestro\Job\ProcessJob;
+use Phpactor\Extension\Maestro\Job\Process\ProcessJob;
 use Phpactor\Extension\Maestro\Model\Console;
 use Phpactor\Extension\Maestro\Model\ConsolePool;
 use Phpactor\Extension\Maestro\Model\ParameterResolver;
@@ -90,11 +90,11 @@ class PackageWorkspaceUnit implements Unit
         }
 
         $queue->enqueue(
-            new ProcessJob($console, sprintf(
+            new ProcessJob(sprintf(
                 'git clone git@github.com:%s %s',
                 $repoUrl,
-                $path
-            ), $this->workspacePath)
+                $path,
+            ), $this->workspacePath, $console->name())
         );
     }
 }

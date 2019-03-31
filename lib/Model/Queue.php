@@ -14,12 +14,8 @@ class Queue
         $this->jobs[] = $job;
     }
 
-    public function run(): Promise
+    public function dequeue(): ?Job
     {
-        return \Amp\call(function () {
-            while ($job = array_shift($this->jobs)) {
-               yield $job->execute();
-            }
-        });
+        return array_shift($this->jobs);
     }
 }

@@ -8,7 +8,10 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Maestro\Console\Logger\ConsoleLogger;
 use Phpactor\Extension\Maestro\Console\RunCommand;
+use Phpactor\Extension\Maestro\Job\Process\ProcessHandler;
 use Phpactor\Extension\Maestro\Model\ConsolePool;
+use Phpactor\Extension\Maestro\Model\JobHandlerRegistry;
+use Phpactor\Extension\Maestro\Model\QueueDispatcher;
 use Phpactor\Extension\Maestro\Model\QueueRegistry;
 use Phpactor\Extension\Maestro\Model\UnitRegistry\LazyUnitRegistry;
 use Phpactor\Extension\Maestro\Model\Logger;
@@ -36,6 +39,7 @@ class MaestroExtension implements Extension
     const SERVICE_CONSOLE_LOGGER = 'maestro.console.logger';
     const WORKSPACE_PATH = 'workspace_path';
     const TAG_UNIT = 'maestro.unit';
+    const TAG_JOB_HANDLER = 'maestro.job_handler';
 
     /**
      * {@inheritDoc}
@@ -59,6 +63,7 @@ class MaestroExtension implements Extension
         $this->loadUnitInfrastructure($container);
         $this->loadUnits($container);
         $this->loadJobInfrastructure($container);
+        $this->loadJobHandlers($container);
     }
 
     private function loadConsole(ContainerBuilder $container)
@@ -78,7 +83,11 @@ class MaestroExtension implements Extension
     private function loadUnitInfrastructure(ContainerBuilder $container)
     {
         $container->register(self::SERVICE_MAESTRO, function (Container $container) {
-            return new Maestro($container->get('maestro.model.unit_loader'), $container->get('maestro.model.queue_registry'));
+            return new Maestro(
+                $container->get('maestro.model.unit_loader'),
+                $container->get('maestro.model.queue_registry'),
+                $container->get('maestro.model.queue_dispatcher')
+            );
         });
         
         $container->register('maestro.model.unit_loader', function (Container $container) {
@@ -116,7 +125,6 @@ class MaestroExtension implements Extension
 
         $container->register('maestro.unit.command', function (Container $container) {
             return new CommandUnit(
-                $container->get('maestro.model.console_pool'),
                 $container->get('maestro.model.queue_registry')
             );
         }, [ self::TAG_UNIT => [ 'name' => 'command' ]]);
@@ -131,5 +139,25 @@ class MaestroExtension implements Extension
         $container->register('maestro.model.queue_registry', function (Container $contianer) {
             return new QueueRegistry();
         });
+
+        $container->register('maestro.model.queue_dispatcher', function (Container $container) {
+            return new QueueDispatcher($container->get('maestro.model.job_handler_registry'));
+        });
+
+        $container->register('maestro.model.job_handler_registry', function (Container $container) {
+            $handlers = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
+                $handler = $container->get($serviceId);
+                $handlers[get_class($handler)] = $handler;
+            }
+            return new JobHandlerRegistry($handlers);
+        });
+    }
+
+    private function loadJobHandlers(ContainerBuilder $container)
+    {
+        $container->register('maestro.job.process.handler', function (Container $container) {
+            return new ProcessHandler($container->get('maestro.model.console_pool'));
+        }, [ self::TAG_JOB_HANDLER => []]);
     }
 }

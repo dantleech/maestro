@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Job\Exception;
+namespace Phpactor\Extension\Maestro\Job\Process\Exception;
 
 use RuntimeException;
 

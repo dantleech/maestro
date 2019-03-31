@@ -6,5 +6,5 @@ use Amp\Promise;
 
 interface Job
 {
-    public function execute(): Promise;
+    public function handler(): string;
 }

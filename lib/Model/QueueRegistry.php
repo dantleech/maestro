@@ -4,6 +4,7 @@ namespace Phpactor\Extension\Maestro\Model;
 
 use Phpactor\Extension\Maestro\Model\Exception\QueueAlreadyExists;
 use Phpactor\Extension\Maestro\Model\Exception\QueueNotFound;
+use Phpactor\Extension\Maestro\Model\Queue;
 
 class QueueRegistry
 {

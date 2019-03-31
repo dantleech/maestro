@@ -8,26 +8,46 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Maestro\Console\Logger\ConsoleLogger;
 use Phpactor\Extension\Maestro\Console\RunCommand;
+use Phpactor\Extension\Maestro\Model\ConsolePool;
+use Phpactor\Extension\Maestro\Model\QueueRegistry;
+use Phpactor\Extension\Maestro\Model\UnitRegistry\LazyUnitRegistry;
 use Phpactor\Extension\Maestro\Model\Logger;
 use Phpactor\Extension\Maestro\Model\Maestro;
 use Phpactor\Extension\Maestro\Model\StateMachine\Machine\LoggingStateMachine;
 use Phpactor\Extension\Maestro\Model\StateMachine\Machine\RealStateMachine;
 use Phpactor\Extension\Maestro\Model\StateMachine\State\LoggingState;
+use Phpactor\Extension\Maestro\Model\UnitExecutor;
+use Phpactor\Extension\Maestro\Model\UnitRegistry\EagerUnitRegistry;
 use Phpactor\Extension\Maestro\Module\System\ConfigLoaded;
 use Phpactor\Extension\Maestro\Module\System\Initialized;
+use Phpactor\Extension\Maestro\Unit\CommandUnit;
+use Phpactor\Extension\Maestro\Unit\CopyUnit;
+use Phpactor\Extension\Maestro\Unit\PackageWorkspaceUnit;
+use Phpactor\Extension\Maestro\Unit\SequenceUnit;
 use Phpactor\MapResolver\Resolver;
+use RuntimeException;
+use Webmozart\PathUtil\Path;
+use XdgBaseDir\Xdg;
 
 class MaestroExtension implements Extension
 {
     const SERVICE_MAESTRO = 'maestro.maestro';
     const TAG_STATE = 'maestro.state';
     const SERVICE_CONSOLE_LOGGER = 'maestro.console.logger';
+    const WORKSPACE_PATH = 'workspace_path';
+    const TAG_UNIT = 'maestro.unit';
 
     /**
      * {@inheritDoc}
      */
     public function configure(Resolver $schema)
     {
+        $xdg = new Xdg();
+        $workspace = Path::join($xdg->getHomeDataDir(), 'maestro-php');
+
+        $schema->setDefaults([
+            self::WORKSPACE_PATH => $workspace
+        ]);
     }
 
     /**
@@ -35,42 +55,81 @@ class MaestroExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register('maestro.console.command.run', function (Container $container) {
-            return new RunCommand($container->get(self::SERVICE_MAESTRO));
-        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'run']]);
-
-        $container->register(self::SERVICE_MAESTRO, function (Container $container) {
-            return new Maestro($container->get('maestro.model.state_machine'));
-        });
-
-        $container->register('maestro.model.state_machine', function (Container $container) {
-            $states = [];
-
-            foreach (array_keys($container->getServiceIdsForTag(self::TAG_STATE)) as $serviceId) {
-                $states[] = new LoggingState($container->get($serviceId), $container->get(self::SERVICE_CONSOLE_LOGGER));
-            }
-
-            return new LoggingStateMachine(
-                new RealStateMachine($states),
-                $container->get(self::SERVICE_CONSOLE_LOGGER)
-            );
-        });
-
-        $container->register(self::SERVICE_CONSOLE_LOGGER, function (Container $container) {
-            return new ConsoleLogger($container->get(ConsoleExtension::SERVICE_OUTPUT));
-        });
-
-        $this->registerStates($container);
+        $this->loadConsole($container);
+        $this->loadUnitInfrastructure($container);
+        $this->loadUnits($container);
+        $this->loadJobInfrastructure($container);
     }
 
-    private function registerStates(ContainerBuilder $container): void
+    private function loadConsole(ContainerBuilder $container)
     {
-        $container->register('maesto.state.system.initialized', function (Container $container) {
-            return new Initialized();
-        }, [ self::TAG_STATE => []]);
+        $container->register('maestro.console.command.run', function (Container $container) {
+            return new RunCommand(
+                $container->get(self::SERVICE_MAESTRO),
+                $container->get('maestro.model.console_pool')
+            );
+        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'run']]);
+
+        $container->register('maestro.model.console_pool', function (Container $container) {
+            return new ConsolePool();
+        });
+    }
+
+    private function loadUnitInfrastructure(ContainerBuilder $container)
+    {
+        $container->register(self::SERVICE_MAESTRO, function (Container $container) {
+            return new Maestro($container->get('maestro.model.unit_loader'), $container->get('maestro.model.queue_registry'));
+        });
         
-        $container->register('maesto.state.system.config_loaded', function (Container $container) {
-            return new ConfigLoaded();
-        }, [ self::TAG_STATE => []]);
+        $container->register('maestro.model.unit_loader', function (Container $container) {
+            return new UnitExecutor($container->get('maestro.model.unit_registry'));
+        });
+        
+        $container->register('maestro.model.unit_registry', function (Container $container) {
+            $map = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_UNIT) as $serviceId => $attrs) {
+                if (!isset($attrs['name'])) {
+                    throw new RuntimeException(sprintf(
+                        'Unit service "%s" has no "name" tag, each unit service must define a `name` attribute',
+                        $serviceId
+                    ));
+                }
+                $map[$attrs['name']] = $serviceId;
+            }
+        
+            return new LazyUnitRegistry($map, function (string $serviceId) use ($container) {
+                return $container->get($serviceId);
+            });
+        });
+    }
+
+    private function loadUnits(ContainerBuilder $container)
+    {
+        $container->register('maestro.unit.package_workspace', function (Container $container) {
+            return new PackageWorkspaceUnit(
+                $container->get('maestro.model.unit_loader'),
+                $container->get('maestro.model.queue_registry'),
+                $container->get('maestro.model.console_pool'),
+                $container->getParameter(self::WORKSPACE_PATH)
+            );
+        }, [ self::TAG_UNIT => [ 'name' => 'package_workspace' ]]);
+
+        $container->register('maestro.unit.command', function (Container $container) {
+            return new CommandUnit(
+                $container->get('maestro.model.console_pool'),
+                $container->get('maestro.model.queue_registry')
+            );
+        }, [ self::TAG_UNIT => [ 'name' => 'command' ]]);
+
+        $container->register('maestro.unit.sequence', function (Container $container) {
+            return new SequenceUnit($container->get('maestro.model.unit_loader'));
+        }, [ self::TAG_UNIT => [ 'name' => 'sequence' ]]);
+    }
+
+    private function loadJobInfrastructure(ContainerBuilder $container)
+    {
+        $container->register('maestro.model.queue_registry', function (Container $contianer) {
+            return new QueueRegistry();
+        });
     }
 }

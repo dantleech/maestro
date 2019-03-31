@@ -13,7 +13,11 @@
     "require": {
         "phpactor/console-extension": "^0.1.1",
         "phpunit/phpunit": "^8.0",
-        "phpstan/phpstan": "^0.11.4"
+        "phpstan/phpstan": "^0.11.4",
+        "webmozart/path-util": "^2.3",
+        "phpactor/config-loader": "^0.1.0",
+        "amphp/amp": "^2.1",
+        "amphp/process": "^1.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.13",

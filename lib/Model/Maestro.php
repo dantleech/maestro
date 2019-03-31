@@ -2,23 +2,32 @@
 
 namespace Phpactor\Extension\Maestro\Model;
 
-use Phpactor\Extension\Maestro\Model\StateMachine\StateMachine;
-use Phpactor\Extension\Maestro\Module\System\Initialized;
+use Amp\Loop;
+use Amp\Promise;
+use Phpactor\Extension\Maestro\Model\UnitExecutor;
 
 class Maestro
 {
-    /**
-     * @var StateMachine
-     */
-    private $stateMachine;
+    private $executor;
+    private $queueRegistry;
 
-    public function __construct(StateMachine $stateMachine)
+    public function __construct(UnitExecutor $executor, QueueRegistry $queueRegistry)
     {
-        $this->stateMachine = $stateMachine;#
+        $this->executor = $executor;
+        $this->queueRegistry = $queueRegistry;
     }
 
-    public function run()
+    public function run(array $config): Promise
     {
-        $this->stateMachine->goto(Initialized::NAME);
+        return \Amp\call(function () use ($config) {
+            $this->executor->execute($config);
+
+            $promises = [];
+            foreach ($this->queueRegistry->all() as $queue) {
+                $promises[] = $queue->run();
+            }
+
+            yield $promises;
+        });
     }
 }

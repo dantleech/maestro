@@ -4,6 +4,7 @@ namespace Phpactor\Extension\Maestro\Model\Unit;
 
 use Phpactor\Extension\Maestro\Model\Exception\InvalidUnitConfiguration;
 use Phpactor\Extension\Maestro\Model\ParameterResolver;
+use Phpactor\Extension\Maestro\Model\ParameterResolverFactory;
 
 class UnitExecutor
 {
@@ -14,14 +15,20 @@ class UnitExecutor
      */
     private $registry;
 
-    public function __construct(UnitRegistry $registry)
+    /**
+     * @var ParameterResolverFactory
+     */
+    private $factory;
+
+    public function __construct(ParameterResolverFactory $factory, UnitRegistry $registry)
     {
+        $this->factory = $factory;
         $this->registry = $registry;
     }
 
     public function execute(array $config): void
     {
-        $resolver = new ParameterResolver();
+        $resolver = $this->factory->create();
 
         if (!isset($config[self::PARAM_UNIT])) {
             throw new InvalidUnitConfiguration(sprintf(

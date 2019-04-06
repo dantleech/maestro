@@ -50,8 +50,10 @@ class LazyUnitRegistry implements UnitRegistry
 
         if (!$unit instanceof Unit) {
             throw new CouldNotLoadUnit(sprintf(
-                'Lazy unit loader for "%s" did not return a Unit class',
-                $name
+                'Lazy unit loader for "%s" did not return an instance of "%s", it returned: %s',
+                $name,
+                Unit::class,
+                is_object($unit) ? get_class($unit) : gettype($unit)
             ));
         }
 

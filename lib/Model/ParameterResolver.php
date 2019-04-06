@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Maestro\Model;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

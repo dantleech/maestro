@@ -1,8 +1,8 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model\Unit;
+namespace Maestro\Model\Unit;
 
-use Phpactor\Extension\Maestro\Model\ParameterResolver;
+use Maestro\Model\ParameterResolver;
 
 interface Unit 
 {

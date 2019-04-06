@@ -1,14 +1,14 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Tests\Unit\Model\Unit;
+namespace Maestro\Tests\Unit\Model\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Phpactor\Extension\Maestro\Model\Exception\InvalidUnitConfiguration;
-use Phpactor\Extension\Maestro\Model\ParameterResolver;
-use Phpactor\Extension\Maestro\Model\ParameterResolverFactory;
-use Phpactor\Extension\Maestro\Model\Unit\Unit;
-use Phpactor\Extension\Maestro\Model\Unit\UnitExecutor;
-use Phpactor\Extension\Maestro\Model\Unit\UnitRegistry;
+use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
+use Maestro\Model\ParameterResolver;
+use Maestro\Model\ParameterResolverFactory;
+use Maestro\Model\Unit\Unit;
+use Maestro\Model\Unit\UnitExecutor;
+use Maestro\Model\Unit\UnitRegistry;
 
 class UnitExecutorTest extends TestCase
 {

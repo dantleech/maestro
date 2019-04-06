@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model\Exception;
+namespace Maestro\Model\Unit\Exception;
 
 use RuntimeException;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model\Unit;
+namespace Maestro\Model\Unit;
 
-use Phpactor\Extension\Maestro\Model\Exception\InvalidUnitConfiguration;
-use Phpactor\Extension\Maestro\Model\ParameterResolver;
-use Phpactor\Extension\Maestro\Model\ParameterResolverFactory;
+use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
+use Maestro\Model\ParameterResolver;
+use Maestro\Model\ParameterResolverFactory;
 
 class UnitExecutor
 {

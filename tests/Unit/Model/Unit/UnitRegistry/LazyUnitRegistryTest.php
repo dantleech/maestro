@@ -1,14 +1,14 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Tests\Unit\Model\Unit\UnitRegistry;
+namespace Maestro\Tests\Unit\Model\Unit\UnitRegistry;
 
 use Closure;
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Phpactor\Extension\Maestro\Model\Exception\CouldNotLoadUnit;
-use Phpactor\Extension\Maestro\Model\Exception\UnitNotFound;
-use Phpactor\Extension\Maestro\Model\Unit\Unit;
-use Phpactor\Extension\Maestro\Model\Unit\UnitRegistry\LazyUnitRegistry;
+use Maestro\Model\Unit\Exception\CouldNotLoadUnit;
+use Maestro\Model\Unit\Exception\UnitNotFound;
+use Maestro\Model\Unit\Unit;
+use Maestro\Model\Unit\UnitRegistry\LazyUnitRegistry;
 
 class LazyUnitRegistryTest extends TestCase
 {

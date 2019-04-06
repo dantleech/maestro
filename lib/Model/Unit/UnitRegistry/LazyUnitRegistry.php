@@ -1,13 +1,13 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model\Unit\UnitRegistry;
+namespace Maestro\Model\Unit\UnitRegistry;
 
 use Closure;
 use Exception;
-use Phpactor\Extension\Maestro\Model\Exception\CouldNotLoadUnit;
-use Phpactor\Extension\Maestro\Model\Exception\UnitNotFound;
-use Phpactor\Extension\Maestro\Model\Unit\Unit;
-use Phpactor\Extension\Maestro\Model\Unit\UnitRegistry;
+use Maestro\Model\Unit\Exception\CouldNotLoadUnit;
+use Maestro\Model\Unit\Exception\UnitNotFound;
+use Maestro\Model\Unit\Unit;
+use Maestro\Model\Unit\UnitRegistry;
 
 class LazyUnitRegistry implements UnitRegistry
 {

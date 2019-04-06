@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Phpactor\\Extension\\Maestro\\": "lib/"
+            "Maestro\\": "lib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Phpactor\\Extension\\Maestro\\Tests\\": "tests/"
+            "Maestro\\Tests\\": "tests/"
         }
     },
     "extra": {

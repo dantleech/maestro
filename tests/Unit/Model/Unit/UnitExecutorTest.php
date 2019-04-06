@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Model\Unit;
 
 use Maestro\Model\Unit\Parameters;
+use Maestro\Model\Unit\UnitParameterResolver;
 use PHPUnit\Framework\TestCase;
 use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
 use Maestro\Model\ParameterResolver;
@@ -13,6 +14,8 @@ use Maestro\Model\Unit\UnitRegistry;
 
 class UnitExecutorTest extends TestCase
 {
+    const EXAMPLE_UNIT = 'barfoo';
+
     /**
      * @var ObjectProphecy|UnitRegistry
      */
@@ -41,42 +44,36 @@ class UnitExecutorTest extends TestCase
     protected function setUp(): void
     {
         $this->registry = $this->prophesize(UnitRegistry::class);
-        $this->parameterResolverFactory = $this->prophesize(ParameterResolverFactory::class);
-        $this->parameterResolver = $this->prophesize(ParameterResolver::class);
+        $this->parameterResolver = $this->prophesize(UnitParameterResolver::class);
         $this->unit = $this->prophesize(Unit::class);
 
         $this->executor = new UnitExecutor(
-            $this->parameterResolverFactory->reveal(),
+            $this->parameterResolver->reveal(),
             $this->registry->reveal()
         );
-
-        $this->parameterResolverFactory->create()->willReturn($this->parameterResolver->reveal());
     }
 
     public function testThrowsExceptionIfUnitConfigurationDoesNotDefineAUnitType()
     {
         $this->expectException(InvalidUnitConfiguration::class);
-        $this->executor->execute(Parameters::create(['foobar' => 'barfoo']));
+        $this->executor->execute(Parameters::create(['foobar' => self::EXAMPLE_UNIT]));
     }
 
     public function testResolvesParametersAndExecutesUnit()
     {
-        $this->registry->get('barfoo')->willReturn($this->unit->reveal());
+        $this->registry->get(self::EXAMPLE_UNIT)->willReturn($this->unit->reveal());
 
-        $this->parameterResolver->setRequired([UnitExecutor::PARAM_UNIT])->shouldBeCalled();
-        $this->parameterResolver->resolve([
-            UnitExecutor::PARAM_UNIT => 'barfoo',
-        ])->willReturn([
+        $this->parameterResolver->resolveParameters($this->unit->reveal(), Parameters::create([
+        ]))->willReturn(Parameters::create([
             'hello' => 'world',
-        ]);
+        ]));
+
+        $this->unit->execute(Parameters::create([
+            'hello' => 'world'
+        ]))->shouldBeCalled();
 
         $this->executor->execute(Parameters::create([
-            UnitExecutor::PARAM_UNIT => 'barfoo'
+            UnitExecutor::PARAM_UNIT => self::EXAMPLE_UNIT
         ]));
-        $this->unit->execute(Parameters::create([
-            'hello' => 'world',
-        ], [
-            'unit' => 'barfoo',
-        ]))->shouldBeCalled();
     }
 }

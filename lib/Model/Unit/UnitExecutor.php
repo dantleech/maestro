@@ -5,6 +5,8 @@ namespace Maestro\Model\Unit;
 use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
 use Maestro\Model\ParameterResolver;
 use Maestro\Model\ParameterResolverFactory;
+use Maestro\Model\Unit\Parameters;
+use Maestro\Model\Unit\Unit;
 
 class UnitExecutor
 {
@@ -16,20 +18,18 @@ class UnitExecutor
     private $registry;
 
     /**
-     * @var ParameterResolverFactory
+     * @var UnitParameterResolver
      */
-    private $factory;
+    private $resolver;
 
-    public function __construct(ParameterResolverFactory $factory, UnitRegistry $registry)
+    public function __construct(UnitParameterResolver $resolver, UnitRegistry $registry)
     {
-        $this->factory = $factory;
         $this->registry = $registry;
+        $this->resolver = $resolver;
     }
 
     public function execute(Parameters $parameters): void
     {
-        $resolver = $this->factory->create();
-
         if (!$parameters->has(self::PARAM_UNIT)) {
             throw new InvalidUnitConfiguration(sprintf(
                 'Each unit configuration must contain the "%s" key', self::PARAM_UNIT
@@ -37,11 +37,9 @@ class UnitExecutor
         }
 
         $unit = $this->registry->get($parameters->get(self::PARAM_UNIT));
-        $resolver->setRequired([self::PARAM_UNIT]);
 
-        $unit->configure($resolver);
+        $parameters = $parameters->remove(self::PARAM_UNIT);
 
-        $parametersAsArray = $resolver->resolve($parameters->all());
-        $unit->execute($parameters->spawnLocal($parametersAsArray));
+        $unit->execute($this->resolver->resolveParameters($unit, $parameters));
     }
 }

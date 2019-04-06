@@ -19,6 +19,7 @@ class MaestroExtension implements Extension
 {
     const SERVICE_MAESTRO = 'maestro.maestro';
     const TAG_UNIT = 'maestro.unit';
+    const SERVICE_UNIT_EXECUTOR = 'maestro.model.unit_executor';
 
     /**
      * {@inheritDoc}
@@ -50,7 +51,7 @@ class MaestroExtension implements Extension
     {
         $container->register(self::SERVICE_MAESTRO, function (Container $container) {
             return new Maestro(
-                $container->get('maestro.model.unit_loader')
+                $container->get(self::SERVICE_UNIT_EXECUTOR)
             );
         });
 
@@ -60,7 +61,7 @@ class MaestroExtension implements Extension
             );
         });
         
-        $container->register('maestro.model.unit_loader', function (Container $container) {
+        $container->register(self::SERVICE_UNIT_EXECUTOR, function (Container $container) {
             return new UnitExecutor(
                 $container->get('maestro.model.unit.parameter_resolver'),
                 $container->get('maestro.model.unit_registry')

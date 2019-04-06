@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Maestro\Extension\CoreExtension\CoreExtension;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Completion\CompletionExtension;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -12,6 +13,7 @@ require __DIR__ . '/../vendor/autoload.php';
 $container = PhpactorContainer::fromExtensions([
     ConsoleExtension::class,
     MaestroExtension::class,
+    CoreExtension::class,
 ], []);
 
 $application = new Application();

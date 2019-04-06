@@ -4,7 +4,7 @@
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Completion\CompletionExtension;
 use Phpactor\Extension\Console\ConsoleExtension;
-use Phpactor\Extension\Maestro\MaestroExtension;
+use Maestro\MaestroExtension;
 use Symfony\Component\Console\Application;
 
 require __DIR__ . '/../vendor/autoload.php';

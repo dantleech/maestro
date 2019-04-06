@@ -1,14 +1,12 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Console;
+namespace Maestro\Console;
 
 use Amp\Delayed;
 use Amp\Loop;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Phpactor\ConfigLoader\Core\ConfigLoader;
-use Phpactor\Extension\Maestro\Model\Console\ConsolePool;
-use Phpactor\Extension\Maestro\Model\Maestro;
-use Phpactor\Extension\Maestro\Model\StateMachine\StateMachine;
+use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,13 +19,11 @@ use Webmozart\PathUtil\Path;
 class RunCommand extends Command
 {
     private $maestro;
-    private $pool;
 
-    public function __construct(Maestro $maestro, ConsolePool $pool)
+    public function __construct(Maestro $maestro)
     {
         parent::__construct();
         $this->maestro = $maestro;
-        $this->pool = $pool;
     }
 
     protected function configure()
@@ -48,27 +44,6 @@ class RunCommand extends Command
                 'json'
             )
             ->loader()->load();
-
-        $sectionOutputs = [];
-
-        Loop::repeat(100, function () use ($output, &$sectionOutputs) {
-            assert($output instanceof ConsoleOutput);
-
-            foreach ($this->pool->all() as $console) {
-
-                if (!isset($sectionOutputs[$console->name()])) {
-                    $sectionOutputs[$console->name()] = $output->section();
-
-                }
-
-                $sectionOutput = $sectionOutputs[$console->name()];
-                assert($sectionOutput instanceof ConsoleSectionOutput);
-
-                $sectionOutput->clear();
-                $sectionOutput->writeln(sprintf('<info>%s</>', $console->name()));
-                $sectionOutput->write($console->tail(5));
-            }
-        });
 
         Loop::run(function () use ($config) {
             yield $this->maestro->run($config);

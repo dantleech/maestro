@@ -8,5 +8,5 @@ interface Unit
 {
     public function configure(ParameterResolver $resolver): void;
 
-    public function execute(array $params): void;
+    public function execute(Parameters $parameters): void;
 }

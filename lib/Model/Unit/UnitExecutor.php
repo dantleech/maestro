@@ -26,20 +26,22 @@ class UnitExecutor
         $this->registry = $registry;
     }
 
-    public function execute(array $config): void
+    public function execute(Parameters $parameters): void
     {
         $resolver = $this->factory->create();
 
-        if (!isset($config[self::PARAM_UNIT])) {
+        if (!$parameters->has(self::PARAM_UNIT)) {
             throw new InvalidUnitConfiguration(sprintf(
                 'Each unit configuration must contain the "%s" key', self::PARAM_UNIT
             ));
         }
 
-        $unit = $this->registry->get($config[self::PARAM_UNIT]);
-        unset($config[self::PARAM_UNIT]);
+        $unit = $this->registry->get($parameters->get(self::PARAM_UNIT));
+        $resolver->setRequired([self::PARAM_UNIT]);
+
         $unit->configure($resolver);
-        $parameters = $resolver->resolve($config);
-        $unit->execute($parameters);
+
+        $parametersAsArray = $resolver->resolve($parameters->all());
+        $unit->execute($parameters->spawnLocal($parametersAsArray));
     }
 }

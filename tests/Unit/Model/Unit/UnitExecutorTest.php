@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Model\Unit;
 
+use Maestro\Model\Unit\Parameters;
 use PHPUnit\Framework\TestCase;
 use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
 use Maestro\Model\ParameterResolver;
@@ -55,20 +56,27 @@ class UnitExecutorTest extends TestCase
     public function testThrowsExceptionIfUnitConfigurationDoesNotDefineAUnitType()
     {
         $this->expectException(InvalidUnitConfiguration::class);
-        $this->executor->execute(['foobar' => 'barfoo']);
+        $this->executor->execute(Parameters::create(['foobar' => 'barfoo']));
     }
 
     public function testResolvesParametersAndExecutesUnit()
     {
         $this->registry->get('barfoo')->willReturn($this->unit->reveal());
-        $this->parameterResolver->resolve([])->willReturn([
+
+        $this->parameterResolver->setRequired([UnitExecutor::PARAM_UNIT])->shouldBeCalled();
+        $this->parameterResolver->resolve([
+            UnitExecutor::PARAM_UNIT => 'barfoo',
+        ])->willReturn([
             'hello' => 'world',
         ]);
-        $this->executor->execute([
+
+        $this->executor->execute(Parameters::create([
             UnitExecutor::PARAM_UNIT => 'barfoo'
-        ]);
-        $this->unit->execute([
+        ]));
+        $this->unit->execute(Parameters::create([
             'hello' => 'world',
-        ])->shouldBeCalled();
+        ], [
+            'unit' => 'barfoo',
+        ]))->shouldBeCalled();
     }
 }

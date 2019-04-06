@@ -1,12 +1,10 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Maestro\Model;
 
 use Amp\Loop;
 use Amp\Promise;
-use Phpactor\Extension\Maestro\Model\Unit\UnitExecutor;
-use Phpactor\Extension\Maestro\Model\Queue\QueueDispatcher;
-use Phpactor\Extension\Maestro\Model\Queue\QueueRegistry;
+use Maestro\Model\Unit\UnitExecutor;
 
 class Maestro
 {
@@ -15,14 +13,10 @@ class Maestro
     private $dispatcher;
 
     public function __construct(
-        UnitExecutor $executor,
-        QueueRegistry $queueRegistry,
-        QueueDispatcher $dispatcher
+        UnitExecutor $executor
     )
     {
         $this->executor = $executor;
-        $this->queueRegistry = $queueRegistry;
-        $this->dispatcher = $dispatcher;
     }
 
     public function run(array $config): Promise
@@ -31,12 +25,6 @@ class Maestro
 
             $this->executor->execute($config);
 
-            $promises = [];
-            foreach ($this->queueRegistry->all() as $queue) {
-                $promises[] = $this->dispatcher->dispatch($queue);
-            }
-
-            yield $promises;
         });
     }
 }

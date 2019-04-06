@@ -10,6 +10,7 @@ use Maestro\Console\RunCommand;
 use Maestro\Model\Unit\UnitRegistry\LazyUnitRegistry;
 use Maestro\Model\Maestro;
 use Maestro\Model\Unit\UnitExecutor;
+use Maestro\Model\Unit\UnitParameterResolver;
 use Maestro\Model\ParameterResolverFactory;
 use Phpactor\MapResolver\Resolver;
 use RuntimeException;
@@ -52,10 +53,16 @@ class MaestroExtension implements Extension
                 $container->get('maestro.model.unit_loader')
             );
         });
+
+        $container->register('maestro.model.unit.parameter_resolver', function (Container $container) {
+            return new UnitParameterResolver(
+                $container->get('maestro.parameter_resolver_factory')
+            );
+        });
         
         $container->register('maestro.model.unit_loader', function (Container $container) {
             return new UnitExecutor(
-                $container->get('maestro.parameter_resolver_factory'),
+                $container->get('maestro.model.unit.parameter_resolver'),
                 $container->get('maestro.model.unit_registry')
             );
         });

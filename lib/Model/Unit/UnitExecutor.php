@@ -1,8 +1,9 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Unit;
 
 use Phpactor\Extension\Maestro\Model\Exception\InvalidUnitConfiguration;
+use Phpactor\Extension\Maestro\Model\ParameterResolver;
 
 class UnitExecutor
 {
@@ -23,9 +24,9 @@ class UnitExecutor
         $resolver = new ParameterResolver();
 
         if (!isset($config[self::PARAM_UNIT])) {
-            throw new InvalidUnitConfiguration(
-                'Each unit configuration must contain the "type" key'
-            );
+            throw new InvalidUnitConfiguration(sprintf(
+                'Each unit configuration must contain the "%s" key', self::PARAM_UNIT
+            ));
         }
 
         $unit = $this->registry->get($config[self::PARAM_UNIT]);

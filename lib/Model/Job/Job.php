@@ -1,6 +1,6 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Job;
 
 use Amp\Promise;
 

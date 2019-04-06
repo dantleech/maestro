@@ -1,8 +1,8 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Unit;
 
-use Phpactor\Extension\Maestro\Model\Unit;
+use Phpactor\Extension\Maestro\Model\Unit\Unit;
 
 interface UnitRegistry
 {

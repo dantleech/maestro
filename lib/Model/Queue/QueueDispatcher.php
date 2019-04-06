@@ -1,10 +1,11 @@
 <?php
 
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Queue;
 
 use Amp\Promise;
-use Phpactor\Extension\Maestro\Model\Queue;
+use Phpactor\Extension\Maestro\Model\Queue\Queue;
+use Phpactor\Extension\Maestro\Model\Job\JobHandlerRegistry;
 
 class QueueDispatcher
 {

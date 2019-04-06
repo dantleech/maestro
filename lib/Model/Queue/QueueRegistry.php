@@ -1,10 +1,10 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Queue;
 
 use Phpactor\Extension\Maestro\Model\Exception\QueueAlreadyExists;
 use Phpactor\Extension\Maestro\Model\Exception\QueueNotFound;
-use Phpactor\Extension\Maestro\Model\Queue;
+use Phpactor\Extension\Maestro\Model\Queue\Queue;
 
 class QueueRegistry
 {

@@ -1,8 +1,9 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Job;
 
 use Phpactor\Extension\Maestro\Model\Exception\HandlerNotFound;
+use Phpactor\Extension\Maestro\Model\Job\JobHandler;
 
 class JobHandlerRegistry
 {

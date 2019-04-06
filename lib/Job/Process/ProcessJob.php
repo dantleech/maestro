@@ -6,8 +6,8 @@ use Amp\Process\Process;
 use Amp\Process\ProcessInputStream;
 use Amp\Promise;
 use Phpactor\Extension\Maestro\Job\Process\Exception\ProcessFailed;
-use Phpactor\Extension\Maestro\Model\Console;
-use Phpactor\Extension\Maestro\Model\Job;
+use Phpactor\Extension\Maestro\Model\Console\Console;
+use Phpactor\Extension\Maestro\Model\Job\Job;
 
 class ProcessJob implements Job
 {

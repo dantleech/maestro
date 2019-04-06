@@ -1,9 +1,10 @@
 <?php
 
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Queue;
 
 use Amp\Promise;
+use Phpactor\Extension\Maestro\Model\Job\Job;
 
 class Queue
 {

@@ -3,10 +3,10 @@
 namespace Phpactor\Extension\Maestro\Unit;
 
 use Phpactor\Extension\Maestro\Job\Process\ProcessJob;
-use Phpactor\Extension\Maestro\Model\ConsolePool;
+use Phpactor\Extension\Maestro\Model\Console\ConsolePool;
 use Phpactor\Extension\Maestro\Model\ParameterResolver;
-use Phpactor\Extension\Maestro\Model\QueueRegistry;
-use Phpactor\Extension\Maestro\Model\Unit;
+use Phpactor\Extension\Maestro\Model\Queue\QueueRegistry;
+use Phpactor\Extension\Maestro\Model\Unit\Unit;
 
 class CommandUnit implements Unit
 {

@@ -6,9 +6,9 @@ use Amp\Process\Process;
 use Amp\Process\ProcessInputStream;
 use Amp\Promise;
 use Phpactor\Extension\Maestro\Job\Process\Exception\ProcessFailed;
-use Phpactor\Extension\Maestro\Model\Console;
-use Phpactor\Extension\Maestro\Model\ConsolePool;
-use Phpactor\Extension\Maestro\Model\JobHandler;
+use Phpactor\Extension\Maestro\Model\Console\Console;
+use Phpactor\Extension\Maestro\Model\Console\ConsolePool;
+use Phpactor\Extension\Maestro\Model\Job\JobHandler;
 
 class ProcessHandler implements JobHandler
 {

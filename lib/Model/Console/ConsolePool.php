@@ -1,6 +1,8 @@
 <?php
 
-namespace Phpactor\Extension\Maestro\Model;
+namespace Phpactor\Extension\Maestro\Model\Console;
+
+use Phpactor\Extension\Maestro\Model\Console\Console;
 
 class ConsolePool
 {

@@ -4,7 +4,9 @@ namespace Phpactor\Extension\Maestro\Model;
 
 use Amp\Loop;
 use Amp\Promise;
-use Phpactor\Extension\Maestro\Model\UnitExecutor;
+use Phpactor\Extension\Maestro\Model\Unit\UnitExecutor;
+use Phpactor\Extension\Maestro\Model\Queue\QueueDispatcher;
+use Phpactor\Extension\Maestro\Model\Queue\QueueRegistry;
 
 class Maestro
 {

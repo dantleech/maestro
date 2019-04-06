@@ -3,8 +3,8 @@
 namespace Phpactor\Extension\Maestro\Unit;
 
 use Phpactor\Extension\Maestro\Model\ParameterResolver;
-use Phpactor\Extension\Maestro\Model\Unit;
-use Phpactor\Extension\Maestro\Model\UnitExecutor;
+use Phpactor\Extension\Maestro\Model\Unit\Unit;
+use Phpactor\Extension\Maestro\Model\Unit\UnitExecutor;
 
 class SequenceUnit implements Unit
 {

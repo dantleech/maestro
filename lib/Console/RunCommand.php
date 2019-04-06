@@ -6,7 +6,7 @@ use Amp\Delayed;
 use Amp\Loop;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Phpactor\ConfigLoader\Core\ConfigLoader;
-use Phpactor\Extension\Maestro\Model\ConsolePool;
+use Phpactor\Extension\Maestro\Model\Console\ConsolePool;
 use Phpactor\Extension\Maestro\Model\Maestro;
 use Phpactor\Extension\Maestro\Model\StateMachine\StateMachine;
 use Symfony\Component\Console\Command\Command;

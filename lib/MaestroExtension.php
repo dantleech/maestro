@@ -11,11 +11,8 @@ use Maestro\Model\Unit\UnitRegistry\LazyUnitRegistry;
 use Maestro\Model\Maestro;
 use Maestro\Model\Unit\UnitExecutor;
 use Maestro\Model\ParameterResolverFactory;
-use Maestro\Model\Unit\UnitRegistry\EagerUnitRegistry;
 use Phpactor\MapResolver\Resolver;
 use RuntimeException;
-use Webmozart\PathUtil\Path;
-use XdgBaseDir\Xdg;
 
 class MaestroExtension implements Extension
 {

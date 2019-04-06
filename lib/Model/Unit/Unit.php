@@ -4,7 +4,7 @@ namespace Maestro\Model\Unit;
 
 use Maestro\Model\ParameterResolver;
 
-interface Unit 
+interface Unit
 {
     public function configure(ParameterResolver $resolver): void;
 

@@ -3,10 +3,6 @@
 namespace Maestro\Model\Unit;
 
 use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
-use Maestro\Model\ParameterResolver;
-use Maestro\Model\ParameterResolverFactory;
-use Maestro\Model\Unit\Parameters;
-use Maestro\Model\Unit\Unit;
 
 class UnitExecutor
 {
@@ -32,7 +28,8 @@ class UnitExecutor
     {
         if (!$parameters->has(self::PARAM_UNIT)) {
             throw new InvalidUnitConfiguration(sprintf(
-                'Each unit configuration must contain the "%s" key', self::PARAM_UNIT
+                'Each unit configuration must contain the "%s" key',
+                self::PARAM_UNIT
             ));
         }
 

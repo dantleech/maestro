@@ -5,12 +5,9 @@ namespace Maestro\Tests\Unit\Model\Unit;
 use Maestro\Model\Unit\Parameters;
 use Maestro\Model\Unit\UnitParameterResolver;
 use PHPUnit\Framework\TestCase;
-use Maestro\Model\Unit\Exception\InvalidUnitConfiguration;
 use Maestro\Model\ParameterResolver;
 use Maestro\Model\ParameterResolverFactory;
 use Maestro\Model\Unit\Unit;
-use Maestro\Model\Unit\UnitExecutor;
-use Maestro\Model\Unit\UnitRegistry;
 
 class UnitParameterResolverTest extends TestCase
 {

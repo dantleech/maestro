@@ -40,7 +40,8 @@ final class Parameters
         if (!isset($this->localParameters[$key])) {
             throw new ParameterNotFound(sprintf(
                 'Local parameter "%s" is not defined, defined parameters: "%s"',
-                $key, implode('", "', array_keys($this->localParameters))
+                $key,
+                implode('", "', array_keys($this->localParameters))
             ));
         }
 
@@ -87,7 +88,8 @@ final class Parameters
         if (!isset($this->globalParameters[$key])) {
             throw new ParameterNotFound(sprintf(
                 'Global parameter "%s" is not defined, defined parameters: "%s"',
-                $key, implode('", "', array_keys($this->globalParameters))
+                $key,
+                implode('", "', array_keys($this->globalParameters))
             ));
         }
 

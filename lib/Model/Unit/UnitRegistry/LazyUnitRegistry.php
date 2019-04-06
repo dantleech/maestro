@@ -32,7 +32,8 @@ class LazyUnitRegistry implements UnitRegistry
         if (!isset($this->map[$name])) {
             throw new UnitNotFound(sprintf(
                 'Unit "%s" not found, known units: "%s"',
-                $name, implode('", "', array_keys($this->map))
+                $name,
+                implode('", "', array_keys($this->map))
             ));
         }
 
@@ -44,7 +45,9 @@ class LazyUnitRegistry implements UnitRegistry
             $unit = $closure($id);
         } catch (Exception $exception) {
             throw new CouldNotLoadUnit(sprintf(
-                'Unit "%s" with lazy ID "%s" could not be loaded', $name, $id
+                'Unit "%s" with lazy ID "%s" could not be loaded',
+                $name,
+                $id
             ), 0, $exception);
         }
 
@@ -59,5 +62,4 @@ class LazyUnitRegistry implements UnitRegistry
 
         return $unit;
     }
-
 }

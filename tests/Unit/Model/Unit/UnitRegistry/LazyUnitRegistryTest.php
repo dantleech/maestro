@@ -87,7 +87,8 @@ class LazyUnitRegistryTest extends TestCase
 
     private function create(array $map, Closure $loader = null)
     {
-        $loader = $loader ?: function () {};
+        $loader = $loader ?: function () {
+        };
         return new LazyUnitRegistry($map, $loader);
     }
 }

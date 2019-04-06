@@ -5,14 +5,10 @@ namespace Maestro\Console;
 use Amp\Delayed;
 use Amp\Loop;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
-use Phpactor\ConfigLoader\Core\ConfigLoader;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
 

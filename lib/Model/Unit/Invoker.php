@@ -6,7 +6,7 @@ use Maestro\Model\Unit\Config;
 use Maestro\Model\Unit\Invoker;
 use Maestro\Model\Unit\Parameters;
 use Maestro\Model\Unit\Registry;
-use Maestro\Model\Unit\Config\Resolver;
+use Maestro\Model\Unit\Resolver;
 
 class Invoker
 {

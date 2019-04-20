@@ -4,7 +4,7 @@ namespace Maestro\Model\Unit;
 
 use Maestro\Model\Unit\Config;
 use Maestro\Model\Unit\Parameters;
-use Maestro\Model\Unit\Config\Resolver;
+use Maestro\Model\Unit\Resolver;
 
 interface Unit
 {

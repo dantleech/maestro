@@ -5,9 +5,10 @@ namespace Maestro\Model\Unit\Config;
 use Maestro\Model\Unit\Config;
 use Maestro\Model\Unit\Definition;
 use Maestro\Model\Unit\Parameters;
+use Maestro\Model\Unit\Resolver;
 use Maestro\Model\Unit\Unit;
 
-class Resolver
+class RealResolver implements Resolver
 {
     public function resolveConfig(Unit $unit, array $rawConfig, Parameters $scope): array
     {

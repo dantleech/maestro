@@ -12,9 +12,8 @@ use Maestro\Model\Maestro;
 use Maestro\Console\SymfonyConsoleManager;
 use Maestro\Model\Unit\Registry\LazyCallbackRegistry;
 use Phpactor\MapResolver\Resolver;
-use Maestro\Model\Unit\Config\Resolver as ConfigResolver;
-
-use RuntimeException;
+use Maestro\Model\Unit\Config\RealResolver;
+use Maestro\Model\Unit\Config\ParameterReplacementResolver;
 
 class MaestroExtension implements Extension
 {
@@ -88,7 +87,7 @@ class MaestroExtension implements Extension
         });
 
         $container->register('maestro.unit.resolver', function (Container $container) {
-            return new ConfigResolver();
+            return new ParameterReplacementResolver(new RealResolver());
         });
     }
 }

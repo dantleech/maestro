@@ -4,6 +4,9 @@ namespace Maestro\Console;
 
 use Amp\Delayed;
 use Amp\Loop;
+use Maestro\Model\Unit\Definition;
+use Maestro\Model\Unit\Invoker;
+use Maestro\Model\Unit\Parameters;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -14,12 +17,15 @@ use Webmozart\PathUtil\Path;
 
 class RunCommand extends Command
 {
-    private $maestro;
+    /**
+     * @var Invoker
+     */
+    private $invoker;
 
-    public function __construct(Maestro $maestro)
+    public function __construct(Invoker $invoker)
     {
         parent::__construct();
-        $this->maestro = $maestro;
+        $this->invoker = $invoker;
     }
 
     protected function configure()
@@ -41,10 +47,6 @@ class RunCommand extends Command
             )
             ->loader()->load();
 
-        Loop::run(function () use ($config) {
-            yield $this->maestro->run($config);
-            yield new Delayed(100);
-            Loop::stop();
-        });
+        $this->invoker->invoke(Definition::fromArray($config), Parameters::new());
     }
 }

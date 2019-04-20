@@ -7,19 +7,18 @@ use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\Console\RunCommand;
-use Maestro\Model\Unit\UnitRegistry\LazyUnitRegistry;
-use Maestro\Model\Maestro;
-use Maestro\Model\Unit\UnitExecutor;
-use Maestro\Model\Unit\UnitParameterResolver;
-use Maestro\Model\ParameterResolverFactory;
+use Maestro\Model\Unit\Invoker;
+use Maestro\Model\Unit\Registry\LazyCallbackRegistry;
 use Phpactor\MapResolver\Resolver;
+use Maestro\Model\Unit\Config\Resolver as ConfigResolver;
+
 use RuntimeException;
 
 class MaestroExtension implements Extension
 {
-    const SERVICE_MAESTRO = 'maestro.maestro';
-    const TAG_UNIT = 'maestro.unit';
-    const SERVICE_UNIT_EXECUTOR = 'maestro.model.unit_executor';
+    const TAG_UNIT = 'unit';
+    const SERVICE_INVOKER = 'maestro.unit.invoker';
+
 
     /**
      * {@inheritDoc}
@@ -34,62 +33,48 @@ class MaestroExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $this->loadConsole($container);
-        $this->loadUtils($container);
-        $this->loadUnitInfrastructure($container);
+        $this->loadUnit($container);
     }
 
     private function loadConsole(ContainerBuilder $container)
     {
         $container->register('maestro.console.command.run', function (Container $container) {
             return new RunCommand(
-                $container->get(self::SERVICE_MAESTRO)
+                $container->get(self::SERVICE_INVOKER)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'run']]);
     }
 
-    private function loadUnitInfrastructure(ContainerBuilder $container)
+    private function loadUnit(ContainerBuilder $container)
     {
-        $container->register(self::SERVICE_MAESTRO, function (Container $container) {
-            return new Maestro(
-                $container->get(self::SERVICE_UNIT_EXECUTOR)
+        $container->register(self::SERVICE_INVOKER, function (Container $container) {
+            return new Invoker(
+                $container->get('maestro.unit.registry'),
+                $container->get('maestro.unit.resolver')
             );
         });
 
-        $container->register('maestro.model.unit.parameter_resolver', function (Container $container) {
-            return new UnitParameterResolver(
-                $container->get('maestro.parameter_resolver_factory')
-            );
-        });
-        
-        $container->register(self::SERVICE_UNIT_EXECUTOR, function (Container $container) {
-            return new UnitExecutor(
-                $container->get('maestro.model.unit.parameter_resolver'),
-                $container->get('maestro.model.unit_registry')
-            );
-        });
-        
-        $container->register('maestro.model.unit_registry', function (Container $container) {
+        $container->register('maestro.unit.registry', function (Container $container) {
             $map = [];
+
             foreach ($container->getServiceIdsForTag(self::TAG_UNIT) as $serviceId => $attrs) {
                 if (!isset($attrs['name'])) {
                     throw new RuntimeException(sprintf(
-                        'Unit service "%s" has no "name" tag, each unit service must define a `name` attribute',
+                        'Unit container service "%s" must define a "name" attribute',
                         $serviceId
                     ));
                 }
-                $map[$attrs['name']] = $serviceId;
-            }
-        
-            return new LazyUnitRegistry($map, function (string $serviceId) use ($container) {
-                return $container->get($serviceId);
-            });
-        });
-    }
 
-    private function loadUtils(ContainerBuilder $container)
-    {
-        $container->register('maestro.parameter_resolver_factory', function () {
-            return new ParameterResolverFactory();
+                $map[$attrs['name']] = function () use ($container, $serviceId) {
+                    return $container->get($serviceId);
+                };
+            }
+
+            return new LazyCallbackRegistry($map);
+        });
+
+        $container->register('maestro.unit.resolver', function (Container $container) {
+            return new ConfigResolver();
         });
     }
 }

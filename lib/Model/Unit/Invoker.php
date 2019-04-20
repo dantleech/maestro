@@ -26,11 +26,11 @@ class Invoker
         $this->resolver = $resolver;
     }
 
-    public function invoke(Definition $definition, Parameters $parameters): void
+    public function invoke(Environment $env, Definition $definition): void
     {
         $unit = $this->unitRegistry->get($definition->type());
-        $config = $this->resolver->resolveConfig($unit, $definition->config(), $parameters);
+        $config = $this->resolver->resolveConfig($unit, $definition->config(), $env->parameters());
 
-        $unit->execute($config, $parameters->copy());
+        $unit->execute($env, $config);
     }
 }

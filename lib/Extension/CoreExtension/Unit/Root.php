@@ -4,6 +4,7 @@ namespace Maestro\Extension\CoreExtension\Unit;
 
 use Maestro\Model\Unit\Config;
 use Maestro\Model\Unit\Definition;
+use Maestro\Model\Unit\Environment;
 use Maestro\Model\Unit\Invoker;
 use Maestro\Model\Unit\Parameters;
 use Maestro\Model\Unit\Unit;
@@ -28,12 +29,13 @@ class Root implements Unit
         ]);
     }
 
-    public function execute(array $config, Parameters $parameters)
+    public function execute(Environment $environment, array $config)
     {
-        $parameters = $parameters->mergeArray($config['parameters']);
+        $environment->parameters()->mergeArray($config['parameters']);
+
         foreach ($config['units'] as $unit) {
             $definition = Definition::fromArray($unit);
-            $this->invoker->invoke($definition, $parameters);
+            $this->invoker->invoke($environment, $definition);
         }
     }
 }

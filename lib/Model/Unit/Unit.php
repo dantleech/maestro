@@ -10,5 +10,5 @@ interface Unit
 {
     public function configure(Config $config);
 
-    public function execute(array $config, Parameters $parameters);
+    public function execute(Environment $env, array $config);
 }

@@ -6,8 +6,10 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
-use Maestro\Console\RunCommand;
+use Maestro\Console\Command\Run;
 use Maestro\Model\Unit\Invoker;
+use Maestro\Model\Maestro;
+use Maestro\Console\SymfonyConsoleManager;
 use Maestro\Model\Unit\Registry\LazyCallbackRegistry;
 use Phpactor\MapResolver\Resolver;
 use Maestro\Model\Unit\Config\Resolver as ConfigResolver;
@@ -18,6 +20,7 @@ class MaestroExtension implements Extension
 {
     const TAG_UNIT = 'unit';
     const SERVICE_INVOKER = 'maestro.unit.invoker';
+    const SERVICE_CONSOLE_MANAGER = 'maestro.console.manager';
 
 
     /**
@@ -34,15 +37,26 @@ class MaestroExtension implements Extension
     {
         $this->loadConsole($container);
         $this->loadUnit($container);
+
+        $container->register('maestro', function (Container $container) {
+            return new Maestro(
+                $container->get(self::SERVICE_INVOKER),
+                $container->get(self::SERVICE_CONSOLE_MANAGER)
+            );
+        });
     }
 
     private function loadConsole(ContainerBuilder $container)
     {
         $container->register('maestro.console.command.run', function (Container $container) {
-            return new RunCommand(
-                $container->get(self::SERVICE_INVOKER)
+            return new Run(
+                $container->get('maestro')
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'run']]);
+
+        $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
+            return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
+        });
     }
 
     private function loadUnit(ContainerBuilder $container)

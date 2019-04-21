@@ -9,9 +9,14 @@ class Workspace
      */
     private $workspacePath;
 
-    public function __construct(string $workspacePath)
+    private function __construct(string $workspacePath)
     {
         $this->workspacePath = $workspacePath;
+    }
+
+    public static function create(string $workspacePath): self
+    {
+        return new self($workspacePath);
     }
 
     public function package(PackageDefinition $package): PackageWorkspace

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Console\Exception;
+namespace Maestro\Model\Console\Exception;
 
 use RuntimeException;
 

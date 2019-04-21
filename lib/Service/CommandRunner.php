@@ -2,6 +2,7 @@
 
 namespace Maestro\Service;
 
+use Amp\Promise;
 use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
@@ -26,13 +27,16 @@ final class CommandRunner
         $this->queueManager = $queueManager;
     }
 
-    public function run(string $command)
+    public function run(string $command): void
     {
         foreach ($this->definitions as $package) {
             assert($package instanceof PackageDefinition);
+
             $this->queueManager->getOrCreate($package->syncId())->enqueue(
-                new Process($command, $package->path())
+                new Process($package, $command)
             );
         }
+
+        $this->queueManager->dispatch();
     }
 }

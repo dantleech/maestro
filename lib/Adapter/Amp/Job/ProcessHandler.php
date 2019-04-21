@@ -4,6 +4,7 @@ namespace Maestro\Adapter\Amp\Job;
 
 use Amp\Process\Process as AmpProcess;
 use Amp\Promise;
+use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Package\Workspace;
 
 class ProcessHandler
@@ -13,24 +14,43 @@ class ProcessHandler
      */
     private $workspace;
 
-    public function __construct(Workspace $workspace)
+    /**
+     * @var ConsoleManager
+     */
+    private $consoleManager;
+
+    public function __construct(Workspace $workspace, ConsoleManager $consoleManager)
     {
         $this->workspace = $workspace;
+        $this->consoleManager = $consoleManager;
     }
 
-    public function __invoke(Process $process): Promise
+    public function __invoke(Process $job): Promise
     {
-        return \Amp\call(function (Process $process) {
+        return \Amp\call(function (Process $job) {
 
             $process = new AmpProcess(
-                $process->command(),
-                $this->workspace->package($process->package())->path()
+                $job->command(),
+                $this->workspace->package($job->package())->path()
             );
 
-            $pid = yield $process->getPid();
+            yield $process->start();
 
-            yield $process->join();
+            $stdout = \Amp\call(function () use ($process, $job) {
+                while (null !== $chunk = yield $process->getStdout()->read()) {
+                    $this->consoleManager->stdout($job->package()->syncId())->write($chunk);
+                }
+            });
 
-        }, $process);
+            $stderr = \Amp\call(function () use ($process, $job) {
+                while (null !== $chunk = yield $process->getStderr()->read()) {
+                    $this->consoleManager->stderr($job->package()->syncId())->write($chunk);
+                }
+            });
+
+            yield [$stdout, $stderr];
+
+            return yield $process->join();
+        }, $job);
     }
 }

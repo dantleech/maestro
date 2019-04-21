@@ -2,21 +2,45 @@
 <?php
 
 use Maestro\Extension\CoreExtension\CoreExtension;
+use Phpactor\ConfigLoader\ConfigLoaderBuilder;
+use Phpactor\ConfigLoader\Core\ConfigLoader;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Completion\CompletionExtension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\MaestroExtension;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Input\InputOption;
+use Webmozart\PathUtil\Path;
 
 require __DIR__ . '/../vendor/autoload.php';
+
+$configBuilder = ConfigLoaderBuilder::create()
+    ->addCandidate(getcwd() . '/maestro.json', 'json')
+    ->enableJsonDeserializer('json');
+
+$arg = new ArgvInput();
+$configFile = $arg->getParameterOption(['-c', '--config']);
+if (false !== $configFile) {
+    if (!file_exists($configFile)) {
+        throw new RuntimeException(sprintf(
+            'Config file "%s" not found', $configFile
+        ));
+    }
+    $configBuilder->addCandidate(Path::makeAbsolute($configFile, getcwd()), 'json');
+}
 
 $container = PhpactorContainer::fromExtensions([
     ConsoleExtension::class,
     MaestroExtension::class,
-    CoreExtension::class,
-], []);
+
+], $configBuilder->loader()->load());
 
 $application = new Application();
+$application->getDefinition()->addOption(
+    new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to configuration file')
+);
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );

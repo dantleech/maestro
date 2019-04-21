@@ -7,7 +7,7 @@ class Queue
     /**
      * @var Job[]
      */
-    private $jobs;
+    private $jobs = [];
 
     /**
      * @var string
@@ -19,13 +19,18 @@ class Queue
         $this->id = $id;
     }
 
-    public function enqueue(Job $job)
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function enqueue(Job $job): void
     {
         $this->jobs[] = $job;
     }
 
-    public function id()
+    public function dequeue(): ?Job
     {
-        return $this->id;
+        return array_shift($this->jobs);
     }
 }

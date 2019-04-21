@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Console;
+namespace Maestro\Adapter\Symfony;
 
 use Maestro\Model\Console\Console;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,5 +36,10 @@ class SymfonyConsole implements Console
     public function id(): string
     {
         return $this->name;
+    }
+
+    public function writeln(string $line): void
+    {
+        $this->output->writeln($line);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace Maestro\Console;
+namespace Maestro\Adapter\Symfony;
 
-use Maestro\Console\Exception\ConsoleNotFound;
+use Maestro\Model\Console\Exception\ConsoleNotFound;
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Maestro\Adapter\Symfony\SymfonyConsole;
 
 class SymfonyConsoleManager implements ConsoleManager
 {
@@ -31,7 +32,17 @@ class SymfonyConsoleManager implements ConsoleManager
         return $this->consoles[$id];
     }
 
-    public function get(string $id): Console
+    public function stdout(string $id): Console
+    {
+        return $this->get($id);
+    }
+
+    public function stderr(string $id): Console
+    {
+        return $this->get($id);
+    }
+
+    private function get(string $id): Console
     {
         if (!isset($this->consoles[$id])) {
             throw new ConsoleNotFound(sprintf(
@@ -42,5 +53,4 @@ class SymfonyConsoleManager implements ConsoleManager
 
         return $this->consoles[$id];
     }
-
 }

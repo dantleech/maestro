@@ -9,24 +9,48 @@ use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\Console\Command\Exec;
 use Maestro\Model\Unit\Invoker;
 use Maestro\Model\Maestro;
-use Maestro\Console\SymfonyConsoleManager;
+use Maestro\Adapter\Symfony\SymfonyConsoleManager;
 use Maestro\Model\Unit\Registry\LazyCallbackRegistry;
 use Phpactor\MapResolver\Resolver;
-use Maestro\Model\Unit\Config\RealResolver;
 use Maestro\Model\Unit\Config\ParameterReplacementResolver;
+use Maestro\Model\Unit\Config\RealResolver;
+use Maestro\Service\CommandRunner;
+use Maestro\Model\Job\QueueManager;
+use Maestro\Model\Package\PackageDefinitions;
+use Maestro\Model\Job\Dispatcher\LazyDispatcher;
+use Maestro\Adapter\Amp\Job\ProcessHandler;
+use RuntimeException;
+use XdgBaseDir\Xdg;
+use Maestro\Model\Package\Workspace;
 
 class MaestroExtension implements Extension
 {
     const TAG_UNIT = 'unit';
+
     const SERVICE_INVOKER = 'maestro.unit.invoker';
     const SERVICE_CONSOLE_MANAGER = 'maestro.console.manager';
+    const SERVICE_QUEUE_MANAGER = 'maestro.model.queue.manager';
+    const SERVICE_PACKAGE_DEFINITIONS = 'maestro.model.package.definitions';
+    const SERVICE_JOB_DISPATCHER = 'maestro.job.dispatcher';
+    const SERVICE_WORKSPACE = 'maestro.package.workspace';
 
+    const PARAM_WORKSPACE_PATH = 'workspace_path';
+    const PARAM_PACKAGES = 'packages';
+    const TAG_JOB_HANDLER = 'maestro.job_handler';
 
     /**
      * {@inheritDoc}
      */
     public function configure(Resolver $schema)
     {
+        $xdg = new Xdg();
+        $schema->setDefaults([
+            self::PARAM_PACKAGES => [],
+            self::PARAM_WORKSPACE_PATH => $xdg->getHomeDataDir() . '/maestro',
+        ]);
+        $schema->setTypes([
+            self::PARAM_PACKAGES => 'array'
+        ]);
     }
 
     /**
@@ -34,60 +58,74 @@ class MaestroExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
+        $this->loadApplication($container);
+        $this->loadPackage($container);
         $this->loadConsole($container);
-        $this->loadUnit($container);
+        $this->loadJob($container);
+    }
 
-        $container->register('maestro', function (Container $container) {
-            return new Maestro(
-                $container->get(self::SERVICE_INVOKER),
-                $container->get(self::SERVICE_CONSOLE_MANAGER)
+    private function loadApplication(ContainerBuilder $container)
+    {
+        $container->register('maestro.application.command_runner', function (Container $container) {
+            return new CommandRunner(
+                $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
+                $container->get(self::SERVICE_QUEUE_MANAGER)
             );
         });
     }
 
     private function loadConsole(ContainerBuilder $container)
     {
-        $container->register('maestro.console.command.run', function (Container $container) {
+        $container->register('maestro.console.command.execute', function (Container $container) {
             return new Exec(
-                $container->get('maestro')
+                $container->get('maestro.application.command_runner')
             );
-        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'run']]);
+        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'exec']]);
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
             return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
         });
     }
 
-    private function loadUnit(ContainerBuilder $container)
+    private function loadJob(ContainerBuilder $container)
     {
-        $container->register(self::SERVICE_INVOKER, function (Container $container) {
-            return new Invoker(
-                $container->get('maestro.unit.registry'),
-                $container->get('maestro.unit.resolver')
+        $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
+            return new QueueManager(
+                $container->get(self::SERVICE_JOB_DISPATCHER)
             );
         });
-
-        $container->register('maestro.unit.registry', function (Container $container) {
-            $map = [];
-
-            foreach ($container->getServiceIdsForTag(self::TAG_UNIT) as $serviceId => $attrs) {
-                if (!isset($attrs['name'])) {
+        $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
+            $handlers = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
+                if (!isset($attrs['id'])) {
                     throw new RuntimeException(sprintf(
-                        'Unit container service "%s" must define a "name" attribute',
+                        'Service "%s" must have an ID parameter (which should probably it\'s FQN or otherwise
+                         what was specified in it\'s related job).',
                         $serviceId
                     ));
                 }
-
-                $map[$attrs['name']] = function () use ($container, $serviceId) {
+                $handlers[$attrs['id']] = function () use ($container, $serviceId) {
                     return $container->get($serviceId);
                 };
             }
-
-            return new LazyCallbackRegistry($map);
+            return new LazyDispatcher($handlers);
         });
 
-        $container->register('maestro.unit.resolver', function (Container $container) {
-            return new ParameterReplacementResolver(new RealResolver());
+        $container->register('maestro.adapter.amp.process_handler', function (Container $container) {
+            return new ProcessHandler(
+                $container->get(self::SERVICE_WORKSPACE),
+                $container->get(self::SERVICE_CONSOLE_MANAGER)
+            );
+        }, [ self::TAG_JOB_HANDLER => [ 'id' => ProcessHandler::class ]]);
+    }
+
+    private function loadPackage(ContainerBuilder $container)
+    {
+        $container->register(self::SERVICE_PACKAGE_DEFINITIONS, function (Container $container) {
+            return PackageDefinitions::fromArray($container->getParameter(self::PARAM_PACKAGES));
+        });
+        $container->register(self::SERVICE_WORKSPACE, function (Container $container) {
+            return Workspace::create($container->getParameter(self::PARAM_WORKSPACE_PATH));
         });
     }
 }

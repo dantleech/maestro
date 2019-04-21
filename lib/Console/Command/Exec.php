@@ -8,6 +8,7 @@ use Maestro\Model\Unit\Definition;
 use Maestro\Model\Unit\Environment;
 use Maestro\Model\Unit\Invoker;
 use Maestro\Model\Unit\Parameters;
+use Maestro\Service\CommandRunner;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -18,7 +19,7 @@ use Webmozart\PathUtil\Path;
 
 class Exec extends Command
 {
-    const ARG_COMMAND = 'command';
+    const ARG_COMMAND = 'exec';
 
     /**
      * @var CommandRunner

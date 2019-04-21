@@ -16,38 +16,28 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
 
-class Run extends Command
+class Exec extends Command
 {
-    /**
-     * @var Maestro
-     */
-    private $maestro;
+    const ARG_COMMAND = 'command';
 
-    public function __construct(Maestro $maestro)
+    /**
+     * @var CommandRunner
+     */
+    private $commandRunner;
+
+    public function __construct(CommandRunner $commandRunner)
     {
         parent::__construct();
-        $this->maestro = $maestro;
+        $this->commandRunner = $commandRunner;
     }
 
     protected function configure()
     {
-        $this->setName('run');
-        $this->addArgument('unit', InputArgument::REQUIRED, 'Unit file');
+        $this->addArgument(self::ARG_COMMAND, InputArgument::REQUIRED, 'Command to run on repositories');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = ConfigLoaderBuilder::create()
-            ->enableJsonDeserializer('json')
-            ->addCandidate(
-                Path::makeAbsolute(
-                    $input->getArgument('unit'),
-                    getcwd()
-                ),
-                'json'
-            )
-            ->loader()->load();
-
-        $this->maestro->run($config);
+        $this->commandRunner->run($input->getArgument(self::ARG_COMMAND));
     }
 }

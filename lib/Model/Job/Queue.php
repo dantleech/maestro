@@ -2,6 +2,8 @@
 
 namespace Maestro\Model\Job;
 
+use Amp\Process\Process;
+
 class Queue
 {
     /**
@@ -32,5 +34,10 @@ class Queue
     public function dequeue(): ?Job
     {
         return array_shift($this->jobs);
+    }
+
+    public function prepend(Job $job): void
+    {
+        array_unshift($this->jobs, $job);
     }
 }

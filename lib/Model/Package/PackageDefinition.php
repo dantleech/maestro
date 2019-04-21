@@ -23,4 +23,14 @@ class PackageDefinition
     {
         return $this->name;
     }
+
+    public function consoleId(): string
+    {
+        return $this->name;
+    }
+
+    public function repoUrl(): string
+    {
+        return sprintf('git@github.com:%s', $this->name());
+    }
 }

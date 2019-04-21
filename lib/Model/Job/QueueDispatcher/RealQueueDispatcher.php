@@ -1,14 +1,15 @@
 <?php
 
-namespace Maestro\Model\Job;
+namespace Maestro\Model\Job\QueueDispatcher;
 
-class QueueManager
+use Maestro\Model\Job\JobDispatcher;
+use Maestro\Model\Job\Queue;
+use Maestro\Model\Job\QueueDispatcher;
+use Maestro\Model\Job\QueueRegistry;
+use Maestro\Model\Job\Queues;
+
+class RealQueueDispatcher implements QueueDispatcher
 {
-    /**
-     * @var Queue[]
-     */
-    private $queues = [];
-
     /**
      * @var JobDispatcher
      */
@@ -19,21 +20,10 @@ class QueueManager
         $this->dispatcher = $dispatcher;
     }
 
-    public function getOrCreate(string $id): Queue
-    {
-        if (isset($this->queues[$id])) {
-            return $this->queues[$id];
-        }
-
-        $this->queues[$id] = new Queue($id);
-
-        return $this->queues[$id];
-    }
-
-    public function dispatch(): void
+    public function dispatch(Queues $queues): void
     {
         $promises = [];
-        foreach ($this->queues as $queue) {
+        foreach ($queues as $queue) {
             $promises[] = \Amp\call(function () use ($queue) {
                 while ($job = $queue->dequeue()) {
                     yield $this->dispatcher->dispatch($job);

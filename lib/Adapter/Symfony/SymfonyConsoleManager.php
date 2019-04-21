@@ -45,10 +45,7 @@ class SymfonyConsoleManager implements ConsoleManager
     private function get(string $id): Console
     {
         if (!isset($this->consoles[$id])) {
-            throw new ConsoleNotFound(sprintf(
-                'Console "%s" was not found, known consoles "%s"',
-                $id, implode('", "', array_keys($this->consoles))
-            ));
+            $this->new($id);
         }
 
         return $this->consoles[$id];

@@ -15,13 +15,16 @@ use Phpactor\MapResolver\Resolver;
 use Maestro\Model\Unit\Config\ParameterReplacementResolver;
 use Maestro\Model\Unit\Config\RealResolver;
 use Maestro\Service\CommandRunner;
-use Maestro\Model\Job\QueueManager;
+use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Adapter\Amp\Job\ProcessHandler;
 use RuntimeException;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
+use Maestro\Model\Job\QueueDispatcher\PreDispatcherDecorator;
+use Maestro\Adapter\Console\ConsoleQueueModifier;
+use Maestro\Adapter\Amp\Job\PackageInitializerQueueModifier;
 
 class MaestroExtension implements Extension
 {
@@ -90,9 +93,19 @@ class MaestroExtension implements Extension
     private function loadJob(ContainerBuilder $container)
     {
         $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
-            return new QueueManager(
-                $container->get(self::SERVICE_JOB_DISPATCHER)
-            );
+            $queueModifiers = [];
+            return 
+                new PreDispatcherDecorator(
+                    new RealQueueDispatcher(
+                        $container->get(self::SERVICE_JOB_DISPATCHER)
+                    ),
+                    [
+                        new PackageInitializerQueueModifier(
+                            $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
+                            $container->get(self::SERVICE_WORKSPACE)
+                        )
+                    ]
+                );
         });
         $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
             $handlers = [];

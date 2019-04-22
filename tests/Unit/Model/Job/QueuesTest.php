@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Model\Job;
 
 use Maestro\Model\Job\Queue;
-use Maestro\Model\Job\QueueRegistry;
 use Maestro\Model\Job\Queues;
 use PHPUnit\Framework\TestCase;
 

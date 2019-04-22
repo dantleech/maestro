@@ -2,8 +2,6 @@
 
 namespace Maestro\Model\Job;
 
-use Amp\Process\Process;
-
 class Queue
 {
     /**

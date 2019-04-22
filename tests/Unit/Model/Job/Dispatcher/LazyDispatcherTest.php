@@ -28,7 +28,8 @@ class LazyDispatcherTest extends TestCase
     {
         $this->expectException(HandlerNotFound::class);
         $this->job->handler()->willReturn('barfoo');
-        $this->create(['foobar' => function () {}])->dispatch($this->job->reveal());
+        $this->create(['foobar' => function () {
+        }])->dispatch($this->job->reveal());
     }
 
     public function testThrowsExceptionIfMappedFactoryIsNotAClosure()
@@ -45,7 +46,9 @@ class LazyDispatcherTest extends TestCase
         $this->expectException(InvalidHandler::class);
         $this->expectExceptionMessage('did not return a callable');
         $this->job->handler()->willReturn('foobar');
-        $this->create(['foobar' => function () { return new \stdClass(); }])->dispatch($this->job->reveal());
+        $this->create(['foobar' => function () {
+            return new \stdClass();
+        }])->dispatch($this->job->reveal());
     }
 
     public function testThrowsExceptionIfHandlerDoesNotReturnAPromise()
@@ -55,7 +58,7 @@ class LazyDispatcherTest extends TestCase
 
         $this->job->handler()->willReturn('foobar');
         $this->create([
-            'foobar' => function () { 
+            'foobar' => function () {
                 return new class {
                     public function __invoke(Job $job)
                     {
@@ -70,9 +73,10 @@ class LazyDispatcherTest extends TestCase
     {
         $this->job->handler()->willReturn('foobar');
         $promise = $this->create([
-            'foobar' => function () { 
-                return new class () {
-                    function __invoke(Job $job) {
+            'foobar' => function () {
+                return new class() {
+                    public function __invoke(Job $job)
+                    {
                         return new Success();
                     }
                 };

@@ -39,5 +39,4 @@ class Queues implements IteratorAggregate
     {
         return new ArrayIterator($this->queues);
     }
-
 }

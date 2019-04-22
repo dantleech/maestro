@@ -6,8 +6,6 @@ use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Adapter\Amp\Job\ProcessHandler;
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
-use Maestro\Model\Package\PackageDefinitionBuilder;
-use Maestro\Model\Package\Workspace;
 use Maestro\Model\Job\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;

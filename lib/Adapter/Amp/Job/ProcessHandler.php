@@ -6,8 +6,6 @@ use Amp\Process\Process as AmpProcess;
 use Amp\Promise;
 use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Model\Console\ConsoleManager;
-use Maestro\Model\Package\Workspace;
-use RuntimeException;
 
 class ProcessHandler
 {
@@ -24,7 +22,6 @@ class ProcessHandler
     public function __invoke(Process $job): Promise
     {
         return \Amp\call(function (Process $job) {
-
             $this->consoleManager->stdout($job->consoleId())->writeln('EXEC: ' . $job->command());
             $process = new AmpProcess(
                 $job->command(),
@@ -57,7 +54,9 @@ class ProcessHandler
 
             if ($exitCode !== 0) {
                 throw new ProcessNonZeroExitCode(sprintf(
-                    '%s%s', $outs[0], $outs[1]
+                    '%s%s',
+                    $outs[0],
+                    $outs[1]
                 ), $exitCode);
             }
 

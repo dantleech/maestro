@@ -2,11 +2,7 @@
 
 namespace Maestro\Adapter\Amp\Job;
 
-use Amp\Process\Process as AmpProcess;
-use Amp\Promise;
-use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Job\Job;
-use Maestro\Model\Package\PackageWorkspace;
 
 class Process implements Job
 {

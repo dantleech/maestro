@@ -2,15 +2,8 @@
 
 namespace Maestro\Console\Command;
 
-use Amp\Delayed;
-use Amp\Loop;
 use Maestro\Model\Job\QueueStatus;
-use Maestro\Model\Unit\Definition;
-use Maestro\Model\Unit\Environment;
-use Maestro\Model\Unit\Invoker;
-use Maestro\Model\Unit\Parameters;
 use Maestro\Service\CommandRunner;
-use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
@@ -18,7 +11,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
 
 class Exec extends Command
 {
@@ -65,12 +57,11 @@ class Exec extends Command
                     $interval->s + ($interval->m * 60),
                     $status->success ? '✔' : '✘',
                     $status->code,
-                ),
+                    ),
                 substr(str_replace("\n", ' ', trim(preg_replace('{[[:^print:]]}', ' ', $status->message))), 0, 80),
             ]);
         }
 
         $table->render();
-
     }
 }

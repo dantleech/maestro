@@ -2,11 +2,9 @@
 
 namespace Maestro\Adapter\Symfony;
 
-use Maestro\Model\Console\Exception\ConsoleNotFound;
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Maestro\Adapter\Symfony\SymfonyConsole;
 
 class SymfonyConsoleManager implements ConsoleManager
 {

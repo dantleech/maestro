@@ -26,7 +26,8 @@ class EagerDispatcher implements JobDispatcher
         if (!isset($this->handlers[$job->handler()])) {
             throw new HandlerNotFound(sprintf(
                 'Could not find handler "%s", known handlers: "%s"',
-                $job->handler(), implode('", "', array_keys($this->handlers))
+                $job->handler(),
+                implode('", "', array_keys($this->handlers))
             ));
         }
 

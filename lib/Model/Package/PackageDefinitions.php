@@ -5,9 +5,6 @@ namespace Maestro\Model\Package;
 use ArrayIterator;
 use IteratorAggregate;
 use Maestro\Model\Package\Exception\InvalidPackageDefinition;
-use Maestro\Model\Package\PackageBuilder;
-use Maestro\Model\Package\PackageDefinitionBuilder;
-use Maestro\Model\Package\PackageDefinitions;
 
 class PackageDefinitions implements IteratorAggregate
 {
@@ -57,7 +54,8 @@ class PackageDefinitions implements IteratorAggregate
         if ($diff = array_diff(array_keys($definition), array_keys($defaults))) {
             throw new InvalidPackageDefinition(sprintf(
                 'Unexpected keys "%s", allowed keys: "%s"',
-                implode('", "', $diff), implode('", "', array_keys($definition))
+                implode('", "', $diff),
+                implode('", "', array_keys($definition))
             ));
         }
 

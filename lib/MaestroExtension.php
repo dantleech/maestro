@@ -7,13 +7,9 @@ use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\Console\Command\Exec;
-use Maestro\Model\Unit\Invoker;
 use Maestro\Model\Maestro;
 use Maestro\Adapter\Symfony\SymfonyConsoleManager;
-use Maestro\Model\Unit\Registry\LazyCallbackRegistry;
 use Phpactor\MapResolver\Resolver;
-use Maestro\Model\Unit\Config\ParameterReplacementResolver;
-use Maestro\Model\Unit\Config\RealResolver;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
 use Maestro\Model\Package\PackageDefinitions;
@@ -22,9 +18,6 @@ use Maestro\Adapter\Amp\Job\ProcessHandler;
 use RuntimeException;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
-use Maestro\Model\Job\QueueDispatcher\PreDispatcherDecorator;
-use Maestro\Adapter\Console\ConsoleQueueModifier;
-use Maestro\Adapter\Amp\Job\PackageInitializerQueueModifier;
 use Maestro\Adapter\Amp\Job\InitializePackageHandler;
 
 class MaestroExtension implements Extension

@@ -41,7 +41,8 @@ class LazyDispatcher implements JobDispatcher
         if (!isset($this->callbackMap[$handler])) {
             throw new HandlerNotFound(sprintf(
                 'Handler "%s" not found, known handlers: "%s"',
-                $handler, implode('", "', array_keys($this->callbackMap))
+                $handler,
+                implode('", "', array_keys($this->callbackMap))
             ));
         }
         
@@ -50,7 +51,7 @@ class LazyDispatcher implements JobDispatcher
         if (!$closure instanceof Closure) {
             throw new InvalidHandler(sprintf(
                 'Factory closure for "%s" must return a Closure, got "%s"',
-                $handler, 
+                $handler,
                 is_object($closure) ? get_class($closure) : gettype($closure)
             ));
         }
@@ -59,7 +60,7 @@ class LazyDispatcher implements JobDispatcher
         if (!is_callable($handlerObject)) {
             throw new InvalidHandler(sprintf(
                 'Callback for handler "%s" did not return a callable, got "%s"',
-                $handler, 
+                $handler,
                 is_object($handlerObject) ? get_class($handlerObject) : gettype($handlerObject)
             ));
         }

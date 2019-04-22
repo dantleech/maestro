@@ -7,6 +7,7 @@ use Maestro\Model\Package\PackageDefinition;
 final class PackageDefinitionBuilder
 {
     private $name;
+    private $initCommands = [];
 
     public function __construct(string $name)
     {
@@ -18,8 +19,15 @@ final class PackageDefinitionBuilder
         return new self($packageName);
     }
 
-    public function build()
+
+    public function build(): PackageDefinition
     {
-        return new PackageDefinition($this->name);
+        return new PackageDefinition($this->name, $this->initCommands);
+    }
+
+    public function withInitCommands(array $initCommands): self
+    {
+        $this->initCommands = $initCommands;
+        return $this;
     }
 }

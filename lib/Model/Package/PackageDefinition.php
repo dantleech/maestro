@@ -9,9 +9,15 @@ class PackageDefinition
      */
     private $name;
 
-    public function __construct(string $name)
+    /**
+     * @var array
+     */
+    private $initCommands;
+
+    public function __construct(string $name, array $initCommands)
     {
         $this->name = $name;
+        $this->initCommands = $initCommands;
     }
 
     public function name(): string
@@ -37,5 +43,10 @@ class PackageDefinition
     public function dirName(): string
     {
         return str_replace('/', '-', $this->name());
+    }
+
+    public function initCommands(): array
+    {
+        return $this->initCommands;
     }
 }

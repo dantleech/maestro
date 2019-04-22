@@ -11,6 +11,8 @@ use Maestro\Model\Package\PackageDefinitions;
 
 class PackageDefinitions implements IteratorAggregate
 {
+    const KEY_INITIALIZE = 'initialize';
+
     /**
      * @var array
      */
@@ -25,8 +27,14 @@ class PackageDefinitions implements IteratorAggregate
     {
         $packages = [];
         foreach ($definitions as $packageName => $definition) {
-            self::validateDefinition($definition);
-            $packages[] = PackageDefinitionBuilder::create($packageName)->build();
+            $definition = self::validateDefinition($definition);
+            $packageBuilder = PackageDefinitionBuilder::create($packageName);
+
+            if ($definition[self::KEY_INITIALIZE]) {
+                $packageBuilder = $packageBuilder->withInitCommands($definition[self::KEY_INITIALIZE]);
+            }
+
+            $packages[] = $packageBuilder->build();
         }
 
         return new self($packages);
@@ -40,17 +48,19 @@ class PackageDefinitions implements IteratorAggregate
         return new ArrayIterator($this->packages);
     }
 
-    private static function validateDefinition(array $definition): void
+    private static function validateDefinition(array $definition): array
     {
-        $keys = [
-            'initialize',
+        $defaults = [
+            self::KEY_INITIALIZE => [],
         ];
 
-        if ($diff = array_diff(array_keys($definition), $keys)) {
+        if ($diff = array_diff(array_keys($definition), array_keys($defaults))) {
             throw new InvalidPackageDefinition(sprintf(
                 'Unexpected keys "%s", allowed keys: "%s"',
                 implode('", "', $diff), implode('", "', array_keys($definition))
             ));
         }
+
+        return array_merge($defaults, $definition);
     }
 }

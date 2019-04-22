@@ -6,6 +6,7 @@ use Amp\Promise;
 use Maestro\Adapter\Amp\Job\InitializePackage;
 use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Model\Job\QueueDispatcher;
+use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
@@ -36,7 +37,7 @@ final class CommandRunner
         $this->workspace = $workspace;
     }
 
-    public function run(string $command): void
+    public function run(string $command, bool $reset): QueueStatuses
     {
         $queues = Queues::create();
 
@@ -48,7 +49,7 @@ final class CommandRunner
             $queue = $queues->get($package->syncId());
 
             $queue->enqueue(
-                new InitializePackage($queue, $package)
+                new InitializePackage($queue, $package, $reset)
             );
 
             $queue->enqueue(
@@ -56,6 +57,6 @@ final class CommandRunner
             );
         }
 
-        $this->queueDispatcher->dispatch($queues);
+        return $this->queueDispatcher->dispatch($queues);
     }
 }

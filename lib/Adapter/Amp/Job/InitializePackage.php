@@ -18,10 +18,16 @@ class InitializePackage implements Job
      */
     private $queue;
 
-    public function __construct(Queue $queue, PackageDefinition $packageDefinition)
+    /**
+     * @var bool
+     */
+    private $purge;
+
+    public function __construct(Queue $queue, PackageDefinition $packageDefinition, bool $purge = false)
     {
         $this->packageDefinition = $packageDefinition;
         $this->queue = $queue;
+        $this->purge = $purge;
     }
 
     public function packageDefinition(): PackageDefinition
@@ -37,5 +43,10 @@ class InitializePackage implements Job
     public function queue(): Queue
     {
         return $this->queue;
+    }
+
+    public function purge(): bool
+    {
+        return $this->purge;
     }
 }

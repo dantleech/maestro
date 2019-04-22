@@ -4,8 +4,10 @@ namespace Maestro\Adapter\Amp\Job;
 
 use Amp\Process\Process as AmpProcess;
 use Amp\Promise;
+use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Package\Workspace;
+use RuntimeException;
 
 class ProcessHandler
 {
@@ -32,20 +34,34 @@ class ProcessHandler
             yield $process->start();
 
             $stdout = \Amp\call(function () use ($process, $job) {
+                $lastChunk = null;
                 while (null !== $chunk = yield $process->getStdout()->read()) {
                     $this->consoleManager->stdout($job->consoleId())->write($chunk);
+                    $lastChunk = $chunk;
                 }
+                return $lastChunk;
             });
 
             $stderr = \Amp\call(function () use ($process, $job) {
+                $lastChunk = null;
                 while (null !== $chunk = yield $process->getStderr()->read()) {
                     $this->consoleManager->stderr($job->consoleId())->write($chunk);
+                    $lastChunk = $chunk;
                 }
+                return $lastChunk;
             });
 
-            yield [$stdout, $stderr];
+            $outs = yield [$stdout, $stderr];
 
-            return yield $process->join();
+            $exitCode = yield $process->join();
+
+            if ($exitCode !== 0) {
+                throw new ProcessNonZeroExitCode(sprintf(
+                    '%s%s', $outs[0], $outs[1]
+                ), $exitCode);
+            }
+
+            return $outs[0];
         }, $job);
     }
 }

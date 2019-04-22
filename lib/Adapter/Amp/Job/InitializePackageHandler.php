@@ -21,7 +21,13 @@ final class InitializePackageHandler
     public function __invoke(InitializePackage $initJob): Promise
     {
         $package = $initJob->packageDefinition();
-        $packagePath = $this->workspace->package($package)->path();
+        $workspace = $this->workspace->package($package);
+
+        if ($initJob->purge()) {
+            $workspace->remove();
+        }
+
+        $packagePath = $workspace->path();
 
         if (file_exists($packagePath)) {
             return new Success();

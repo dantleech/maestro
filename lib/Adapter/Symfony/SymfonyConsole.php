@@ -17,15 +17,27 @@ class SymfonyConsole implements Console
      */
     private $name;
 
-    public function __construct(string $name, OutputInterface $output)
+    /**
+     * @var string
+     */
+    private $role;
+
+    /**
+     * @var string
+     */
+    private $color;
+
+    public function __construct(string $name, OutputInterface $output, string $role, string $color)
     {
         $this->output = $output;
         $this->name = $name;
+        $this->role = $role;
+        $this->color = $color;
     }
 
     public function write(string $bytes): void
     {
-        $this->output->write($bytes);
+        $this->output->write($this->decorate($bytes));
     }
 
     public function name(): string
@@ -40,6 +52,16 @@ class SymfonyConsole implements Console
 
     public function writeln(string $line): void
     {
-        $this->output->writeln($line);
+        $this->output->writeln($this->decorate($line, $this->role));
+    }
+
+    private function decorate(string $line, ?string $role = null)
+    {
+        return sprintf(
+            '<fg=%s>%s%s</>',
+            $this->color,
+            $role ? $role . ': ' : '',
+            $line
+        );
     }
 }

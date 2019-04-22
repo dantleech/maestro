@@ -11,19 +11,25 @@ use Maestro\Model\Package\PackageWorkspace;
 class Process implements Job
 {
     /**
-     * @var PackageDefinition
-     */
-    private $package;
-
-    /**
      * @var string
      */
     private $command;
 
-    public function __construct(PackageDefinition $package, string $command)
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    /**
+     * @var string
+     */
+    private $consoleId;
+
+    public function __construct(string $workingDirectory, string $command, string $consoleId)
     {
-        $this->package = $package;
         $this->command = $command;
+        $this->workingDirectory = $workingDirectory;
+        $this->consoleId = $consoleId;
     }
 
     public function handler(): string
@@ -31,13 +37,18 @@ class Process implements Job
         return ProcessHandler::class;
     }
 
-    public function package(): PackageDefinition
-    {
-        return $this->package;
-    }
-
     public function command(): string
     {
         return $this->command;
+    }
+
+    public function workingDirectory(): string
+    {
+        return $this->workingDirectory;
+    }
+
+    public function consoleId()
+    {
+        return $this->consoleId;
     }
 }

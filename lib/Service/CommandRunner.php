@@ -3,12 +3,14 @@
 namespace Maestro\Service;
 
 use Amp\Promise;
+use Maestro\Adapter\Amp\Job\InitializePackage;
 use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Package\PackageRepository;
+use Maestro\Model\Package\Workspace;
 
 final class CommandRunner
 {
@@ -22,10 +24,16 @@ final class CommandRunner
      */
     private $definitions;
 
-    public function __construct(PackageDefinitions $definitions, QueueDispatcher $queueDispatcher)
+    /**
+     * @var Workspace
+     */
+    private $workspace;
+
+    public function __construct(PackageDefinitions $definitions, QueueDispatcher $queueDispatcher, Workspace $workspace)
     {
         $this->definitions = $definitions;
         $this->queueDispatcher = $queueDispatcher;
+        $this->workspace = $workspace;
     }
 
     public function run(string $command): void
@@ -35,8 +43,16 @@ final class CommandRunner
         foreach ($this->definitions as $package) {
             assert($package instanceof PackageDefinition);
 
-            $queues->get($package->syncId())->enqueue(
-                new Process($package, $command)
+            $workingDirectory = $this->workspace->package($package)->path();
+
+            $queue = $queues->get($package->syncId());
+
+            $queue->enqueue(
+                new InitializePackage($queue, $package)
+            );
+
+            $queue->enqueue(
+                new Process($workingDirectory, $command, $package->consoleId())
             );
         }
 

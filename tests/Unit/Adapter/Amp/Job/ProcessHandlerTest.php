@@ -39,14 +39,11 @@ class ProcessHandlerTest extends TestCase
 
     public function testDispatchesCommand()
     {
-        $workspace  = Workspace::create(__DIR__);
-        $package = PackageDefinitionBuilder::create('foobar')->build();
-
         $this->stdout->write(Argument::containingString('Hello'))->shouldBeCalled();
 
         $exitCode = HandlerTester::create()->dispatch(
-            new Process($package, 'echo Hello'),
-            new ProcessHandler($workspace, $this->consoleManger->reveal())
+            new Process(__DIR__, 'echo Hello', 'foo'),
+            new ProcessHandler($this->consoleManger->reveal())
         );
         self::assertEquals(0, $exitCode, 'Exited with zero status');
     }

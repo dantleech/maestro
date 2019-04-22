@@ -2,6 +2,8 @@
 
 namespace Maestro\Model\Package;
 
+use Webmozart\PathUtil\Path;
+
 class Workspace
 {
     /**
@@ -21,6 +23,11 @@ class Workspace
 
     public function package(PackageDefinition $package): PackageWorkspace
     {
-        return new PackageWorkspace($this->workspacePath);
+        return new PackageWorkspace(Path::join([$this->workspacePath, $package->dirName()]));
+    }
+
+    public function path(): string
+    {
+        return $this->workspacePath;
     }
 }

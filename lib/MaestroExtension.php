@@ -25,6 +25,7 @@ use Maestro\Model\Package\Workspace;
 use Maestro\Model\Job\QueueDispatcher\PreDispatcherDecorator;
 use Maestro\Adapter\Console\ConsoleQueueModifier;
 use Maestro\Adapter\Amp\Job\PackageInitializerQueueModifier;
+use Maestro\Adapter\Amp\Job\InitializePackageHandler;
 
 class MaestroExtension implements Extension
 {
@@ -72,7 +73,8 @@ class MaestroExtension implements Extension
         $container->register('maestro.application.command_runner', function (Container $container) {
             return new CommandRunner(
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
-                $container->get(self::SERVICE_QUEUE_MANAGER)
+                $container->get(self::SERVICE_QUEUE_MANAGER),
+                $container->get(self::SERVICE_WORKSPACE)
             );
         });
     }
@@ -94,18 +96,9 @@ class MaestroExtension implements Extension
     {
         $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
             $queueModifiers = [];
-            return 
-                new PreDispatcherDecorator(
-                    new RealQueueDispatcher(
-                        $container->get(self::SERVICE_JOB_DISPATCHER)
-                    ),
-                    [
-                        new PackageInitializerQueueModifier(
-                            $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
-                            $container->get(self::SERVICE_WORKSPACE)
-                        )
-                    ]
-                );
+            return new RealQueueDispatcher(
+                $container->get(self::SERVICE_JOB_DISPATCHER)
+            );
         });
         $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
             $handlers = [];
@@ -113,7 +106,7 @@ class MaestroExtension implements Extension
                 if (!isset($attrs['id'])) {
                     throw new RuntimeException(sprintf(
                         'Service "%s" must have an ID parameter (which should probably it\'s FQN or otherwise
-                         what was specified in it\'s related job).',
+                        what was specified in it\'s related job).',
                         $serviceId
                     ));
                 }
@@ -124,12 +117,17 @@ class MaestroExtension implements Extension
             return new LazyDispatcher($handlers);
         });
 
-        $container->register('maestro.adapter.amp.process_handler', function (Container $container) {
+        $container->register('maestro.adapter.amp.handler.process', function (Container $container) {
             return new ProcessHandler(
-                $container->get(self::SERVICE_WORKSPACE),
                 $container->get(self::SERVICE_CONSOLE_MANAGER)
             );
         }, [ self::TAG_JOB_HANDLER => [ 'id' => ProcessHandler::class ]]);
+
+        $container->register('maestro.adapter.amp.handler.initialize_package', function (Container $container) {
+            return new InitializePackageHandler(
+                $container->get(self::SERVICE_WORKSPACE)
+            );
+        }, [ self::TAG_JOB_HANDLER => [ 'id' => InitializePackageHandler::class ]]);
     }
 
     private function loadPackage(ContainerBuilder $container)

@@ -10,18 +10,12 @@ use Maestro\Model\Package\Workspace;
 class ProcessHandler
 {
     /**
-     * @var Workspace
-     */
-    private $workspace;
-
-    /**
      * @var ConsoleManager
      */
     private $consoleManager;
 
-    public function __construct(Workspace $workspace, ConsoleManager $consoleManager)
+    public function __construct(ConsoleManager $consoleManager)
     {
-        $this->workspace = $workspace;
         $this->consoleManager = $consoleManager;
     }
 
@@ -29,22 +23,23 @@ class ProcessHandler
     {
         return \Amp\call(function (Process $job) {
 
+            $this->consoleManager->stdout($job->consoleId())->writeln('EXEC: ' . $job->command());
             $process = new AmpProcess(
                 $job->command(),
-                $this->workspace->package($job->package())->path()
+                $job->workingDirectory()
             );
 
             yield $process->start();
 
             $stdout = \Amp\call(function () use ($process, $job) {
                 while (null !== $chunk = yield $process->getStdout()->read()) {
-                    $this->consoleManager->stdout($job->package()->syncId())->write($chunk);
+                    $this->consoleManager->stdout($job->consoleId())->write($chunk);
                 }
             });
 
             $stderr = \Amp\call(function () use ($process, $job) {
                 while (null !== $chunk = yield $process->getStderr()->read()) {
-                    $this->consoleManager->stderr($job->package()->syncId())->write($chunk);
+                    $this->consoleManager->stderr($job->consoleId())->write($chunk);
                 }
             });
 

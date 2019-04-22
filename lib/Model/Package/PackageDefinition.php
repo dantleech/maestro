@@ -33,4 +33,9 @@ class PackageDefinition
     {
         return sprintf('git@github.com:%s', $this->name());
     }
+
+    public function dirName(): string
+    {
+        return str_replace('/', '-', $this->name());
+    }
 }

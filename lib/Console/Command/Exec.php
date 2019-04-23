@@ -17,7 +17,7 @@ class Exec extends Command
 {
     const ARG_COMMAND = 'exec';
     const OPTION_RESET = 'reset';
-    const OPTION_FILTER = 'filter';
+    const OPTION_QUERY = 'query';
 
     /**
      * @var CommandRunner
@@ -34,7 +34,7 @@ class Exec extends Command
     {
         $this->addArgument(self::ARG_COMMAND, InputArgument::REQUIRED, 'Command to run on repositories');
         $this->addOption(self::OPTION_RESET, null, InputOption::VALUE_NONE, 'Reset the package repositories');
-        $this->addOption(self::OPTION_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter packages (wildcard * is permitted)');
+        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -42,7 +42,7 @@ class Exec extends Command
         $statuses = $this->commandRunner->run(
             (string) $input->getArgument(self::ARG_COMMAND),
             (bool) $input->getOption(self::OPTION_RESET),
-            (string) $input->getOption(self::OPTION_FILTER)
+            (string) $input->getOption(self::OPTION_QUERY)
         );
 
         $this->report($output, $statuses);
@@ -52,7 +52,7 @@ class Exec extends Command
     {
         $table = new Table($output);
         $table->setHeaders([
-            'id', 'status', 'last chunk'
+            'id', 'status', 'last line'
         ]);
         
         foreach ($statuses as $status) {

@@ -78,7 +78,7 @@ class MaestroExtension implements Extension
             return new ExecuteCommand(
                 $container->get('maestro.application.command_runner')
             );
-        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'exec']]);
+        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'execute']]);
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
             return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));

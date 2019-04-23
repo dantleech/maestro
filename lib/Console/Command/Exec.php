@@ -17,7 +17,7 @@ class Exec extends Command
 {
     const ARG_COMMAND = 'exec';
     const OPTION_RESET = 'reset';
-
+    const OPTION_FILTER = 'filter';
 
     /**
      * @var CommandRunner
@@ -34,13 +34,15 @@ class Exec extends Command
     {
         $this->addArgument(self::ARG_COMMAND, InputArgument::REQUIRED, 'Command to run on repositories');
         $this->addOption(self::OPTION_RESET, null, InputOption::VALUE_NONE, 'Reset the package repositories');
+        $this->addOption(self::OPTION_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter packages (wildcard * is permitted)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $statuses = $this->commandRunner->run(
             (string) $input->getArgument(self::ARG_COMMAND),
-            (bool) $input->getOption(self::OPTION_RESET)
+            (bool) $input->getOption(self::OPTION_RESET),
+            (string) $input->getOption(self::OPTION_FILTER)
         );
 
         $this->report($output, $statuses);

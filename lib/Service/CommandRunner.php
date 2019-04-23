@@ -35,11 +35,11 @@ final class CommandRunner
         $this->workspace = $workspace;
     }
 
-    public function run(string $command, bool $reset): QueueStatuses
+    public function run(string $command, bool $reset, string $query): QueueStatuses
     {
         $queues = Queues::create();
 
-        foreach ($this->definitions as $package) {
+        foreach ($this->definitions->query($query) as $package) {
             assert($package instanceof PackageDefinition);
 
             $workingDirectory = $this->workspace->package($package)->path();

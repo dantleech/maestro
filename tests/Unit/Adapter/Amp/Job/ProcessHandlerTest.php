@@ -37,6 +37,7 @@ class ProcessHandlerTest extends TestCase
 
     public function testDispatchesCommand()
     {
+        $this->stdout->writeln(Argument::containingString('EXEC: echo Hello'))->shouldBeCalled();
         $this->stdout->write(Argument::containingString('Hello'))->shouldBeCalled();
 
         $exitCode = HandlerTester::create()->dispatch(

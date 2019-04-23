@@ -58,7 +58,7 @@ class Exec extends Command
                     $status->success ? '✔' : '✘',
                     $status->code,
                     ),
-                substr(str_replace("\n", ' ', trim(preg_replace('{[[:^print:]]}', ' ', $status->message))), 0, 80),
+                substr(trim($status->message), 0, 80),
             ]);
         }
 

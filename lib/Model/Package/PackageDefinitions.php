@@ -20,6 +20,35 @@ class PackageDefinitions implements IteratorAggregate
         $this->packages = $packages;
     }
 
+    public function names(): array
+    {
+        return array_map(function (PackageDefinition $definition) {
+            return $definition->name();
+        }, $this->packages);
+    }
+
+    public function query(?string $query)
+    {
+        return new self(array_values(array_filter($this->packages, function (PackageDefinition $definition) use ($query) {
+            if (empty($query)) {
+                return true;
+            }
+
+            if (strtolower($query) === strtolower($definition->name())) {
+                return true;
+            }
+
+            if (false !== strpos($query, '*')) {
+                $query = str_replace('*', '__WILDCARD__', $query);
+                $query = preg_quote($query);
+                $query = str_replace('__WILDCARD__', '.*', $query);
+                return preg_match('{' . $query . '}', $definition->name());
+            }
+
+            return false;
+        })));
+    }
+
     public static function fromArray(array $definitions): PackageDefinitions
     {
         $packages = [];

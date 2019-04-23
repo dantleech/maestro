@@ -3,6 +3,7 @@
 namespace Maestro\Console\Command;
 
 use Maestro\Model\Job\QueueStatus;
+use Maestro\Model\Job\QueueStatuses;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -42,11 +43,16 @@ class Exec extends Command
             (bool) $input->getOption(self::OPTION_RESET)
         );
 
+        $this->report($output, $statuses);
+    }
+
+    private function report(OutputInterface $output, QueueStatuses $statuses)
+    {
         $table = new Table($output);
         $table->setHeaders([
             'id', 'status', 'last chunk'
         ]);
-
+        
         foreach ($statuses as $status) {
             assert($status instanceof QueueStatus);
             $interval = $status->start->diff($status->end);
@@ -61,7 +67,7 @@ class Exec extends Command
                 substr(trim($status->message), 0, 80),
             ]);
         }
-
+        
         $table->render();
     }
 }

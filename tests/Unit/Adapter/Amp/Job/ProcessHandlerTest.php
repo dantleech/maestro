@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Adapter\Amp\Job;
 
+use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Adapter\Amp\Job\ProcessHandler;
 use Maestro\Model\Console\Console;
@@ -40,10 +41,21 @@ class ProcessHandlerTest extends TestCase
         $this->stdout->writeln(Argument::containingString('EXEC: echo Hello'))->shouldBeCalled();
         $this->stdout->write(Argument::containingString('Hello'))->shouldBeCalled();
 
-        $exitCode = HandlerTester::create()->dispatch(
+        $lastLine = HandlerTester::create()->dispatch(
             new Process(__DIR__, 'echo Hello', 'foo'),
             new ProcessHandler($this->consoleManger->reveal())
         );
-        self::assertEquals(0, $exitCode, 'Exited with zero status');
+        self::assertEquals('Hello', $lastLine, 'Returned last line');
+    }
+
+    public function testThrowsExceptionOnNonZeroExitCode()
+    {
+        $this->expectException(ProcessNonZeroExitCode::class);
+        $this->stdout->writeln(Argument::containingString('EXEC: thisisnotacommand'))->shouldBeCalled();
+
+        HandlerTester::create()->dispatch(
+            new Process(__DIR__, 'thisisnotacommand', 'foo'),
+            new ProcessHandler($this->consoleManger->reveal())
+        );
     }
 }

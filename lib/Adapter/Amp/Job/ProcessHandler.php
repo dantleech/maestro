@@ -2,14 +2,20 @@
 
 namespace Maestro\Adapter\Amp\Job;
 
+use Amp\ByteStream\OutputStream;
 use Amp\Process\Process as AmpProcess;
+use Amp\Process\ProcessInputStream;
 use Amp\Promise;
+use Generator;
 use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
+use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Util\StringUtil;
 
 class ProcessHandler
 {
+    const MAX_LASTLINE_LENGTH = 255;
+
     /**
      * @var ConsoleManager
      */
@@ -30,26 +36,7 @@ class ProcessHandler
             );
 
             yield $process->start();
-
-            $outs = [];
-            foreach ([
-                [ $process->getStdout(), $this->consoleManager->stdout($job->consoleId()) ],
-                [ $process->getStderr(), $this->consoleManager->stderr($job->consoleId()) ],
-            ] as $streamConsole) {
-                [ $stream, $console ] = $streamConsole;
-                $outs[] = \Amp\call(function () use ($stream, $console) {
-                    $lastLine = '';
-
-                    while (null !== $chunk = yield $stream->read()) {
-                        $console->write($chunk);
-                        $lastLine .= $chunk;
-                    }
-
-                    return StringUtil::extractAfterNewline($lastLine);
-                });
-            }
-
-            $outs = yield $outs;
+            $outs = yield from $this->handleStreamOutput($process, $job);
             $exitCode = yield $process->join();
 
             if ($exitCode !== 0) {
@@ -62,5 +49,32 @@ class ProcessHandler
 
             return $outs[0];
         }, $job);
+    }
+
+    private function handleStreamOutput(AmpProcess $process, Process $job): Generator
+    {
+        $outs = [];
+
+        foreach ([
+            [ $process->getStdout(), $this->consoleManager->stdout($job->consoleId()) ],
+            [ $process->getStderr(), $this->consoleManager->stderr($job->consoleId()) ],
+        ] as $streamConsole) {
+
+            [ $stream, $console ] = $streamConsole;
+
+            $outs[] = \Amp\call(function () use ($stream, $console) {
+                $lastLine = '';
+        
+                while (null !== $chunk = yield $stream->read()) {
+                    $console->write($chunk);
+                    $lastLine .= $chunk;
+                    $lastLine = substr($lastLine , -self::MAX_LASTLINE_LENGTH);
+                }
+        
+                return StringUtil::lastLine($lastLine);
+            });
+        }
+        
+        return yield $outs;
     }
 }

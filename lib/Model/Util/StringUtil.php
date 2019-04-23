@@ -4,7 +4,7 @@ namespace Maestro\Model\Util;
 
 class StringUtil
 {
-    public static function extractAfterNewline(string $input): string
+    public static function lastLine(string $input): string
     {
         $lines = array_filter(array_reverse(preg_split('{\R}', $input)));
         return reset($lines);

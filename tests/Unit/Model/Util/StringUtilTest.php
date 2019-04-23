@@ -8,14 +8,14 @@ use PHPUnit\Framework\TestCase;
 class StringUtilTest extends TestCase
 {
     /**
-     * @dataProvider provideExtractAfterNewLine
+     * @dataProvider provideLastLine
      */
-    public function testExtractAfterNewLine(string $input, string $output)
+    public function testLastLine(string $input, string $output)
     {
-        self::assertEquals($output, StringUtil::extractAfterNewline($input));
+        self::assertEquals($output, StringUtil::lastLine($input));
     }
 
-    public function provideExtractAfterNewLine()
+    public function provideLastLine()
     {
         yield 'no new line' => [
             'foobar',

@@ -13,9 +13,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Exec extends Command
+class ExecuteCommand extends Command
 {
-    const ARG_COMMAND = 'exec';
+    const ARG_COMMAND = 'execute';
     const OPTION_RESET = 'reset';
     const OPTION_QUERY = 'query';
 

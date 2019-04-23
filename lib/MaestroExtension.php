@@ -6,7 +6,7 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
-use Maestro\Console\Command\Exec;
+use Maestro\Console\Command\ExecuteCommand;
 use Maestro\Model\Maestro;
 use Maestro\Adapter\Symfony\SymfonyConsoleManager;
 use Phpactor\MapResolver\Resolver;
@@ -75,7 +75,7 @@ class MaestroExtension implements Extension
     private function loadConsole(ContainerBuilder $container)
     {
         $container->register('maestro.console.command.execute', function (Container $container) {
-            return new Exec(
+            return new ExecuteCommand(
                 $container->get('maestro.application.command_runner')
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'exec']]);

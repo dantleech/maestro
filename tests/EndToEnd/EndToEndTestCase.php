@@ -56,6 +56,7 @@ class EndToEndTestCase extends TestCase
     protected function assertProcessSuccess(Process $process)
     {
         if ($process->getExitCode() === 0) {
+            $this->addToAssertionCount(1);
             return;
         }
 

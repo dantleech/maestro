@@ -19,11 +19,17 @@ class PackageDefinition
      */
     private $url;
 
-    public function __construct(string $name, array $initCommands, string $url)
+    /**
+     * @var array
+     */
+    private $files;
+
+    public function __construct(string $name, array $initCommands, string $url, array $files)
     {
         $this->name = $name;
         $this->initCommands = $initCommands;
         $this->url = $url;
+        $this->files = $files;
     }
 
     public function name(): string
@@ -54,5 +60,10 @@ class PackageDefinition
     public function url(): string
     {
         return $this->url;
+    }
+
+    public function files(): array
+    {
+        return $this->files;
     }
 }

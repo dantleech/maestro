@@ -8,10 +8,16 @@ final class PackageDefinitionBuilder
 {
     const KEY_INITIALIZE = 'initialize';
     const KEY_URL = 'url';
+    const KEY_FILES = 'files';
 
     private $name;
     private $initCommands = [];
     private $url;
+
+    /**
+     * @var array
+     */
+    private $files = [];
 
     public function __construct(string $name)
     {
@@ -36,13 +42,17 @@ final class PackageDefinitionBuilder
             $packageBuilder = $packageBuilder->withUrl($data[self::KEY_URL]);
         }
 
+        if ($data[self::KEY_FILES]) {
+            $packageBuilder = $packageBuilder->withFiles($data[self::KEY_FILES]);
+        }
+
         return $packageBuilder;
     }
 
 
     public function build(): PackageDefinition
     {
-        return new PackageDefinition($this->name, $this->initCommands, $this->buildUrl());
+        return new PackageDefinition($this->name, $this->initCommands, $this->buildUrl(), $this->files);
     }
 
     public function withInitCommands(array $initCommands): self
@@ -57,11 +67,18 @@ final class PackageDefinitionBuilder
         return $this;
     }
 
+    public function withFiles(array $files): self
+    {
+        $this->files = $files;
+        return $this;
+    }
+
     private static function validateDefinition(array $definition): array
     {
         $defaults = [
             self::KEY_INITIALIZE => [],
             self::KEY_URL => null,
+            self::KEY_FILES => [],
         ];
 
         if ($diff = array_diff(array_keys($definition), array_keys($defaults))) {

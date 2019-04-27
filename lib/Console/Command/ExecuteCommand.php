@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExecuteCommand extends Command
 {
-    const ARG_COMMAND = 'execute';
+    const ARG_COMMAND = 'exec';
     const OPTION_RESET = 'reset';
     const OPTION_QUERY = 'query';
 

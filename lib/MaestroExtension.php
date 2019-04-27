@@ -16,9 +16,14 @@ use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Adapter\Amp\Job\ProcessHandler;
 use RuntimeException;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
 use Maestro\Adapter\Amp\Job\InitializePackageHandler;
+use Maestro\Console\Command\ApplyCommand;
+use Maestro\Service\Applicator;
+use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
 
 class MaestroExtension implements Extension
 {
@@ -33,7 +38,11 @@ class MaestroExtension implements Extension
 
     const PARAM_WORKSPACE_PATH = 'workspace_path';
     const PARAM_PACKAGES = 'packages';
+    const PARAM_PARAMETERS = 'parameters';
+    const PARAM_TEMPLATE_PATHS = 'template_paths';
+
     const TAG_JOB_HANDLER = 'maestro.job_handler';
+    const SERVICE_TWIG = 'maestro.twig';
 
     /**
      * {@inheritDoc}
@@ -44,6 +53,10 @@ class MaestroExtension implements Extension
         $schema->setDefaults([
             self::PARAM_PACKAGES => [],
             self::PARAM_WORKSPACE_PATH => $xdg->getHomeDataDir() . '/maestro',
+            self::PARAM_PARAMETERS => [],
+            self::PARAM_TEMPLATE_PATHS => [
+                getcwd()
+            ]
         ]);
         $schema->setTypes([
             self::PARAM_PACKAGES => 'array'
@@ -59,12 +72,22 @@ class MaestroExtension implements Extension
         $this->loadPackage($container);
         $this->loadConsole($container);
         $this->loadJob($container);
+
+        $this->loadTwig($container);
     }
 
     private function loadApplication(ContainerBuilder $container)
     {
         $container->register('maestro.application.command_runner', function (Container $container) {
             return new CommandRunner(
+                $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
+                $container->get(self::SERVICE_QUEUE_MANAGER),
+                $container->get(self::SERVICE_WORKSPACE)
+            );
+        });
+
+        $container->register('maestro.application.applicator', function (Container $container) {
+            return new Applicator(
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
                 $container->get(self::SERVICE_QUEUE_MANAGER),
                 $container->get(self::SERVICE_WORKSPACE)
@@ -79,6 +102,12 @@ class MaestroExtension implements Extension
                 $container->get('maestro.application.command_runner')
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'execute']]);
+
+        $container->register('maestro.console.command.apply', function (Container $container) {
+            return new ApplyCommand(
+                $container->get('maestro.application.applicator')
+            );
+        }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'apply']]);
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
             return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
@@ -121,6 +150,14 @@ class MaestroExtension implements Extension
                 $container->get(self::SERVICE_WORKSPACE)
             );
         }, [ self::TAG_JOB_HANDLER => [ 'id' => InitializePackageHandler::class ]]);
+
+        $container->register('maestro.adapter.twig.handler.apply_template', function (Container $container) {
+            return new ApplyTemplateHandler(
+                $container->get(self::SERVICE_CONSOLE_MANAGER),
+                $container->get(self::SERVICE_WORKSPACE),
+                $container->get(self::SERVICE_TWIG)
+            );
+        }, [ self::TAG_JOB_HANDLER => [ 'id' => ApplyTemplateHandler::class ]]);
     }
 
     private function loadPackage(ContainerBuilder $container)
@@ -130,6 +167,18 @@ class MaestroExtension implements Extension
         });
         $container->register(self::SERVICE_WORKSPACE, function (Container $container) {
             return Workspace::create($container->getParameter(self::PARAM_WORKSPACE_PATH));
+        });
+    }
+
+    private function loadTwig(ContainerBuilder $container)
+    {
+        $container->register(self::SERVICE_TWIG, function (Container $container) {
+            return new Environment(
+                new FilesystemLoader($container->getParameter(self::PARAM_TEMPLATE_PATHS)),
+                [
+                    'strict_variables' => true,
+                ]
+            );
         });
     }
 }

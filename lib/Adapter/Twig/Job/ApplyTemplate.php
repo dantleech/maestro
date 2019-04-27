@@ -8,20 +8,25 @@ use Maestro\Model\Package\PackageDefinition;
 class ApplyTemplate implements Job
 {
     /**
-     * @var string
-     */
-    private $name;
-
-    /**
      * @var PackageDefinition
      */
     private $package;
 
+    /**
+     * @var string
+     */
+    private $sourcePath;
 
-    public function __construct(PackageDefinition $package, string $name)
+    /**
+     * @var string
+     */
+    private $destinationPath;
+
+    public function __construct(PackageDefinition $package, string $sourcePath, string $destinationPath)
     {
-        $this->name = $name;
         $this->package = $package;
+        $this->sourcePath = $sourcePath;
+        $this->destinationPath = $destinationPath;
     }
 
     public function handler(): string
@@ -29,13 +34,18 @@ class ApplyTemplate implements Job
         return ApplyTemplateHandler::class;
     }
 
-    public function name(): string
-    {
-        return $this->name;
-    }
-
     public function package(): PackageDefinition
     {
         return $this->package;
+    }
+
+    public function sourcePath(): string
+    {
+        return $this->sourcePath;
+    }
+
+    public function destinationPath(): string
+    {
+        return $this->destinationPath;
     }
 }

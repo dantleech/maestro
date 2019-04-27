@@ -43,8 +43,10 @@ class MaestroExtension implements Extension
     const PARAM_TEMPLATE_PATHS = 'template_paths';
 
     const TAG_JOB_HANDLER = 'maestro.job_handler';
+
     const SERVICE_TWIG = 'maestro.twig';
     const SERVICE_CONSOLE_QUEUE_REPORT = 'maestro.console.queue_report';
+    const SERVICE_APPLY_TEMPLATE_HANDLER = 'maestro.adapter.twig.handler.apply_template';
 
     /**
      * {@inheritDoc}
@@ -159,7 +161,7 @@ class MaestroExtension implements Extension
             );
         }, [ self::TAG_JOB_HANDLER => [ 'id' => InitializePackageHandler::class ]]);
 
-        $container->register('maestro.adapter.twig.handler.apply_template', function (Container $container) {
+        $container->register(self::SERVICE_APPLY_TEMPLATE_HANDLER, function (Container $container) {
             return new ApplyTemplateHandler(
                 $container->get(self::SERVICE_CONSOLE_MANAGER),
                 $container->get(self::SERVICE_WORKSPACE),

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Tests\Unit\Adapter\Amp\Job;
+namespace Maestro\Tests\Integration\Amp\Job;
 
 use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Adapter\Amp\Job\Process;

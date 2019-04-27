@@ -43,6 +43,7 @@ class ExecuteCommandTest extends EndToEndTestCase
 
     public function testQueriesRepositories()
     {
+        $this->initPackage('one');
         $this->saveConfig([
             'packages' => [
                 'phpactor/config-loader' => [

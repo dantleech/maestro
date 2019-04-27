@@ -50,7 +50,7 @@ class Applicator
 
             foreach ($package->files() as $name => $fileDefinition) {
                 $queue->enqueue(
-                    new ApplyTemplate($package, $name)
+                    new ApplyTemplate($package, $name, $fileDefinition['dest'] ?? $name)
                 );
             }
         }

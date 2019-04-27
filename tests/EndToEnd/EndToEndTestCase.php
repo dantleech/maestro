@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Phpactor\TestUtils\Workspace;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+use Webmozart\PathUtil\Path;
 
 class EndToEndTestCase extends TestCase
 {
@@ -68,8 +69,14 @@ class EndToEndTestCase extends TestCase
         ));
     }
 
+    protected function packageWorkspacePath(string $subPath = ''): string
+    {
+        return $this->workspace()->path(Path::join(['Workspace', $subPath]));
+    }
+
     protected function saveConfig(array $config)
     {
+        $config['workspace_path'] = $this->packageWorkspacePath();
         file_put_contents($this->workspace()->path('maestro.json'), json_encode($config));
     }
 }

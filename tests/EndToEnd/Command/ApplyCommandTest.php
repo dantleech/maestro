@@ -13,7 +13,7 @@ class ApplyCommandTest extends EndToEndTestCase
 
     public function testAppliesTemplates()
     {
-        $this->workspace()->put('/templates/README.md', <<<'EOT'
+        $this->workspace()->put('/README.md', <<<'EOT'
 Hello World
 EOT
         );
@@ -24,7 +24,7 @@ EOT
                 'acme/package' => [
                     'url' => $this->packageUrl('one'),
                     'files' => [
-                        'templates/README.md' => [
+                        'README.md' => [
                         ]
                     ]
                 ]
@@ -32,5 +32,6 @@ EOT
         ]);
         $process = $this->command('apply');
         $this->assertProcessSuccess($process);
+        $this->assertFileExists($this->packageWorkspacePath('acme-package/README.md'));
     }
 }

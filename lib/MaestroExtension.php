@@ -24,6 +24,7 @@ use Maestro\Adapter\Amp\Job\InitializePackageHandler;
 use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
+use Maestro\Console\Report\TableQueueReport;
 
 class MaestroExtension implements Extension
 {
@@ -43,6 +44,7 @@ class MaestroExtension implements Extension
 
     const TAG_JOB_HANDLER = 'maestro.job_handler';
     const SERVICE_TWIG = 'maestro.twig';
+    const SERVICE_CONSOLE_QUEUE_REPORT = 'maestro.console.queue_report';
 
     /**
      * {@inheritDoc}
@@ -99,18 +101,24 @@ class MaestroExtension implements Extension
     {
         $container->register('maestro.console.command.execute', function (Container $container) {
             return new ExecuteCommand(
-                $container->get('maestro.application.command_runner')
+                $container->get('maestro.application.command_runner'),
+                $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'execute']]);
 
         $container->register('maestro.console.command.apply', function (Container $container) {
             return new ApplyCommand(
-                $container->get('maestro.application.applicator')
+                $container->get('maestro.application.applicator'),
+                $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'apply']]);
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
             return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
+        });
+
+        $container->register(self::SERVICE_CONSOLE_QUEUE_REPORT, function (Container $container) {
+            return new TableQueueReport();
         });
     }
 

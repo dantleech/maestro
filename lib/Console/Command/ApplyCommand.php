@@ -2,6 +2,7 @@
 
 namespace Maestro\Console\Command;
 
+use Maestro\Console\Report\QueueReport;
 use Maestro\Model\Job\QueueStatus;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Service\Applicator;
@@ -25,10 +26,16 @@ class ApplyCommand extends Command
      */
     private $applicator;
 
-    public function __construct(Applicator $applicator)
+    /**
+     * @var QueueReport
+     */
+    private $report;
+
+    public function __construct(Applicator $applicator, QueueReport $report)
     {
         parent::__construct();
         $this->applicator = $applicator;
+        $this->report = $report;
     }
 
     protected function configure()
@@ -44,31 +51,6 @@ class ApplyCommand extends Command
             (string) $input->getOption(self::OPTION_QUERY)
         );
 
-        $this->report($output, $statuses);
-    }
-
-    private function report(OutputInterface $output, QueueStatuses $statuses)
-    {
-        $table = new Table($output);
-        $table->setHeaders([
-            'id', 'status', 'last line'
-        ]);
-        
-        foreach ($statuses as $status) {
-            assert($status instanceof QueueStatus);
-            $interval = $status->start->diff($status->end);
-            $table->addRow([
-                $status->id,
-                sprintf(
-                    '%ds %s => %s',
-                    $interval->s + ($interval->m * 60),
-                    $status->success ? '✔' : '✘',
-                    $status->code,
-                    ),
-                substr(trim($status->message), 0, 80),
-            ]);
-        }
-        
-        $table->render();
+        $this->report->render($output, $statuses);
     }
 }

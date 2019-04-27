@@ -43,7 +43,6 @@ class ApplyTemplateHandler
         $rendered = $this->twig->render($job->name());
         $targetPath = $packageWorkspace->path() . '/' . $job->name();
         file_put_contents($targetPath, $rendered);
-        var_dump($targetPath);
 
         return new Success(sprintf('Applied %s', $job->name()));
     }

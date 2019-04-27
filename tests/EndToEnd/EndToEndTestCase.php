@@ -17,17 +17,36 @@ class EndToEndTestCase extends TestCase
     protected function command(string $command): Process
     {
         $process = new Process(sprintf(
-            __DIR__ . '/../../bin/maestro %s', $command
+            __DIR__ . '/../../bin/maestro %s',
+            $command
         ), $this->workspace()->path('/'));
         $process->run();
 
         return $process;
     }
 
-    protected function projectPath(string $name)
+    protected function packageUrl(string $name)
     {
-        return __DIR__ . '/../Example/' . $name;
+        return $this->workspace()->path('/'.$name);
     }
+
+    protected function initPackage(string $name)
+    {
+        $filesystem = new Filesystem();
+        $filesystem->mirror(__DIR__ . '/../Project/one', $this->packageUrl($name));
+
+        foreach ([
+            'git init', 
+            'git add *',
+            'git commit -m "test'
+        ] as $command) {
+            $process = new Process(sprintf(
+                'git init',
+            ), $this->packageUrl($name));
+            $process->mustRun();
+        }
+    }
+
 
     protected function workspace(): Workspace
     {

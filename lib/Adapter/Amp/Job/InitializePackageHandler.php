@@ -34,7 +34,7 @@ final class InitializePackageHandler
         }
 
         $jobs = [
-            new Process($this->workspace->path(), sprintf('git clone %s %s', $package->repoUrl(), $packagePath), $package->consoleId())
+            new Process($this->workspace->path(), sprintf('git clone %s %s', $package->url(), $packagePath), $package->consoleId())
         ];
 
         foreach ($initJob->packageDefinition()->initCommands() as $initCommand) {

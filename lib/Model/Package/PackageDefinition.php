@@ -14,10 +14,16 @@ class PackageDefinition
      */
     private $initCommands;
 
-    public function __construct(string $name, array $initCommands)
+    /**
+     * @var string
+     */
+    private $url;
+
+    public function __construct(string $name, array $initCommands, string $url)
     {
         $this->name = $name;
         $this->initCommands = $initCommands;
+        $this->url = $url;
     }
 
     public function name(): string
@@ -35,11 +41,6 @@ class PackageDefinition
         return $this->name;
     }
 
-    public function repoUrl(): string
-    {
-        return sprintf('git@github.com:%s', $this->name());
-    }
-
     public function dirName(): string
     {
         return str_replace('/', '-', $this->name());
@@ -48,5 +49,10 @@ class PackageDefinition
     public function initCommands(): array
     {
         return $this->initCommands;
+    }
+
+    public function url(): string
+    {
+        return $this->url;
     }
 }

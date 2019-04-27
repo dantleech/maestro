@@ -2,19 +2,36 @@
 
 namespace Maestro\Tests\Unit\Model\Package;
 
+use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class PackageDefinitionsTest extends TestCase
 {
     public function testFromArray()
     {
         $definitions = PackageDefinitions::fromArray([
-            'foobar/barfoo' => [],
+            'foobar/barfoo' => [
+            ],
             'foobar/foobar' => [],
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(2, $definitions);
+    }
+
+    public function testReturnsANamedPackage()
+    {
+        $this->assertInstanceOf(
+            PackageDefinition::class,
+            PackageDefinitions::fromArray(['foobar/barfoo' => [], ])->get('foobar/barfoo')
+        );
+    }
+
+    public function testThrowsExceptionIfRequesstedPackageNotExisting()
+    {
+        $this->expectException(RuntimeException::class);
+        PackageDefinitions::fromArray(['barfoo/foobar' => [], ])->get('foobar/barfoo');
     }
 
     /**
@@ -64,5 +81,5 @@ class PackageDefinitionsTest extends TestCase
             'foobar/*foo',
             [ 'foobar/fofoo' ],
         ];
-   }
+    }
 }

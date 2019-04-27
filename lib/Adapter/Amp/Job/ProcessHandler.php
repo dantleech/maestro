@@ -2,13 +2,10 @@
 
 namespace Maestro\Adapter\Amp\Job;
 
-use Amp\ByteStream\OutputStream;
 use Amp\Process\Process as AmpProcess;
-use Amp\Process\ProcessInputStream;
 use Amp\Promise;
 use Generator;
 use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
-use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Util\StringUtil;
 
@@ -59,7 +56,6 @@ class ProcessHandler
             [ $process->getStdout(), $this->consoleManager->stdout($job->consoleId()) ],
             [ $process->getStderr(), $this->consoleManager->stderr($job->consoleId()) ],
         ] as $streamConsole) {
-
             [ $stream, $console ] = $streamConsole;
 
             $outs[] = \Amp\call(function () use ($stream, $console) {
@@ -68,7 +64,7 @@ class ProcessHandler
                 while (null !== $chunk = yield $stream->read()) {
                     $console->write($chunk);
                     $lastLine .= $chunk;
-                    $lastLine = substr($lastLine , -self::MAX_LASTLINE_LENGTH);
+                    $lastLine = substr($lastLine, -self::MAX_LASTLINE_LENGTH);
                 }
         
                 return StringUtil::lastLine($lastLine);

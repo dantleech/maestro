@@ -13,9 +13,12 @@ class ExecuteCommandTest extends EndToEndTestCase
 
     public function testExecuteHelloWorld()
     {
+        $this->initPackage('one');
         $this->saveConfig([
             'packages' => [
-                'phpactor/config-loader' => []
+                'phpactor/config-loader' => [
+                    'url' => $this->packageUrl('one')
+                ]
             ]
         ]);
         $process = $this->command('execute "echo HelloWorld"');
@@ -25,9 +28,12 @@ class ExecuteCommandTest extends EndToEndTestCase
 
     public function testResetsRepositories()
     {
+        $this->initPackage('one');
         $this->saveConfig([
             'packages' => [
-                'phpactor/config-loader' => []
+                'phpactor/config-loader' => [
+                    'url' => $this->packageUrl('one')
+                ]
             ]
         ]);
         $process = $this->command('execute "echo HelloWorld" --reset');
@@ -39,8 +45,12 @@ class ExecuteCommandTest extends EndToEndTestCase
     {
         $this->saveConfig([
             'packages' => [
-                'phpactor/config-loader' => [],
-                'phpactor/console-extension' => [],
+                'phpactor/config-loader' => [
+                    'url' => $this->packageUrl('one')
+                ],
+                'phpactor/console-extension' => [
+                    'url' => $this->packageUrl('one')
+                ],
             ]
         ]);
         $process = $this->command('execute "echo HelloWorld" -t"phpactor/config-loader"');

@@ -24,7 +24,12 @@ class PackageDefinition
      */
     private $files;
 
-    public function __construct(string $name, array $initCommands, string $url, array $files)
+    public function __construct(
+        string $name,
+        array $initCommands = [],
+        string $url = null,
+        array $files = []
+    )
     {
         $this->name = $name;
         $this->initCommands = $initCommands;
@@ -59,7 +64,7 @@ class PackageDefinition
 
     public function url(): string
     {
-        return $this->url;
+        return $this->url ? $this->url : 'git@github.com:/'.$this->name;
     }
 
     public function files(): array

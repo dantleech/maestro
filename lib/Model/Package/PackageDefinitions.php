@@ -4,6 +4,7 @@ namespace Maestro\Model\Package;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Maestro\Model\Package\Instantiator;
 use RuntimeException;
 
 class PackageDefinitions implements IteratorAggregate
@@ -64,8 +65,9 @@ class PackageDefinitions implements IteratorAggregate
     {
         $packages = [];
         foreach ($definitions as $packageName => $definition) {
-            $packageBuilder = PackageDefinitionBuilder::createFromArray($packageName, $definition);
-            $packages[$packageName] = $packageBuilder->build();
+            $definition['name'] = $packageName;
+            $package = Instantiator::create()->instantiate(PackageDefinition::class, $definition);
+            $packages[$packageName] = $package;
         }
 
         return new self($packages);

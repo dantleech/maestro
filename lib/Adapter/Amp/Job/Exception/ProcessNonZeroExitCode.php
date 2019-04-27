@@ -2,8 +2,8 @@
 
 namespace Maestro\Adapter\Amp\Job\Exception;
 
-use RuntimeException;
+use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
 
-class ProcessNonZeroExitCode extends RuntimeException
+class ProcessNonZeroExitCode extends JobFailure
 {
 }

@@ -7,6 +7,7 @@ use Exception;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
+use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
 use Maestro\Model\Job\QueueStatus;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Job\QueueStatuses;
@@ -37,7 +38,8 @@ class RealQueueDispatcher implements QueueDispatcher
                 while ($job = $queue->dequeue()) {
                     try {
                         $queueStatus->message = yield $this->dispatcher->dispatch($job);
-                    } catch (Exception $e) {
+                    } catch (JobFailure $e) {
+
                         $queueStatus->success = false;
                         $queueStatus->code = $e->getCode();
                         $queueStatus->message = $e->getMessage();

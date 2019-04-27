@@ -4,7 +4,6 @@ namespace Maestro\Model\Package;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Maestro\Model\Package\Exception\InvalidPackageDefinition;
 use RuntimeException;
 
 class PackageDefinitions implements IteratorAggregate
@@ -53,7 +52,8 @@ class PackageDefinitions implements IteratorAggregate
         if (!isset($this->packages[$name])) {
             throw new RuntimeException(sprintf(
                 'Could not find package definition with name "%s", known packages "%s"',
-                $name, implode('", "', $this->names())
+                $name,
+                implode('", "', $this->names())
             ));
         }
 

@@ -38,8 +38,8 @@ class ProcessHandlerTest extends TestCase
 
     public function testDispatchesCommand()
     {
-        $this->stdout->writeln(Argument::containingString('EXEC: echo Hello'))->shouldBeCalled();
-        $this->stdout->write(Argument::containingString('Hello'))->shouldBeCalled();
+        $this->stdout->writeln(Argument::containingString('# echo Hello'))->shouldBeCalled();
+        $this->stdout->writeln(Argument::containingString('Hello'))->shouldBeCalled();
 
         $lastLine = HandlerTester::create()->dispatch(
             new Process(__DIR__, 'echo Hello', 'foo'),
@@ -51,7 +51,7 @@ class ProcessHandlerTest extends TestCase
     public function testThrowsExceptionOnNonZeroExitCode()
     {
         $this->expectException(ProcessNonZeroExitCode::class);
-        $this->stdout->writeln(Argument::containingString('EXEC: thisisnotacommand'))->shouldBeCalled();
+        $this->stdout->writeln(Argument::containingString('# thisisnotacommand'))->shouldBeCalled();
 
         HandlerTester::create()->dispatch(
             new Process(__DIR__, 'thisisnotacommand', 'foo'),

@@ -58,7 +58,7 @@ class SymfonyConsole implements Console
     private function decorate(string $line, ?string $role = null)
     {
         return sprintf(
-            '<fg=%s>%s%s</>',
+            '<fg=%s>%s</>%s',
             $this->color,
             $role ? $role . ': ' : '',
             $line

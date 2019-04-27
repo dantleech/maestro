@@ -36,13 +36,13 @@ class EndToEndTestCase extends TestCase
         $filesystem->mirror(__DIR__ . '/../Project/one', $this->packageUrl($name));
 
         foreach ([
-            'git init', 
+            'git init',
             'git add *',
             'git commit -m "test'
         ] as $command) {
             $process = new Process(sprintf(
                 'git init',
-            ), $this->packageUrl($name));
+                ), $this->packageUrl($name));
             $process->mustRun();
         }
     }

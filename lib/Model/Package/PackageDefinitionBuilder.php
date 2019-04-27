@@ -37,7 +37,6 @@ final class PackageDefinitionBuilder
         }
 
         return $packageBuilder;
-
     }
 
 

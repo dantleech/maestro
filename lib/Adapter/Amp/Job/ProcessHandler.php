@@ -26,7 +26,7 @@ class ProcessHandler
     public function __invoke(Process $job): Promise
     {
         return \Amp\call(function (Process $job) {
-            $this->consoleManager->stdout($job->consoleId())->writeln('EXEC: ' . $job->command());
+            $this->consoleManager->stdout($job->consoleId())->writeln('# ' . $job->command());
             $process = new AmpProcess(
                 $job->command(),
                 $job->workingDirectory()
@@ -59,15 +59,22 @@ class ProcessHandler
             [ $stream, $console ] = $streamConsole;
 
             $outs[] = \Amp\call(function () use ($stream, $console) {
+                $buffer = '';
                 $lastLine = '';
-        
                 while (null !== $chunk = yield $stream->read()) {
-                    $console->write($chunk);
-                    $lastLine .= $chunk;
-                    $lastLine = substr($lastLine, -self::MAX_LASTLINE_LENGTH);
+                    $buffer .= $chunk;
+                    if (false !== $offset = strrpos($buffer, "\n")) {
+                        $console->writeln(trim(substr($buffer, 0, $offset)));
+                        $lastLine = StringUtil::lastLine($buffer);
+                        $buffer = substr($buffer, $offset + 1);
+                    }
                 }
-        
-                return StringUtil::lastLine($lastLine);
+
+                if ($buffer) {
+                    $console->write($buffer);
+                }
+
+                return $lastLine;
             });
         }
         

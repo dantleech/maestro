@@ -165,7 +165,8 @@ class MaestroExtension implements Extension
             return new ApplyTemplateHandler(
                 $container->get(self::SERVICE_CONSOLE_MANAGER),
                 $container->get(self::SERVICE_WORKSPACE),
-                $container->get(self::SERVICE_TWIG)
+                $container->get(self::SERVICE_TWIG),
+                $container->getParameter(self::PARAM_PARAMETERS)
             );
         }, [ self::TAG_JOB_HANDLER => [ 'id' => ApplyTemplateHandler::class ]]);
     }

@@ -26,7 +26,11 @@ class Applicator
      */
     private $workspace;
 
-    public function __construct(PackageDefinitions $definitions, QueueDispatcher $queueDispatcher, Workspace $workspace)
+    public function __construct(
+        PackageDefinitions $definitions,
+        QueueDispatcher $queueDispatcher,
+        Workspace $workspace
+    )
     {
         $this->definitions = $definitions;
         $this->queueDispatcher = $queueDispatcher;

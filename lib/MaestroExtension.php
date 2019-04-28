@@ -187,6 +187,8 @@ class MaestroExtension implements Extension
                 new FilesystemLoader($container->getParameter(self::PARAM_TEMPLATE_PATHS)),
                 [
                     'strict_variables' => true,
+                    'auto_reload' => false,
+                    'cache' => false,
                 ]
             );
         });

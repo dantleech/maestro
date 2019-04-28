@@ -24,17 +24,24 @@ class PackageDefinition
      */
     private $manifest;
 
+    /**
+     * @var array
+     */
+    private $parameters;
+
     public function __construct(
         string $name,
         array $initCommands = [],
         string $url = null,
-        array $manifest = []
+        array $manifest = [],
+        array $parameters = []
     )
     {
         $this->name = $name;
         $this->initCommands = $initCommands;
         $this->url = $url;
         $this->manifest = Manifest::fromArray($manifest);
+        $this->parameters = $parameters;
     }
 
     public function name(): string
@@ -73,5 +80,10 @@ class PackageDefinition
     public function manifest(): Manifest
     {
         return $this->manifest;
+    }
+
+    public function parameters(): array
+    {
+        return $this->parameters;
     }
 }

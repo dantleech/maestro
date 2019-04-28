@@ -4,6 +4,7 @@ namespace Maestro\Adapter\Twig\Job;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
 use Maestro\Model\Package\Workspace;
@@ -26,21 +27,28 @@ class ApplyTemplateHandler
      */
     private $twig;
 
+    /**
+     * @var array
+     */
+    private $globalParameters;
+
     public function __construct(
         ConsoleManager $consoleManager,
         Workspace $workspace,
-        Environment $twig
+        Environment $twig,
+        array $globalParameters
     )
     {
         $this->consoleManager = $consoleManager;
         $this->workspace = $workspace;
         $this->twig = $twig;
+        $this->globalParameters = $globalParameters;
     }
 
     public function __invoke(ApplyTemplate $job): Promise
     {
         $packageWorkspace = $this->workspace->package($job->package());
-        $rendered = $this->twig->render($job->item()->source());
+        $rendered = $this->twig->render($job->item()->source(), $this->buildParameters($job));
         $targetPath = $packageWorkspace->path() . '/' . $job->item()->dest();
 
         $this->consoleManager->stdout($job->package()->consoleId())->writeln(sprintf(
@@ -69,5 +77,13 @@ class ApplyTemplateHandler
             'Could not create directory "%s"',
             $targetPath
         ));
+    }
+
+    private function buildParameters(ApplyTemplate $job): array
+    {
+        return [
+            'package' => $job->package(),
+            'globalParameters' => $this->globalParameters
+        ];
     }
 }

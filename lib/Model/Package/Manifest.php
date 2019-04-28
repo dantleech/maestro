@@ -17,7 +17,7 @@ class Manifest implements IteratorAggregate
         $this->items = $items;
     }
 
-    public function fromArray(array $manifest)
+    public static function fromArray(array $manifest)
     {
         $items = [];
         foreach ($manifest as $name => $item) {

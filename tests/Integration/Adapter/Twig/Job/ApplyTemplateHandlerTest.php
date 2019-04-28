@@ -55,9 +55,76 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         self::assertFileExists($this->packageWorkspacePath('foo-bar/hello_world'));
     }
 
-    private function handler(): ApplyTemplateHandler
+    public function testPassesPackageParameters()
     {
-        $handler = $this->container()->get(MaestroExtension::SERVICE_APPLY_TEMPLATE_HANDLER);
+        $this->workspace()->put('pass_params.twig', 'Hello {{ package.parameters.hello }}');
+
+        $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
+            'name' => 'foobar/barfoo',
+            'parameters' => [
+                'hello' => 'goodbye',
+            ]
+        ]);
+
+        $this->handler()->__invoke(
+            $this->createJob($definition, 'pass_params.twig', 'hello_world')
+        );
+
+        $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
+        $this->assertFileExists($expectedTemplatePath);
+        $this->assertEquals('Hello goodbye', file_get_contents($expectedTemplatePath));
+    }
+
+    public function testMergesGlobalParameters()
+    {
+        $this->workspace()->put('global_param', 'Hello {{ package.parameters.hello }} {{ globalParameters.name }}');
+
+        $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
+            'name' => 'foobar/barfoo',
+            'parameters' => [
+                'hello' => 'goodbye',
+            ]
+        ]);
+
+        $this->handler([
+            'name' => 'Daniel',
+        ])->__invoke(
+            $this->createJob($definition, 'global_param', 'hello_world')
+        );
+
+        $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
+        $this->assertFileExists($expectedTemplatePath);
+        $this->assertEquals('Hello goodbye Daniel', file_get_contents($expectedTemplatePath));
+    }
+
+    public function testPassesPackageDefinition()
+    {
+        $this->workspace()->put('package_def', 'I am {{ package.name }}');
+
+        $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
+            'name' => 'foobar/barfoo'
+        ]);
+
+        $this->handler([
+            'name' => 'Daniel',
+        ])->__invoke(
+            $this->createJob($definition, 'package_def', 'hello_world')
+        );
+
+        $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
+        $this->assertFileExists($expectedTemplatePath);
+        $this->assertEquals('I am foobar/barfoo', file_get_contents($expectedTemplatePath));
+    }
+
+    private function handler(array $globalParameters = []): ApplyTemplateHandler
+    {
+        $container = $this->container();
+        $handler = new ApplyTemplateHandler(
+            $container->get(MaestroExtension::SERVICE_CONSOLE_MANAGER),
+            $container->get(MaestroExtension::SERVICE_WORKSPACE),
+            $container->get(MaestroExtension::SERVICE_TWIG),
+            $globalParameters
+        );
         return $handler;
     }
 

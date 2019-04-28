@@ -29,12 +29,18 @@ class PackageDefinition
      */
     private $parameters;
 
+    /**
+     * @var string
+     */
+    private $prototype;
+
     public function __construct(
         string $name,
         array $initCommands = [],
         string $url = null,
         array $manifest = [],
-        array $parameters = []
+        array $parameters = [],
+        string $prototype = null
     )
     {
         $this->name = $name;
@@ -42,6 +48,7 @@ class PackageDefinition
         $this->url = $url;
         $this->manifest = Manifest::fromArray($manifest);
         $this->parameters = $parameters;
+        $this->prototype = $prototype;
     }
 
     public function name(): string
@@ -85,5 +92,10 @@ class PackageDefinition
     public function parameters(): array
     {
         return $this->parameters;
+    }
+
+    public function prototype(): string
+    {
+        return $this->prototype;
     }
 }

@@ -5,6 +5,8 @@ namespace Maestro\Tests\Integration\Adapter\Twig\Job;
 use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
 use Maestro\MaestroExtension;
+use Maestro\Model\Package\Instantiator;
+use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitionBuilder;
 use Maestro\Tests\Integration\IntegrationTestCase;
@@ -62,7 +64,16 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
     private function createJob(PackageDefinition $definition, string $sourcePath, string $targetPath = null): ApplyTemplate
     {
         $targetPath = $targetPath ?: $sourcePath;
-        $job = new ApplyTemplate($definition, $sourcePath, $targetPath);
+        $job = new ApplyTemplate(
+            $definition,
+            Instantiator::create()->instantiate(
+                ManifestItem::class,
+                [
+                    'name' => $sourcePath,
+                    'dest' => $targetPath
+                ]
+            )
+        );
         return $job;
     }
 }

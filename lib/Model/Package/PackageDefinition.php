@@ -20,7 +20,7 @@ class PackageDefinition
     private $url;
 
     /**
-     * @var array
+     * @var Manifest
      */
     private $manifest;
 
@@ -34,7 +34,7 @@ class PackageDefinition
         $this->name = $name;
         $this->initCommands = $initCommands;
         $this->url = $url;
-        $this->manifest = $manifest;
+        $this->manifest = Manifest::fromArray($manifest);
     }
 
     public function name(): string
@@ -67,7 +67,10 @@ class PackageDefinition
         return $this->url ? $this->url : 'git@github.com:/'.$this->name;
     }
 
-    public function manifest(): array
+    /**
+     * @return Manifest<ManifestItem>
+     */
+    public function manifest(): Manifest
     {
         return $this->manifest;
     }

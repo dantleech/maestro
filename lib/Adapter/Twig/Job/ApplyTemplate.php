@@ -3,6 +3,7 @@
 namespace Maestro\Adapter\Twig\Job;
 
 use Maestro\Model\Job\Job;
+use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
 
 class ApplyTemplate implements Job
@@ -13,20 +14,14 @@ class ApplyTemplate implements Job
     private $package;
 
     /**
-     * @var string
+     * @var ManifestItem
      */
-    private $sourcePath;
+    private $item;
 
-    /**
-     * @var string
-     */
-    private $destinationPath;
-
-    public function __construct(PackageDefinition $package, string $sourcePath, string $destinationPath)
+    public function __construct(PackageDefinition $package, ManifestItem $item)
     {
         $this->package = $package;
-        $this->sourcePath = $sourcePath;
-        $this->destinationPath = $destinationPath;
+        $this->item = $item;
     }
 
     public function handler(): string
@@ -39,13 +34,8 @@ class ApplyTemplate implements Job
         return $this->package;
     }
 
-    public function sourcePath(): string
+    public function item(): ManifestItem
     {
-        return $this->sourcePath;
-    }
-
-    public function destinationPath(): string
-    {
-        return $this->destinationPath;
+        return $this->item;
     }
 }

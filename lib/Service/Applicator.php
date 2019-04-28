@@ -48,7 +48,7 @@ class Applicator
                 new InitializePackage($queue, $package, $reset)
             );
 
-            foreach ($package->files() as $name => $fileDefinition) {
+            foreach ($package->manifest() as $name => $fileDefinition) {
                 $queue->enqueue(
                     new ApplyTemplate($package, $name, $fileDefinition['dest'] ?? $name)
                 );

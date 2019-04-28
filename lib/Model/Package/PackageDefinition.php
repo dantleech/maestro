@@ -22,19 +22,19 @@ class PackageDefinition
     /**
      * @var array
      */
-    private $files;
+    private $manifest;
 
     public function __construct(
         string $name,
         array $initCommands = [],
         string $url = null,
-        array $files = []
+        array $manifest = []
     )
     {
         $this->name = $name;
         $this->initCommands = $initCommands;
         $this->url = $url;
-        $this->files = $files;
+        $this->manifest = $manifest;
     }
 
     public function name(): string
@@ -67,8 +67,8 @@ class PackageDefinition
         return $this->url ? $this->url : 'git@github.com:/'.$this->name;
     }
 
-    public function files(): array
+    public function manifest(): array
     {
-        return $this->files;
+        return $this->manifest;
     }
 }

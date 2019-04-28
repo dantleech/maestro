@@ -8,7 +8,7 @@ final class PackageDefinitionBuilder
 {
     const KEY_INITIALIZE = 'initialize';
     const KEY_URL = 'url';
-    const KEY_FILES = 'files';
+    const KEY_MANIFEST = 'manifest';
 
     private $name;
     private $initCommands = [];
@@ -17,7 +17,7 @@ final class PackageDefinitionBuilder
     /**
      * @var array
      */
-    private $files = [];
+    private $manifest = [];
 
     public function __construct(string $name)
     {
@@ -42,8 +42,8 @@ final class PackageDefinitionBuilder
             $packageBuilder = $packageBuilder->withUrl($data[self::KEY_URL]);
         }
 
-        if ($data[self::KEY_FILES]) {
-            $packageBuilder = $packageBuilder->withFiles($data[self::KEY_FILES]);
+        if ($data[self::KEY_MANIFEST]) {
+            $packageBuilder = $packageBuilder->withManifest($data[self::KEY_MANIFEST]);
         }
 
         return $packageBuilder;
@@ -52,7 +52,7 @@ final class PackageDefinitionBuilder
 
     public function build(): PackageDefinition
     {
-        return new PackageDefinition($this->name, $this->initCommands, $this->buildUrl(), $this->files);
+        return new PackageDefinition($this->name, $this->initCommands, $this->buildUrl(), $this->manifest);
     }
 
     public function withInitCommands(array $initCommands): self
@@ -67,9 +67,9 @@ final class PackageDefinitionBuilder
         return $this;
     }
 
-    public function withFiles(array $files): self
+    public function withManifest(array $manifest): self
     {
-        $this->files = $files;
+        $this->manifest = $manifest;
         return $this;
     }
 
@@ -78,7 +78,7 @@ final class PackageDefinitionBuilder
         $defaults = [
             self::KEY_INITIALIZE => [],
             self::KEY_URL => null,
-            self::KEY_FILES => [],
+            self::KEY_MANIFEST => [],
         ];
 
         if ($diff = array_diff(array_keys($definition), array_keys($defaults))) {

@@ -23,7 +23,7 @@ EOT
             'packages' => [
                 'acme/package' => [
                     'url' => $this->packageUrl('one'),
-                    'files' => [
+                    'manifest' => [
                         'README.md' => [
                         ]
                     ]

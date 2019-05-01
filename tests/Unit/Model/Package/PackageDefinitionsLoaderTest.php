@@ -48,6 +48,7 @@ class PackageDefinitionsLoaderTest extends TestCase
                 'prototype' => 'hello',
                 'manifest' => [
                     'bar' => [
+                        'type' => 'template',
                         'source' => 'baz'
                     ],
                 ]
@@ -57,6 +58,7 @@ class PackageDefinitionsLoaderTest extends TestCase
                 'initialize' => [ 'foo' ],
                 'manifest' => [
                     'bar' => [
+                        'type' => 'template',
                         'source' => 'boo'
                     ],
                     'foo' => []

@@ -19,11 +19,17 @@ class ManifestItem
      */
     private $name;
 
-    public function __construct(string $name, string $source = null, string $dest = null)
+    /**
+     * @var string
+     */
+    private $type;
+
+    public function __construct(string $name, string $type, string $source = null, string $dest = null)
     {
         $this->source = $source ?: $name;
         $this->dest = $dest ?: $name;
         $this->name = $name;
+        $this->type = $type;
     }
 
     public function dest(): string

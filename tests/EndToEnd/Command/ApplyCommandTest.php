@@ -25,6 +25,7 @@ EOT
                     'url' => $this->packageUrl('one'),
                     'manifest' => [
                         'README.md' => [
+                            'type' => 'template',
                         ]
                     ]
                 ]

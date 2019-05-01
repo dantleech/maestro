@@ -136,6 +136,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
             Instantiator::create()->instantiate(
                 ManifestItem::class,
                 [
+                    'type' => 'template',
                     'name' => $sourcePath,
                     'dest' => $targetPath
                 ]

@@ -23,6 +23,7 @@ $configBuilder = ConfigLoaderBuilder::create()
     ->enableJsonDeserializer('json');
 
 $arg = new ArgvInput();
+
 $configFile = $arg->getParameterOption(['-c', '--config']);
 if (false !== $configFile) {
     if (!file_exists($configFile)) {

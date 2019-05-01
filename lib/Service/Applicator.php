@@ -51,7 +51,6 @@ class Applicator
             assert($package instanceof PackageDefinition);
 
             $workingDirectory = $this->workspace->package($package)->path();
-
             $queue = $queues->get($package->syncId());
 
             foreach ($package->manifest() as $item) {

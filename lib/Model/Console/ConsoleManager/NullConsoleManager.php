@@ -9,11 +9,11 @@ class NullConsoleManager implements ConsoleManager
 {
     public function stdout(string $id): Console
     {
-        return new NullConsole($id);
+        return new NullConsole();
     }
 
     public function stderr(string $id): Console
     {
-        return new NullConsole($id);
+        return new NullConsole();
     }
 }

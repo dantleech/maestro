@@ -3,6 +3,7 @@
 namespace Maestro\Console\Command;
 
 use Maestro\Console\Report\QueueReport;
+use Maestro\Console\Util\Cast;
 use Maestro\Service\Applicator;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -34,13 +35,13 @@ class ApplyCommand extends Command
 
     protected function configure()
     {
-        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)');
+        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $statuses = $this->applicator->apply(
-            (string) $input->getOption(self::OPTION_QUERY)
+            Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 
         $this->report->render($output, $statuses);

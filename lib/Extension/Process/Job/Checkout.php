@@ -24,7 +24,7 @@ class Checkout implements Job
     private $purge;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $url;
 

@@ -51,8 +51,9 @@ final class CheckoutHandler
 
     private function resolveUrl(Checkout $initJob): string
     {
-        if ($initJob->url()) {
-            return $initJob->url();
+        $url = $initJob->url();
+        if ($url) {
+            return $url;
         }
 
         return 'git@github.com:'. $initJob->packageDefinition()->name();

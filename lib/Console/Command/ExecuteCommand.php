@@ -3,6 +3,7 @@
 namespace Maestro\Console\Command;
 
 use Maestro\Console\Report\QueueReport;
+use Maestro\Console\Util\Cast;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -37,14 +38,14 @@ class ExecuteCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_COMMAND, InputArgument::REQUIRED, 'Command to run on repositories');
-        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)');
+        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $statuses = $this->commandRunner->run(
-            (string) $input->getArgument(self::ARG_COMMAND),
-            (string) $input->getOption(self::OPTION_QUERY)
+            Cast::toString($input->getArgument(self::ARG_COMMAND)),
+            Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 
         $this->report->render($output, $statuses);

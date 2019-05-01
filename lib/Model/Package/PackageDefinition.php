@@ -25,7 +25,7 @@ class PackageDefinition
     private $parameters;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $prototype;
 
@@ -76,7 +76,7 @@ class PackageDefinition
         return $this->parameters;
     }
 
-    public function prototype(): string
+    public function prototype(): ?string
     {
         return $this->prototype;
     }

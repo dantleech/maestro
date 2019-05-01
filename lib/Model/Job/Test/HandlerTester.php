@@ -2,14 +2,13 @@
 
 namespace Maestro\Model\Job\Test;
 
-use Maestro\Model\Job\Dispatcher\EagerDispatcher;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Model\Instantiator;
 
 final class HandlerTester
 {
     /**
-     * @var EagerDispatcher
+     * @var LazyDispatcher
      */
     private $dispatcher;
 

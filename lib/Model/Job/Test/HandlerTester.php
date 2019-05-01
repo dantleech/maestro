@@ -2,10 +2,8 @@
 
 namespace Maestro\Model\Job\Test;
 
-use Amp\Promise;
 use Maestro\Model\Job\Dispatcher\EagerDispatcher;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
-use Maestro\Model\Job\Job;
 use Maestro\Model\Package\Instantiator;
 
 final class HandlerTester

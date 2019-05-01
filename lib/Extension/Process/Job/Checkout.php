@@ -5,7 +5,6 @@ namespace Maestro\Extension\Process\Job;
 use Maestro\Model\Job\Job;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Package\PackageDefinition;
-use Maestro\Extension\Process\Job\Checkout;
 
 class Checkout implements Job
 {
@@ -34,8 +33,7 @@ class Checkout implements Job
         PackageDefinition $packageDefinition,
         string $url = null,
         bool $purge = false
-    )
-    {
+    ) {
         $this->packageDefinition = $packageDefinition;
         $this->queue = $queue;
         $this->purge = $purge;

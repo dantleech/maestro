@@ -5,7 +5,6 @@ namespace Maestro\Console;
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Maestro\Console\SymfonyConsole;
 
 class SymfonyConsoleManager implements ConsoleManager
 {

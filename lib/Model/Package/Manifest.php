@@ -42,7 +42,8 @@ class Manifest implements IteratorAggregate
         if (!isset($this->items[$string])) {
             throw new RuntimeException(sprintf(
                 'Item "%s" not known, known items: "%s"',
-                $string, implode('", "', array_keys($this->items))
+                $string,
+                implode('", "', array_keys($this->items))
             ));
         }
 

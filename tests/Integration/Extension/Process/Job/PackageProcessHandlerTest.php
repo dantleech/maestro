@@ -10,7 +10,6 @@ use Maestro\Model\Job\Test\HandlerTester;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\Workspace;
 use Maestro\Tests\Integration\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 
 class PackageProcessHandlerTest extends IntegrationTestCase
 {

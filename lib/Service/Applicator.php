@@ -2,8 +2,6 @@
 
 namespace Maestro\Service;
 
-use Maestro\Extension\Process\Job\Checkout;
-use Maestro\Extension\TemplateExtension\ApplyTemplate;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
@@ -38,8 +36,7 @@ class Applicator
         QueueDispatcher $queueDispatcher,
         Workspace $workspace,
         array $jobClassMap
-    )
-    {
+    ) {
         $this->definitions = $definitions;
         $this->queueDispatcher = $queueDispatcher;
         $this->workspace = $workspace;
@@ -60,7 +57,8 @@ class Applicator
             foreach ($package->manifest() as $item) {
                 if (!isset($this->jobClassMap[$item->type()])) {
                     throw new RuntimeException(sprintf(
-                        'No job registered for type "%s"', $item->type()
+                        'No job registered for type "%s"',
+                        $item->type()
                     ));
                 }
 

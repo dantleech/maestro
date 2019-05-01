@@ -12,9 +12,7 @@ use Maestro\Console\SymfonyConsoleManager;
 use Phpactor\MapResolver\Resolver;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
-use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
-use Maestro\Extension\Process\Job\ProcessHandler;
 use RuntimeException;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
@@ -22,10 +20,6 @@ use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
-use Maestro\Extension\Process\Job\Checkout;
-use Maestro\Extension\Process\Job\Process;
-use Maestro\Extension\Process\Job\PackageProcess;
-use Maestro\Extension\Process\Job\PackageProcessHandler;
 
 class MaestroExtension implements Extension
 {
@@ -151,7 +145,6 @@ class MaestroExtension implements Extension
         $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
             $handlers = [];
             foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
-
                 if (!isset($attrs['job'])) {
                     throw new RuntimeException(sprintf(
                         'Job handler service "%s" must specify a "job" '.

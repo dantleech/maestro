@@ -3,7 +3,6 @@
 namespace Maestro\Model\Job\QueueDispatcher;
 
 use DateTimeImmutable;
-use Exception;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
@@ -39,7 +38,6 @@ class RealQueueDispatcher implements QueueDispatcher
                     try {
                         $queueStatus->message = yield $this->dispatcher->dispatch($job);
                     } catch (JobFailure $e) {
-
                         $queueStatus->success = false;
                         $queueStatus->code = $e->getCode();
                         $queueStatus->message = $e->getMessage();

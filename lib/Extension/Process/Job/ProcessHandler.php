@@ -8,7 +8,6 @@ use Generator;
 use Maestro\Extension\Process\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Util\StringUtil;
-use Maestro\Extension\Process\Job\Process;
 
 class ProcessHandler
 {

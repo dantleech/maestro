@@ -35,8 +35,7 @@ class PackageDefinition
         array $manifest = [],
         array $parameters = [],
         string $prototype = null
-    )
-    {
+    ) {
         $this->name = $name;
         $this->manifest = Manifest::fromArray($manifest);
         $this->parameters = $parameters;

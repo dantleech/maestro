@@ -3,7 +3,6 @@
 namespace Maestro\Extension\Template\Job;
 
 use Maestro\Model\Job\Job;
-use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
 
 class ApplyTemplate implements Job

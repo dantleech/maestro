@@ -7,9 +7,7 @@ use Maestro\Extension\Template\Job\ApplyTemplateHandler;
 use Maestro\Extension\Template\TemplateExtension;
 use Maestro\MaestroExtension;
 use Maestro\Model\Package\Instantiator;
-use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
-use Maestro\Model\Package\PackageDefinitionBuilder;
 use Maestro\Tests\Integration\IntegrationTestCase;
 
 class ApplyTemplateHandlerTest extends IntegrationTestCase

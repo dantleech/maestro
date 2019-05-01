@@ -9,8 +9,6 @@ use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\TestUtils\Workspace;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
 class IntegrationTestCase extends TestCase

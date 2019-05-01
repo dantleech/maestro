@@ -4,7 +4,6 @@ namespace Maestro\Extension\Process\Job;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Extension\Process\Job\Checkout;
 use Maestro\Model\Package\Workspace;
 
 final class CheckoutHandler

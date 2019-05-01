@@ -18,7 +18,9 @@ class PackageDefinitionsLoader
             if (!isset($prototypes[$prototype])) {
                 throw new InvalidPackageDefinition(sprintf(
                     'Prototype "%s" specified by package "%s" does not exist, known prototypes "%s"',
-                    $prototype, $packageName, implode('", "', array_keys($prototypes))
+                    $prototype,
+                    $packageName,
+                    implode('", "', array_keys($prototypes))
                 ));
             }
 

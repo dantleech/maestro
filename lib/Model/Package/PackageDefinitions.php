@@ -4,7 +4,6 @@ namespace Maestro\Model\Package;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Maestro\Model\Package\Instantiator;
 use RuntimeException;
 
 class PackageDefinitions implements IteratorAggregate

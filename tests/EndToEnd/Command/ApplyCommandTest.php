@@ -13,7 +13,9 @@ class ApplyCommandTest extends EndToEndTestCase
 
     public function testAppliesTemplates()
     {
-        $this->workspace()->put('/README.md', <<<'EOT'
+        $this->workspace()->put(
+            '/README.md',
+            <<<'EOT'
 Hello World
 EOT
         );

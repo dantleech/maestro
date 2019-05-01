@@ -8,7 +8,6 @@ use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
 use Maestro\Model\Package\Workspace;
 use Twig\Environment;
-use Maestro\Extension\Template\Job\ApplyTemplate;
 
 class ApplyTemplateHandler
 {
@@ -37,8 +36,7 @@ class ApplyTemplateHandler
         Workspace $workspace,
         Environment $twig,
         array $globalParameters
-    )
-    {
+    ) {
         $this->consoleManager = $consoleManager;
         $this->workspace = $workspace;
         $this->twig = $twig;

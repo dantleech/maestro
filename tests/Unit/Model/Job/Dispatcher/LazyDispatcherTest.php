@@ -46,7 +46,9 @@ class LazyDispatcherTest extends TestCase
         $this->expectException(InvalidHandler::class);
         $this->expectExceptionMessage('did not return a callable');
         $this->create([
-            get_class($this->job->reveal()) => function () {return new \stdClass();}
+            get_class($this->job->reveal()) => function () {
+                return new \stdClass();
+            }
         ])->dispatch($this->job->reveal());
     }
 

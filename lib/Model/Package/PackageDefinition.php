@@ -12,7 +12,7 @@ class PackageDefinition
     /**
      * @var array
      */
-    private $initCommands;
+    private $initialize;
 
     /**
      * @var string
@@ -36,7 +36,7 @@ class PackageDefinition
 
     public function __construct(
         string $name,
-        array $initCommands = [],
+        array $initialize = [],
         string $url = null,
         array $manifest = [],
         array $parameters = [],
@@ -44,7 +44,7 @@ class PackageDefinition
     )
     {
         $this->name = $name;
-        $this->initCommands = $initCommands;
+        $this->initialize = $initialize;
         $this->url = $url;
         $this->manifest = Manifest::fromArray($manifest);
         $this->parameters = $parameters;
@@ -71,9 +71,9 @@ class PackageDefinition
         return str_replace('/', '-', $this->name());
     }
 
-    public function initCommands(): array
+    public function initialize(): array
     {
-        return $this->initCommands;
+        return $this->initialize;
     }
 
     public function url(): string

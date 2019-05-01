@@ -11,7 +11,7 @@ final class PackageDefinitionBuilder
     const KEY_MANIFEST = 'manifest';
 
     private $name;
-    private $initCommands = [];
+    private $initialize = [];
     private $url;
 
     /**
@@ -52,12 +52,12 @@ final class PackageDefinitionBuilder
 
     public function build(): PackageDefinition
     {
-        return new PackageDefinition($this->name, $this->initCommands, $this->buildUrl(), $this->manifest);
+        return new PackageDefinition($this->name, $this->initialize, $this->buildUrl(), $this->manifest);
     }
 
-    public function withInitCommands(array $initCommands): self
+    public function withInitCommands(array $initialize): self
     {
-        $this->initCommands = $initCommands;
+        $this->initialize = $initialize;
         return $this;
     }
 

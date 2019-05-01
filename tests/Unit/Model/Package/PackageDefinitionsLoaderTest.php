@@ -33,12 +33,12 @@ class PackageDefinitionsLoaderTest extends TestCase
             ]
         ], [
             'hello' => [
-                'initCommands' => [ 'foo' ]
+                'initialize' => [ 'foo' ]
             ]
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
-        $this->assertEquals(['foo'], $definitions->get('foobar/barfoo')->initCommands());
+        $this->assertEquals(['foo'], $definitions->get('foobar/barfoo')->initialize());
     }
 
     public function testPackageDefinitionHasPriotityOverPrototype()
@@ -54,7 +54,7 @@ class PackageDefinitionsLoaderTest extends TestCase
             ]
         ], [
             'hello' => [
-                'initCommands' => [ 'foo' ],
+                'initialize' => [ 'foo' ],
                 'manifest' => [
                     'bar' => [
                         'source' => 'boo'

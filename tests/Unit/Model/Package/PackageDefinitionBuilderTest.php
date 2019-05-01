@@ -20,7 +20,7 @@ class PackageDefinitionBuilderTest extends TestCase
         ])->build();
 
 
-        $this->assertEquals(['foobar'], $package->initCommands());
+        $this->assertEquals(['foobar'], $package->initialize());
         $this->assertEquals(self::EXAMPLE_URL, $package->url());
     }
 

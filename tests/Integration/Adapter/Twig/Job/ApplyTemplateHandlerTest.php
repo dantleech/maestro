@@ -21,7 +21,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
     public function testRendersAndSavesTemplateToNewFile()
     {
         $this->workspace()->put('/test_template', 'Hello World');
-        $definition = PackageDefinitionBuilder::create('foo/bar')->build();
+        $definition = new PackageDefinition('foo/bar');
 
         $this->handler()->__invoke(
             $this->createJob($definition, 'test_template')
@@ -33,7 +33,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
     public function testCreatesTemplateAtNonExistingDirectory()
     {
         $this->workspace()->put('/sub-path/test_template', 'Hello World');
-        $definition = PackageDefinitionBuilder::create('foo/bar')->build();
+        $definition = new PackageDefinition('foo/bar');
 
         $this->handler()->__invoke(
             $this->createJob($definition, 'sub-path/test_template')
@@ -45,7 +45,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
     public function testCreatesTemplateAtSpecifiedTargetPath()
     {
         $this->workspace()->put('test_template.twig', 'Hello World');
-        $definition = PackageDefinitionBuilder::create('foo/bar')->build();
+        $definition = new PackageDefinition('foo/bar');
 
         ;
         $this->handler()->__invoke(

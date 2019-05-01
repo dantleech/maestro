@@ -33,12 +33,12 @@ class PackageDefinitionsLoaderTest extends TestCase
             ]
         ], [
             'hello' => [
-                'initialize' => [ 'foo' ]
+                'parameters' => [ 'foo' ]
             ]
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
-        $this->assertEquals(['foo'], $definitions->get('foobar/barfoo')->initialize());
+        $this->assertEquals(['foo'], $definitions->get('foobar/barfoo')->parameters());
     }
 
     public function testPackageDefinitionHasPriotityOverPrototype()
@@ -55,7 +55,7 @@ class PackageDefinitionsLoaderTest extends TestCase
             ]
         ], [
             'hello' => [
-                'initialize' => [ 'foo' ],
+                'parameters' => [ 'foo' ],
                 'manifest' => [
                     'bar' => [
                         'type' => 'template',
@@ -67,6 +67,10 @@ class PackageDefinitionsLoaderTest extends TestCase
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
-        $this->assertEquals('baz', $definitions->get('foobar/barfoo')->manifest()->get('bar')->source());
+        $this->assertEquals([
+            'source'=>'baz',
+            'name' => 'bar',
+            'type' => 'template',
+        ], $definitions->get('foobar/barfoo')->manifest()->get('bar')->parameters());
     }
 }

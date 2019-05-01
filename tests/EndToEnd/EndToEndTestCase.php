@@ -42,7 +42,7 @@ class EndToEndTestCase extends TestCase
             'git commit -m "test'
         ] as $command) {
             $process = new Process(sprintf(
-                'git init',
+                'git init'
                 ), $this->packageUrl($name));
             $process->mustRun();
         }

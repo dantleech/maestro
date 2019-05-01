@@ -2,8 +2,8 @@
 
 namespace Maestro\Service;
 
-use Maestro\Adapter\Amp\Job\InitializePackage;
-use Maestro\Adapter\Amp\Job\Process;
+use Maestro\Extension\Process\Job\Checkout;
+use Maestro\Extension\Process\Job\Process;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;

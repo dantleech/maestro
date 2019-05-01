@@ -1,12 +1,13 @@
 <?php
 
-namespace Maestro\Adapter\Amp\Job;
+namespace Maestro\Extension\Process\Job;
 
 use Maestro\Model\Job\Job;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Package\PackageDefinition;
+use Maestro\Extension\Process\Job\Checkout;
 
-class InitializePackage implements Job
+class Checkout implements Job
 {
     /**
      * @var PackageDefinition
@@ -28,24 +29,17 @@ class InitializePackage implements Job
      */
     private $url;
 
-    /**
-     * @var array
-     */
-    private $commands;
-
     public function __construct(
         Queue $queue,
         PackageDefinition $packageDefinition,
         string $url = null,
-        bool $purge = false,
-        array $commands = []
+        bool $purge = false
     )
     {
         $this->packageDefinition = $packageDefinition;
         $this->queue = $queue;
         $this->purge = $purge;
         $this->url = $url;
-        $this->commands = $commands;
     }
 
     public function packageDefinition(): PackageDefinition
@@ -55,7 +49,7 @@ class InitializePackage implements Job
 
     public function handler(): string
     {
-        return InitializePackageHandler::class;
+        return Checkout::class;
     }
 
     public function queue(): Queue
@@ -71,10 +65,5 @@ class InitializePackage implements Job
     public function url(): ?string
     {
         return $this->url;
-    }
-
-    public function commands(): array
-    {
-        return $this->commands;
     }
 }

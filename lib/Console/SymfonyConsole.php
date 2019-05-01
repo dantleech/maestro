@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Adapter\Symfony;
+namespace Maestro\Console;
 
 use Maestro\Model\Console\Console;
 use Symfony\Component\Console\Output\OutputInterface;

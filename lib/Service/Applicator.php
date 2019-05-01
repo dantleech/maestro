@@ -2,7 +2,7 @@
 
 namespace Maestro\Service;
 
-use Maestro\Adapter\Amp\Job\InitializePackage;
+use Maestro\Extension\Process\Job\Checkout;
 use Maestro\Extension\TemplateExtension\ApplyTemplate;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;

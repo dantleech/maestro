@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Adapter\Amp\Job;
+namespace Maestro\Extension\Process\Job;
 
 use Maestro\Model\Job\Job;
 use Maestro\Model\Job\Queue;

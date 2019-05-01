@@ -1,13 +1,13 @@
 <?php
 
-namespace Maestro\Adapter\Amp\Job;
+namespace Maestro\Extension\Process\Job;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Adapter\Amp\Job\InitializePackage;
+use Maestro\Extension\Process\Job\Checkout;
 use Maestro\Model\Package\Workspace;
 
-final class InitializePackageHandler
+final class CheckoutHandler
 {
     /**
      * @var Workspace
@@ -19,7 +19,7 @@ final class InitializePackageHandler
         $this->workspace = $workspace;
     }
 
-    public function __invoke(InitializePackage $initJob): Promise
+    public function __invoke(Checkout $initJob): Promise
     {
         $package = $initJob->packageDefinition();
         $workspace = $this->workspace->package($package);
@@ -34,22 +34,23 @@ final class InitializePackageHandler
             return new Success();
         }
 
-        $jobs = [
-            new Process($this->workspace->path(), sprintf('git clone %s %s', $this->resolveUrl($initJob), $packagePath), $package->consoleId())
-        ];
+        $initJob->queue()->prepend(
+            new Process(
+                $this->workspace->path(),
+                sprintf(
+                    'git clone %s %s',
+                    $this->resolveUrl($initJob),
+                    $packagePath
+                ),
+                $package->consoleId()
+            )
+        );
 
-        foreach ($initJob->commands() as $initCommand) {
-            $jobs[] = new Process($packagePath, $initCommand, $package->consoleId());
-        }
-
-        foreach (array_reverse($jobs) as $job) {
-            $initJob->queue()->prepend($job);
-        }
 
         return new Success();
     }
 
-    private function resolveUrl(InitializePackage $initJob): string
+    private function resolveUrl(Checkout $initJob): string
     {
         if ($initJob->url()) {
             return $initJob->url();

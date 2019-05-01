@@ -24,7 +24,7 @@ EOT
                 'acme/package' => [
                     'manifest' => [
                         [
-                            'type' => 'initialize',
+                            'type' => 'checkout',
                             'parameters' => [
                                 'url' => $this->packageUrl('one'),
                             ]

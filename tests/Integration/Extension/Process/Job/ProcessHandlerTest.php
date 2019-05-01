@@ -2,9 +2,9 @@
 
 namespace Maestro\Tests\Integration\Amp\Job;
 
-use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
-use Maestro\Adapter\Amp\Job\Process;
-use Maestro\Adapter\Amp\Job\ProcessHandler;
+use Maestro\Extension\Process\Job\Exception\ProcessNonZeroExitCode;
+use Maestro\Extension\Process\Job\Process;
+use Maestro\Extension\Process\Job\ProcessHandler;
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Job\Test\HandlerTester;
@@ -41,9 +41,15 @@ class ProcessHandlerTest extends TestCase
         $this->stdout->writeln(Argument::containingString('# echo Hello'))->shouldBeCalled();
         $this->stdout->writeln(Argument::containingString('Hello'))->shouldBeCalled();
 
-        $lastLine = HandlerTester::create()->dispatch(
-            new Process(__DIR__, 'echo Hello', 'foo'),
+        $lastLine = HandlerTester::create(
             new ProcessHandler($this->consoleManger->reveal())
+        )->dispatch(
+            Process::class,
+            [
+                'workingDirectory' => __DIR__,
+                'command' => 'echo Hello',
+                'consoleId' => 'foo',
+            ]
         );
         self::assertEquals('Hello', $lastLine, 'Returned last line');
     }
@@ -53,9 +59,15 @@ class ProcessHandlerTest extends TestCase
         $this->expectException(ProcessNonZeroExitCode::class);
         $this->stdout->writeln(Argument::containingString('# thisisnotacommand'))->shouldBeCalled();
 
-        HandlerTester::create()->dispatch(
-            new Process(__DIR__, 'thisisnotacommand', 'foo'),
+        HandlerTester::create(
             new ProcessHandler($this->consoleManger->reveal())
+        )->dispatch(
+            Process::class,
+            [
+                'workingDirectory' => __DIR__,
+                'command' => 'thisisnotacommand',
+                'consoleId' => 'foo',
+            ]
         );
     }
 }

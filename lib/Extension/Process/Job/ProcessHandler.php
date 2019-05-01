@@ -1,13 +1,14 @@
 <?php
 
-namespace Maestro\Adapter\Amp\Job;
+namespace Maestro\Extension\Process\Job;
 
 use Amp\Process\Process as AmpProcess;
 use Amp\Promise;
 use Generator;
-use Maestro\Adapter\Amp\Job\Exception\ProcessNonZeroExitCode;
+use Maestro\Extension\Process\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Util\StringUtil;
+use Maestro\Extension\Process\Job\Process;
 
 class ProcessHandler
 {

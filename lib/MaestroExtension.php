@@ -8,25 +8,24 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\Console\Command\ExecuteCommand;
 use Maestro\Model\Maestro;
-use Maestro\Adapter\Symfony\SymfonyConsoleManager;
+use Maestro\Console\SymfonyConsoleManager;
 use Phpactor\MapResolver\Resolver;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
-use Maestro\Adapter\Amp\Job\ProcessHandler;
+use Maestro\Extension\Process\Job\ProcessHandler;
 use RuntimeException;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
-use Maestro\Adapter\Amp\Job\InitializePackageHandler;
 use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
-use Maestro\Adapter\Amp\Job\InitializePackage;
-use Maestro\Adapter\Amp\Job\Process;
-use Maestro\Adapter\Amp\Job\PackageProcess;
-use Maestro\Adapter\Amp\Job\PackageProcessHandler;
+use Maestro\Extension\Process\Job\Checkout;
+use Maestro\Extension\Process\Job\Process;
+use Maestro\Extension\Process\Job\PackageProcess;
+use Maestro\Extension\Process\Job\PackageProcessHandler;
 
 class MaestroExtension implements Extension
 {
@@ -42,7 +41,6 @@ class MaestroExtension implements Extension
     const PARAM_WORKSPACE_PATH = 'workspace_path';
     const PARAM_PACKAGES = 'packages';
     const PARAM_PARAMETERS = 'parameters';
-
     const TAG_JOB_HANDLER = 'maestro.job_handler';
 
     const SERVICE_CONSOLE_QUEUE_REPORT = 'maestro.console.queue_report';
@@ -169,32 +167,6 @@ class MaestroExtension implements Extension
             }
             return new LazyDispatcher($handlers);
         });
-
-        $container->register('maestro.adapter.amp.handler.process', function (Container $container) {
-            return new ProcessHandler(
-                $container->get(self::SERVICE_CONSOLE_MANAGER)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'job' => Process::class
-        ]]);
-
-        $container->register('maestro.adapter.amp.handler.initialize_package', function (Container $container) {
-            return new InitializePackageHandler(
-                $container->get(self::SERVICE_WORKSPACE)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'type' => 'initialize',
-            'job' => InitializePackage::class,
-        ]]);
-
-        $container->register('maestro.adapter.amp.handler.package_command', function (Container $container) {
-            return new PackageProcessHandler(
-                $container->get(self::SERVICE_WORKSPACE)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'type' => 'command',
-            'job' => PackageProcess::class,
-        ]]);
     }
 
     private function loadPackage(ContainerBuilder $container)

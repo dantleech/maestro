@@ -2,7 +2,9 @@
 
 namespace Maestro\Model\Job;
 
-class Queue
+use Countable;
+
+class Queue implements Countable
 {
     /**
      * @var Job[]
@@ -37,5 +39,13 @@ class Queue
     public function prepend(Job $job): void
     {
         array_unshift($this->jobs, $job);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->jobs);
     }
 }

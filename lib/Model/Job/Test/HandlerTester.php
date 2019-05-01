@@ -2,9 +2,11 @@
 
 namespace Maestro\Model\Job\Test;
 
+use Amp\Promise;
 use Maestro\Model\Job\Dispatcher\EagerDispatcher;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Model\Job\Job;
+use Maestro\Model\Package\Instantiator;
 
 final class HandlerTester
 {
@@ -13,19 +15,36 @@ final class HandlerTester
      */
     private $dispatcher;
 
-    public static function create(): self
+    /**
+     * @var callable
+     */
+    private $handler;
+
+    private function __construct(callable $handler)
     {
-        return new self();
+        $this->handler = $handler;
     }
 
-    public function dispatch(Job $job, callable $handler)
+    public static function create(callable $handler): self
+    {
+        return new self($handler);
+    }
+
+    public function dispatch($jobClass, array $parameters)
     {
         $dispatcher = new LazyDispatcher([
-            get_class($job) => function () use ($handler) {
-                return $handler;
+            $jobClass => function () {
+                return $this->handler;
             }
         ]);
 
-        return \Amp\Promise\wait($dispatcher->dispatch($job));
+        return \Amp\Promise\wait(
+            $dispatcher->dispatch(
+                Instantiator::create()->instantiate(
+                    $jobClass,
+                    $parameters
+                )
+            )
+        );
     }
 }

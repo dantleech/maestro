@@ -1,10 +1,11 @@
 <?php
 
-namespace Maestro\Adapter\Amp\Job;
+namespace Maestro\Extension\Process\Job;
 
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Model\Package\Workspace;
+use Maestro\Extension\Process\Job\PackageProcess;
 
 class PackageProcessHandler
 {

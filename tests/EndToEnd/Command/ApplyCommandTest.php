@@ -22,8 +22,11 @@ EOT
         $this->saveConfig([
             'packages' => [
                 'acme/package' => [
-                    'url' => $this->packageUrl('one'),
                     'manifest' => [
+                        [
+                            'type' => 'initialize',
+                            'url' => $this->packageUrl('one'),
+                        ],
                         'README.md' => [
                             'type' => 'template',
                         ]

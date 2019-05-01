@@ -34,14 +34,6 @@ final class PackageDefinitionBuilder
         $packageBuilder = self::create($packageName);
         $data = self::validateDefinition($data);
 
-        if ($data[self::KEY_INITIALIZE]) {
-            $packageBuilder = $packageBuilder->withInitCommands($data[self::KEY_INITIALIZE]);
-        }
-
-        if ($data[self::KEY_URL]) {
-            $packageBuilder = $packageBuilder->withUrl($data[self::KEY_URL]);
-        }
-
         if ($data[self::KEY_MANIFEST]) {
             $packageBuilder = $packageBuilder->withManifest($data[self::KEY_MANIFEST]);
         }
@@ -52,18 +44,12 @@ final class PackageDefinitionBuilder
 
     public function build(): PackageDefinition
     {
-        return new PackageDefinition($this->name, $this->initialize, $this->buildUrl(), $this->manifest);
+        return new PackageDefinition($this->name, $this->initialize, $this->manifest);
     }
 
     public function withInitCommands(array $initialize): self
     {
         $this->initialize = $initialize;
-        return $this;
-    }
-
-    public function withUrl(string $url): self
-    {
-        $this->url = $url;
         return $this;
     }
 

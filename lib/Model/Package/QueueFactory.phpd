@@ -1,0 +1,9 @@
+<?php
+
+namespace Maestro\Model\Package;
+
+use PHPUnit\Framework\TestCase;
+
+class QueueFactory extends TestCase
+{
+}

@@ -7,43 +7,26 @@ class ManifestItem
     /**
      * @var string
      */
-    private $source;
-
-    /**
-     * @var string
-     */
-    private $dest;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var string
-     */
     private $type;
 
-    public function __construct(string $name, string $type, string $source = null, string $dest = null)
+    /**
+     * @var array
+     */
+    private $parameters;
+
+    public function __construct(string $type, array $parameters)
     {
-        $this->source = $source ?: $name;
-        $this->dest = $dest ?: $name;
-        $this->name = $name;
         $this->type = $type;
+        $this->parameters = $parameters;
     }
 
-    public function dest(): string
+    public function type(): string
     {
-        return $this->dest;
+        return $this->type;
     }
 
-    public function source(): string
+    public function parameters(): array
     {
-        return $this->source;
-    }
-
-    public function name(): string
-    {
-        return $this->name;
+        return $this->parameters;
     }
 }

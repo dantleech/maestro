@@ -133,14 +133,8 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $targetPath = $targetPath ?: $sourcePath;
         $job = new ApplyTemplate(
             $definition,
-            Instantiator::create()->instantiate(
-                ManifestItem::class,
-                [
-                    'type' => 'template',
-                    'name' => $sourcePath,
-                    'dest' => $targetPath
-                ]
-            )
+            $sourcePath,
+            $targetPath
         );
         return $job;
     }

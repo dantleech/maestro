@@ -14,14 +14,20 @@ class ApplyTemplate implements Job
     private $package;
 
     /**
-     * @var ManifestItem
+     * @var string
      */
-    private $item;
+    private $from;
 
-    public function __construct(PackageDefinition $package, ManifestItem $item)
+    /**
+     * @var string
+     */
+    private $to;
+
+    public function __construct(PackageDefinition $package, string $from, string $to)
     {
         $this->package = $package;
-        $this->item = $item;
+        $this->from = $from;
+        $this->to = $to;
     }
 
     public function package(): PackageDefinition
@@ -29,8 +35,13 @@ class ApplyTemplate implements Job
         return $this->package;
     }
 
-    public function item(): ManifestItem
+    public function to(): string
     {
-        return $this->item;
+        return $this->to;
+    }
+
+    public function from(): string
+    {
+        return $this->from;
     }
 }

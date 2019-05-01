@@ -48,12 +48,12 @@ class ApplyTemplateHandler
     public function __invoke(ApplyTemplate $job): Promise
     {
         $packageWorkspace = $this->workspace->package($job->package());
-        $rendered = $this->twig->render($job->item()->source(), $this->buildParameters($job));
-        $targetPath = $packageWorkspace->path() . '/' . $job->item()->dest();
+        $rendered = $this->twig->render($job->from(), $this->buildParameters($job));
+        $targetPath = $packageWorkspace->path() . '/' . $job->to();
 
         $this->consoleManager->stdout($job->package()->consoleId())->writeln(sprintf(
             'Applying template "%s" to "%s"',
-            $job->item()->name(),
+            $job->from(),
             $targetPath
         ));
 
@@ -61,7 +61,7 @@ class ApplyTemplateHandler
 
         file_put_contents($targetPath, $rendered);
 
-        return new Success(sprintf('Applied %s', $job->item()->name()));
+        return new Success(sprintf('Applied %s', $job->from()));
     }
 
     private function ensureDirectoryExists(string $targetPath): void

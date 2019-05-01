@@ -28,11 +28,6 @@ class Process implements Job
         $this->consoleId = $consoleId;
     }
 
-    public function handler(): string
-    {
-        return ProcessHandler::class;
-    }
-
     public function command(): string
     {
         return $this->command;

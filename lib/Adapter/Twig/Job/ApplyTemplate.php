@@ -24,11 +24,6 @@ class ApplyTemplate implements Job
         $this->item = $item;
     }
 
-    public function handler(): string
-    {
-        return ApplyTemplateHandler::class;
-    }
-
     public function package(): PackageDefinition
     {
         return $this->package;

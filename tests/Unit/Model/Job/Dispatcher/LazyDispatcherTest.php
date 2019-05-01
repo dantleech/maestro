@@ -27,7 +27,6 @@ class LazyDispatcherTest extends TestCase
     public function testThrowsExceptionIfHandlerNotFound()
     {
         $this->expectException(HandlerNotFound::class);
-        $this->job->handler()->willReturn('barfoo');
         $this->create(['foobar' => function () {
         }])->dispatch($this->job->reveal());
     }
@@ -37,18 +36,18 @@ class LazyDispatcherTest extends TestCase
         $this->expectException(InvalidHandler::class);
         $this->expectExceptionMessage('must return a Closure');
 
-        $this->job->handler()->willReturn('foobar');
-        $this->create(['foobar' => 'no'])->dispatch($this->job->reveal());
+        $this->create([
+            get_class($this->job->reveal()) => 'no'
+        ])->dispatch($this->job->reveal());
     }
 
     public function testThrowsExceptionIfHandlerIsNotCallable()
     {
         $this->expectException(InvalidHandler::class);
         $this->expectExceptionMessage('did not return a callable');
-        $this->job->handler()->willReturn('foobar');
-        $this->create(['foobar' => function () {
-            return new \stdClass();
-        }])->dispatch($this->job->reveal());
+        $this->create([
+            get_class($this->job->reveal()) => function () {return new \stdClass();}
+        ])->dispatch($this->job->reveal());
     }
 
     public function testThrowsExceptionIfHandlerDoesNotReturnAPromise()
@@ -56,9 +55,8 @@ class LazyDispatcherTest extends TestCase
         $this->expectException(InvalidHandler::class);
         $this->expectExceptionMessage('must return an Amp\Promise');
 
-        $this->job->handler()->willReturn('foobar');
         $this->create([
-            'foobar' => function () {
+            get_class($this->job->reveal()) => function () {
                 return new class {
                     public function __invoke(Job $job)
                     {
@@ -71,9 +69,8 @@ class LazyDispatcherTest extends TestCase
 
     public function testDispatchesJob()
     {
-        $this->job->handler()->willReturn('foobar');
         $promise = $this->create([
-            'foobar' => function () {
+            get_class($this->job->reveal()) => function () {
                 return new class() {
                     public function __invoke(Job $job)
                     {

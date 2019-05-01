@@ -3,6 +3,7 @@
 namespace Maestro\Model\Job\Test;
 
 use Maestro\Model\Job\Dispatcher\EagerDispatcher;
+use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Model\Job\Job;
 
 final class HandlerTester
@@ -19,8 +20,10 @@ final class HandlerTester
 
     public function dispatch(Job $job, callable $handler)
     {
-        $dispatcher = new EagerDispatcher([
-            $job->handler() => $handler
+        $dispatcher = new LazyDispatcher([
+            get_class($job) => function () use ($handler) {
+                return $handler;
+            }
         ]);
 
         return \Amp\Promise\wait($dispatcher->dispatch($job));

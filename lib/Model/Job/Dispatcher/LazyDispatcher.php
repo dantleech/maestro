@@ -36,7 +36,7 @@ class LazyDispatcher implements JobDispatcher
 
     private function resolveHandler(Job $job)
     {
-        $handler = $job->handler();
+        $handler = get_class($job);
         
         if (!isset($this->callbackMap[$handler])) {
             throw new HandlerNotFound(sprintf(

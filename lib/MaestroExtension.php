@@ -26,6 +26,9 @@ use Maestro\Service\Applicator;
 use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
+use Maestro\Adapter\Amp\Job\InitializePackage;
+use Maestro\Adapter\Twig\Job\ApplyTemplate;
+use Maestro\Adapter\Amp\Job\Process;
 
 class MaestroExtension implements Extension
 {
@@ -138,14 +141,17 @@ class MaestroExtension implements Extension
         $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
             $handlers = [];
             foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
-                if (!isset($attrs['id'])) {
+
+                if (!isset($attrs['job'])) {
                     throw new RuntimeException(sprintf(
-                        'Service "%s" must have an ID parameter (which should probably it\'s FQN or otherwise
-                        what was specified in it\'s related job).',
+                        'Job handler service "%s" must specify a "job" '.
+                        'attribute during registation with the FQN of the job it '.
+                        'handles',
                         $serviceId
                     ));
                 }
-                $handlers[$attrs['id']] = function () use ($container, $serviceId) {
+
+                $handlers[$attrs['job']] = function () use ($container, $serviceId) {
                     return $container->get($serviceId);
                 };
             }
@@ -156,13 +162,19 @@ class MaestroExtension implements Extension
             return new ProcessHandler(
                 $container->get(self::SERVICE_CONSOLE_MANAGER)
             );
-        }, [ self::TAG_JOB_HANDLER => [ 'id' => ProcessHandler::class ]]);
+        }, [ self::TAG_JOB_HANDLER => [
+            'item' => 'process',
+            'job' => Process::class
+        ]]);
 
         $container->register('maestro.adapter.amp.handler.initialize_package', function (Container $container) {
             return new InitializePackageHandler(
                 $container->get(self::SERVICE_WORKSPACE)
             );
-        }, [ self::TAG_JOB_HANDLER => [ 'id' => InitializePackageHandler::class ]]);
+        }, [ self::TAG_JOB_HANDLER => [
+            'item' => 'initialize',
+            'job' => InitializePackage::class,
+        ]]);
 
         $container->register(self::SERVICE_APPLY_TEMPLATE_HANDLER, function (Container $container) {
             return new ApplyTemplateHandler(
@@ -171,7 +183,10 @@ class MaestroExtension implements Extension
                 $container->get(self::SERVICE_TWIG),
                 $container->getParameter(self::PARAM_PARAMETERS)
             );
-        }, [ self::TAG_JOB_HANDLER => [ 'id' => ApplyTemplateHandler::class ]]);
+        }, [ self::TAG_JOB_HANDLER => [
+            'item' => 'template',
+            'job' => ApplyTemplate::class
+        ]]);
     }
 
     private function loadPackage(ContainerBuilder $container)

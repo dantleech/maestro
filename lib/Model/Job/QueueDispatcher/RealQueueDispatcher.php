@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
-use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
+use Maestro\Model\Job\Exception\JobFailure;
 use Maestro\Model\Job\QueueStatus;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Job\QueueStatuses;

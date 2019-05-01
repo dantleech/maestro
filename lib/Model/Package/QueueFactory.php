@@ -3,6 +3,7 @@
 namespace Maestro\Model\Package;
 
 use Maestro\Model\Job\Queue;
+use Maestro\Model\Instantiator;
 
 class QueueFactory
 {

@@ -4,7 +4,7 @@ namespace Maestro\Model\Job\Test;
 
 use Maestro\Model\Job\Dispatcher\EagerDispatcher;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
-use Maestro\Model\Package\Instantiator;
+use Maestro\Model\Instantiator;
 
 final class HandlerTester
 {

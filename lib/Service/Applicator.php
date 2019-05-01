@@ -5,7 +5,7 @@ namespace Maestro\Service;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
-use Maestro\Model\Package\Instantiator;
+use Maestro\Model\Instantiator;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Package\Workspace;

@@ -2,7 +2,7 @@
 
 namespace Maestro\Tests\Unit\Model\Package;
 
-use Maestro\Model\Package\Instantiator;
+use Maestro\Model\Instantiator;
 use Maestro\Model\Package\Exception\RequiredKeysMissing;
 use Maestro\Model\Package\Exception\UnknownKeys;
 use PHPUnit\Framework\TestCase;

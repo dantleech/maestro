@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Model\Job\QueueDispatcher\Exception;
+namespace Maestro\Model\Job\Exception;
 
 use RuntimeException;
 

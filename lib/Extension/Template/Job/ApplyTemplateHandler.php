@@ -5,7 +5,7 @@ namespace Maestro\Extension\Template\Job;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Model\Console\ConsoleManager;
-use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
+use Maestro\Model\Job\Exception\JobFailure;
 use Maestro\Model\Package\Workspace;
 use Twig\Environment;
 

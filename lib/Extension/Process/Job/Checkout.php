@@ -45,11 +45,6 @@ class Checkout implements Job
         return $this->packageDefinition;
     }
 
-    public function handler(): string
-    {
-        return Checkout::class;
-    }
-
     public function queue(): Queue
     {
         return $this->queue;

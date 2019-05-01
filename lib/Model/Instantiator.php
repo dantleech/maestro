@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Model\Package;
+namespace Maestro\Model;
 
 use Maestro\Model\Package\Exception\RequiredKeysMissing;
 use Maestro\Model\Package\Exception\UnknownKeys;

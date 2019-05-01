@@ -17,26 +17,18 @@ class ExecuteCommandTest extends EndToEndTestCase
         $this->saveConfig([
             'packages' => [
                 'phpactor/config-loader' => [
-                    'url' => $this->packageUrl('one')
+                    'manifest' => [
+                        [
+                            'type' => 'initialize',
+                            'parameters' => [
+                                'url' => $this->packageUrl('one')
+                            ]
+                        ]
+                    ]
                 ]
             ]
         ]);
         $process = $this->command('execute "echo HelloWorld"');
-        $this->assertProcessSuccess($process);
-        $this->assertStringContainsString('HelloWorld', $process->getOutput());
-    }
-
-    public function testResetsRepositories()
-    {
-        $this->initPackage('one');
-        $this->saveConfig([
-            'packages' => [
-                'phpactor/config-loader' => [
-                    'url' => $this->packageUrl('one')
-                ]
-            ]
-        ]);
-        $process = $this->command('execute "echo HelloWorld" --reset');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('HelloWorld', $process->getOutput());
     }
@@ -47,10 +39,8 @@ class ExecuteCommandTest extends EndToEndTestCase
         $this->saveConfig([
             'packages' => [
                 'phpactor/config-loader' => [
-                    'url' => $this->packageUrl('one')
                 ],
                 'phpactor/console-extension' => [
-                    'url' => $this->packageUrl('one')
                 ],
             ]
         ]);

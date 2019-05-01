@@ -35,7 +35,7 @@ final class CommandRunner
         $this->workspace = $workspace;
     }
 
-    public function run(string $command, bool $reset, string $query): QueueStatuses
+    public function run(string $command, string $query): QueueStatuses
     {
         $queues = Queues::create();
 
@@ -45,10 +45,6 @@ final class CommandRunner
             $workingDirectory = $this->workspace->package($package)->path();
 
             $queue = $queues->get($package->syncId());
-
-            $queue->enqueue(
-                new InitializePackage($queue, $package, $reset)
-            );
 
             $queue->enqueue(
                 new Process($workingDirectory, $command, $package->consoleId())

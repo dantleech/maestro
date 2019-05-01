@@ -7,9 +7,11 @@ use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
+use Maestro\Model\Package\Instantiator;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Package\Workspace;
+use RuntimeException;
 
 class Applicator
 {
@@ -26,18 +28,25 @@ class Applicator
      */
     private $workspace;
 
+    /**
+     * @var array
+     */
+    private $jobClassMap;
+
     public function __construct(
         PackageDefinitions $definitions,
         QueueDispatcher $queueDispatcher,
-        Workspace $workspace
+        Workspace $workspace,
+        array $jobClassMap
     )
     {
         $this->definitions = $definitions;
         $this->queueDispatcher = $queueDispatcher;
         $this->workspace = $workspace;
+        $this->jobClassMap = $jobClassMap;
     }
 
-    public function apply(bool $reset, string $query): QueueStatuses
+    public function apply(string $query): QueueStatuses
     {
         $queues = Queues::create();
 
@@ -48,13 +57,22 @@ class Applicator
 
             $queue = $queues->get($package->syncId());
 
-            $queue->enqueue(
-                new InitializePackage($queue, $package, $reset)
-            );
+            foreach ($package->manifest() as $item) {
+                if (!isset($this->jobClassMap[$item->type()])) {
+                    throw new RuntimeException(sprintf(
+                        'No job registered for type "%s"', $item->type()
+                    ));
+                }
 
-            foreach ($package->manifest() as $name => $fileDefinition) {
                 $queue->enqueue(
-                    new ApplyTemplate($package, $fileDefinition)
+                    Instantiator::create()->instantiate(
+                        $this->jobClassMap[$item->type()],
+                        $item->parameters(),
+                        [
+                            'queue' => $queue,
+                            'packageDefinition' => $package,
+                        ]
+                    )
                 );
             }
         }

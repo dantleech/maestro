@@ -29,6 +29,8 @@ use Maestro\Console\Report\TableQueueReport;
 use Maestro\Adapter\Amp\Job\InitializePackage;
 use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Adapter\Amp\Job\Process;
+use Maestro\Adapter\Amp\Job\PackageProcess;
+use Maestro\Adapter\Amp\Job\PackageProcessHandler;
 
 class MaestroExtension implements Extension
 {
@@ -100,7 +102,8 @@ class MaestroExtension implements Extension
             return new Applicator(
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
                 $container->get(self::SERVICE_QUEUE_MANAGER),
-                $container->get(self::SERVICE_WORKSPACE)
+                $container->get(self::SERVICE_WORKSPACE),
+                $container->get('maestro.job.class_map')
             );
         });
     }
@@ -132,6 +135,27 @@ class MaestroExtension implements Extension
 
     private function loadJob(ContainerBuilder $container)
     {
+        $container->register('maestro.job.class_map', function (Container $container) {
+            $map = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
+                if (!isset($attrs['job'])) {
+                    throw new RuntimeException(sprintf(
+                        'Job handler service "%s" must specify a "job" '.
+                        'attribute during registation with the FQN of the job it '.
+                        'handles',
+                        $serviceId
+                    ));
+                }
+
+                if (!isset($attrs['type'])) {
+                    continue;
+                }
+
+                $map[$attrs['type']] = $attrs['job'];
+            }
+
+            return $map;
+        });
         $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
             $queueModifiers = [];
             return new RealQueueDispatcher(
@@ -163,7 +187,6 @@ class MaestroExtension implements Extension
                 $container->get(self::SERVICE_CONSOLE_MANAGER)
             );
         }, [ self::TAG_JOB_HANDLER => [
-            'item' => 'process',
             'job' => Process::class
         ]]);
 
@@ -172,8 +195,17 @@ class MaestroExtension implements Extension
                 $container->get(self::SERVICE_WORKSPACE)
             );
         }, [ self::TAG_JOB_HANDLER => [
-            'item' => 'initialize',
+            'type' => 'initialize',
             'job' => InitializePackage::class,
+        ]]);
+
+        $container->register('maestro.adapter.amp.handler.package_command', function (Container $container) {
+            return new PackageProcessHandler(
+                $container->get(self::SERVICE_WORKSPACE)
+            );
+        }, [ self::TAG_JOB_HANDLER => [
+            'type' => 'command',
+            'job' => PackageProcess::class,
         ]]);
 
         $container->register(self::SERVICE_APPLY_TEMPLATE_HANDLER, function (Container $container) {
@@ -184,7 +216,7 @@ class MaestroExtension implements Extension
                 $container->getParameter(self::PARAM_PARAMETERS)
             );
         }, [ self::TAG_JOB_HANDLER => [
-            'item' => 'template',
+            'type' => 'template',
             'job' => ApplyTemplate::class
         ]]);
     }

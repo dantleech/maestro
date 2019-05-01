@@ -25,10 +25,16 @@ EOT
                     'manifest' => [
                         [
                             'type' => 'initialize',
-                            'url' => $this->packageUrl('one'),
+                            'parameters' => [
+                                'url' => $this->packageUrl('one'),
+                            ]
                         ],
                         'README.md' => [
                             'type' => 'template',
+                            'parameters' => [
+                                'from' => 'README.md',
+                                'to' => 'README.md',
+                            ]
                         ]
                     ]
                 ]

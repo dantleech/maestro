@@ -23,7 +23,7 @@ class Manifest implements IteratorAggregate
         $items = [];
         foreach ($manifest as $name => $item) {
             $item['name'] = $name;
-            $items[$name] = new ManifestItem($name, $item);
+            $items[$name] = Instantiator::create()->instantiate(ManifestItem::class, $item);
         }
 
         return new self($items);

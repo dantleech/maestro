@@ -12,12 +12,18 @@ class ManifestItem
     /**
      * @var array
      */
-    private $parameters;
+    private $parameters = [];
 
-    public function __construct(string $type, array $parameters)
+    /**
+     * @var string
+     */
+    private $name;
+
+    public function __construct(string $name, string $type, array $parameters = [])
     {
         $this->type = $type;
         $this->parameters = $parameters;
+        $this->name = $name;
     }
 
     public function type(): string

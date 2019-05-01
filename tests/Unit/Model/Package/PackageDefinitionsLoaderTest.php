@@ -49,7 +49,9 @@ class PackageDefinitionsLoaderTest extends TestCase
                 'manifest' => [
                     'bar' => [
                         'type' => 'template',
-                        'source' => 'baz'
+                        'parameters' => [
+                            'from' => 'baz'
+                        ]
                     ],
                 ]
             ]
@@ -59,7 +61,9 @@ class PackageDefinitionsLoaderTest extends TestCase
                 'manifest' => [
                     'bar' => [
                         'type' => 'template',
-                        'source' => 'boo'
+                        'parameters' => [
+                            'from' => 'boo'
+                        ]
                     ],
                     'foo' => []
                 ],
@@ -68,9 +72,7 @@ class PackageDefinitionsLoaderTest extends TestCase
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
         $this->assertEquals([
-            'source'=>'baz',
-            'name' => 'bar',
-            'type' => 'template',
+            'from'=>'baz',
         ], $definitions->get('foobar/barfoo')->manifest()->get('bar')->parameters());
     }
 }

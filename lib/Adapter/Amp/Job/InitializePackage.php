@@ -23,11 +23,29 @@ class InitializePackage implements Job
      */
     private $purge;
 
-    public function __construct(Queue $queue, PackageDefinition $packageDefinition, bool $purge = false)
+    /**
+     * @var string
+     */
+    private $url;
+
+    /**
+     * @var array
+     */
+    private $commands;
+
+    public function __construct(
+        Queue $queue,
+        PackageDefinition $packageDefinition,
+        string $url = null,
+        bool $purge = false,
+        array $commands = []
+    )
     {
         $this->packageDefinition = $packageDefinition;
         $this->queue = $queue;
         $this->purge = $purge;
+        $this->url = $url;
+        $this->commands = $commands;
     }
 
     public function packageDefinition(): PackageDefinition
@@ -48,5 +66,15 @@ class InitializePackage implements Job
     public function purge(): bool
     {
         return $this->purge;
+    }
+
+    public function url(): ?string
+    {
+        return $this->url;
+    }
+
+    public function commands(): array
+    {
+        return $this->commands;
     }
 }

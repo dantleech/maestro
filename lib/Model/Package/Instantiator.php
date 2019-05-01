@@ -14,7 +14,7 @@ class Instantiator
         return new self();
     }
 
-    public function instantiate(string $className, array $data)
+    public function instantiate(string $className, array $data, array $optionalData = [])
     {
         $class = new ReflectionClass($className);
 
@@ -24,6 +24,7 @@ class Instantiator
 
         $parameters = $this->mapParameters($class);
         $this->assertCorrectKeys($data, $parameters, $className);
+        $data = array_merge($data, $optionalData);
         $this->assertRequiredKeys($data, $parameters, $className);
         $data = $this->mergeDefaults($parameters, $data);
 

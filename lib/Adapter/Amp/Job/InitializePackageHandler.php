@@ -4,6 +4,7 @@ namespace Maestro\Adapter\Amp\Job;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Adapter\Amp\Job\InitializePackage;
 use Maestro\Model\Package\Workspace;
 
 final class InitializePackageHandler
@@ -34,10 +35,10 @@ final class InitializePackageHandler
         }
 
         $jobs = [
-            new Process($this->workspace->path(), sprintf('git clone %s %s', $package->url(), $packagePath), $package->consoleId())
+            new Process($this->workspace->path(), sprintf('git clone %s %s', $this->resolveUrl($initJob), $packagePath), $package->consoleId())
         ];
 
-        foreach ($initJob->packageDefinition()->initialize() as $initCommand) {
+        foreach ($initJob->commands() as $initCommand) {
             $jobs[] = new Process($packagePath, $initCommand, $package->consoleId());
         }
 
@@ -46,5 +47,14 @@ final class InitializePackageHandler
         }
 
         return new Success();
+    }
+
+    private function resolveUrl(InitializePackage $initJob): string
+    {
+        if ($initJob->url()) {
+            return $initJob->url();
+        }
+
+        return 'git@github.com:'. $initJob->packageDefinition()->name();
     }
 }

@@ -31,6 +31,7 @@ class PackageDefinition
 
     public function __construct(
         string $name,
+        array $initialize = [],
         array $manifest = [],
         array $parameters = [],
         string $prototype = null
@@ -40,6 +41,7 @@ class PackageDefinition
         $this->manifest = Manifest::fromArray($manifest);
         $this->parameters = $parameters;
         $this->prototype = $prototype;
+        $this->initialize = $initialize;
     }
 
     public function name(): string
@@ -78,5 +80,10 @@ class PackageDefinition
     public function prototype(): string
     {
         return $this->prototype;
+    }
+
+    public function initialize(): array
+    {
+        return $this->initialize;
     }
 }

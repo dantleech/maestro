@@ -40,7 +40,6 @@ class ExecuteCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_COMMAND, InputArgument::REQUIRED, 'Command to run on repositories');
-        $this->addOption(self::OPTION_RESET, null, InputOption::VALUE_NONE, 'Reset the package repositories');
         $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)');
     }
 
@@ -48,7 +47,6 @@ class ExecuteCommand extends Command
     {
         $statuses = $this->commandRunner->run(
             (string) $input->getArgument(self::ARG_COMMAND),
-            (bool) $input->getOption(self::OPTION_RESET),
             (string) $input->getOption(self::OPTION_QUERY)
         );
 

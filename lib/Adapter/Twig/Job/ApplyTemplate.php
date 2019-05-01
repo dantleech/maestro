@@ -23,9 +23,9 @@ class ApplyTemplate implements Job
      */
     private $to;
 
-    public function __construct(PackageDefinition $package, string $from, string $to)
+    public function __construct(PackageDefinition $packageDefinition, string $from, string $to)
     {
-        $this->package = $package;
+        $this->package = $packageDefinition;
         $this->from = $from;
         $this->to = $to;
     }

@@ -18,7 +18,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ApplyCommand extends Command
 {
     const ARG_COMMAND = 'update';
-    const OPTION_RESET = 'reset';
     const OPTION_QUERY = 'query';
 
     /**
@@ -40,14 +39,12 @@ class ApplyCommand extends Command
 
     protected function configure()
     {
-        $this->addOption(self::OPTION_RESET, null, InputOption::VALUE_NONE, 'Reset the package repositories');
         $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $statuses = $this->applicator->apply(
-            (bool) $input->getOption(self::OPTION_RESET),
             (string) $input->getOption(self::OPTION_QUERY)
         );
 

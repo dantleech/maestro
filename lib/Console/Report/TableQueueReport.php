@@ -25,7 +25,7 @@ class TableQueueReport implements QueueReport
                     '%ds %s => %s',
                     $interval->s + ($interval->m * 60),
                     $status->success ? '✔' : '✘',
-                    $status->code,
+                    $status->code
                     ),
                 substr(trim($status->message), 0, 80),
             ]);

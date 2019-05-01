@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Integration;
 
+use Maestro\Extension\Template\TemplateExtension;
 use Maestro\MaestroExtension;
 use PHPUnit\Framework\TestCase;
 use Phpactor\Container\Container;
@@ -29,10 +30,11 @@ class IntegrationTestCase extends TestCase
         return PhpactorContainer::fromExtensions([
             ConsoleExtension::class,
             MaestroExtension::class,
+            TemplateExtension::class,
 
         ], [
             MaestroExtension::PARAM_WORKSPACE_PATH => $this->packageWorkspacePath(),
-            MaestroExtension::PARAM_TEMPLATE_PATHS => [
+            TemplateExtension::PARAM_TEMPLATE_PATHS => [
                 $this->workspace()->path('/')
             ]
         ]);

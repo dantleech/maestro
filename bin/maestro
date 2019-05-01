@@ -2,6 +2,7 @@
 <?php
 
 use Maestro\Extension\CoreExtension\CoreExtension;
+use Maestro\Extension\Template\TemplateExtension;
 use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Phpactor\ConfigLoader\Core\ConfigLoader;
 use Phpactor\Container\PhpactorContainer;
@@ -34,7 +35,7 @@ if (false !== $configFile) {
 $container = PhpactorContainer::fromExtensions([
     ConsoleExtension::class,
     MaestroExtension::class,
-
+    TemplateExtension::class,
 ], $configBuilder->loader()->load());
 
 $application = new Application();

@@ -3,7 +3,7 @@
 namespace Maestro\Service;
 
 use Maestro\Adapter\Amp\Job\InitializePackage;
-use Maestro\Adapter\Twig\Job\ApplyTemplate;
+use Maestro\Extension\TemplateExtension\ApplyTemplate;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;

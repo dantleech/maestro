@@ -1,14 +1,14 @@
 <?php
 
-namespace Maestro\Adapter\Twig\Job;
+namespace Maestro\Extension\Template\Job;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Model\Console\ConsoleManager;
 use Maestro\Model\Job\QueueDispatcher\Exception\JobFailure;
 use Maestro\Model\Package\Workspace;
 use Twig\Environment;
+use Maestro\Extension\Template\Job\ApplyTemplate;
 
 class ApplyTemplateHandler
 {

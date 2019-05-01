@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Adapter\Twig\Job;
+namespace Maestro\Extension\Template\Job;
 
 use Maestro\Model\Job\Job;
 use Maestro\Model\Package\ManifestItem;

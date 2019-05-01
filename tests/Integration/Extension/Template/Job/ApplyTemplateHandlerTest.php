@@ -1,9 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Integration\Adapter\Twig\Job;
+namespace Maestro\Tests\Integration\Extension\Template\Job;
 
-use Maestro\Adapter\Twig\Job\ApplyTemplate;
-use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
+use Maestro\Extension\Template\Job\ApplyTemplate;
+use Maestro\Extension\Template\Job\ApplyTemplateHandler;
+use Maestro\Extension\Template\TemplateExtension;
 use Maestro\MaestroExtension;
 use Maestro\Model\Package\Instantiator;
 use Maestro\Model\Package\ManifestItem;
@@ -122,7 +123,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $handler = new ApplyTemplateHandler(
             $container->get(MaestroExtension::SERVICE_CONSOLE_MANAGER),
             $container->get(MaestroExtension::SERVICE_WORKSPACE),
-            $container->get(MaestroExtension::SERVICE_TWIG),
+            $container->get(TemplateExtension::SERVICE_TWIG),
             $globalParameters
         );
         return $handler;

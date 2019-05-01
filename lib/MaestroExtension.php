@@ -16,18 +16,14 @@ use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use Maestro\Adapter\Amp\Job\ProcessHandler;
 use RuntimeException;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
 use Maestro\Adapter\Amp\Job\InitializePackageHandler;
 use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
-use Maestro\Adapter\Twig\Job\ApplyTemplateHandler;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
 use Maestro\Adapter\Amp\Job\InitializePackage;
-use Maestro\Adapter\Twig\Job\ApplyTemplate;
 use Maestro\Adapter\Amp\Job\Process;
 use Maestro\Adapter\Amp\Job\PackageProcess;
 use Maestro\Adapter\Amp\Job\PackageProcessHandler;
@@ -46,13 +42,10 @@ class MaestroExtension implements Extension
     const PARAM_WORKSPACE_PATH = 'workspace_path';
     const PARAM_PACKAGES = 'packages';
     const PARAM_PARAMETERS = 'parameters';
-    const PARAM_TEMPLATE_PATHS = 'template_paths';
 
     const TAG_JOB_HANDLER = 'maestro.job_handler';
 
-    const SERVICE_TWIG = 'maestro.twig';
     const SERVICE_CONSOLE_QUEUE_REPORT = 'maestro.console.queue_report';
-    const SERVICE_APPLY_TEMPLATE_HANDLER = 'maestro.adapter.twig.handler.apply_template';
     const PARAM_PROTOTYPES = 'prototypes';
 
     /**
@@ -66,9 +59,6 @@ class MaestroExtension implements Extension
             self::PARAM_WORKSPACE_PATH => $xdg->getHomeDataDir() . '/maestro',
             self::PARAM_PARAMETERS => [],
             self::PARAM_PROTOTYPES => [],
-            self::PARAM_TEMPLATE_PATHS => [
-                getcwd()
-            ]
         ]);
         $schema->setTypes([
             self::PARAM_PACKAGES => 'array'
@@ -84,8 +74,6 @@ class MaestroExtension implements Extension
         $this->loadPackage($container);
         $this->loadConsole($container);
         $this->loadJob($container);
-
-        $this->loadTwig($container);
     }
 
     private function loadApplication(ContainerBuilder $container)
@@ -207,18 +195,6 @@ class MaestroExtension implements Extension
             'type' => 'command',
             'job' => PackageProcess::class,
         ]]);
-
-        $container->register(self::SERVICE_APPLY_TEMPLATE_HANDLER, function (Container $container) {
-            return new ApplyTemplateHandler(
-                $container->get(self::SERVICE_CONSOLE_MANAGER),
-                $container->get(self::SERVICE_WORKSPACE),
-                $container->get(self::SERVICE_TWIG),
-                $container->getParameter(self::PARAM_PARAMETERS)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'type' => 'template',
-            'job' => ApplyTemplate::class
-        ]]);
     }
 
     private function loadPackage(ContainerBuilder $container)
@@ -231,20 +207,6 @@ class MaestroExtension implements Extension
         });
         $container->register(self::SERVICE_WORKSPACE, function (Container $container) {
             return Workspace::create($container->getParameter(self::PARAM_WORKSPACE_PATH));
-        });
-    }
-
-    private function loadTwig(ContainerBuilder $container)
-    {
-        $container->register(self::SERVICE_TWIG, function (Container $container) {
-            return new Environment(
-                new FilesystemLoader($container->getParameter(self::PARAM_TEMPLATE_PATHS)),
-                [
-                    'strict_variables' => true,
-                    'auto_reload' => false,
-                    'cache' => false,
-                ]
-            );
         });
     }
 }

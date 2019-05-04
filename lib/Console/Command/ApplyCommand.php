@@ -47,7 +47,6 @@ class ApplyCommand extends Command
     protected function configure()
     {
         $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
-        $this->addOption('progress', 'p', InputOption::VALUE_REQUIRED, 'Progress', 'silent');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

@@ -4,15 +4,13 @@ namespace Maestro\Console\Progress;
 
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\Queues;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
-class GraphProgress implements Progress
+class SimpleProgress implements Progress
 {
     private $sizes = [];
 
     /**
-     * @param Queues<Queue> $queues 
+     * @param Queues<Queue> $queues
      */
     public function render(Queues $queues): ?string
     {

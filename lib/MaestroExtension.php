@@ -23,7 +23,7 @@ use Maestro\Console\Report\TableQueueReport;
 use Maestro\Model\Tty\TtyManager\NullTtyManager;
 use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Progress\SilentProgress;
-use Maestro\Console\Progress\GraphProgress;
+use Maestro\Console\Progress\SimpleProgress;
 
 class MaestroExtension implements Extension
 {
@@ -145,7 +145,7 @@ class MaestroExtension implements Extension
         }, [ self::TAG_PROGRESS => [ 'name' => 'silent' ]]);
 
         $container->register('maestro.console.progress.graph', function (Container $container) {
-            return new GraphProgress();
+            return new SimpleProgress();
         }, [ self::TAG_PROGRESS => [ 'name' => 'graph' ]]);
     }
 

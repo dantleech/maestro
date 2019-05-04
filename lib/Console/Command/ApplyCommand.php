@@ -54,6 +54,7 @@ class ApplyCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        assert($output instanceof ConsoleOutputInterface);
         $queues = Queues::create();
         $progress = $this->registry->get(Cast::toString($input->getOption('progress')));
 

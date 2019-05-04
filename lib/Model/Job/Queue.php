@@ -31,6 +31,15 @@ class Queue implements Countable
         $this->jobs[] = $job;
     }
 
+    public function head(): ?Job
+    {
+        if (!isset($this->jobs[0])) {
+            return null;
+        }
+
+        return $this->jobs[0];
+    }
+
     public function dequeue(): ?Job
     {
         return array_shift($this->jobs);

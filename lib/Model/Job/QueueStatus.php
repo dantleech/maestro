@@ -25,12 +25,12 @@ class QueueStatus
     public $message = null;
 
     /**
-     * @var DateTimeImmutable
+     * @var DateTimeImmutable|null
      */
     public $start;
 
     /**
-     * @var DateTimeImmutable
+     * @var DateTimeImmutable|null
      */
     public $end;
 }

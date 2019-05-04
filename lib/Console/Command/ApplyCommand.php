@@ -2,6 +2,8 @@
 
 namespace Maestro\Console\Command;
 
+use Amp\Loop;
+use Maestro\Console\Progress\Progress;
 use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Report\QueueReport;
 use Maestro\Console\Util\Cast;
@@ -11,6 +13,7 @@ use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ApplyCommand extends Command
@@ -54,11 +57,26 @@ class ApplyCommand extends Command
         $queues = Queues::create();
         $progress = $this->registry->get(Cast::toString($input->getOption('progress')));
 
+        $progressOutput = $output->section();
+        $this->renderProgress($progress, $queues, $progressOutput);
+        Loop::repeat(100, function () use ($progress, $progressOutput, $queues) {
+            $this->renderProgress($progress, $queues, $progressOutput);
+        });
+
         $statuses = $this->applicator->apply(
             $queues,
             Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 
+        $this->renderProgress($progress, $queues, $progressOutput);
         $this->report->render($output, $statuses);
+    }
+
+    private function renderProgress(Progress $progress, Queues $queues, $progressOutput)
+    {
+        $rendered = $progress->render($queues);
+        if (null !== $rendered) {
+            $progressOutput->overwrite($progress->render($queues));
+        }
     }
 }

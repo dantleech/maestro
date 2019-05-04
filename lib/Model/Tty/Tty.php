@@ -1,8 +1,8 @@
 <?php
 
-namespace Maestro\Model\Console;
+namespace Maestro\Model\Tty;
 
-interface Console
+interface Tty
 {
     public function write(string $bytes): void;
 

@@ -46,7 +46,7 @@ final class CommandRunner
             $queue = $queues->get($package->syncId());
 
             $queue->enqueue(
-                new Process($workingDirectory, $command, $package->consoleId())
+                new Process($workingDirectory, $command, $package->ttyId())
             );
         }
 

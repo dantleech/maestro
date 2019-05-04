@@ -5,8 +5,8 @@ namespace Maestro\Tests\Integration\Amp\Job;
 use Maestro\Extension\Process\Job\Exception\ProcessNonZeroExitCode;
 use Maestro\Extension\Process\Job\Process;
 use Maestro\Extension\Process\Job\ProcessHandler;
-use Maestro\Model\Console\Console;
-use Maestro\Model\Console\ConsoleManager;
+use Maestro\Model\Tty\Tty;
+use Maestro\Model\Tty\TtyManager;
 use Maestro\Model\Job\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -28,9 +28,9 @@ class ProcessHandlerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->consoleManger = $this->prophesize(ConsoleManager::class);
-        $this->stdout = $this->prophesize(Console::class);
-        $this->stderr = $this->prophesize(Console::class);
+        $this->consoleManger = $this->prophesize(TtyManager::class);
+        $this->stdout = $this->prophesize(Tty::class);
+        $this->stderr = $this->prophesize(Tty::class);
 
         $this->consoleManger->stderr(Argument::any())->willReturn($this->stderr->reveal());
         $this->consoleManger->stdout(Argument::any())->willReturn($this->stdout->reveal());
@@ -48,7 +48,7 @@ class ProcessHandlerTest extends TestCase
             [
                 'workingDirectory' => __DIR__,
                 'command' => 'echo Hello',
-                'consoleId' => 'foo',
+                'ttyId' => 'foo',
             ]
         );
         self::assertEquals('Hello', $lastLine, 'Returned last line');
@@ -66,7 +66,7 @@ class ProcessHandlerTest extends TestCase
             [
                 'workingDirectory' => __DIR__,
                 'command' => 'thisisnotacommand',
-                'consoleId' => 'foo',
+                'ttyId' => 'foo',
             ]
         );
     }

@@ -6,7 +6,7 @@ use Maestro\Extension\Template\Job\ApplyTemplate;
 use Maestro\Extension\Template\Job\ApplyTemplateHandler;
 use Maestro\Extension\Template\TemplateExtension;
 use Maestro\MaestroExtension;
-use Maestro\Model\Console\ConsoleManager\NullConsoleManager;
+use Maestro\Model\Tty\TtyManager\NullTtyManager;
 use Maestro\Model\Instantiator;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Tests\Integration\IntegrationTestCase;
@@ -120,7 +120,7 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
     {
         $container = $this->container();
         $handler = new ApplyTemplateHandler(
-            new NullConsoleManager(),
+            new NullTtyManager(),
             $container->get(MaestroExtension::SERVICE_WORKSPACE),
             $container->get(TemplateExtension::SERVICE_TWIG),
             $globalParameters

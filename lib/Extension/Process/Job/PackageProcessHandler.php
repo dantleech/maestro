@@ -24,7 +24,7 @@ class PackageProcessHandler
             new Process(
                 $this->workspace->package($process->packageDefinition())->path(),
                 $process->command(),
-                $process->packageDefinition()->consoleId()
+                $process->packageDefinition()->ttyId()
             )
         );
 

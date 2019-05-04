@@ -41,7 +41,7 @@ final class CheckoutHandler
                     $this->resolveUrl($initJob),
                     $packagePath
                 ),
-                $package->consoleId()
+                $package->ttyId()
             )
         );
 

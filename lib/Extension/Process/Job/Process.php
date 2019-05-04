@@ -19,13 +19,13 @@ class Process implements Job
     /**
      * @var string
      */
-    private $consoleId;
+    private $ttyId;
 
-    public function __construct(string $workingDirectory, string $command, string $consoleId)
+    public function __construct(string $workingDirectory, string $command, string $ttyId)
     {
         $this->command = $command;
         $this->workingDirectory = $workingDirectory;
-        $this->consoleId = $consoleId;
+        $this->ttyId = $ttyId;
     }
 
     public function command(): string
@@ -38,8 +38,8 @@ class Process implements Job
         return $this->workingDirectory;
     }
 
-    public function consoleId()
+    public function ttyId()
     {
-        return $this->consoleId;
+        return $this->ttyId;
     }
 }

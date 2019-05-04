@@ -6,7 +6,7 @@ use Amp\Process\Process as AmpProcess;
 use Amp\Promise;
 use Generator;
 use Maestro\Extension\Process\Job\Exception\ProcessNonZeroExitCode;
-use Maestro\Model\Console\ConsoleManager;
+use Maestro\Model\Tty\TtyManager;
 use Maestro\Model\Util\StringUtil;
 
 class ProcessHandler
@@ -14,19 +14,19 @@ class ProcessHandler
     const MAX_LASTLINE_LENGTH = 255;
 
     /**
-     * @var ConsoleManager
+     * @var TtyManager
      */
-    private $consoleManager;
+    private $ttyManager;
 
-    public function __construct(ConsoleManager $consoleManager)
+    public function __construct(TtyManager $ttyManager)
     {
-        $this->consoleManager = $consoleManager;
+        $this->ttyManager = $ttyManager;
     }
 
     public function __invoke(Process $job): Promise
     {
         return \Amp\call(function (Process $job) {
-            $this->consoleManager->stdout($job->consoleId())->writeln('# ' . $job->command());
+            $this->ttyManager->stdout($job->ttyId())->writeln('# ' . $job->command());
             $process = new AmpProcess(
                 $job->command(),
                 $job->workingDirectory()
@@ -53,25 +53,25 @@ class ProcessHandler
         $outs = [];
 
         foreach ([
-            [ $process->getStdout(), $this->consoleManager->stdout($job->consoleId()) ],
-            [ $process->getStderr(), $this->consoleManager->stderr($job->consoleId()) ],
-        ] as $streamConsole) {
-            [ $stream, $console ] = $streamConsole;
+            [ $process->getStdout(), $this->ttyManager->stdout($job->ttyId()) ],
+            [ $process->getStderr(), $this->ttyManager->stderr($job->ttyId()) ],
+        ] as $streamTty) {
+            [ $stream, $tty ] = $streamTty;
 
-            $outs[] = \Amp\call(function () use ($stream, $console) {
+            $outs[] = \Amp\call(function () use ($stream, $tty) {
                 $buffer = '';
                 $lastLine = '';
                 while (null !== $chunk = yield $stream->read()) {
                     $buffer .= $chunk;
                     if (false !== $offset = strrpos($buffer, "\n")) {
-                        $console->writeln(trim(substr($buffer, 0, $offset)));
+                        $tty->writeln(trim(substr($buffer, 0, $offset)));
                         $lastLine = StringUtil::lastLine($buffer);
                         $buffer = substr($buffer, $offset + 1);
                     }
                 }
 
                 if ($buffer) {
-                    $console->write($buffer);
+                    $tty->write($buffer);
                 }
 
                 return $lastLine;

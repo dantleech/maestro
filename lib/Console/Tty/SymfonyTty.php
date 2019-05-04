@@ -1,11 +1,11 @@
 <?php
 
-namespace Maestro\Console;
+namespace Maestro\Console\Tty;
 
-use Maestro\Model\Console\Console;
+use Maestro\Model\Tty\Tty;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SymfonyConsole implements Console
+class SymfonyTty implements Tty
 {
     /**
      * @var OutputInterface

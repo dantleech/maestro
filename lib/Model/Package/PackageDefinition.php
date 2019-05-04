@@ -53,7 +53,7 @@ class PackageDefinition
         return $this->name;
     }
 
-    public function consoleId(): string
+    public function ttyId(): string
     {
         return $this->name;
     }

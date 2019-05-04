@@ -4,7 +4,7 @@ namespace Maestro\Extension\Template\Job;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Model\Console\ConsoleManager;
+use Maestro\Model\Tty\TtyManager;
 use Maestro\Model\Job\Exception\JobFailure;
 use Maestro\Model\Package\Workspace;
 use Twig\Environment;
@@ -12,9 +12,9 @@ use Twig\Environment;
 class ApplyTemplateHandler
 {
     /**
-     * @var ConsoleManager
+     * @var TtyManager
      */
-    private $consoleManager;
+    private $ttyManager;
 
     /**
      * @var Workspace
@@ -32,12 +32,12 @@ class ApplyTemplateHandler
     private $globalParameters;
 
     public function __construct(
-        ConsoleManager $consoleManager,
+        TtyManager $ttyManager,
         Workspace $workspace,
         Environment $twig,
         array $globalParameters
     ) {
-        $this->consoleManager = $consoleManager;
+        $this->ttyManager = $ttyManager;
         $this->workspace = $workspace;
         $this->twig = $twig;
         $this->globalParameters = $globalParameters;
@@ -49,7 +49,7 @@ class ApplyTemplateHandler
         $rendered = $this->twig->render($job->from(), $this->buildParameters($job));
         $targetPath = $packageWorkspace->path() . '/' . $job->to();
 
-        $this->consoleManager->stdout($job->package()->consoleId())->writeln(sprintf(
+        $this->ttyManager->stdout($job->package()->ttyId())->writeln(sprintf(
             'Applying template "%s" to "%s"',
             $job->from(),
             $targetPath

@@ -1,17 +1,17 @@
 <?php
 
-namespace Maestro\Console;
+namespace Maestro\Console\Tty;
 
-use Maestro\Model\Console\Console;
-use Maestro\Model\Console\ConsoleManager;
+use Maestro\Model\Tty\Tty;
+use Maestro\Model\Tty\TtyManager;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SymfonyConsoleManager implements ConsoleManager
+class SymfonyTtyManager implements TtyManager
 {
     private $output;
 
     /**
-     * @var Console[]
+     * @var Tty[]
      */
     private $consoles = [];
 
@@ -28,17 +28,17 @@ class SymfonyConsoleManager implements ConsoleManager
         $this->output = $output;
     }
 
-    public function stdout(string $id): Console
+    public function stdout(string $id): Tty
     {
         return $this->get($id, 'stdout');
     }
 
-    public function stderr(string $id): Console
+    public function stderr(string $id): Tty
     {
         return $this->get($id, 'stderr');
     }
 
-    private function get(string $id, string $role): Console
+    private function get(string $id, string $role): Tty
     {
         $identifier = $id.$role;
 
@@ -50,7 +50,7 @@ class SymfonyConsoleManager implements ConsoleManager
             $this->assignedColors[$id] = $this->colors[$this->colorIndex++ %count($this->colors)];
         }
 
-        $this->consoles[$identifier] = new SymfonyConsole($id, $this->output, $id, $this->assignedColors[$id]);
+        $this->consoles[$identifier] = new SymfonyTty($id, $this->output, $id, $this->assignedColors[$id]);
 
         return $this->consoles[$identifier];
     }

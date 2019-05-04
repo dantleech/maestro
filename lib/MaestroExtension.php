@@ -8,7 +8,7 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Maestro\Console\Command\ExecuteCommand;
 use Maestro\Model\Maestro;
-use Maestro\Console\SymfonyConsoleManager;
+use Maestro\Console\Tty\SymfonyTtyManager;
 use Phpactor\MapResolver\Resolver;
 use Maestro\Service\CommandRunner;
 use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
@@ -20,7 +20,7 @@ use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
-use Maestro\Model\Console\ConsoleManager\NullConsoleManager;
+use Maestro\Model\Tty\TtyManager\NullTtyManager;
 
 class MaestroExtension implements Extension
 {
@@ -109,10 +109,10 @@ class MaestroExtension implements Extension
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
             if ($container->get(ConsoleExtension::SERVICE_OUTPUT)->isVerbose()) {
-                return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
+                return new SymfonyTtyManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
             }
 
-            return new NullConsoleManager();
+            return new NullTtyManager();
         });
 
         $container->register(self::SERVICE_CONSOLE_QUEUE_REPORT, function (Container $container) {

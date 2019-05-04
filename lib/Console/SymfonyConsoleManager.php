@@ -4,19 +4,17 @@ namespace Maestro\Console;
 
 use Maestro\Model\Console\Console;
 use Maestro\Model\Console\ConsoleManager;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class SymfonyConsoleManager implements ConsoleManager
 {
-    /**
-     * @var ConsoleOutputInterface
-     */
     private $output;
 
     /**
      * @var Console[]
      */
     private $consoles = [];
+
     private $assignedColors = [];
 
     private $colors = [
@@ -25,7 +23,7 @@ class SymfonyConsoleManager implements ConsoleManager
 
     private $colorIndex = 0;
 
-    public function __construct(ConsoleOutputInterface $output)
+    public function __construct(OutputInterface $output)
     {
         $this->output = $output;
     }

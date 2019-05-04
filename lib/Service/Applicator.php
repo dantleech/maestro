@@ -2,10 +2,13 @@
 
 namespace Maestro\Service;
 
+use Maestro\Model\Job\Job;
+use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Instantiator;
+use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Package\Workspace;
@@ -62,18 +65,23 @@ class Applicator
                 }
 
                 $queue->enqueue(
-                    Instantiator::create()->instantiate(
-                        $this->jobClassMap[$item->type()],
-                        $item->parameters(),
-                        [
-                            'queue' => $queue,
-                            'packageDefinition' => $package,
-                        ]
-                    )
+                    $this->createJob($item, $queue, $package)
                 );
             }
         }
 
         return $this->queueDispatcher->dispatch($queues);
+    }
+
+    private function createJob(ManifestItem $item, Queue $queue, PackageDefinition $package): Job
+    {
+        return Instantiator::create()->instantiate(
+            $this->jobClassMap[$item->type()],
+            $item->parameters(),
+            [
+                'queue' => $queue,
+                'packageDefinition' => $package,
+            ]
+        );
     }
 }

@@ -20,6 +20,7 @@ use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
+use Maestro\Model\Console\ConsoleManager\NullConsoleManager;
 
 class MaestroExtension implements Extension
 {
@@ -39,6 +40,8 @@ class MaestroExtension implements Extension
 
     const SERVICE_CONSOLE_QUEUE_REPORT = 'maestro.console.queue_report';
     const PARAM_PROTOTYPES = 'prototypes';
+    const SERVICE_APPLICATOR = 'maestro.application.applicator';
+    const SERVICE_COMMAND_RUNNER = 'maestro.application.command_runner';
 
     /**
      * {@inheritDoc}
@@ -70,7 +73,7 @@ class MaestroExtension implements Extension
 
     private function loadApplication(ContainerBuilder $container)
     {
-        $container->register('maestro.application.command_runner', function (Container $container) {
+        $container->register(self::SERVICE_COMMAND_RUNNER, function (Container $container) {
             return new CommandRunner(
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
                 $container->get(self::SERVICE_QUEUE_MANAGER),
@@ -78,7 +81,7 @@ class MaestroExtension implements Extension
             );
         });
 
-        $container->register('maestro.application.applicator', function (Container $container) {
+        $container->register(self::SERVICE_APPLICATOR, function (Container $container) {
             return new Applicator(
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
                 $container->get(self::SERVICE_QUEUE_MANAGER),
@@ -92,20 +95,24 @@ class MaestroExtension implements Extension
     {
         $container->register('maestro.console.command.execute', function (Container $container) {
             return new ExecuteCommand(
-                $container->get('maestro.application.command_runner'),
+                $container->get(self::SERVICE_COMMAND_RUNNER),
                 $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'execute']]);
 
         $container->register('maestro.console.command.apply', function (Container $container) {
             return new ApplyCommand(
-                $container->get('maestro.application.applicator'),
+                $container->get(self::SERVICE_APPLICATOR),
                 $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'apply']]);
 
         $container->register(self::SERVICE_CONSOLE_MANAGER, function (Container $container) {
-            return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
+            if ($container->get(ConsoleExtension::SERVICE_OUTPUT)->isVerbose()) {
+                return new SymfonyConsoleManager($container->get(ConsoleExtension::SERVICE_OUTPUT));
+            }
+
+            return new NullConsoleManager();
         });
 
         $container->register(self::SERVICE_CONSOLE_QUEUE_REPORT, function (Container $container) {

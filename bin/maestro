@@ -48,4 +48,8 @@ $application->getDefinition()->addOption(
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );
-$application->run();
+$application->run(
+    $container->get(ConsoleExtension::SERVICE_INPUT),
+    $container->get(ConsoleExtension::SERVICE_OUTPUT)
+);
+

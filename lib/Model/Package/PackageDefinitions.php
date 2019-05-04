@@ -10,13 +10,25 @@ use Maestro\Model\Instantiator;
 class PackageDefinitions implements IteratorAggregate
 {
     /**
-     * @var array
+     * @var PackageDefinition[]
      */
     private $packages;
 
-    public function __construct(array $packages)
+    private function __construct(array $packages)
     {
         $this->packages = $packages;
+    }
+
+    public static function fromArray(array $definitions): PackageDefinitions
+    {
+        $packages = [];
+        foreach ($definitions as $packageName => $definition) {
+            $definition['name'] = $packageName;
+            $package = Instantiator::create()->instantiate(PackageDefinition::class, $definition);
+            $packages[$packageName] = $package;
+        }
+
+        return new self($packages);
     }
 
     public function names(): array
@@ -59,18 +71,6 @@ class PackageDefinitions implements IteratorAggregate
         }
 
         return $this->packages[$name];
-    }
-
-    public static function fromArray(array $definitions): PackageDefinitions
-    {
-        $packages = [];
-        foreach ($definitions as $packageName => $definition) {
-            $definition['name'] = $packageName;
-            $package = Instantiator::create()->instantiate(PackageDefinition::class, $definition);
-            $packages[$packageName] = $package;
-        }
-
-        return new self($packages);
     }
 
     /**

@@ -21,6 +21,8 @@ use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
 use Maestro\Console\Report\TableQueueReport;
 use Maestro\Model\Tty\TtyManager\NullTtyManager;
+use Maestro\Console\Progress\ProgressRegistry;
+use Maestro\Console\Progress\SilentProgress;
 
 class MaestroExtension implements Extension
 {
@@ -42,6 +44,8 @@ class MaestroExtension implements Extension
     const PARAM_PROTOTYPES = 'prototypes';
     const SERVICE_APPLICATOR = 'maestro.application.applicator';
     const SERVICE_COMMAND_RUNNER = 'maestro.application.command_runner';
+    const SERVICE_CONSOLE_PROGRESS_REGISTRY = 'maestro.console.progress_registry';
+    const TAG_PROGRESS = 'progress';
 
     /**
      * {@inheritDoc}
@@ -103,7 +107,8 @@ class MaestroExtension implements Extension
         $container->register('maestro.console.command.apply', function (Container $container) {
             return new ApplyCommand(
                 $container->get(self::SERVICE_APPLICATOR),
-                $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT)
+                $container->get(self::SERVICE_CONSOLE_QUEUE_REPORT),
+                $container->get(self::SERVICE_CONSOLE_PROGRESS_REGISTRY)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name'=> 'apply']]);
 
@@ -118,6 +123,25 @@ class MaestroExtension implements Extension
         $container->register(self::SERVICE_CONSOLE_QUEUE_REPORT, function (Container $container) {
             return new TableQueueReport();
         });
+
+        $container->register(self::SERVICE_CONSOLE_PROGRESS_REGISTRY, function (Container $container) {
+            $progressMap = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_PROGRESS) as $serviceId => $attrs) {
+                if (!isset($attrs['name'])) {
+                    throw new RuntimeException(sprintf(
+                        'Progres service "%s" must be registered with a "name" attribute',
+                        $serviceId
+                    ));
+                }
+                $progressMap[$attrs['name']] = $container->get($serviceId);
+            }
+
+            return new ProgressRegistry($progressMap);
+        });
+
+        $container->register('maestro.console.progress.silent', function (Container $container) {
+            return new SilentProgress();
+        }, [ self::TAG_PROGRESS => [ 'name' => 'silent' ]]);
     }
 
     private function loadJob(ContainerBuilder $container)

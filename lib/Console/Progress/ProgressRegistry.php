@@ -9,7 +9,7 @@ class ProgressRegistry
     /**
      * @var array
      */
-    private $progresses;
+    private $progresses = [];
 
     public function __construct(array $progressMap)
     {
@@ -23,7 +23,8 @@ class ProgressRegistry
         if (!isset($this->progresses[$name])) {
             throw new ProgressNotFound(sprintf(
                 'Progress "%s" not found, known progresses "%s"',
-                $name, implode('", "', array_keys($this->progresses))
+                $name,
+                implode('", "', array_keys($this->progresses))
             ));
         }
 

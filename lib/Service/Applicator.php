@@ -46,10 +46,8 @@ class Applicator
         $this->jobClassMap = $jobClassMap;
     }
 
-    public function apply(string $query): QueueStatuses
+    public function apply(Queues $queues, string $query): QueueStatuses
     {
-        $queues = Queues::create();
-
         foreach ($this->definitions->query($query) as $package) {
             assert($package instanceof PackageDefinition);
 

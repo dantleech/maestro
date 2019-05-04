@@ -2,8 +2,10 @@
 
 namespace Maestro\Console\Command;
 
+use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Report\QueueReport;
 use Maestro\Console\Util\Cast;
+use Maestro\Model\Job\Queues;
 use Maestro\Service\Applicator;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
@@ -26,21 +28,35 @@ class ApplyCommand extends Command
      */
     private $report;
 
-    public function __construct(Applicator $applicator, QueueReport $report)
-    {
+    /**
+     * @var ProgressRegistry
+     */
+    private $registry;
+
+    public function __construct(
+        Applicator $applicator,
+        QueueReport $report,
+        ProgressRegistry $registry
+    ) {
         parent::__construct();
         $this->applicator = $applicator;
         $this->report = $report;
+        $this->registry = $registry;
     }
 
     protected function configure()
     {
         $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
+        $this->addOption('progress', 'p', InputOption::VALUE_REQUIRED, 'Progress', 'silent');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $queues = Queues::create();
+        $progress = $this->registry->get(Cast::toString($input->getOption('progress')));
+
         $statuses = $this->applicator->apply(
+            $queues,
             Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 

@@ -43,4 +43,9 @@ class ApplyTemplate implements Job
     {
         return $this->from;
     }
+
+    public function description(): string
+    {
+        return sprintf('Applying template from "%s" to "%s"', $this->from, $this->to);
+    }
 }

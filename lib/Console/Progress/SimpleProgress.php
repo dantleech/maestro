@@ -21,10 +21,7 @@ class SimpleProgress implements Progress
         $this->monitor = $monitor;
     }
 
-    /**
-     * @param Queues<Queue> $queues
-     */
-    public function render(Queues $queues): ?string
+    public function render(): ?string
     {
         $output = [
             'Queue progress:',
@@ -33,11 +30,26 @@ class SimpleProgress implements Progress
 
         foreach ($this->monitor->report() as $queue) {
             $size = $this->resolveSize($queue);
+
+            if (false === $queue->isRunning()) {
+                $output[] = sprintf(
+                    '  [  ] <info>%-45s</> %s (<fg=magenta>%s</>)',
+                    $queue->id(),
+                    sprintf('%s/%s', $size - $queue->size(), $size),
+                    $queue->currentJob() ? $queue->currentJob()->description() : '',
+                );
+                continue;
+            }
+
+            $format = $queue->state()->isFailed() ? 'fg=white;bg=red' : 'fg=white;bg=green';
             $output[] = sprintf(
-                '  <info>%s</> %s',
-                $queue->id,
-                str_repeat('X', $size - $queue->size).
-                str_repeat('.', $queue->size)
+                '  [<%s>%s</>] <info>%-45s</> %s <%s>%s</>',
+                $format,
+                $queue->state()->isFailed() ? 'NO' : 'OK',
+                $queue->id(),
+                sprintf('%s/%s', $size - $queue->size(), $size),
+                $format,
+                $queue->currentJob() ? 'Error on: ' . $queue->currentJob()->description() : '',
             );
         }
 
@@ -46,10 +58,10 @@ class SimpleProgress implements Progress
 
     private function resolveSize(QueueStatus $queue)
     {
-        if (!isset($this->sizes[$queue->id])) {
-            $this->sizes[$queue->id] = $queue->size;
+        if (!isset($this->sizes[$queue->id()])) {
+            $this->sizes[$queue->id()] = $queue->size();
         }
 
-        return $this->sizes[$queue->id];
+        return $this->sizes[$queue->id()];
     }
 }

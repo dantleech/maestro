@@ -18,16 +18,16 @@ class TableQueueReport implements QueueReport
         
         foreach ($statuses as $status) {
             assert($status instanceof QueueStatus);
-            $interval = $status->start->diff($status->end);
+            $interval = $status->start()->diff($status->end());
             $table->addRow([
-                $status->id,
+                $status->id(),
                 sprintf(
                     '%ds %s => %s',
                     $interval->s + ($interval->m * 60),
-                    $status->success ? '✔' : '✘',
-                    $status->code
+                    $status->state(),
+                    $status->code()
                     ),
-                substr(trim($status->message), 0, 80),
+                substr(trim($status->message()), 0, 80),
             ]);
         }
         

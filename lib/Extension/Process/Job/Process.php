@@ -42,4 +42,9 @@ class Process implements Job
     {
         return $this->ttyId;
     }
+
+    public function description(): string
+    {
+        return $this->command;
+    }
 }

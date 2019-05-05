@@ -60,7 +60,7 @@ class ApplyCommand extends Command
 
         $progressOutput = $output->section();
         $this->renderProgress($progress, $queues, $progressOutput);
-        Loop::repeat(100, function () use ($progress, $progressOutput, $queues) {
+        Loop::repeat(500, function () use ($progress, $progressOutput, $queues) {
             $this->renderProgress($progress, $queues, $progressOutput);
         });
 
@@ -76,6 +76,7 @@ class ApplyCommand extends Command
     private function renderProgress(Progress $progress, Queues $queues, $progressOutput)
     {
         $rendered = $progress->render($queues);
+
         if (null !== $rendered) {
             $progressOutput->overwrite($progress->render($queues));
         }

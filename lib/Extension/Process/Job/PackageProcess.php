@@ -44,4 +44,9 @@ class PackageProcess implements Job
     {
         return $this->queue;
     }
+
+    public function description(): string
+    {
+        return sprintf('Running "%s" in package "%s"', $this->command, $this->packageDefinition->name());
+    }
 }

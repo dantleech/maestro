@@ -16,9 +16,15 @@ final class QueueMonitor
      */
     private $statuses = [];
 
-    public function update(QueueStatus $queueStatus)
+    public function __construct(array $statuses = [])
     {
-        $this->statuses[$queueStatus->id] = $queueStatus;
+        $this->statuses = $statuses;
+    }
+
+    public function update(QueueStatus $queueStatus): QueueStatus
+    {
+        $this->statuses[$queueStatus->id()] = $queueStatus;
+        return $queueStatus;
     }
 
     /**

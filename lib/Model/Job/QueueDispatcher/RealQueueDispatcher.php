@@ -38,26 +38,24 @@ class RealQueueDispatcher implements QueueDispatcher
             assert($queue instanceof Queue);
             $promises[] = \Amp\call(function () use ($queue) {
 
-                $queueStatus = new QueueStatus();
-                $queueStatus->success = true;
-                $queueStatus->id = $queue->id();
-                $queueStatus->start = new DateTimeImmutable();
+                $queueStatus = QueueStatus::fromQueue($queue);
+                $queueStatus = $queueStatus->queueStarted($queue);
 
                 while ($job = $queue->dequeue()) {
-                    $queueStatus->size = count($queue);
-                    $this->monitor->update($queueStatus);
+                    $queueStatus = $this->monitor->update($queueStatus->jobStarted($queue, $job));
+
                     try {
-                        $queueStatus->currentJob = $job;
-                        $queueStatus->message = yield $this->dispatcher->dispatch($job);
-                        $queueStatus->currentJob = null;
+                        $queueStatus = $this->monitor->update($queueStatus->jobFinished(
+                            $job,
+                            yield $this->dispatcher->dispatch($job)
+                        ));
                     } catch (JobFailure $e) {
-                        $queueStatus->success = false;
-                        $queueStatus->code = $e->getCode();
-                        $queueStatus->message = $e->getMessage();
+                        $queueStatus = $this->monitor->update($queueStatus->jobFailure($e));
                         break;
                     }
                 }
-                $queueStatus->end = new DateTimeImmutable();
+
+                $queueStatus = $this->monitor->update($queueStatus->queueFinished($queue));
 
                 return $queueStatus;
             });

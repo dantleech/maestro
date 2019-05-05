@@ -6,7 +6,7 @@ use Maestro\Model\Job\Queues;
 
 class SilentProgress implements Progress
 {
-    public function render(Queues $queus): ?string
+    public function render(): ?string
     {
         return null;
     }

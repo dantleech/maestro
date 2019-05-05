@@ -59,4 +59,9 @@ class Checkout implements Job
     {
         return $this->url;
     }
+
+    public function description(): string
+    {
+        return sprintf('Checking out "%s"', $this->packageDefinition->name());
+    }
 }

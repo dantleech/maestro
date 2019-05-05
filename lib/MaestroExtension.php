@@ -24,6 +24,7 @@ use Maestro\Model\Tty\TtyManager\NullTtyManager;
 use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Progress\SilentProgress;
 use Maestro\Console\Progress\SimpleProgress;
+use Maestro\Model\Job\QueueMonitor;
 
 class MaestroExtension implements Extension
 {
@@ -47,6 +48,7 @@ class MaestroExtension implements Extension
     const SERVICE_COMMAND_RUNNER = 'maestro.application.command_runner';
     const SERVICE_CONSOLE_PROGRESS_REGISTRY = 'maestro.console.progress_registry';
     const TAG_PROGRESS = 'progress';
+    const SERVICE_QUEUE_MONITOR = 'maestro.queue_monitor';
 
     /**
      * {@inheritDoc}
@@ -145,7 +147,9 @@ class MaestroExtension implements Extension
         }, [ self::TAG_PROGRESS => [ 'name' => 'silent' ]]);
 
         $container->register('maestro.console.progress.graph', function (Container $container) {
-            return new SimpleProgress();
+            return new SimpleProgress(
+                $container->get(self::SERVICE_QUEUE_MONITOR)
+            );
         }, [ self::TAG_PROGRESS => [ 'name' => 'graph' ]]);
     }
 
@@ -175,9 +179,15 @@ class MaestroExtension implements Extension
         $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
             $queueModifiers = [];
             return new RealQueueDispatcher(
-                $container->get(self::SERVICE_JOB_DISPATCHER)
+                $container->get(self::SERVICE_JOB_DISPATCHER),
+                $container->get(self::SERVICE_QUEUE_MONITOR)
             );
         });
+
+        $container->register(self::SERVICE_QUEUE_MONITOR, function (Container $container) {
+            return new QueueMonitor();
+        });
+
         $container->register(self::SERVICE_JOB_DISPATCHER, function (Container $container) {
             $handlers = [];
             foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {

@@ -33,4 +33,14 @@ class QueueStatus
      * @var DateTimeImmutable
      */
     public $end;
+
+    /**
+     * @var int
+     */
+    public $size;
+
+    /**
+     * @var Job
+     */
+    public $currentJob;
 }

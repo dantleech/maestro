@@ -16,9 +16,16 @@ class Queue implements Countable
      */
     private $id;
 
+    /**
+     * @var QueueStatus
+     */
+    private $queueStatus;
+
     public function __construct(string $id)
     {
         $this->id = $id;
+        $this->queueStatus = new QueueStatus();
+        $this->queueStatus->success = true;
     }
 
     public function id(): string
@@ -56,5 +63,10 @@ class Queue implements Countable
     public function count(): int
     {
         return count($this->jobs);
+    }
+
+    public function queueStatus(): QueueStatus
+    {
+        return $this->queueStatus;
     }
 }

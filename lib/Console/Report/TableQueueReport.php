@@ -9,9 +9,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TableQueueReport implements QueueReport
 {
-    public function render(OutputInterface $output, QueueStatuses $statuses)
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(OutputInterface $output)
     {
-        $table = new Table($output);
+        $this->output = $output;
+    }
+
+    public function render(QueueStatuses $statuses)
+    {
+        $table = new Table($this->output);
         $table->setHeaders([
             'id', 'status', 'last line'
         ]);

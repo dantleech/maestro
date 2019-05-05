@@ -48,6 +48,6 @@ class ExecuteCommand extends Command
             Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 
-        $this->report->render($output, $statuses);
+        $this->report->render($statuses);
     }
 }

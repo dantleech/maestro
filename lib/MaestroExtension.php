@@ -129,7 +129,7 @@ class MaestroExtension implements Extension
         });
 
         $container->register(self::SERVICE_CONSOLE_QUEUE_REPORT, function (Container $container) {
-            return new TableQueueReport();
+            return new TableQueueReport($container->get(ConsoleExtension::SERVICE_OUTPUT));
         });
 
         $container->register(self::SERVICE_CONSOLE_PROGRESS_REGISTRY, function (Container $container) {

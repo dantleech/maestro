@@ -11,10 +11,14 @@ class QueueTest extends TestCase
     public function testReturnsHead()
     {
         $job1 = new class implements Job {
-            public function description(): string {}
+            public function description(): string
+            {
+            }
         };
         $job2 = new class implements Job {
-            public function description(): string {}
+            public function description(): string
+            {
+            }
         };
         $queue = new Queue('foobar');
         $queue->enqueue($job1);

@@ -3,7 +3,6 @@
 namespace Maestro\Model\Job;
 
 use DateTimeImmutable;
-use Exception;
 use Maestro\Model\Job\Exception\JobFailure;
 use RuntimeException;
 
@@ -20,9 +19,9 @@ class QueueStatus
     private $code = 0;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $message = null;
+    private $message;
 
     /**
      * @var DateTimeImmutable
@@ -74,6 +73,7 @@ class QueueStatus
         $clone->state = QueueState::RUNNING();
         return $clone;
     }
+
 
     public function queueFinished(Queue $queue): self
     {
@@ -131,7 +131,7 @@ class QueueStatus
         return $this->message;
     }
 
-    public function start(): ?DateTimeImmutable
+    public function start(): DateTimeImmutable
     {
         return $this->start;
     }
@@ -140,7 +140,8 @@ class QueueStatus
     {
         if (!$this->end) {
             throw new RuntimeException(sprintf(
-                'End time for queue "%s" has not been set', $this->id
+                'End time for queue "%s" has not been set',
+                $this->id
             ));
         }
 

@@ -2,7 +2,6 @@
 
 namespace Maestro\Model\Job\QueueDispatcher;
 
-use DateTimeImmutable;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
@@ -11,7 +10,6 @@ use Maestro\Model\Job\QueueMonitor;
 use Maestro\Model\Job\QueueStatus;
 use Maestro\Model\Job\Queues;
 use Maestro\Model\Job\QueueStatuses;
-use Maestro\Model\Job\QueueDispatcherObserver;
 
 class RealQueueDispatcher implements QueueDispatcher
 {
@@ -37,7 +35,6 @@ class RealQueueDispatcher implements QueueDispatcher
         foreach ($queues as $queue) {
             assert($queue instanceof Queue);
             $promises[] = \Amp\call(function () use ($queue) {
-
                 $queueStatus = QueueStatus::fromQueue($queue);
                 $queueStatus = $queueStatus->queueStarted($queue);
 

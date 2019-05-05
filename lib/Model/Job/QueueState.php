@@ -44,8 +44,13 @@ class QueueState
         return $this->state;
     }
 
-    public function isFailed()
+    public function isFailed(): bool
     {
         return $this->state === self::FAILED;
+    }
+
+    public function isStarted(): bool
+    {
+        return $this->state === self::RUNNING;
     }
 }

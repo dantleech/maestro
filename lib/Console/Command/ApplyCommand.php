@@ -59,9 +59,9 @@ class ApplyCommand extends Command
         $progress = $this->registry->get(Cast::toString($input->getOption('progress')));
 
         $progressOutput = $output->section();
-        $this->renderProgress($progress, $queues, $progressOutput);
-        Loop::repeat(500, function () use ($progress, $progressOutput, $queues) {
-            $this->renderProgress($progress, $queues, $progressOutput);
+        $this->renderProgress($progress, $progressOutput);
+        Loop::repeat(500, function () use ($progress, $progressOutput) {
+            $this->renderProgress($progress, $progressOutput);
         });
 
         $statuses = $this->applicator->apply(
@@ -69,16 +69,16 @@ class ApplyCommand extends Command
             Cast::toString($input->getOption(self::OPTION_QUERY))
         );
 
-        $this->renderProgress($progress, $queues, $progressOutput);
+        $this->renderProgress($progress, $progressOutput);
         $this->report->render($output, $statuses);
     }
 
-    private function renderProgress(Progress $progress, Queues $queues, $progressOutput)
+    private function renderProgress(Progress $progress, $progressOutput)
     {
-        $rendered = $progress->render($queues);
+        $rendered = $progress->render();
 
         if (null !== $rendered) {
-            $progressOutput->overwrite($progress->render($queues));
+            $progressOutput->overwrite($progress->render());
         }
     }
 }

@@ -2,10 +2,8 @@
 
 namespace Maestro\Console\Progress;
 
-use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueMonitor;
 use Maestro\Model\Job\QueueStatus;
-use Maestro\Model\Job\Queues;
 
 class SimpleProgress implements Progress
 {
@@ -30,14 +28,15 @@ class SimpleProgress implements Progress
 
         foreach ($this->monitor->report() as $queue) {
             $size = $this->resolveSize($queue);
+            $currentJob = $queue->currentJob();
 
             if (false === $queue->isRunning()) {
                 $output[] = sprintf(
                     '  [  ] <info>%-45s</> %s (<fg=magenta>%s</>)',
                     $queue->id(),
                     sprintf('%s/%s', $size - $queue->size(), $size),
-                    $queue->currentJob() ? $queue->currentJob()->description() : '',
-                );
+                    $currentJob ? $currentJob->description() : '',
+                    );
                 continue;
             }
 
@@ -49,8 +48,8 @@ class SimpleProgress implements Progress
                 $queue->id(),
                 sprintf('%s/%s', $size - $queue->size(), $size),
                 $format,
-                $queue->currentJob() ? 'Error on: ' . $queue->currentJob()->description() : '',
-            );
+                $currentJob ? 'Error on: ' . $currentJob->description() : '',
+                );
         }
 
         return implode("\n", $output);

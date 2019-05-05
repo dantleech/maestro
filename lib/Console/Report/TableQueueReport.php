@@ -27,7 +27,7 @@ class TableQueueReport implements QueueReport
                     $status->state(),
                     $status->code()
                     ),
-                substr(trim($status->message()), 0, 80),
+                substr(trim((string) $status->message()), 0, 80),
             ]);
         }
         

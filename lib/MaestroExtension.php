@@ -49,6 +49,7 @@ class MaestroExtension implements Extension
     const SERVICE_CONSOLE_PROGRESS_REGISTRY = 'maestro.console.progress_registry';
     const TAG_PROGRESS = 'progress';
     const SERVICE_QUEUE_MONITOR = 'maestro.queue_monitor';
+    const PARAM_QUEUE_CONCURRENCY = 'concurrency';
 
     /**
      * {@inheritDoc}
@@ -61,9 +62,13 @@ class MaestroExtension implements Extension
             self::PARAM_WORKSPACE_PATH => $xdg->getHomeDataDir() . '/maestro',
             self::PARAM_PARAMETERS => [],
             self::PARAM_PROTOTYPES => [],
+            self::PARAM_QUEUE_CONCURRENCY => 10,
         ]);
         $schema->setTypes([
             self::PARAM_PACKAGES => 'array'
+        ]);
+        $schema->setTypes([
+            'concurrency' => 'integer',
         ]);
     }
 
@@ -180,7 +185,8 @@ class MaestroExtension implements Extension
             $queueModifiers = [];
             return new RealQueueDispatcher(
                 $container->get(self::SERVICE_JOB_DISPATCHER),
-                $container->get(self::SERVICE_QUEUE_MONITOR)
+                $container->get(self::SERVICE_QUEUE_MONITOR),
+                $container->getParameter(self::PARAM_QUEUE_CONCURRENCY)
             );
         });
 

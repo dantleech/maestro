@@ -48,10 +48,16 @@ class QueueStatus
      */
     private $state;
 
+    /**
+     * @var int
+     */
+    private $maxSize;
+
     public function __construct(string $id, int $size)
     {
         $this->id = $id;
         $this->size = $size;
+        $this->maxSize = $size;
         $this->state = QueueState::PENDING();
     }
 
@@ -96,9 +102,15 @@ class QueueStatus
         return $clone;
     }
 
-    public function jobFinished(Job $job, ?string $message): self
+    public function jobFinished(Queue $queue, Job $job, ?string $message): self
     {
         $clone = clone $this;
+        $clone->size = count($queue);
+
+        if (count($queue) > $this->maxSize) {
+            $this->maxSize = count($queue);
+        }
+
         $clone->currentJob = null;
         $clone->message = $message;
         $clone->state = QueueState::PENDING();
@@ -161,5 +173,10 @@ class QueueStatus
     public function state(): QueueState
     {
         return $this->state;
+    }
+
+    public function maxSize(): int
+    {
+        return $this->maxSize;
     }
 }

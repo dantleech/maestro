@@ -3,11 +3,12 @@
 namespace Maestro\Console\Progress;
 
 use Maestro\Model\Job\QueueMonitor;
+use Maestro\Model\Job\QueueState;
 use Maestro\Model\Job\QueueStatus;
 
 class SimpleProgress implements Progress
 {
-    private $sizes = [];
+    private $maxSizes = [];
 
     /**
      * @var QueueMonitor
@@ -27,14 +28,14 @@ class SimpleProgress implements Progress
         ];
 
         foreach ($this->monitor->report() as $queue) {
-            $size = $this->resolveSize($queue);
             $currentJob = $queue->currentJob();
 
             if (false === $queue->isRunning()) {
                 $output[] = sprintf(
-                    '  [  ] <info>%-45s</> %s (<fg=magenta>%s</>)',
+                    '  [%s] <info>%-45s</> %s (<fg=magenta>%s</>)',
+                    $this->resolveStateChars($queue),
                     $queue->id(),
-                    sprintf('%s/%s', $size - $queue->size(), $size),
+                    sprintf('%s/%s', $queue->maxSize() - $queue->size(), $queue->maxSize()),
                     $currentJob ? $currentJob->description() : '',
                     );
                 continue;
@@ -44,9 +45,9 @@ class SimpleProgress implements Progress
             $output[] = sprintf(
                 '  [<%s>%s</>] <info>%-45s</> %s <%s>%s</>',
                 $format,
-                $queue->state()->isFailed() ? 'NO' : 'OK',
+                $this->resolveStateChars($queue),
                 $queue->id(),
-                sprintf('%s/%s', $size - $queue->size(), $size),
+                sprintf('%s/%s', $queue->maxSize() - $queue->size(), $queue->maxSize()),
                 $format,
                 $currentJob ? 'Error on: ' . $currentJob->description() : '',
                 );
@@ -55,12 +56,22 @@ class SimpleProgress implements Progress
         return implode("\n", $output);
     }
 
-    private function resolveSize(QueueStatus $queue)
+    private function resolveStateChars(QueueStatus $queue): string
     {
-        if (!isset($this->sizes[$queue->id()])) {
-            $this->sizes[$queue->id()] = $queue->size();
+        if ($queue->state()->isFailed()) {
+            return 'NO';
         }
 
-        return $this->sizes[$queue->id()];
+        if ($queue->state()->isDone()) {
+            return 'OK';
+        }
+
+        if ($queue->state()->isPending()) {
+            return '  ';
+        }
+
+        if ($queue->state()->isStarted()) {
+            return '>>';
+        }
     }
 }

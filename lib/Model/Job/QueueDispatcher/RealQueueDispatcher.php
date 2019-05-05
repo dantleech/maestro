@@ -23,26 +23,53 @@ class RealQueueDispatcher implements QueueDispatcher
      */
     private $monitor;
 
-    public function __construct(JobDispatcher $dispatcher, QueueMonitor $monitor)
+    /**
+     * @var int
+     */
+    private $concurrency;
+
+    public function __construct(JobDispatcher $dispatcher, QueueMonitor $monitor, int $concurrency = null)
     {
         $this->dispatcher = $dispatcher;
         $this->monitor = $monitor;
+        $this->concurrency = $concurrency;
     }
 
     public function dispatch(Queues $queues): QueueStatuses
     {
         $promises = [];
+        $resolvedPromises = [];
+        $concurrency = 0;
+
+        foreach ($queues as $queue) {
+            $queueStatus = QueueStatus::fromQueue($queue);
+            $queueStatus = $this->monitor->update($queueStatus);
+        }
+
         foreach ($queues as $queue) {
             assert($queue instanceof Queue);
-            $promises[] = \Amp\call(function () use ($queue) {
+
+            // if concurrency is enabled and we meet the threshold, then wait for one
+            // of the existing promises to finish save it's result and remove that
+            // promise from the set of "pending" promises.
+            if (null !== $this->concurrency && count($promises) >= $this->concurrency) {
+                $result = \Amp\Promise\wait(\Amp\Promise\first($promises));
+                unset($promises[$result->id()]);
+                $resolvedPromises[] = $result;
+            }
+
+            $promises[$queue->id()] = \Amp\call(function () use ($queue) {
+
                 $queueStatus = QueueStatus::fromQueue($queue);
                 $queueStatus = $queueStatus->queueStarted($queue);
 
                 while ($job = $queue->dequeue()) {
+
                     $queueStatus = $this->monitor->update($queueStatus->jobStarted($queue, $job));
 
                     try {
                         $queueStatus = $this->monitor->update($queueStatus->jobFinished(
+                            $queue,
                             $job,
                             yield $this->dispatcher->dispatch($job)
                         ));
@@ -56,8 +83,12 @@ class RealQueueDispatcher implements QueueDispatcher
 
                 return $queueStatus;
             });
+
         }
 
-        return QueueStatuses::fromArray(\Amp\Promise\wait(\Amp\Promise\all($promises)));
+        return QueueStatuses::fromArray(array_merge(
+            $resolvedPromises,
+            \Amp\Promise\wait(\Amp\Promise\all($promises))
+        ));
     }
 }

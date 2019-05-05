@@ -46,6 +46,7 @@ $application->getDefinition()->addOptions([
     new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to configuration file'),
     new InputOption('progress', 'p', InputOption::VALUE_REQUIRED, 'Progress', 'silent')
 ]);
+
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );

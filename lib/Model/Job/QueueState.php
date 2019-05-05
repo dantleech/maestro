@@ -53,4 +53,14 @@ class QueueState
     {
         return $this->state === self::RUNNING;
     }
+
+    public function isPending(): bool
+    {
+        return $this->state === self::PENDING;
+    }
+
+    public function isDone(): bool
+    {
+        return $this->state === self::DONE;
+    }
 }

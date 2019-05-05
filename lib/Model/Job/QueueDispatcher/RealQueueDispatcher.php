@@ -2,6 +2,8 @@
 
 namespace Maestro\Model\Job\QueueDispatcher;
 
+use Generator;
+use Maestro\Model\Job\Job;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
@@ -64,19 +66,7 @@ class RealQueueDispatcher implements QueueDispatcher
                 $queueStatus = $queueStatus->queueStarted($queue);
 
                 while ($job = $queue->dequeue()) {
-
-                    $queueStatus = $this->monitor->update($queueStatus->jobStarted($queue, $job));
-
-                    try {
-                        $queueStatus = $this->monitor->update($queueStatus->jobFinished(
-                            $queue,
-                            $job,
-                            yield $this->dispatcher->dispatch($job)
-                        ));
-                    } catch (JobFailure $e) {
-                        $queueStatus = $this->monitor->update($queueStatus->jobFailure($e));
-                        break;
-                    }
+                    $queueStatus = yield from $this->processJob($queueStatus, $queue, $job);
                 }
 
                 $queueStatus = $this->monitor->update($queueStatus->queueFinished($queue));
@@ -90,5 +80,20 @@ class RealQueueDispatcher implements QueueDispatcher
             $resolvedPromises,
             \Amp\Promise\wait(\Amp\Promise\all($promises))
         ));
+    }
+
+    private function processJob(QueueStatus $queueStatus, Queue $queue, Job $job): Generator
+    {
+        $queueStatus = $this->monitor->update($queueStatus->jobStarted($queue, $job));
+        
+        try {
+            return $this->monitor->update($queueStatus->jobFinished(
+                $queue,
+                $job,
+                yield $this->dispatcher->dispatch($job)
+            ));
+        } catch (JobFailure $e) {
+            return $this->monitor->update($queueStatus->jobFailure($e));
+        }
     }
 }

@@ -25,14 +25,14 @@ class ReportRegistry
             throw new ReportNotFound(sprintf(
                 'Report "%s" not found, known reports "%s"',
                 $name,
-                implode('", "', array_keys($this->report))
+                implode('", "', array_keys($this->reports))
             ));
         }
 
         return $this->reports[$name];
     }
 
-    private function add(string $name, Progress $progress)
+    private function add(string $name, QueueReport $progress)
     {
         $this->reports[$name] = $progress;
     }

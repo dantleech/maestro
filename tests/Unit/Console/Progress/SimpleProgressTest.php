@@ -23,9 +23,9 @@ class SimpleProgressTest extends TestCase
 
         $progress = new SimpleProgress();
         $rendered = $progress->render($queues);
-        $this->assertEquals(<<<'EOT'
-foobar XX
-barfoo XX
+        $this->assertStringContainsString(<<<'EOT'
+  <info>foobar</> ..
+  <info>barfoo</> ..
 EOT
         , $rendered);
     }

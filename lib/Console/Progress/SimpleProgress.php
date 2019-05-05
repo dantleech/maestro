@@ -14,14 +14,17 @@ class SimpleProgress implements Progress
      */
     public function render(Queues $queues): ?string
     {
-        $output = [];
+        $output = [
+            'Queue progress:',
+''
+        ];
         foreach ($queues as $queue) {
             $size = $this->resolveSize($queue);
             $output[] = sprintf(
-                '%s %s',
+                '  <info>%s</> %s',
                 $queue->id(),
-                str_repeat('X', count($queue)).
-                str_repeat('.', $size - count($queue))
+                str_repeat('X', $size - count($queue)).
+                str_repeat('.', count($queue))
             );
         }
 

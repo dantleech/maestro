@@ -19,11 +19,17 @@ class ManifestItem
      */
     private $name;
 
-    public function __construct(string $name, string $type, array $parameters = [])
+    /**
+     * @var array
+     */
+    private $depends;
+
+    public function __construct(string $name, string $type, array $parameters = [], array $depends = [])
     {
         $this->type = $type;
         $this->parameters = $parameters;
         $this->name = $name;
+        $this->depends = $depends;
     }
 
     public function type(): string
@@ -34,5 +40,15 @@ class ManifestItem
     public function parameters(): array
     {
         return $this->parameters;
+    }
+
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+    public function depends(): array
+    {
+        return $this->depends;
     }
 }

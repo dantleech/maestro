@@ -4,22 +4,43 @@ namespace Maestro\Model\Package;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Maestro\Model\Package\Exception\CircularReferenceDetected;
+use Maestro\Model\Package\Exception\TargetNotFound;
+use Maestro\Model\Package\Manifest;
 use RuntimeException;
 use Maestro\Model\Instantiator;
 
-class Manifest implements IteratorAggregate
+final class Manifest implements IteratorAggregate
 {
     /**
      * @var ManifestItem[]
      */
     private $items;
 
+    private $resolved = [];
+
     private function __construct(array $items)
     {
-        $this->items = $items;
+        foreach ($items as $item) {
+            $this->add($item);
+        }
     }
 
-    public static function fromArray(array $manifest)
+    public function forTarget(?string $target = null): self
+    {
+        if (null === $target) {
+            return $this;
+        }
+
+        return Manifest::fromItems($this->resolveItems($target));
+    }
+
+    public static function fromItems(array $items): self
+    {
+        return new self($items);
+    }
+
+    public static function fromArray(array $manifest): self
     {
         $items = [];
         foreach ($manifest as $name => $item) {
@@ -35,7 +56,7 @@ class Manifest implements IteratorAggregate
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->items);
+        return new ArrayIterator(array_values($this->items));
     }
 
     public function get(string $string): ManifestItem
@@ -49,5 +70,47 @@ class Manifest implements IteratorAggregate
         }
 
         return $this->items[$string];
+    }
+
+    private function add(ManifestItem $item): void
+    {
+        $this->items[$item->name()] = $item;
+    }
+
+    private function merge(Manifest $manifest): self
+    {
+        return new self(array_merge(
+            $this->items,
+            $manifest->items
+        ));
+    }
+
+    private function resolveItems(string $target, $items = [], $seen = []): array
+    {
+        if (!isset($this->items[$target])) {
+            throw new TargetNotFound(sprintf(
+                'Target "%s" not found, known targets: "%s"',
+                $target, implode('", "', array_keys($this->items))
+            ));
+        }
+
+        $item = $this->items[$target];
+        assert($item instanceof ManifestItem);
+        $seen[$item->name()] = $item;
+        $items[] = $item;
+
+        foreach ($item->depends() as $dependency) {
+
+            if (isset($seen[$dependency])) {
+                throw new CircularReferenceDetected(sprintf(
+                    'Circular reference detected: "%s" which depends on "%s"',
+                    implode('" depends on "', array_keys($seen)), $dependency
+                ));
+            }
+
+            $items += $this->resolveItems($dependency, $items, $seen);
+        }
+
+        return $items;
     }
 }

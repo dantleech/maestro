@@ -2,6 +2,7 @@
 
 namespace Maestro\Model;
 
+use Maestro\Model\Package\Exception\InvalidParameterType;
 use Maestro\Model\Package\Exception\RequiredKeysMissing;
 use Maestro\Model\Package\Exception\UnknownKeys;
 use ReflectionClass;
@@ -27,6 +28,7 @@ class Instantiator
         $data = array_merge($data, $optionalData);
         $this->assertRequiredKeys($data, $parameters, $className);
         $data = $this->mergeDefaults($parameters, $data);
+        $this->assertTypes($data, $parameters, $className);
 
         $arguments = [];
         foreach ($parameters as $name => $defaultValue) {
@@ -36,7 +38,7 @@ class Instantiator
         return $class->newInstanceArgs($arguments);
     }
 
-    private function mapParameters(ReflectionClass $class)
+    private function mapParameters(ReflectionClass $class): array
     {
         $parameters = [];
         foreach ($class->getMethod('__construct')->getParameters() as $reflectionParameter) {
@@ -85,5 +87,52 @@ class Instantiator
         
         $data = array_merge($defaults, $data);
         return $data;
+    }
+
+    private function assertTypes(array $data, array $parameters, string $className)
+    {
+        foreach ($data as $key => $value) {
+            if (!isset($parameters[$key])) {
+                continue;
+            }
+
+            $parameter = $parameters[$key];
+
+            assert($parameter instanceof ReflectionParameter);
+
+            if ($parameter->getType()->allowsNull() && is_null($value)) {
+                continue;
+            }
+
+            $typeName = is_object($value) ? get_class($value) : gettype($value);
+
+            if (!is_object($value)) {
+                $typeName = $this->resolveInternalTypeName($value);
+            }
+
+            if ($parameter->getType()->getName() === $typeName) {
+                continue;
+            }
+
+            throw new InvalidParameterType(sprintf(
+                'Argument "%s" has type "%s" but was passed "%s"',
+                $parameter->getName(), $parameter->getType()->getName(), gettype($value)
+            ));
+        }
+    }
+
+    private function resolveInternalTypeName($value): string
+    {
+        $type = gettype($value);
+
+        if ($type === 'integer') {
+            return 'int';
+        }
+
+        if ($type === 'boolean') {
+            return 'bool';
+        }
+
+        return $type;
     }
 }

@@ -14,7 +14,7 @@ class GeneralOptionsTest extends EndToEndTestCase
             'packages' => [
                 'phpactor/config-loader' => [
                     'manifest' => [
-                        [
+                        'one' => [
                             'type' => 'initialize',
                             'parameters' => [
                                 'url' => $this->packageUrl('one')

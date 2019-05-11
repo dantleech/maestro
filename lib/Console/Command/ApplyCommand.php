@@ -71,6 +71,11 @@ class ApplyCommand extends Command
         $this->report->render($statuses);
     }
 
+
+
+
+
+
     private function renderProgress(Progress $progress, $progressOutput)
     {
         $rendered = $progress->render();

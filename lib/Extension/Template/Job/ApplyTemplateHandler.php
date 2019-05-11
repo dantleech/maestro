@@ -29,18 +29,18 @@ class ApplyTemplateHandler
     /**
      * @var array
      */
-    private $globalParameters;
+    private $parameters;
 
     public function __construct(
         TtyManager $ttyManager,
         Workspace $workspace,
         Environment $twig,
-        array $globalParameters
+        array $parameters
     ) {
         $this->ttyManager = $ttyManager;
         $this->workspace = $workspace;
         $this->twig = $twig;
-        $this->globalParameters = $globalParameters;
+        $this->parameters = $parameters;
     }
 
     public function __invoke(ApplyTemplate $job): Promise
@@ -81,7 +81,10 @@ class ApplyTemplateHandler
     {
         return [
             'package' => $job->package(),
-            'globalParameters' => $this->globalParameters
+            'parameters' => array_merge(
+                $this->parameters,
+                $job->package()->parameters()
+            ),
         ];
     }
 }

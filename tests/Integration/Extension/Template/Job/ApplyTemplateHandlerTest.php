@@ -75,9 +75,9 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $this->assertEquals('Hello goodbye', file_get_contents($expectedTemplatePath));
     }
 
-    public function testMergesGlobalParameters()
+    public function testMergesParameters()
     {
-        $this->workspace()->put('global_param', 'Hello {{ package.parameters.hello }} {{ globalParameters.name }}');
+        $this->workspace()->put('global_param.twig', 'Hello {{ parameters.hello }} {{ parameters.name }}');
 
         $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
             'name' => 'foobar/barfoo',
@@ -89,12 +89,34 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $this->handler([
             'name' => 'Daniel',
         ])->__invoke(
-            $this->createJob($definition, 'global_param', 'hello_world')
+            $this->createJob($definition, 'global_param.twig', 'hello_world')
         );
 
         $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
         $this->assertFileExists($expectedTemplatePath);
         $this->assertEquals('Hello goodbye Daniel', file_get_contents($expectedTemplatePath));
+    }
+
+    public function testGlobalParametersAreOverriddenByPackageSpecificParameters()
+    {
+        $this->workspace()->put('global_param2.twig', 'Hello {{ parameters.hello }}');
+
+        $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
+            'name' => 'foobar/barfoo',
+            'parameters' => [
+                'hello' => 'goodbye',
+            ]
+        ]);
+
+        $this->handler([
+            'hello' => 'hello',
+        ])->__invoke(
+            $this->createJob($definition, 'global_param2.twig', 'hello_world')
+        );
+
+        $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
+        $this->assertFileExists($expectedTemplatePath);
+        $this->assertEquals('Hello goodbye', file_get_contents($expectedTemplatePath));
     }
 
     public function testPassesPackageDefinition()
@@ -116,14 +138,14 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $this->assertEquals('I am foobar/barfoo', file_get_contents($expectedTemplatePath));
     }
 
-    private function handler(array $globalParameters = []): ApplyTemplateHandler
+    private function handler(array $parameters = []): ApplyTemplateHandler
     {
         $container = $this->container();
         $handler = new ApplyTemplateHandler(
             new NullTtyManager(),
             $container->get(MaestroExtension::SERVICE_WORKSPACE),
             $container->get(TemplateExtension::SERVICE_TWIG),
-            $globalParameters
+            $parameters
         );
         return $handler;
     }

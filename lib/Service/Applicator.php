@@ -56,11 +56,7 @@ class Applicator
             $workingDirectory = $this->workspace->package($package)->path();
             $queue = $queues->get($package->syncId());
 
-            foreach ($package->manifest() as $name => $item) {
-
-                if ($target && $target !== $name) {
-                    continue;
-                }
+            foreach ($package->manifest()->forTarget($target) as $name => $item) {
 
                 if (!isset($this->jobClassMap[$item->type()])) {
                     throw new RuntimeException(sprintf(

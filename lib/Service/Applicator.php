@@ -46,7 +46,7 @@ class Applicator
         $this->jobClassMap = $jobClassMap;
     }
 
-    public function apply(string $query): QueueStatuses
+    public function apply(string $query, ?string $target = null): QueueStatuses
     {
         $queues = Queues::create();
 
@@ -56,7 +56,12 @@ class Applicator
             $workingDirectory = $this->workspace->package($package)->path();
             $queue = $queues->get($package->syncId());
 
-            foreach ($package->manifest() as $item) {
+            foreach ($package->manifest() as $name => $item) {
+
+                if ($target && $target !== $name) {
+                    continue;
+                }
+
                 if (!isset($this->jobClassMap[$item->type()])) {
                     throw new RuntimeException(sprintf(
                         'No job registered for type "%s"',

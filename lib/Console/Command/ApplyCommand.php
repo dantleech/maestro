@@ -11,6 +11,7 @@ use Maestro\Model\Job\Queues;
 use Maestro\Service\Applicator;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
@@ -20,6 +21,7 @@ class ApplyCommand extends Command
 {
     const ARG_COMMAND = 'update';
     const OPTION_QUERY = 'query';
+    const ARG_TARGET = 'target';
 
     /**
      * @var Applicator
@@ -49,7 +51,8 @@ class ApplyCommand extends Command
 
     protected function configure()
     {
-        $this->addOption(self::OPTION_QUERY, 't', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
+        $this->addArgument(self::ARG_TARGET, InputArgument::OPTIONAL, 'Target');
+        $this->addOption(self::OPTION_QUERY, 'f', InputOption::VALUE_REQUIRED, 'Query packages (wildcard * is permitted)', '*');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -64,7 +67,8 @@ class ApplyCommand extends Command
         });
 
         $statuses = $this->applicator->apply(
-            Cast::toString($input->getOption(self::OPTION_QUERY))
+            Cast::toString($input->getOption(self::OPTION_QUERY)),
+            Cast::toStringOrNull($input->getArgument(self::ARG_TARGET))
         );
 
         $this->renderProgress($progress, $progressOutput);

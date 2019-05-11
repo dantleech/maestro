@@ -16,4 +16,13 @@ class Cast
         }
         return $string;
     }
+
+    public static function toStringOrNull(?string $string = null)
+    {
+        if (null === $string) {
+            return $string;
+        }
+
+        return self::toString($string);
+    }
 }

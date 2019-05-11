@@ -2,7 +2,6 @@
 
 namespace Maestro\Console\Report;
 
-use Maestro\Console\Progress\Exception\ProgressNotFound;
 use Maestro\Console\Report\Exception\ReportNotFound;
 
 class ReportRegistry

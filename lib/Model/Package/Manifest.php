@@ -6,7 +6,6 @@ use ArrayIterator;
 use IteratorAggregate;
 use Maestro\Model\Package\Exception\CircularReferenceDetected;
 use Maestro\Model\Package\Exception\TargetNotFound;
-use Maestro\Model\Package\Manifest;
 use RuntimeException;
 use Maestro\Model\Instantiator;
 
@@ -90,7 +89,8 @@ final class Manifest implements IteratorAggregate
         if (!isset($this->items[$target])) {
             throw new TargetNotFound(sprintf(
                 'Target "%s" not found, known targets: "%s"',
-                $target, implode('", "', array_keys($this->items))
+                $target,
+                implode('", "', array_keys($this->items))
             ));
         }
 
@@ -100,11 +100,11 @@ final class Manifest implements IteratorAggregate
         $items[] = $item;
 
         foreach ($item->depends() as $dependency) {
-
             if (isset($seen[$dependency])) {
                 throw new CircularReferenceDetected(sprintf(
                     'Circular reference detected: "%s" which depends on "%s"',
-                    implode('" depends on "', array_keys($seen)), $dependency
+                    implode('" depends on "', array_keys($seen)),
+                    $dependency
                 ));
             }
 

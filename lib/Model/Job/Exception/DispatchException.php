@@ -22,6 +22,6 @@ class DispatchException extends RuntimeException
         return new self(sprintf(
             'Dispatch failed: "%s"',
             $e->getMessage(),
-        ), 0, $e);
+            ), 0, $e);
     }
 }

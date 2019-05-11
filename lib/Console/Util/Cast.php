@@ -17,7 +17,7 @@ class Cast
         return $string;
     }
 
-    public static function toStringOrNull(?string $string = null)
+    public static function toStringOrNull($string = null)
     {
         if (null === $string) {
             return $string;

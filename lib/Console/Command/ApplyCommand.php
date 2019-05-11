@@ -7,7 +7,6 @@ use Maestro\Console\Progress\Progress;
 use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Report\QueueReport;
 use Maestro\Console\Util\Cast;
-use Maestro\Model\Job\Queues;
 use Maestro\Service\Applicator;
 use Maestro\Model\Maestro;
 use Symfony\Component\Console\Command\Command;

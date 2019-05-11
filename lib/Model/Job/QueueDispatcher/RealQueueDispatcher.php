@@ -2,7 +2,6 @@
 
 namespace Maestro\Model\Job\QueueDispatcher;
 
-use Amp\MultiReasonException;
 use Exception;
 use Generator;
 use Maestro\Model\Job\Exception\DispatchException;
@@ -29,7 +28,7 @@ class RealQueueDispatcher implements QueueDispatcher
     private $monitor;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $concurrency;
 
@@ -69,7 +68,6 @@ class RealQueueDispatcher implements QueueDispatcher
             }
 
             $promises[$queue->id()] = \Amp\call(function () use ($queue) {
-
                 $queueStatus = QueueStatus::fromQueue($queue);
                 $queueStatus = $queueStatus->queueStarted($queue);
 
@@ -81,7 +79,6 @@ class RealQueueDispatcher implements QueueDispatcher
 
                 return $queueStatus;
             });
-
         }
 
         return QueueStatuses::fromArray(array_merge(

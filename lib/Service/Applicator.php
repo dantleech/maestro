@@ -57,7 +57,6 @@ class Applicator
             $queue = $queues->get($package->syncId());
 
             foreach ($package->manifest()->forTarget($target) as $name => $item) {
-
                 if (!isset($this->jobClassMap[$item->type()])) {
                     throw new RuntimeException(sprintf(
                         'No job registered for type "%s"',

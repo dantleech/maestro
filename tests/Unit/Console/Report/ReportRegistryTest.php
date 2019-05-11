@@ -4,7 +4,6 @@ namespace Maestro\Tests\Unit\Console\Report;
 
 use Maestro\Console\Report\Exception\ReportNotFound;
 use Maestro\Console\Report\QueueReport;
-use Maestro\Console\Report\Report;
 use Maestro\Console\Report\ReportRegistry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;

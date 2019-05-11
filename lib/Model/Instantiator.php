@@ -100,7 +100,13 @@ class Instantiator
 
             assert($parameter instanceof ReflectionParameter);
 
-            if ($parameter->getType()->allowsNull() && is_null($value)) {
+            $reflectionType = $parameter->getType();
+
+            if (!$reflectionType) {
+                continue;
+            }
+
+            if ($reflectionType->allowsNull() && is_null($value)) {
                 continue;
             }
 
@@ -110,13 +116,15 @@ class Instantiator
                 $typeName = $this->resolveInternalTypeName($value);
             }
 
-            if ($parameter->getType()->getName() === $typeName) {
+            if ($reflectionType->getName() === $typeName) {
                 continue;
             }
 
             throw new InvalidParameterType(sprintf(
                 'Argument "%s" has type "%s" but was passed "%s"',
-                $parameter->getName(), $parameter->getType()->getName(), gettype($value)
+                $parameter->getName(),
+                $reflectionType->getName(),
+                gettype($value)
             ));
         }
     }

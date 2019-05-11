@@ -3,7 +3,6 @@
 namespace Maestro\Console\Progress;
 
 use Maestro\Model\Job\QueueMonitor;
-use Maestro\Model\Job\QueueState;
 use Maestro\Model\Job\QueueStatus;
 
 class SimpleProgress implements Progress

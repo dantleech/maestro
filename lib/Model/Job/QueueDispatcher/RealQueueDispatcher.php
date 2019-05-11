@@ -2,7 +2,10 @@
 
 namespace Maestro\Model\Job\QueueDispatcher;
 
+use Amp\MultiReasonException;
+use Exception;
 use Generator;
+use Maestro\Model\Job\Exception\DispatchException;
 use Maestro\Model\Job\Job;
 use Maestro\Model\Job\JobDispatcher;
 use Maestro\Model\Job\Queue;
@@ -55,7 +58,12 @@ class RealQueueDispatcher implements QueueDispatcher
             // of the existing promises to finish save it's result and remove that
             // promise from the set of "pending" promises.
             if (null !== $this->concurrency && count($promises) >= $this->concurrency) {
-                $result = \Amp\Promise\wait(\Amp\Promise\first($promises));
+                try {
+                    $result = \Amp\Promise\wait(\Amp\Promise\first($promises));
+                } catch (Exception $e) {
+                    throw DispatchException::fromException($e);
+                }
+
                 unset($promises[$result->id()]);
                 $resolvedPromises[] = $result;
             }

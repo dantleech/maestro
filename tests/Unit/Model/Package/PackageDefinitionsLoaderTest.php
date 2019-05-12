@@ -8,32 +8,25 @@ use PHPUnit\Framework\TestCase;
 
 class PackageDefinitionsLoaderTest extends TestCase
 {
-    private $loader;
-
-    protected function setUp(): void
-    {
-        $this->loader = new PackageDefinitionsLoader();
-    }
-
     public function testLoadsPackageDefinitions()
     {
-        $definitions = $this->loader->load([
+        $definitions = $this->createLoader([])->load([
             'foobar/barfoo' => [
             ]
-        ], []);
+        ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
     }
 
     public function testMergesPrototypes()
     {
-        $definitions = $this->loader->load([
-            'foobar/barfoo' => [
-                'prototype' => 'hello',
-            ]
-        ], [
+        $definitions = $this->createLoader([
             'hello' => [
                 'parameters' => [ 'foo' ]
+            ]
+        ])->load([
+            'foobar/barfoo' => [
+                'prototype' => 'hello',
             ]
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
@@ -43,19 +36,7 @@ class PackageDefinitionsLoaderTest extends TestCase
 
     public function testPackageDefinitionHasPriotityOverPrototype()
     {
-        $definitions = $this->loader->load([
-            'foobar/barfoo' => [
-                'prototype' => 'hello',
-                'manifest' => [
-                    'bar' => [
-                        'type' => 'template',
-                        'parameters' => [
-                            'from' => 'baz'
-                        ]
-                    ],
-                ]
-            ]
-        ], [
+        $definitions = $this->createLoader([
             'hello' => [
                 'parameters' => [ 'foo' ],
                 'manifest' => [
@@ -68,11 +49,28 @@ class PackageDefinitionsLoaderTest extends TestCase
                     'foo' => []
                 ],
             ]
+        ])->load([
+            'foobar/barfoo' => [
+                'prototype' => 'hello',
+                'manifest' => [
+                    'bar' => [
+                        'type' => 'template',
+                        'parameters' => [
+                            'from' => 'baz'
+                        ]
+                    ],
+                ]
+            ]
         ]);
         $this->assertInstanceOf(PackageDefinitions::class, $definitions);
         $this->assertCount(1, $definitions);
         $this->assertEquals([
             'from'=>'baz',
         ], $definitions->get('foobar/barfoo')->manifest()->get('bar')->parameters());
+    }
+
+    protected function createLoader(array $prototypes): PackageDefinitionsLoader
+    {
+        return new PackageDefinitionsLoader($prototypes);
     }
 }

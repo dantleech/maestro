@@ -26,6 +26,7 @@ use Maestro\Console\Progress\SilentProgress;
 use Maestro\Console\Progress\SimpleProgress;
 use Maestro\Extension\NamespaceResolver;
 use Maestro\Model\Job\QueueMonitor;
+use Maestro\Model\Job\JobFactory;
 
 class MaestroExtension implements Extension
 {
@@ -54,6 +55,7 @@ class MaestroExtension implements Extension
     const PARAM_NAMESPACE = 'namespace';
     const PARAM_CONFIG_DIR = 'config_dir';
     const SERVICE_SOURCE_PATH_RESOVLER = 'maestro.package.source_path_resolver';
+    const SERVICE_JOB_FACTORY = 'maestro.job.factory';
 
     /**
      * {@inheritDoc}
@@ -105,7 +107,7 @@ class MaestroExtension implements Extension
                 $container->get(self::SERVICE_PACKAGE_DEFINITIONS),
                 $container->get(self::SERVICE_QUEUE_MANAGER),
                 $container->get(self::SERVICE_WORKSPACE),
-                $container->get('maestro.job.class_map')
+                $container->get(self::SERVICE_JOB_FACTORY)
             );
         });
     }
@@ -167,7 +169,7 @@ class MaestroExtension implements Extension
 
     private function loadJob(ContainerBuilder $container)
     {
-        $container->register('maestro.job.class_map', function (Container $container) {
+        $container->register(self::SERVICE_JOB_FACTORY, function (Container $container) {
             $map = [];
             foreach ($container->getServiceIdsForTag(self::TAG_JOB_HANDLER) as $serviceId => $attrs) {
                 if (!isset($attrs['job'])) {
@@ -186,7 +188,7 @@ class MaestroExtension implements Extension
                 $map[$attrs['type']] = $attrs['job'];
             }
 
-            return $map;
+            return new JobFactory($map);
         });
         $container->register(self::SERVICE_QUEUE_MANAGER, function (Container $container) {
             $queueModifiers = [];

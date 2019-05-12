@@ -3,6 +3,7 @@
 namespace Maestro\Service;
 
 use Maestro\Model\Job\Job;
+use Maestro\Model\Job\JobFactory;
 use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
@@ -30,20 +31,20 @@ class Applicator
     private $workspace;
 
     /**
-     * @var array
+     * @var JobFactory
      */
-    private $jobClassMap;
+    private $jobFactory;
 
     public function __construct(
         PackageDefinitions $definitions,
         QueueDispatcher $queueDispatcher,
         Workspace $workspace,
-        array $jobClassMap
+        JobFactory $jobFactory
     ) {
         $this->definitions = $definitions;
         $this->queueDispatcher = $queueDispatcher;
         $this->workspace = $workspace;
-        $this->jobClassMap = $jobClassMap;
+        $this->jobFactory = $jobFactory;
     }
 
     public function apply(string $query, ?string $target = null): QueueStatuses
@@ -57,31 +58,17 @@ class Applicator
             $queue = $queues->get($package->syncId());
 
             foreach ($package->manifest()->forTarget($target) as $name => $item) {
-                if (!isset($this->jobClassMap[$item->type()])) {
-                    throw new RuntimeException(sprintf(
-                        'No job registered for type "%s"',
-                        $item->type()
-                    ));
-                }
 
+                assert($item instanceof ManifestItem);
                 $queue->enqueue(
-                    $this->createJob($item, $queue, $package)
+                    $this->jobFactory->create($item->type(), $item->parameters(), [
+                        'packageDefinition' => $package,
+                        'queue' => $queue
+                    ])
                 );
             }
         }
 
         return $this->queueDispatcher->dispatch($queues);
-    }
-
-    private function createJob(ManifestItem $item, Queue $queue, PackageDefinition $package): Job
-    {
-        return Instantiator::create()->instantiate(
-            $this->jobClassMap[$item->type()],
-            $item->parameters(),
-            [
-                'queue' => $queue,
-                'packageDefinition' => $package,
-            ]
-        );
     }
 }

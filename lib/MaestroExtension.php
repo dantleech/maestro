@@ -11,11 +11,11 @@ use Maestro\Model\Maestro;
 use Maestro\Console\Tty\SymfonyTtyManager;
 use Phpactor\MapResolver\Resolver;
 use Maestro\Service\CommandRunner;
-use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
 use Maestro\Model\Job\Dispatcher\LazyDispatcher;
 use RuntimeException;
 use XdgBaseDir\Xdg;
 use Maestro\Model\Package\Workspace;
+use Maestro\Model\Job\QueueDispatcher\RealQueueDispatcher;
 use Maestro\Console\Command\ApplyCommand;
 use Maestro\Service\Applicator;
 use Maestro\Model\Package\PackageDefinitionsLoader;
@@ -56,6 +56,8 @@ class MaestroExtension implements Extension
     const PARAM_CONFIG_DIR = 'config_dir';
     const SERVICE_SOURCE_PATH_RESOVLER = 'maestro.package.source_path_resolver';
     const SERVICE_JOB_FACTORY = 'maestro.job.factory';
+    const SERVICE_JOBS = 'maestro.job.class_map';
+    const SERVICE_PACKAGE_DEFINITIONS_LOADER = 'maestro.package.definitions.loader';
 
     /**
      * {@inheritDoc}
@@ -226,9 +228,8 @@ class MaestroExtension implements Extension
     private function loadPackage(ContainerBuilder $container)
     {
         $container->register(self::SERVICE_PACKAGE_DEFINITIONS, function (Container $container) {
-            return (new PackageDefinitionsLoader())->load(
-                $container->getParameter(self::PARAM_PACKAGES),
-                $container->getParameter(self::PARAM_PROTOTYPES)
+            return $container->get(self::SERVICE_PACKAGE_DEFINITIONS_LOADER)->load(
+                $container->getParameter(self::PARAM_PACKAGES)
             );
         });
         $container->register(self::SERVICE_WORKSPACE, function (Container $container) {
@@ -236,8 +237,13 @@ class MaestroExtension implements Extension
                 sprintf(
                     '%s/%s',
                     $container->getParameter(self::PARAM_WORKSPACE_PATH),
-                    $container->getParameter(self::PARAM_NAMESPACE),
-                    )
+                    $container->getParameter(self::PARAM_NAMESPACE)
+                )
+            );
+        });
+        $container->register(self::SERVICE_PACKAGE_DEFINITIONS_LOADER, function (Container $container) {
+            return new PackageDefinitionsLoader(
+                $container->getParameter(self::PARAM_PROTOTYPES)
             );
         });
     }

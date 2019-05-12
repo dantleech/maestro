@@ -2,18 +2,14 @@
 
 namespace Maestro\Service;
 
-use Maestro\Model\Job\Job;
 use Maestro\Model\Job\JobFactory;
-use Maestro\Model\Job\Queue;
 use Maestro\Model\Job\QueueDispatcher;
 use Maestro\Model\Job\QueueStatuses;
 use Maestro\Model\Job\Queues;
-use Maestro\Model\Instantiator;
 use Maestro\Model\Package\ManifestItem;
 use Maestro\Model\Package\PackageDefinition;
 use Maestro\Model\Package\PackageDefinitions;
 use Maestro\Model\Package\Workspace;
-use RuntimeException;
 
 class Applicator
 {
@@ -58,7 +54,6 @@ class Applicator
             $queue = $queues->get($package->syncId());
 
             foreach ($package->manifest()->forTarget($target) as $name => $item) {
-
                 assert($item instanceof ManifestItem);
                 $queue->enqueue(
                     $this->jobFactory->create($item->type(), $item->parameters(), [

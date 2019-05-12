@@ -22,7 +22,8 @@ class JobFactory
         if (!isset($this->jobClassMap[$type])) {
             throw new JobNotFound(sprintf(
                 'No job registered for type "%s", known jobs: "%s"',
-                $type, implode('", "', array_keys($this->jobClassMap))
+                $type,
+                implode('", "', array_keys($this->jobClassMap))
             ));
         }
 

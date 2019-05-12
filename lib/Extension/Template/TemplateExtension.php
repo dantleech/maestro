@@ -21,9 +21,7 @@ class TemplateExtension implements Extension
     public function configure(Resolver $schema)
     {
         $schema->setDefaults([
-            self::PARAM_TEMPLATE_PATHS => [
-                getcwd()
-            ]
+            self::PARAM_TEMPLATE_PATHS => []
         ]);
     }
 
@@ -36,14 +34,16 @@ class TemplateExtension implements Extension
                 $container->get(self::SERVICE_TWIG),
                 $container->getParameter(MaestroExtension::PARAM_PARAMETERS)
             );
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
-            'type' => 'template',
-            'job' => ApplyTemplate::class
-        ]]);
+        }, [
+            MaestroExtension::TAG_JOB_HANDLER => [
+                'type' => 'template',
+                'job' => ApplyTemplate::class
+            ]
+        ]);
 
         $container->register(self::SERVICE_TWIG, function (Container $container) {
             return new Environment(
-                new FilesystemLoader($container->getParameter(self::PARAM_TEMPLATE_PATHS)),
+                new FilesystemLoader($this->resolveTemplatePaths($container)),
                 [
                     'strict_variables' => true,
                     'auto_reload' => false,
@@ -51,5 +51,13 @@ class TemplateExtension implements Extension
                 ]
             );
         });
+    }
+
+    private function resolveTemplatePaths(Container $container)
+    {
+        return array_merge(
+            [ $container->getParameter(MaestroExtension::PARAM_CONFIG_DIR) ],
+            $container->getParameter(self::PARAM_TEMPLATE_PATHS)
+        );
     }
 }

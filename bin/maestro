@@ -25,13 +25,16 @@ $configBuilder = ConfigLoaderBuilder::create()
 $arg = new ArgvInput();
 
 $configFile = $arg->getParameterOption(['-c', '--config']);
+$configDir = getcwd();
 if (false !== $configFile) {
     if (!file_exists($configFile)) {
         throw new RuntimeException(sprintf(
             'Config file "%s" not found', $configFile
         ));
     }
-    $configBuilder->addCandidate(Path::makeAbsolute($configFile, getcwd()), 'json');
+    $configPath = Path::makeAbsolute($configFile, getcwd());
+    $configDir = dirname($configPath);
+    $configBuilder->addCandidate($configPath, 'json');
 }
 
 $container = PhpactorContainer::fromExtensions([
@@ -39,7 +42,12 @@ $container = PhpactorContainer::fromExtensions([
     MaestroExtension::class,
     TemplateExtension::class,
     ProcessExtension::class,
-], $configBuilder->loader()->load());
+], array_merge(
+    $configBuilder->loader()->load(),
+    [
+        MaestroExtension::PARAM_CONFIG_DIR => $configDir
+    ]
+));
 
 $application = new Application();
 $application->getDefinition()->addOptions([

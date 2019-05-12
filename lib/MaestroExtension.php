@@ -26,6 +26,7 @@ use Maestro\Console\Progress\SilentProgress;
 use Maestro\Console\Progress\SimpleProgress;
 use Maestro\Extension\NamespaceResolver;
 use Maestro\Model\Job\QueueMonitor;
+use Maestro\Model\Package\SouceFilePathResolver\ConfigBasedSourceFilePathResolver;
 
 class MaestroExtension implements Extension
 {
@@ -52,6 +53,8 @@ class MaestroExtension implements Extension
     const SERVICE_QUEUE_MONITOR = 'maestro.queue_monitor';
     const PARAM_QUEUE_CONCURRENCY = 'concurrency';
     const PARAM_NAMESPACE = 'namespace';
+    const PARAM_CONFIG_DIR = 'config_dir';
+    const SERVICE_SOURCE_PATH_RESOVLER = 'maestro.package.source_path_resolver';
 
     /**
      * {@inheritDoc}
@@ -66,13 +69,14 @@ class MaestroExtension implements Extension
             self::PARAM_PARAMETERS => [],
             self::PARAM_PROTOTYPES => [],
             self::PARAM_QUEUE_CONCURRENCY => 10,
-            self::PARAM_NAMESPACE => (new NamespaceResolver())->resolve()
+            self::PARAM_NAMESPACE => (new NamespaceResolver())->resolve(),
+            self::PARAM_CONFIG_DIR => getcwd(),
         ]);
         $schema->setTypes([
             self::PARAM_PACKAGES => 'array'
         ]);
         $schema->setTypes([
-            'concurrency' => 'integer',
+            self::PARAM_QUEUE_CONCURRENCY => 'integer',
         ]);
     }
 

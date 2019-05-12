@@ -26,7 +26,6 @@ use Maestro\Console\Progress\SilentProgress;
 use Maestro\Console\Progress\SimpleProgress;
 use Maestro\Extension\NamespaceResolver;
 use Maestro\Model\Job\QueueMonitor;
-use Maestro\Model\Package\SouceFilePathResolver\ConfigBasedSourceFilePathResolver;
 
 class MaestroExtension implements Extension
 {

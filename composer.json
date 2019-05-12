@@ -11,6 +11,7 @@
     ],
 
     "require": {
+        "php": "^7.3",
         "phpactor/console-extension": "^0.1.1",
         "webmozart/path-util": "^2.3",
         "phpactor/config-loader": "^0.1.0",

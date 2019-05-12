@@ -13,6 +13,8 @@ use Webmozart\PathUtil\Path;
 
 class IntegrationTestCase extends TestCase
 {
+    const EXAMPLE_NAMESPACE = 'test-namespace';
+
     protected function initWorkspace()
     {
         $this->workspace()->reset();
@@ -31,15 +33,21 @@ class IntegrationTestCase extends TestCase
             TemplateExtension::class,
 
         ], [
-            MaestroExtension::PARAM_WORKSPACE_PATH => $this->packageWorkspacePath(),
+            MaestroExtension::PARAM_WORKSPACE_PATH => $this->workspace()->path(''),
             TemplateExtension::PARAM_TEMPLATE_PATHS => [
                 $this->workspace()->path('/')
-            ]
+            ],
+            MaestroExtension::PARAM_NAMESPACE => self::EXAMPLE_NAMESPACE,
         ]);
     }
 
     protected function packageWorkspacePath(string $subPath = ''): string
     {
-        return $this->workspace()->path(Path::join(['Package', $subPath]));
+        $paths = [];
+        if ($subPath) {
+            $paths[] = self::EXAMPLE_NAMESPACE;
+            $paths[] = $subPath;
+        }
+        return $this->workspace()->path(Path::join($paths));
     }
 }

@@ -24,6 +24,7 @@ use Maestro\Model\Tty\TtyManager\NullTtyManager;
 use Maestro\Console\Progress\ProgressRegistry;
 use Maestro\Console\Progress\SilentProgress;
 use Maestro\Console\Progress\SimpleProgress;
+use Maestro\Extension\NamespaceResolver;
 use Maestro\Model\Job\QueueMonitor;
 
 class MaestroExtension implements Extension
@@ -50,6 +51,7 @@ class MaestroExtension implements Extension
     const TAG_PROGRESS = 'progress';
     const SERVICE_QUEUE_MONITOR = 'maestro.queue_monitor';
     const PARAM_QUEUE_CONCURRENCY = 'concurrency';
+    const PARAM_NAMESPACE = 'namespace';
 
     /**
      * {@inheritDoc}
@@ -57,12 +59,14 @@ class MaestroExtension implements Extension
     public function configure(Resolver $schema)
     {
         $xdg = new Xdg();
+        
         $schema->setDefaults([
             self::PARAM_PACKAGES => [],
             self::PARAM_WORKSPACE_PATH => $xdg->getHomeDataDir() . '/maestro',
             self::PARAM_PARAMETERS => [],
             self::PARAM_PROTOTYPES => [],
             self::PARAM_QUEUE_CONCURRENCY => 10,
+            self::PARAM_NAMESPACE => (new NamespaceResolver())->resolve()
         ]);
         $schema->setTypes([
             self::PARAM_PACKAGES => 'array'
@@ -223,7 +227,13 @@ class MaestroExtension implements Extension
             );
         });
         $container->register(self::SERVICE_WORKSPACE, function (Container $container) {
-            return Workspace::create($container->getParameter(self::PARAM_WORKSPACE_PATH));
+            return Workspace::create(
+                sprintf(
+                    '%s/%s',
+                    $container->getParameter(self::PARAM_WORKSPACE_PATH),
+                    $container->getParameter(self::PARAM_NAMESPACE),
+                    )
+            );
         });
     }
 }

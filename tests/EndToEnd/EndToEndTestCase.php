@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\EndToEnd;
 
+use Maestro\Extension\NamespaceResolver;
 use PHPUnit\Framework\TestCase;
 use Phpactor\TestUtils\Workspace;
 use Symfony\Component\Filesystem\Filesystem;
@@ -71,7 +72,12 @@ class EndToEndTestCase extends TestCase
 
     protected function packageWorkspacePath(string $subPath = ''): string
     {
-        return $this->workspace()->path(Path::join(['Workspace', $subPath]));
+        $paths = ['maestro-workspace'];
+        if ($subPath) {
+            $paths[] = (new NamespaceResolver(realpath($this->workspace()->path(''))))->resolve();
+            $paths[] = $subPath;
+        }
+        return $this->workspace()->path(Path::join($paths));
     }
 
     protected function saveConfig(array $config)

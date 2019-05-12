@@ -3,6 +3,8 @@ Maestro
 
 [![Build Status](https://travis-ci.org/dantleech/maestro.svg?branch=master)](https://travis-ci.org/dantleech/maestro)
 
+**This project is still in an experimental phase and has not been used to  orchestrate anything at this stage**
+
 Maestro will be a micro-package orchestration and management tool.
 
 Use it, for many packages in parallel, to:
@@ -10,6 +12,12 @@ Use it, for many packages in parallel, to:
 - Apply file templates.
 - Execute arbitrary commands(e.g. git commit, push etc).
 - Run QA, fixer and migration tools (e.g. phpunit, phpcs, rector, whatevver).
+
+It may also, in the future:
+
+- Be able to create new packages (including github repo creation, possibly publishing to packagist)
+- Perform releases
+- Run as a local CI server
 
 ![Maestro in action](https://user-images.githubusercontent.com/530801/57580279-7c90d780-749f-11e9-88c3-5bc3fa74afd6.png)
 

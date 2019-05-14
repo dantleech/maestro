@@ -138,6 +138,33 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         $this->assertEquals('I am foobar/barfoo', file_get_contents($expectedTemplatePath));
     }
 
+    public function testWillNotOverwriteIfInstructedNotToDoSo()
+    {
+        $templateName = 'willNotOverwriteIfInstructedNotToDoSo.twig';
+        $this->workspace()->put($templateName, 'New Content');
+        $this->workspace()->put('test-namespace/foobar-barfoo/hello_world', 'Existing Content');
+
+        $definition = Instantiator::create()->instantiate(PackageDefinition::class, [
+            'name' => 'foobar/barfoo'
+        ]);
+
+        $this->handler([
+            'name' => 'Daniel',
+        ])->__invoke(
+            $this->createJob(
+                $definition,
+                $templateName,
+                'hello_world',
+                false
+            )
+        );
+
+        $expectedTemplatePath = $this->packageWorkspacePath('foobar-barfoo/hello_world');
+        $this->assertFileExists($expectedTemplatePath);
+        $this->assertEquals('Existing Content', file_get_contents($expectedTemplatePath));
+    }
+
+
     private function handler(array $parameters = []): ApplyTemplateHandler
     {
         $container = $this->container();
@@ -150,13 +177,14 @@ class ApplyTemplateHandlerTest extends IntegrationTestCase
         return $handler;
     }
 
-    private function createJob(PackageDefinition $definition, string $sourcePath, string $targetPath = null): ApplyTemplate
+    private function createJob(PackageDefinition $definition, string $sourcePath, string $targetPath = null, bool $overwrite = true): ApplyTemplate
     {
         $targetPath = $targetPath ?: $sourcePath;
         $job = new ApplyTemplate(
             $definition,
             $sourcePath,
-            $targetPath
+            $targetPath,
+            $overwrite
         );
         return $job;
     }

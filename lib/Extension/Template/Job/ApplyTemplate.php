@@ -22,11 +22,23 @@ class ApplyTemplate implements Job
      */
     private $to;
 
-    public function __construct(PackageDefinition $packageDefinition, string $from, string $to)
+    /**
+     * @var PackageDefinition
+     */
+    private $packageDefinition;
+
+    /**
+     * @var bool
+     */
+    private $overwrite;
+
+    public function __construct(PackageDefinition $packageDefinition, string $from, string $to, bool $overwrite = true)
     {
         $this->package = $packageDefinition;
         $this->from = $from;
         $this->to = $to;
+        $this->packageDefinition = $packageDefinition;
+        $this->overwrite = $overwrite;
     }
 
     public function package(): PackageDefinition
@@ -47,5 +59,10 @@ class ApplyTemplate implements Job
     public function description(): string
     {
         return sprintf('Applying template from "%s" to "%s"', $this->from, $this->to);
+    }
+
+    public function overwrite(): bool
+    {
+        return $this->overwrite;
     }
 }

@@ -57,6 +57,10 @@ class ApplyTemplateHandler
 
         $this->ensureDirectoryExists($targetPath);
 
+        if (false === $job->overwrite() && file_exists($targetPath)) {
+            return new Success();
+        }
+
         file_put_contents($targetPath, $rendered);
 
         return new Success(sprintf('Applied %s', $job->from()));

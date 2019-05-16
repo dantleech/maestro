@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use Maestro\Extension\AssertFileExists\AssertFileExistsExtension;
 use Maestro\Extension\CoreExtension\CoreExtension;
 use Maestro\Extension\Process\ProcessExtension;
 use Maestro\Extension\Template\TemplateExtension;
@@ -42,6 +43,7 @@ $container = PhpactorContainer::fromExtensions([
     MaestroExtension::class,
     TemplateExtension::class,
     ProcessExtension::class,
+    AssertFileExistsExtension::class
 ], array_merge(
     $configBuilder->loader()->load(),
     [

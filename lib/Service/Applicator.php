@@ -53,7 +53,7 @@ class Applicator
             $workingDirectory = $this->workspace->package($package)->path();
             $queue = $queues->get($package->syncId());
 
-            foreach ($package->manifest()->forTarget($target) as $name => $item) {
+            foreach ($package->manifest()->forTarget($target) as $item) {
                 assert($item instanceof ManifestItem);
                 $queue->enqueue(
                     $this->jobFactory->create($item->type(), $item->parameters(), [

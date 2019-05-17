@@ -73,6 +73,10 @@ class RealQueueDispatcher implements QueueDispatcher
 
                 while ($job = $queue->dequeue()) {
                     $queueStatus = yield from $this->processJob($queueStatus, $queue, $job);
+                    assert($queueStatus instanceof QueueStatus);
+                    if ($queueStatus->state()->isFailed()) {
+                        break;
+                    }
                 }
 
                 $queueStatus = $this->monitor->update($queueStatus->queueFinished($queue));

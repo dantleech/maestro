@@ -2,11 +2,7 @@
 
 namespace Maestro\Task;
 
-use Maestro\Task\Task;
-
-class TaskHandlerRegistry
+interface TaskHandlerRegistry
 {
-    public function getFor(Task $task): TaskHandler
-    {
-    }
+    public function getFor(Task $task): TaskHandler;
 }

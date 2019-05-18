@@ -2,12 +2,14 @@
 
 namespace Maestro\Task;
 
-class Queue
+use Countable;
+
+class Queue implements Countable
 {
     /**
      * @var array
      */
-    private $nodes;
+    private $nodes = [];
 
     public function enqueue(Node $node): void
     {
@@ -17,5 +19,13 @@ class Queue
     public function dequeue(): ?Node
     {
         return array_shift($this->nodes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->nodes);
     }
 }

@@ -3,9 +3,9 @@
 namespace Maestro\Task;
 
 use Amp\Promise;
-use Maestro\Task\Task;
+use Maestro\Task\Exception\InvalidHandler;
 
-class TaskRunner
+final class TaskRunner
 {
     /**
      * @var TaskHandlerRegistry
@@ -25,6 +25,13 @@ class TaskRunner
     public function run(Task $task, Artifacts $artifacts): Promise
     {
         $handler = $this->registry->getFor($task);
+
+        if (!is_callable($handler)) {
+            throw new InvalidHandler(sprintf(
+                'Handler "%s" is not __invoke-able',
+                get_class($handler)
+            ));
+        }
 
         return call_user_func($handler, $task);
     }

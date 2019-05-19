@@ -27,6 +27,11 @@ final class Artifacts
         return new self($map);
     }
 
+    public static function empty(): self
+    {
+        return new self([]);
+    }
+
     public function get(string $key)
     {
         if (!isset($this->map[$key])) {
@@ -43,10 +48,5 @@ final class Artifacts
     public function merge(Artifacts $artifacts): self
     {
         return self::create(array_merge($this->map, $artifacts->map));
-    }
-
-    public function empty(): self
-    {
-        return new self([]);
     }
 }

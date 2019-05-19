@@ -20,7 +20,8 @@ class TaskMap
         if (!isset($this->map[$alias])) {
             throw new UnknownTask(sprintf(
                 'Task "%s" is not known, known tasks: "%s"',
-                $alias, implode('", "', array_keys($this->map))
+                $alias,
+                implode('", "', array_keys($this->map))
             ));
         }
 

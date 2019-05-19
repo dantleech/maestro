@@ -67,7 +67,8 @@ final class Manifest
         if (!isset($this->prototypes[$name])) {
             throw new PrototypeNotFound(sprintf(
                 'Could not find prototype "%s", known prototypes "%s"',
-                $name, implode('", "', array_keys($this->prototypes))
+                $name,
+                implode('", "', array_keys($this->prototypes))
             ));
         }
 

@@ -27,7 +27,8 @@ class Instantiator
 
             throw new ClassHasNoConstructor(sprintf(
                 'Class "%s" has no constructor, but was instantiated with keys "%s"',
-                $className, implode('", "', array_keys($data))
+                $className,
+                implode('", "', array_keys($data))
             ));
         }
 

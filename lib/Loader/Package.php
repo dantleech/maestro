@@ -14,7 +14,7 @@ class Package
     private $tasks = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $prototype;
 

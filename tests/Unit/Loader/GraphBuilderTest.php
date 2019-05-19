@@ -49,7 +49,7 @@ class GraphBuilderTest extends TestCase
             ],
             [
                 'name' => 'root',
-                'children[0].name' => 'package',
+                'children[0].name' => 'phpactor/phpactor',
                 'children[0].task.name' => 'phpactor/phpactor',
                 'children[0].state' => State::WAITING(),
             ],
@@ -75,7 +75,7 @@ class GraphBuilderTest extends TestCase
             ],
             [
                 'name' => 'root',
-                'children[0].name' => 'package',
+                'children[0].name' => 'phpactor/phpactor',
                 'children[0].task.name' => 'phpactor/phpactor',
                 'children[0].state' => State::WAITING(),
                 'children[0].children[0].name' => 'task1',
@@ -103,7 +103,6 @@ class GraphBuilderTest extends TestCase
             ],
             [
                 'name' => 'root',
-                'children[0].name' => 'package',
                 'children[0].task.name' => 'foobar/barfoo',
                 'children[0].state' => State::WAITING(),
                 'children[0].children[0].name' => 'task1',

@@ -2,8 +2,6 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Manifest;
-use Maestro\Loader\Package;
 use Maestro\Task\Node;
 use RuntimeException;
 
@@ -21,8 +19,7 @@ class GraphBuilder
 
     public function build(
         Manifest $manifest
-    )
-    {
+    ) {
         $root = Node::createRoot();
         $this->walkPackages($root, $manifest);
 
@@ -34,7 +31,7 @@ class GraphBuilder
         foreach ($manifest->packages() as $package) {
             $packageNode = $root->addChild(
                 Node::create(
-                    'package',
+                    $package->name(),
                     Instantiator::create()->instantiate(
                         $this->taskMap->classNameFor('package'),
                         [
@@ -44,7 +41,8 @@ class GraphBuilder
                 )
             );
 
-            $prototype = $package->prototype() ? $manifest->prototype($package->prototype()) : null;
+            $prototype = $package->prototype();
+            $prototype = $prototype ? $manifest->prototype($prototype) : null;
 
             $this->walkPackage($packageNode, $package, $prototype);
         }
@@ -76,7 +74,8 @@ class GraphBuilder
                 if (!isset($tasks[$taskName])) {
                     throw new RuntimeException(sprintf(
                         'Task depends on unknown task "%s", known tasks: "%s"',
-                        $taskName, implode('", "', array_keys($tasks))
+                        $taskName,
+                        implode('", "', array_keys($tasks))
                     ));
                 }
 

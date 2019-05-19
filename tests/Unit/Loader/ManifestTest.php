@@ -3,8 +3,6 @@
 namespace Maestro\Tests\Unit\Loader;
 
 use Maestro\Loader\Manifest;
-use Maestro\Loader\Prototype;
-use Maestro\Loader\Task;
 use PHPUnit\Framework\TestCase;
 
 class ManifestTest extends TestCase

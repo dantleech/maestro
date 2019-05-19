@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Tests\Unit\Task;
+namespace Maestro\Tests\Unit\Task\TaskRunner;
 
 use Amp\Success;
 use Maestro\Task\Artifacts;
@@ -8,10 +8,11 @@ use Maestro\Task\Exception\InvalidHandler;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
+use Maestro\Task\TaskRunner\HandlingTaskRunner;
 use Maestro\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 
-class TaskRunnerTest extends TestCase
+class HandlingTaskRunnerTest extends TestCase
 {
     /**
      * @var ObjectProphecy
@@ -27,7 +28,7 @@ class TaskRunnerTest extends TestCase
     protected function setUp(): void
     {
         $this->registry = $this->prophesize(TaskHandlerRegistry::class);
-        $this->runner = new TaskRunner($this->registry->reveal());
+        $this->runner = new HandlingTaskRunner($this->registry->reveal());
     }
 
     public function testThrowsExceptionIfHandlerNotInvokable()

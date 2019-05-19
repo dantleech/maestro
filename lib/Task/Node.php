@@ -32,6 +32,16 @@ final class Node
         $this->name = $name;
     }
 
+    public static function createRoot(): self
+    {
+        return new self('root');
+    }
+
+    public static function create(string $name): self
+    {
+        return new self($name);
+    }
+
     public function addChild(Node $node): Node
     {
         $node = clone($node);
@@ -52,11 +62,6 @@ final class Node
         }
 
         return $this->children[$name];
-    }
-
-    public static function createRoot(): self
-    {
-        return new self('root');
     }
 
     public function parent(): ?Node

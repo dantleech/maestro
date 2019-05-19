@@ -2,11 +2,9 @@
 
 namespace Maestro\Tests\Unit\Task;
 
-use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Task\Node;
 use Maestro\Task\State;
-use Maestro\Task\TaskRunner;
-use Maestro\Task\Task\NullHandler;
+use Maestro\Task\TaskRunner\NullTaskRunner;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -71,9 +69,7 @@ class NodeTest extends TestCase
 
     public function testRunsTask()
     {
-        $taskRunner = new TaskRunner(new EagerHandlerRegistry([
-            new NullHandler()
-        ]));
+        $taskRunner = new NullTaskRunner();
         $rootNode = Node::createRoot();
         $this->assertEquals(State::WAITING(), $rootNode->state());
         \Amp\Promise\wait($rootNode->run($taskRunner));

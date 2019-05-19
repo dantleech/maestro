@@ -10,18 +10,18 @@ class DepthFirstScheduler implements Scheduler
 {
     public function schedule(Node $node, Queue $queue): Queue
     {
+        if ($node->state()->isBusy()) {
+            return $queue;
+        }
+
+        if ($node->state()->isWaiting()) {
+            $queue->enqueue($node);
+            return $queue;
+        }
+
         foreach ($node->children() as $child) {
             assert($child instanceof Node);
-
-            if ($child->state()->isBusy()) {
-                continue;
-            }
-
-            if ($child->state()->isIdle()) {
-                $this->schedule($node, $queue);
-            }
-
-            $queue->enqueue($child);
+            $this->schedule($child, $queue);
         }
 
         return $queue;

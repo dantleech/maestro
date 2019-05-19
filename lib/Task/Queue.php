@@ -2,9 +2,11 @@
 
 namespace Maestro\Task;
 
+use ArrayIterator;
 use Countable;
+use IteratorAggregate;
 
-class Queue implements Countable
+class Queue implements Countable, IteratorAggregate
 {
     /**
      * @var array
@@ -27,5 +29,13 @@ class Queue implements Countable
     public function count(): int
     {
         return count($this->nodes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->nodes);
     }
 }

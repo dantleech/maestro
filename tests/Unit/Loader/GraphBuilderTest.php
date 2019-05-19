@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
+use Maestro\Loader\Exception\GraphContainsCircularReference;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\TaskMap;
@@ -139,6 +140,84 @@ class GraphBuilderTest extends TestCase
                 'children[0].children[0].children[0].name' => 'two',
                 'children[0].children[1].name' => 'four',
             ],
+        ];
+
+        yield 'builds task with multiple deps 1' => [
+            [
+                'packages' => [
+                    'foobar/barfoo' => [
+                        'tasks' => [
+                            'one' => [
+                                'type' => 'foobar',
+                            ],
+                            'two' => [
+                                'type' => 'foobar',
+                            ],
+                            'three' => [
+                                'type' => 'foobar',
+                                'depends' => ['one','two'],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            [
+                'name' => 'root',
+                'children[0].task.name' => 'foobar/barfoo',
+                'children[0].children[0].name' => 'one',
+                'children[0].children[1].name' => 'two',
+                'children[0].children[1].children[0].name' => 'three',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideBuildGraphError
+     */
+    public function testBuildGraphError(array $manifest, string $expectedExceptionClass)
+    {
+        $this->expectException($expectedExceptionClass);
+        $builder = new GraphBuilder($this->taskMap());
+        $manifest = Manifest::loadFromArray($manifest);
+        $builder->build($manifest);
+    }
+
+    public function provideBuildGraphError()
+    {
+        yield 'circular dependency 1' => [
+            [
+                'packages' => [
+                    'foobar/barfoo' => [
+                        'tasks' => [
+                            'two' => [
+                                'type' => 'foobar',
+                                'depends' => ['three'],
+                            ],
+                            'three' => [
+                                'type' => 'foobar',
+                                'depends' => ['two'],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            GraphContainsCircularReference::class
+        ];
+
+        yield 'circular dependency 2' => [
+            [
+                'packages' => [
+                    'foobar/barfoo' => [
+                        'tasks' => [
+                            'two' => [
+                                'type' => 'foobar',
+                                'depends' => ['two'],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            GraphContainsCircularReference::class
         ];
     }
 

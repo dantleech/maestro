@@ -2,6 +2,7 @@
 
 namespace Maestro\Loader;
 
+use Maestro\Loader\Exception\GraphContainsCircularReference;
 use Maestro\Task\Node;
 use RuntimeException;
 
@@ -63,11 +64,20 @@ class GraphBuilder
         }
     }
 
-    private function walkTask(Node $node, string $taskName, Task $task, array $tasks, array $resolved): Node
+    private function walkTask(Node $node, string $taskName, Task $task, array $tasks, array $resolved, $seen = []): Node
     {
         if (isset($resolved[$taskName])) {
             return $resolved[$taskName];
         }
+
+        if (in_array($taskName, $seen)) {
+            throw new GraphContainsCircularReference(sprintf(
+                'Graph contains circular reference: "%s -> %s"',
+                implode(' -> ', array_reverse($seen)),
+                $taskName
+            ));
+        }
+        $seen[] = $taskName;
 
         if ($task->depends()) {
             foreach ($task->depends() as $depName) {
@@ -81,7 +91,6 @@ class GraphBuilder
 
                 if (isset($resolved[$depName])) {
                     $node = $resolved[$depName];
-                    continue;
                 }
 
                 $node = $resolved[$depName] = $this->walkTask(
@@ -89,7 +98,8 @@ class GraphBuilder
                     $depName,
                     $tasks[$taskName],
                     $tasks,
-                    $resolved
+                    $resolved,
+                    $seen
                 );
             }
         }

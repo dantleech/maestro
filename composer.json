@@ -12,6 +12,7 @@
 
     "require": {
         "php": "^7.3",
+        "phpactor/console-extension": "^0.1.1",
         "webmozart/path-util": "^2.3",
         "amphp/amp": "^2.1"
     },

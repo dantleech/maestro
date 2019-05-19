@@ -40,8 +40,8 @@ class ManifestTest extends TestCase
         ]);
 
         $this->assertCount(1, $manifest->prototypes());
-        $this->assertEquals('one', $manifest->prototypes()[0]->name());
-        $tasks = $manifest->prototypes()[0]->tasks();
+        $this->assertEquals('one', $manifest->prototypes()['one']->name());
+        $tasks = $manifest->prototypes()['one']->tasks();
         $this->assertCount(1, $tasks);
         $this->assertEquals('command', $tasks[0]->type());
     }

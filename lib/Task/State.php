@@ -44,4 +44,9 @@ final class State
     {
         return $this->state === self::BUSY;
     }
+
+    public function toString(): string
+    {
+        return $this->state;
+    }
 }

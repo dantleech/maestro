@@ -37,9 +37,9 @@ final class Node
         return new self('root');
     }
 
-    public static function create(string $name): self
+    public static function create(string $name, ?Task $task = null): self
     {
-        return new self($name);
+        return new self($name, $task);
     }
 
     public function addChild(Node $node): Node
@@ -127,5 +127,10 @@ final class Node
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function task(): Task
+    {
+        return $this->task;
     }
 }

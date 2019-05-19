@@ -13,7 +13,7 @@ class Task
      */
     private $parameters;
 
-    public function __construct(string $type, array $parameters)
+    public function __construct(string $type, array $parameters = [])
     {
         $this->type = $type;
         $this->parameters = $parameters;

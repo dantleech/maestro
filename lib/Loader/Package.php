@@ -22,12 +22,15 @@ class Package
     {
         $this->name = $name;
 
-        foreach ($tasks as $task) {
+        foreach ($tasks as $name => $task) {
             $this->tasks[] = Instantiator::create()->instantiate(Task::class, $task);
         }
         $this->prototype = $prototype;
     }
 
+    /**
+     * @return Task[]
+     */
     public function tasks(): array
     {
         return $this->tasks;
@@ -38,7 +41,7 @@ class Package
         return $this->name;
     }
 
-    public function prototype(): string
+    public function prototype(): ?string
     {
         return $this->prototype;
     }

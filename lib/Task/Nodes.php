@@ -2,11 +2,13 @@
 
 namespace Maestro\Task;
 
+use ArrayAccess;
 use ArrayIterator;
+use BadMethodCallException;
 use Countable;
 use IteratorAggregate;
 
-final class Nodes implements IteratorAggregate, Countable
+final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
      * @var array
@@ -41,11 +43,48 @@ final class Nodes implements IteratorAggregate, Countable
         return new ArrayIterator($this->nodes);
     }
 
+    public function get(int $offset): Node
+    {
+        return $this->nodes[$offset];
+    }
+
     /**
      * {@inheritDoc}
      */
     public function count(): int
     {
         return count($this->nodes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->nodes[$offset]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->nodes[$offset];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        throw new BadMethodCallException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetUnset($offset)
+    {
+        throw new BadMethodCallException();
     }
 }

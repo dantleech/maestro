@@ -1,10 +1,11 @@
 <?php
 
-namespace Maestro\Util;
+namespace Maestro\Loader;
 
-use Maestro\Util\Exception\InvalidParameterType;
-use Maestro\Util\Exception\RequiredKeysMissing;
-use Maestro\Util\Exception\UnknownKeys;
+use Maestro\Loader\Exception\ClassHasNoConstructor;
+use Maestro\Loader\Exception\InvalidParameterType;
+use Maestro\Loader\Exception\RequiredKeysMissing;
+use Maestro\Loader\Exception\UnknownKeys;
 use ReflectionClass;
 use ReflectionParameter;
 
@@ -15,17 +16,23 @@ class Instantiator
         return new self();
     }
 
-    public function instantiate(string $className, array $data, array $optionalData = [])
+    public function instantiate(string $className, array $data)
     {
         $class = new ReflectionClass($className);
 
         if (!$class->hasMethod('__construct')) {
-            return $class->newInstance();
+            if (empty($data)) {
+                return $class->newInstance();
+            }
+
+            throw new ClassHasNoConstructor(sprintf(
+                'Class "%s" has no constructor, but was instantiated with keys "%s"',
+                $className, implode('", "', array_keys($data))
+            ));
         }
 
         $parameters = $this->mapParameters($class);
         $this->assertCorrectKeys($data, $parameters, $className);
-        $data = array_merge($data, $optionalData);
         $this->assertRequiredKeys($data, $parameters, $className);
         $data = $this->mergeDefaults($parameters, $data);
         $this->assertTypes($data, $parameters, $className);

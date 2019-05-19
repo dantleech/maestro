@@ -1,11 +1,11 @@
 <?php
 
-namespace Maestro\Tests\Unit\Util;
+namespace Maestro\Tests\Unit\Loader;
 
-use Maestro\Util\Instantiator;
-use Maestro\Util\Exception\InvalidParameterType;
-use Maestro\Util\Exception\RequiredKeysMissing;
-use Maestro\Util\Exception\UnknownKeys;
+use Maestro\Loader\Instantiator;
+use Maestro\Loader\Exception\InvalidParameterType;
+use Maestro\Loader\Exception\RequiredKeysMissing;
+use Maestro\Loader\Exception\UnknownKeys;
 use PHPUnit\Framework\TestCase;
 
 class InstantiatorTest extends TestCase
@@ -51,30 +51,6 @@ class InstantiatorTest extends TestCase
             new TestClass3('foobar', 'barfoo'),
             Instantiator::create()->instantiate(TestClass3::class, [
                 'one' => 'foobar',
-            ])
-        );
-    }
-
-    public function testIfOptionalDataIsProvidedThenItIsUsed()
-    {
-        $this->assertEquals(
-            new TestClass3('foobar', 'zedzed'),
-            Instantiator::create()->instantiate(TestClass3::class, [
-                'one' => 'foobar',
-            ], [
-                'two' => 'zedzed'
-            ])
-        );
-    }
-
-    public function testDoesNotThrowExceptionIfAdditionalOptionalParametersArePassed()
-    {
-        $this->assertEquals(
-            new TestClass3('foobar', 'barfoo'),
-            Instantiator::create()->instantiate(TestClass3::class, [
-                'one' => 'foobar',
-            ], [
-                'three' => 'zedzed'
             ])
         );
     }

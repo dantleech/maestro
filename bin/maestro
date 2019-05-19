@@ -3,27 +3,23 @@
 
 use Amp\Loop;
 use Maestro\Dumper\GraphRenderer;
+use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Loader\Manifest;
 use Maestro\RunnerBuilder;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
 use Maestro\Task\Task\PackageTask;
+use Phpactor\Container\PhpactorContainer;
+use Phpactor\Extension\Console\ConsoleExtension;
+use Symfony\Component\Console\Application;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$runner = RunnerBuilder::create()
-    ->addJobHandler('null', NullTask::class, new NullHandler())
-    ->addJobHandler('package', PackageTask::class, new NullHandler())
-    ->build();
+$container = PhpactorContainer::fromExtensions([
+    ConsoleExtension::class,
+    MaestroExtension::class,
+]);
 
-$graph = $runner->run(Manifest::loadFromArray(
-    json_decode(
-        file_get_contents(__DIR__ . '/../example/test.json'),
-        true
-    )
-));
-
-Loop::repeat(100, function () use ($graph) {
-    echo (new GraphRenderer())->render($graph);
-});
-Loop::run();
+$application = new Application();
+$application->setCommandLoader($container->get(ConsoleExtension::SERVICE_COMMAND_LOADER));
+$application->run();

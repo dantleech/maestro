@@ -6,11 +6,18 @@ use Maestro\Task\Node;
 
 class GraphRenderer
 {
+    private $clear;
+
+    public function __construct($clear = false)
+    {
+        $this->clear = $clear;
+    }
+
     public function render(Node $node, $depth = 0)
     {
         $out ='';
 
-        if ($depth === 0) {
+        if ($this->clear && $depth === 0) {
             $out .= "\033[2J";
             $out .= "\033[H";
         }

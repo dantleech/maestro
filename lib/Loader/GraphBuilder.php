@@ -33,7 +33,7 @@ class GraphBuilder
         foreach ($manifest->packages() as $package) {
             $packageNode = $root->addChild(
                 Node::create(
-                    'package-init',
+                    'package',
                     Instantiator::create()->instantiate(
                         $this->taskMap->classNameFor('package'),
                         [

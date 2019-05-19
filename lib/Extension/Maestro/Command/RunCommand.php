@@ -37,11 +37,12 @@ class RunCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         assert($output instanceof ConsoleOutputInterface);
+        $section = $output->section();
+
         $runner = $this->builder->build();
 
         $graph = $runner->run(Manifest::loadFromArray($this->loadManifestArray($input->getArgument(self::ARG_PLAN))));
 
-        $section = $output->section();
         Loop::repeat(100, function () use ($graph, $section) {
             $section->overwrite((new GraphRenderer())->render($graph));
         });

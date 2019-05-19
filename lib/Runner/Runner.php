@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro;
+namespace Maestro\Runner;
 
 use Amp\Loop;
 use Maestro\Loader\GraphBuilder;

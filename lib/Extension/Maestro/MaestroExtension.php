@@ -16,15 +16,16 @@ use Phpactor\MapResolver\Resolver;
 class MaestroExtension implements Extension
 {
     const SERVICE_RUNNER_BUILDER = 'runner_builder';
+    const TAG_JOB_HANDLER = 'job_handler';
+
+    public function configure(Resolver $schema)
+    {
+    }
 
     public function load(ContainerBuilder $container)
     {
         $this->loadConsole($container);
         $this->loadMaestro($container);
-    }
-
-    public function configure(Resolver $schema)
-    {
     }
 
     private function loadConsole(ContainerBuilder $container)
@@ -37,9 +38,37 @@ class MaestroExtension implements Extension
     private function loadMaestro(ContainerBuilder $container)
     {
         $container->register(self::SERVICE_RUNNER_BUILDER, function (Container $container) {
-            return RunnerBuilder::create()
-                ->addJobHandler('null', NullTask::class, new NullHandler())
-                ->addJobHandler('package', PackageTask::class, new NullHandler());
+            $builder = RunnerBuilder::create();
+            foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
+                if (!isset($attrs['alias'])) {
+                    throw new RuntimeException(sprintf(
+                        'Job handler "%s" must specify an alias', $serviceId
+                    ));
+                }
+                if (!isset($attrs['job_class'])) {
+                    throw new RuntimeException(sprintf(
+                        'Job handler "%s" must specify a job class', $serviceId
+                    ));
+                }
+
+                $builder->addJobHandler($attrs['alias'], $attrs['job_class'], $container->get($serviceId));
+            }
+
+            return $builder;
         });
+
+        $container->register('task.job_handler.null', function () {
+            return new NullHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'null',
+            'job_class' => NullTask::class,
+        ]]);
+
+        $container->register('task.job_handler.package', function () {
+            return new NullHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'package',
+            'job_class' => PackageTask::class,
+        ]]);
     }
 }

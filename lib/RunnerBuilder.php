@@ -11,6 +11,7 @@ use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\TaskRunner\HandlingTaskRunner;
+use Maestro\Runner\Runner;
 
 final class RunnerBuilder
 {

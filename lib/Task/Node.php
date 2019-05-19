@@ -30,6 +30,7 @@ final class Node
         $this->task = $task ?: new NullTask();
         $this->children = [];
         $this->name = $name;
+        $this->artifacts = Artifacts::create([]);
     }
 
     public static function createRoot(): self
@@ -44,24 +45,27 @@ final class Node
 
     public function addChild(Node $node): Node
     {
-        $node = clone($node);
+        $node = clone $node;
         $node->parent = $this;
-        $this->children[$node->name()] = $node;
+
+        $this->children[] = $node;
 
         return $node;
     }
 
     public function child(string $name): Node
     {
-        if (!isset($this->children[$name])) {
-            throw new RuntimeException(sprintf(
-                'Child "%s" not found, known children: "%s"',
-                $name,
-                implode('", "', array_keys($this->children))
-            ));
+        foreach ($this->children as $child) {
+            if ($name === $child->name()) {
+                return $child;
+            }
         }
 
-        return $this->children[$name];
+        throw new RuntimeException(sprintf(
+            'Child "%s" not found, known children: "%s"',
+            $name,
+            implode('", "', array_keys($this->children))
+        ));
     }
 
     public function parent(): ?Node
@@ -83,10 +87,10 @@ final class Node
     {
         return \Amp\call(function () use ($taskRunner) {
             $this->state = State::BUSY();
-            $this->artifacts = yield $taskRunner->run(
+            $this->setArtifacts(yield $taskRunner->run(
                 $this->task,
                 $this->mergedArtifacts()
-            );
+            ));
             $this->state = State::IDLE();
             return new Success();
         });
@@ -101,29 +105,6 @@ final class Node
         return $this->root();
     }
 
-    private function mergedArtifacts(): Artifacts
-    {
-        if (null === $this->parent) {
-            return Artifacts::create([]);
-        }
-
-        return $this->parent->artifacts()->merge($this->artifacts);
-    }
-
-    private function clone(): self
-    {
-        $clone = clone $this;
-        if ($clone->parent) {
-            $clone->parent = $clone->parent->clone();
-        }
-
-        foreach ($clone->children as $index => $child) {
-            $clone->children[$index] = clone $child;
-        }
-
-        return $clone;
-    }
-
     public function name(): string
     {
         return $this->name;
@@ -132,5 +113,22 @@ final class Node
     public function task(): Task
     {
         return $this->task;
+    }
+
+    private function mergedArtifacts(): Artifacts
+    {
+        if (null === $this->parent) {
+            return Artifacts::create([]);
+        }
+
+        return $this->parent->artifacts->merge($this->artifacts);
+    }
+
+    private function setArtifacts(?Artifacts $artifacts): void
+    {
+        if (null === $artifacts) {
+            return;
+        }
+        $this->artifacts = $artifacts;
     }
 }

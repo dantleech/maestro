@@ -5,6 +5,7 @@ namespace Maestro\Loader;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\Package;
 use Maestro\Task\Node;
+use RuntimeException;
 
 class GraphBuilder
 {
@@ -52,17 +53,56 @@ class GraphBuilder
     private function walkPackage(Node $packageNode, Package $package, ?Prototype $prototype)
     {
         $tasks = array_merge($prototype ? $prototype->tasks() : [], $package->tasks());
+        $this->walkTasks($packageNode, $tasks);
+    }
 
-        foreach ($tasks as $name => $task) {
-            $packageNode->addChild(
-                Node::create(
-                    $name,
-                    Instantiator::create()->instantiate(
-                        $this->taskMap->classNameFor($task->type()),
-                        []
-                    )
-                )
-            );
+    private function walkTasks(Node $node, array $tasks)
+    {
+        $resolved = [];
+        foreach ($tasks as $taskName => $task) {
+            $task = $this->walkTask($node, $taskName, $task, $tasks, $resolved);
+            $resolved[$taskName] = $task;
         }
+    }
+
+    private function walkTask(Node $node, string $taskName, Task $task, array $tasks, array $resolved): Node
+    {
+        if (isset($resolved[$taskName])) {
+            return $resolved[$taskName];
+        }
+
+        if ($task->depends()) {
+            foreach ($task->depends() as $depName) {
+                if (!isset($tasks[$taskName])) {
+                    throw new RuntimeException(sprintf(
+                        'Task depends on unknown task "%s", known tasks: "%s"',
+                        $taskName, implode('", "', array_keys($tasks))
+                    ));
+                }
+
+                if (isset($resolved[$depName])) {
+                    $node = $resolved[$depName];
+                    continue;
+                }
+
+                $node = $resolved[$depName] = $this->walkTask(
+                    $node,
+                    $depName,
+                    $tasks[$taskName],
+                    $tasks,
+                    $resolved
+                );
+            }
+        }
+
+        return $node->addChild(
+            Node::create(
+                $taskName,
+                Instantiator::create()->instantiate(
+                    $this->taskMap->classNameFor($task->type()),
+                    $task->parameters()
+                )
+            )
+        );
     }
 }

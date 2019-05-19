@@ -4,5 +4,5 @@ namespace Maestro\Task;
 
 interface Task
 {
-    public function handler(): string;
+    public function description(): string;
 }

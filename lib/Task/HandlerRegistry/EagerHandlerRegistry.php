@@ -16,26 +16,27 @@ class EagerHandlerRegistry implements TaskHandlerRegistry
 
     public function __construct(array $handlers)
     {
-        foreach ($handlers as $handler) {
-            $this->add($handler);
+        foreach ($handlers as $taskFqn => $handler) {
+            $this->add($taskFqn, $handler);
         }
     }
 
     public function getFor(Task $task): TaskHandler
     {
-        if (!isset($this->handlers[$task->handler()])) {
+        $taskFqn = get_class($task);
+        if (!isset($this->handlers[$taskFqn])) {
             throw new HandlerNotFound(sprintf(
-                'Handler "%s" not known, known handlers: "%s"',
-                $task->handler(),
+                'Handler for "%s" not registered, handlers are registered for: "%s"',
+                $taskFqn,
                 implode('", "', array_keys($this->handlers))
             ));
         }
 
-        return $this->handlers[$task->handler()];
+        return $this->handlers[$taskFqn];
     }
 
-    private function add(TaskHandler $handler)
+    private function add(string $taskFqn, TaskHandler $handler)
     {
-        $this->handlers[get_class($handler)] = $handler;
+        $this->handlers[$taskFqn] = $handler;
     }
 }

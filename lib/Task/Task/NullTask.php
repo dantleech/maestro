@@ -6,8 +6,8 @@ use Maestro\Task\Task;
 
 class NullTask implements Task
 {
-    public function handler(): string
+    public function description(): string
     {
-        return NullHandler::class;
+        return 'null';
     }
 }

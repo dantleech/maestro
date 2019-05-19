@@ -34,7 +34,8 @@ final class RunnerBuilder
     public function addJobHandler(string $alias, string $jobClass, TaskHandler $handler): self
     {
         $this->taskMap[$alias] = $jobClass;
-        $this->handlers[] = $handler;
+        $this->handlers[$jobClass] = $handler;
+        return $this;
     }
 
     private function buildTaskRunner(): TaskRunner

@@ -7,19 +7,19 @@ class Prototype
     /**
      * @var array
      */
-    private $tasks;
+    private $tasks = [];
 
     /**
      * @var string
      */
     private $name;
 
-    public function __construct(string $name, array $tasks)
+    public function __construct(string $name, array $tasks = [])
     {
         $this->name = $name;
 
-        foreach ($tasks as $task) {
-            $this->tasks[] = Instantiator::create()->instantiate(Task::class, $task);
+        foreach ($tasks as $name => $task) {
+            $this->tasks[$name] = Instantiator::create()->instantiate(Task::class, $task);
         }
     }
 

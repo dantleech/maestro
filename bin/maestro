@@ -1,21 +1,29 @@
 #!/usr/bin/env php
 <?php
 
+use Amp\Loop;
+use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Manifest;
 use Maestro\RunnerBuilder;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
-
+use Maestro\Task\Task\PackageTask;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $runner = RunnerBuilder::create()
     ->addJobHandler('null', NullTask::class, new NullHandler())
+    ->addJobHandler('package', PackageTask::class, new NullHandler())
     ->build();
 
-$runner->run(Manifest::loadFromArray(
+$graph = $runner->run(Manifest::loadFromArray(
     json_decode(
         file_get_contents(__DIR__ . '/../example/test.json'),
         true
     )
 ));
+
+Loop::repeat(100, function () use ($graph) {
+    echo (new GraphRenderer())->render($graph);
+});
+Loop::run();

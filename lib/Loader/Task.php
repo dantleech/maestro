@@ -13,10 +13,16 @@ class Task
      */
     private $parameters;
 
-    public function __construct(string $type, array $parameters = [])
+    /**
+     * @var array
+     */
+    private $depends;
+
+    public function __construct(string $type, array $parameters = [], array $depends = [])
     {
         $this->type = $type;
         $this->parameters = $parameters;
+        $this->depends = $depends;
     }
 
     public function parameters(): array
@@ -27,5 +33,10 @@ class Task
     public function type(): string
     {
         return $this->type;
+    }
+
+    public function depends(): array
+    {
+        return $this->depends;
     }
 }

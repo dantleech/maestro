@@ -16,11 +16,12 @@ class PackageTask implements Task
         $this->name = $name;
     }
 
-    public function handler(): string
+    public function name(): string
     {
+        return $this->name;
     }
 
-    public function name(): string
+    public function description(): string
     {
         return $this->name;
     }

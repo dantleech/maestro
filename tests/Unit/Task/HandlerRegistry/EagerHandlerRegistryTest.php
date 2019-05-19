@@ -15,17 +15,16 @@ class EagerHandlerRegistryTest extends TestCase
     {
         $this->expectException(HandlerNotFound::class);
         $registry = new EagerHandlerRegistry([
-            new NullHandler()
+            NullTask::class => new NullHandler()
         ]);
         $task = $this->prophesize(Task::class);
-        $task->handler()->willReturn('Foobar');
         $registry->getFor($task->reveal());
     }
 
     public function testReturnsHandlerForTask()
     {
         $registry = new EagerHandlerRegistry([
-            new NullHandler()
+            NullTask::class => new NullHandler()
         ]);
         $handler = $registry->getFor(new NullTask());
         $this->assertInstanceOf(NullHandler::class, $handler);

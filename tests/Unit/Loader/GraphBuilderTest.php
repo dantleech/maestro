@@ -120,11 +120,11 @@ class GraphBuilderTest extends TestCase
                             ],
                             'two' => [
                                 'type' => 'foobar',
-                                'depends' => ['one'],
+                                'depends' => 'one',
                             ],
                             'three' => [
                                 'type' => 'foobar',
-                                'depends' => ['two'],
+                                'depends' => 'two',
                             ],
                             'four' => [
                                 'type' => 'foobar',
@@ -139,34 +139,6 @@ class GraphBuilderTest extends TestCase
                 'children[0].children[0].name' => 'one',
                 'children[0].children[0].children[0].name' => 'two',
                 'children[0].children[1].name' => 'four',
-            ],
-        ];
-
-        yield 'builds task with multiple deps 1' => [
-            [
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'tasks' => [
-                            'one' => [
-                                'type' => 'foobar',
-                            ],
-                            'two' => [
-                                'type' => 'foobar',
-                            ],
-                            'three' => [
-                                'type' => 'foobar',
-                                'depends' => ['one','two'],
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            [
-                'name' => 'root',
-                'children[0].task.name' => 'foobar/barfoo',
-                'children[0].children[0].name' => 'one',
-                'children[0].children[1].name' => 'two',
-                'children[0].children[1].children[0].name' => 'three',
             ],
         ];
     }
@@ -191,11 +163,11 @@ class GraphBuilderTest extends TestCase
                         'tasks' => [
                             'two' => [
                                 'type' => 'foobar',
-                                'depends' => ['three'],
+                                'depends' => 'three',
                             ],
                             'three' => [
                                 'type' => 'foobar',
-                                'depends' => ['two'],
+                                'depends' => 'two',
                             ],
                         ],
                     ],
@@ -211,7 +183,7 @@ class GraphBuilderTest extends TestCase
                         'tasks' => [
                             'two' => [
                                 'type' => 'foobar',
-                                'depends' => ['two'],
+                                'depends' => 'two',
                             ],
                         ],
                     ],

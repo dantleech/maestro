@@ -80,28 +80,27 @@ class GraphBuilder
         $seen[] = $taskName;
 
         if ($task->depends()) {
-            foreach ($task->depends() as $depName) {
-                if (!isset($tasks[$taskName])) {
-                    throw new RuntimeException(sprintf(
-                        'Task depends on unknown task "%s", known tasks: "%s"',
-                        $taskName,
-                        implode('", "', array_keys($tasks))
-                    ));
-                }
-
-                if (isset($resolved[$depName])) {
-                    $node = $resolved[$depName];
-                }
-
-                $node = $resolved[$depName] = $this->walkTask(
-                    $node,
-                    $depName,
-                    $tasks[$taskName],
-                    $tasks,
-                    $resolved,
-                    $seen
-                );
+            $depName = $task->depends();
+            if (!isset($tasks[$taskName])) {
+                throw new RuntimeException(sprintf(
+                    'Task depends on unknown task "%s", known tasks: "%s"',
+                    $taskName,
+                    implode('", "', array_keys($tasks))
+                ));
             }
+
+            if (isset($resolved[$depName])) {
+                $node = $resolved[$depName];
+            }
+
+            $node = $resolved[$depName] = $this->walkTask(
+                $node,
+                $depName,
+                $tasks[$taskName],
+                $tasks,
+                $resolved,
+                $seen
+            );
         }
 
         return $node->addChild(

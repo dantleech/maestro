@@ -12,6 +12,7 @@ use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\MapResolver\Resolver;
+use RuntimeException;
 
 class MaestroExtension implements Extension
 {
@@ -42,12 +43,14 @@ class MaestroExtension implements Extension
             foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
                 if (!isset($attrs['alias'])) {
                     throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify an alias', $serviceId
+                        'Job handler "%s" must specify an alias',
+                        $serviceId
                     ));
                 }
                 if (!isset($attrs['job_class'])) {
                     throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify a job class', $serviceId
+                        'Job handler "%s" must specify a job class',
+                        $serviceId
                     ));
                 }
 

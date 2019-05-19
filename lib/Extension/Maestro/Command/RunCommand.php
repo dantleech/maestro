@@ -6,6 +6,7 @@ use Amp\Loop;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Manifest;
 use Maestro\RunnerBuilder;
+use Maestro\Util\Cast;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,7 +42,9 @@ class RunCommand extends Command
 
         $runner = $this->builder->build();
 
-        $graph = $runner->run(Manifest::loadFromArray($this->loadManifestArray($input->getArgument(self::ARG_PLAN))));
+        $graph = $runner->run(Manifest::loadFromArray($this->loadManifestArray(
+            Cast::toString($input->getArgument(self::ARG_PLAN))
+        )));
 
         Loop::repeat(100, function () use ($graph, $section) {
             $section->overwrite((new GraphRenderer())->render($graph));
@@ -55,20 +58,21 @@ class RunCommand extends Command
         $path = $this->resolvePath($planPath);
         if (!file_exists($path)) {
             throw new RuntimeException(sprintf(
-                'Plan file "%s" does not exist', $path
+                'Plan file "%s" does not exist',
+                $path
             ));
         }
 
-        $array = json_decode(file_get_contents($planPath), true);
+        $array = json_decode(Cast::toString(file_get_contents($planPath)), true);
 
-        if (json_last_error()) {
+        if (false === $array) {
             throw new RuntimeException(sprintf(
-                'Could not decode JSON: "%s"', json_last_error_msg()
+                'Could not decode JSON: "%s"',
+                json_last_error_msg()
             ));
         }
 
         return $array;
-
     }
 
     private function resolvePath(string $planPath)
@@ -77,6 +81,6 @@ class RunCommand extends Command
             return $planPath;
         }
 
-        return Path::join(getcwd(), $planPath);
+        return Path::join(Cast::toString(getcwd()), $planPath);
     }
 }

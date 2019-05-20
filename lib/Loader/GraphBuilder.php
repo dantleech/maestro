@@ -79,8 +79,8 @@ class GraphBuilder
         }
         $seen[] = $taskName;
 
-        if ($task->depends()) {
-            $depName = $task->depends();
+        $depName = $task->depends();
+        if ($depName) {
             if (!isset($tasks[$taskName])) {
                 throw new RuntimeException(sprintf(
                     'Task depends on unknown task "%s", known tasks: "%s"',

@@ -7,7 +7,6 @@ use Maestro\Task\Artifacts;
 use Maestro\Task\Task\PackageTask;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\WorkspaceFactory;
-use PHPUnit\Framework\TestCase;
 
 class PackageHandlerTest extends IntegrationTestCase
 {
@@ -24,7 +23,7 @@ class PackageHandlerTest extends IntegrationTestCase
     public function testProducesArtifacts()
     {
         $package = new PackageTask('hello');
-        $artifacts = (new PackageHandler($this->workspaceFactory))($package);
+        $artifacts = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
         $this->assertInstanceOf(Artifacts::class, $artifacts);
         $this->assertEquals([
             'package' => $package,

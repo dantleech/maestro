@@ -5,6 +5,7 @@ namespace Maestro\Tests\Unit\Task\TaskRunner;
 use Amp\Success;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\InvalidHandler;
+use Maestro\Task\Exception\InvalidHandlerResponse;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
@@ -37,6 +38,19 @@ class HandlingTaskRunnerTest extends TestCase
         $this->expectExceptionMessage('is not __invoke');
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
+        });
+        $this->runner->run($task, Artifacts::empty());
+    }
+
+    public function testThrowsExceptionIfHandlerDoesNotReturnPromise()
+    {
+        $this->expectException(InvalidHandlerResponse::class);
+        $task = new NullTask();
+        $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
+            public function __invoke()
+            {
+                return '';
+            }
         });
         $this->runner->run($task, Artifacts::empty());
     }

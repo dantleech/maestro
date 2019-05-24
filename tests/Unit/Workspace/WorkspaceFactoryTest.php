@@ -4,7 +4,6 @@ namespace Maestro\Tests\Unit\Workspace;
 
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\WorkspaceFactory;
-use PHPUnit\Framework\TestCase;
 use Phpactor\TestUtils\Workspace;
 
 class WorkspaceFactoryTest extends IntegrationTestCase

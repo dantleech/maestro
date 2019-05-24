@@ -3,16 +3,20 @@
 namespace Maestro\Extension\Maestro;
 
 use Maestro\Extension\Maestro\Command\RunCommand;
+use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\RunnerBuilder;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
 use Maestro\Task\Task\PackageTask;
+use Maestro\Workspace\WorkspaceFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\MapResolver\Resolver;
 use RuntimeException;
+use Webmozart\PathUtil\Path;
+use XdgBaseDir\Xdg;
 
 class MaestroExtension implements Extension
 {
@@ -21,12 +25,26 @@ class MaestroExtension implements Extension
 
     public function configure(Resolver $schema)
     {
+        $schema->setDefaults([
+            'working_directory' => getcwd()
+        ]);
     }
 
     public function load(ContainerBuilder $container)
     {
+        $this->loadWorkspace($container);
         $this->loadConsole($container);
         $this->loadMaestro($container);
+    }
+
+    private function loadWorkspace(ContainerBuilder $container)
+    {
+        $container->register('workspace_factory', function (Container $container) {
+            return new WorkspaceFactory(
+                substr(md5($container->getParameter('working_directory')), 0, 10),
+                Path::join([(new Xdg())->getHomeDataDir(), 'maestro'])
+            );
+        });
     }
 
     private function loadConsole(ContainerBuilder $container)
@@ -67,8 +85,8 @@ class MaestroExtension implements Extension
             'job_class' => NullTask::class,
         ]]);
 
-        $container->register('task.job_handler.package', function () {
-            return new NullHandler();
+        $container->register('task.job_handler.package', function (Container $container) {
+            return new PackageHandler($container->get('workspace_factory'));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'package',
             'job_class' => PackageTask::class,

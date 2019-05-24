@@ -49,4 +49,9 @@ final class Artifacts
     {
         return self::create(array_merge($this->map, $artifacts->map));
     }
+
+    public function toArray(): array
+    {
+        return $this->map;
+    }
 }

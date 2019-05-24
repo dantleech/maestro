@@ -53,4 +53,17 @@ class HandlingTaskRunnerTest extends TestCase
         $promise = $this->runner->run($task, Artifacts::empty());
         $this->assertInstanceOf(Success::class, $promise);
     }
+
+    public function testRunsTaskWithArtifacts()
+    {
+        $task = new NullTask();
+        $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
+            public function __invoke(NullTask $task, Artifacts $artifacts)
+            {
+                return new Success();
+            }
+        });
+        $promise = $this->runner->run($task, Artifacts::empty());
+        $this->assertInstanceOf(Success::class, $promise);
+    }
 }

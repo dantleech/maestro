@@ -37,6 +37,6 @@ final class HandlingTaskRunner implements TaskRunner
             ));
         }
 
-        return call_user_func($handler, $task);
+        return call_user_func($handler, $task, $artifacts);
     }
 }

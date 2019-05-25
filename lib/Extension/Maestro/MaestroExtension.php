@@ -28,11 +28,12 @@ class MaestroExtension implements Extension
 {
     const SERVICE_RUNNER_BUILDER = 'runner_builder';
     const TAG_JOB_HANDLER = 'job_handler';
+    const PARAM_WORKING_DIRECTORY = 'working_directory';
 
     public function configure(Resolver $schema)
     {
         $schema->setDefaults([
-            'working_directory' => getcwd()
+            self::PARAM_WORKING_DIRECTORY => getcwd()
         ]);
     }
 
@@ -48,9 +49,13 @@ class MaestroExtension implements Extension
     {
         $container->register('workspace_factory', function (Container $container) {
             return new WorkspaceFactory(
-                substr(md5($container->getParameter('working_directory')), 0, 10),
-                Path::join([(new Xdg())->getHomeDataDir(), 'maestro'])
+                substr(md5($container->getParameter(self::PARAM_WORKING_DIRECTORY)), 0, 10),
+                $container->get('workspace_path')
             );
+        });
+
+        $container->register('workspace_path', function () {
+            return Path::join([(new Xdg())->getHomeDataDir(), 'maestro']);
         });
     }
 
@@ -107,7 +112,10 @@ class MaestroExtension implements Extension
         ]]);
 
         $container->register('task.job_handler.git', function (Container $container) {
-            return new GitHandler($container->get('script.runner'));
+            return new GitHandler(
+                $container->get('script.runner'),
+                $container->get('workspace_path')
+            );
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'git',
             'job_class' => GitTask::class,

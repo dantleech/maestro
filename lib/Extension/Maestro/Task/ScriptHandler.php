@@ -30,9 +30,9 @@ class ScriptHandler implements TaskHandler
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
 
             $artifacts = Artifacts::create([
-                'exit_code' => $result->exitCode(),
-                'last_stderr' => $result->lastStderr(),
-                'last_stdout' => $result->lastStdout(),
+                'exitCode' => $result->exitCode(),
+                'stderr' => $result->lastStderr(),
+                'stdout' => $result->lastStdout(),
             ]);
 
             if ($result->exitCode() !== 0) {

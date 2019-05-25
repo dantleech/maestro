@@ -5,7 +5,7 @@ namespace Maestro\Extension\Maestro\Command;
 use Amp\Loop;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Manifest;
-use Maestro\RunnerBuilder;
+use Maestro\MaestroBuilder;
 use Maestro\Util\Cast;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
@@ -18,13 +18,15 @@ use Webmozart\PathUtil\Path;
 class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
+    const POLL_TIME_DISPATCH = 10;
+    const POLL_TIME_RENDER = 100;
 
     /**
      * @var RunnerBuilder
      */
     private $builder;
 
-    public function __construct(RunnerBuilder $builder)
+    public function __construct(MaestroBuilder $builder)
     {
         parent::__construct();
         $this->builder = $builder;
@@ -42,12 +44,24 @@ class RunCommand extends Command
 
         $runner = $this->builder->build();
 
-        $graph = $runner->run(Manifest::loadFromArray($this->loadManifestArray(
-            Cast::toString($input->getArgument(self::ARG_PLAN))
-        )));
+        $graph = $runner->buildGraph(
+            Manifest::loadFromArray(
+                $this->loadManifestArray(
+                    Cast::toString(
+                        $input->getArgument(self::ARG_PLAN)
+                    )
+                )
+            )
+        );
 
-        Loop::repeat(100, function () use ($graph, $section) {
-            $section->overwrite((new GraphRenderer())->render($graph));
+        Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($runner, $graph) {
+            $runner->dispatch($graph);
+        });
+
+        Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
+            $section->overwrite(
+                (new GraphRenderer())->render($graph)
+            );
         });
 
         Loop::run();

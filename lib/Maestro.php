@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Runner;
+namespace Maestro;
 
 use Amp\Loop;
 use Maestro\Loader\GraphBuilder;
@@ -10,7 +10,7 @@ use Maestro\Task\Dispatcher;
 use Maestro\Loader\Manifest;
 use Maestro\Task\Queue;
 
-class Runner
+class Maestro
 {
     /**
      * @var GraphBuilder
@@ -32,15 +32,14 @@ class Runner
         $this->dispatcher = $dispatcher;
     }
 
-    public function run(Manifest $manifest): Node
+    public function buildGraph(Manifest $manifest): Node
     {
-        $graph = $this->builder->build($manifest);
+        return $this->builder->build($manifest);
+    }
 
-        Loop::repeat(100, function () use ($graph) {
-            $queue = $this->scheduler->schedule($graph, new Queue());
-            $this->dispatcher->dispatch($queue);
-        });
-
-        return $graph;
+    public function dispatch(Node $graph): void
+    {
+        $queue = $this->scheduler->schedule($graph, new Queue());
+        $this->dispatcher->dispatch($queue);
     }
 }

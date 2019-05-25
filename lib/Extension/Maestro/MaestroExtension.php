@@ -7,7 +7,7 @@ use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
-use Maestro\RunnerBuilder;
+use Maestro\MaestroBuilder;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
@@ -69,7 +69,7 @@ class MaestroExtension implements Extension
     private function loadMaestro(ContainerBuilder $container)
     {
         $container->register(self::SERVICE_RUNNER_BUILDER, function (Container $container) {
-            $builder = RunnerBuilder::create();
+            $builder = MaestroBuilder::create();
             foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
                 if (!isset($attrs['alias'])) {
                     throw new RuntimeException(sprintf(

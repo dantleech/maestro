@@ -11,9 +11,9 @@ use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\TaskRunner\HandlingTaskRunner;
-use Maestro\Runner\Runner;
+use Maestro\Maestro;
 
-final class RunnerBuilder
+final class MaestroBuilder
 {
     private $taskMap = [];
     private $handlers = [];
@@ -23,9 +23,9 @@ final class RunnerBuilder
         return new self();
     }
 
-    public function build(): Runner
+    public function build(): Maestro
     {
-        return new Runner(
+        return new Maestro(
             new GraphBuilder(new TaskMap($this->taskMap)),
             new DepthFirstScheduler(),
             new Dispatcher($this->buildTaskRunner())

@@ -52,8 +52,8 @@ class WorkspaceFactoryTest extends IntegrationTestCase
         ];
     }
 
-    private function create(string $namespace)
+    private function create(string $namespace): WorkspaceFactory
     {
-        return new WorkspaceFactory($this->workspace()->path('/'), $namespace);
+        return new WorkspaceFactory($namespace, $this->workspace()->path('/'));
     }
 }

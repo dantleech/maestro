@@ -31,7 +31,7 @@ final class State
         return new self(self::WAITING);
     }
 
-    public function FAILED()
+    public static function FAILED()
     {
         return new self(self::FAILED);
     }

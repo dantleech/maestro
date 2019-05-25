@@ -12,9 +12,9 @@ class TaskFailed extends RuntimeException
      */
     private $artifacts;
 
-    public function __construct(string $message, Artifacts $artifacts)
+    public function __construct(string $message, Artifacts $artifacts = null)
     {
-        $this->artifacts = $artifacts;
+        $this->artifacts = $artifacts ?: Artifacts::create([]);
         parent::__construct($message);
         $this->message = $message;
     }

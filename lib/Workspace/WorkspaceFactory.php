@@ -24,7 +24,7 @@ class WorkspaceFactory
 
     public function createNamedWorkspace(string $name): Workspace
     {
-        $workspacePath = Path::join([$this->rootPath, $this->namespace .'-'. $this->slugify($name)]);
+        $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->slugify($name)]);
 
         return new Workspace($workspacePath);
     }

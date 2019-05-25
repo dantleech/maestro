@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\PackageHandler;
+use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Task\PackageTask;
 use Maestro\Tests\IntegrationTestCase;
@@ -25,9 +26,14 @@ class PackageHandlerTest extends IntegrationTestCase
         $package = new PackageTask('hello');
         $artifacts = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
         $this->assertInstanceOf(Artifacts::class, $artifacts);
+        $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
         $this->assertEquals([
             'package' => $package,
-            'workspace' => $this->workspaceFactory->createNamedWorkspace('hello')
+            'workspace' => $workspace,
+            'env' => EnvVars::create([
+                'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
+                'PACKAGE_NAME' => 'hello'
+            ])
         ], $artifacts->toArray());
     }
 }

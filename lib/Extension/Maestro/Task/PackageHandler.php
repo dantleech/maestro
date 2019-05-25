@@ -6,8 +6,10 @@ use Amp\Promise;
 use Amp\Success;
 use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
+use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\Task\PackageTask;
+use Maestro\Workspace\Workspace;
 use Maestro\Workspace\WorkspaceFactory;
 
 class PackageHandler implements TaskHandler
@@ -26,9 +28,7 @@ class PackageHandler implements TaskHandler
     {
         $workspace = $this->factory->createNamedWorkspace($package->name());
 
-        if (!file_exists($workspace->absolutePath())) {
-            mkdir($workspace->absolutePath(), 0777, true);
-        }
+        $this->createWorkspaceFolderIfNotExists($workspace);
 
         return new Success(Artifacts::create([
             'package' => $package,
@@ -38,5 +38,21 @@ class PackageHandler implements TaskHandler
                 'PACKAGE_NAME' => $package->name()
             ])
         ]));
+    }
+
+    private function createWorkspaceFolderIfNotExists(Workspace $workspace): void
+    {
+        if (file_exists($workspace->absolutePath())) {
+            return;
+        }
+
+        if (@mkdir($workspace->absolutePath(), 0777, true)) {
+            return;
+        }
+
+        throw new TaskFailed(sprintf(
+            'Could not create folder "%s"',
+            $workspace->absolutePath()
+        ));
     }
 }

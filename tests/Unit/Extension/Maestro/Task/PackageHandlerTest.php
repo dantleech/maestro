@@ -5,7 +5,7 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
-use Maestro\Task\Task\PackageTask;
+use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\WorkspaceFactory;
 

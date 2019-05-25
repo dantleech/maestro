@@ -9,7 +9,7 @@ use Maestro\Loader\TaskMap;
 use Maestro\Task\State;
 use Maestro\Task\Task;
 use Maestro\Task\Task\NullTask;
-use Maestro\Task\Task\PackageTask;
+use Maestro\Extension\Maestro\Task\PackageTask;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 

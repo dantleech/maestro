@@ -8,7 +8,7 @@ use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
-use Maestro\Task\Task\PackageTask;
+use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Workspace\Workspace;
 use Maestro\Workspace\WorkspaceFactory;
 

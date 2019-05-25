@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Task\Task;
+namespace Maestro\Extension\Maestro\Task;
 
 use Maestro\Task\Task;
 

@@ -18,6 +18,7 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
+use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
@@ -116,7 +117,7 @@ class MaestroExtension implements Extension
     private function loadScript(ContainerBuilder $container)
     {
         $container->register('script.runner', function (Container $container) {
-            return new ScriptRunner();
+            return new ScriptRunner($container->get(LoggingExtension::SERVICE_LOGGER));
         });
     }
 }

@@ -4,6 +4,7 @@ namespace Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Task\NullTask;
 use RuntimeException;
 
@@ -87,11 +88,16 @@ final class Node
     {
         return \Amp\call(function () use ($taskRunner) {
             $this->state = State::BUSY();
-            $this->setArtifacts(yield $taskRunner->run(
-                $this->task,
-                $this->mergedArtifacts()
-            ));
-            $this->state = State::IDLE();
+
+            try {
+                $this->setArtifacts(yield $taskRunner->run(
+                    $this->task,
+                    $this->mergedArtifacts()
+                ));
+                $this->state = State::IDLE();
+            } catch (TaskFailed $failed) {
+                $this->state = State::FAILED();
+            }
             return new Success();
         });
     }

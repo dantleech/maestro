@@ -19,6 +19,10 @@ class DepthFirstScheduler implements Scheduler
             return $queue;
         }
 
+        if ($node->state()->isFailed()) {
+            return $queue;
+        }
+
         foreach ($node->children() as $child) {
             assert($child instanceof Node);
             $this->schedule($child, $queue);

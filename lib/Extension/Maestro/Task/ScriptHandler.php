@@ -7,6 +7,7 @@ use Amp\Promise;
 use Generator;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
+use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\Task\ScriptTask;
 use Maestro\Util\StringUtil;
@@ -30,6 +31,12 @@ class ScriptHandler implements TaskHandler
             $env = $artifacts->get('env')->toArray();
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
+
+            if ($result->exitCode() !== 0) {
+                throw new TaskFailed(sprintf(
+                    'Exited with code "%s"', $result->exitCode()
+                ));
+            }
 
             return Artifacts::create([
                 'exit_code' => $result->exitCode(),

@@ -7,6 +7,7 @@ final class State
     private const WAITING = 'waiting';
     private const IDLE = 'idle';
     private const BUSY = 'busy';
+    private const FAILED = 'failed';
 
     private $state;
 
@@ -30,6 +31,11 @@ final class State
         return new self(self::WAITING);
     }
 
+    public function FAILED()
+    {
+        return new self(self::FAILED);
+    }
+
     public function isIdle(): bool
     {
         return $this->state === self::IDLE;
@@ -38,6 +44,11 @@ final class State
     public function isWaiting(): bool
     {
         return $this->state === self::WAITING;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->state === self::FAILED;
     }
 
     public function isBusy()

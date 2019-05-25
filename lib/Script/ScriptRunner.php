@@ -6,7 +6,6 @@ use Amp\Process\Process;
 use Amp\Promise;
 use Generator;
 use Maestro\Loader\Instantiator;
-use Maestro\Task\Artifacts;
 use Maestro\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 
@@ -49,7 +48,6 @@ class ScriptRunner
             $process->getStdout(),
             $process->getStderr(),
             ] as $stream) {
-
             $outs[] = \Amp\call(function () use ($stream) {
                 $lastLine = '';
                 $buffer = '';

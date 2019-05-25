@@ -23,6 +23,7 @@ $container = PhpactorContainer::fromExtensions([
 ], [
     LoggingExtension::PARAM_ENABLED => true,
     LoggingExtension::PARAM_LEVEL => 'debug',
+    LoggingExtension::PARAM_PATH => 'maestro.log',
 ]);
 
 $application = new Application();

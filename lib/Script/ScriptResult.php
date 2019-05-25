@@ -2,8 +2,6 @@
 
 namespace Maestro\Script;
 
-use JsonSerializable;
-
 class ScriptResult
 {
     /**

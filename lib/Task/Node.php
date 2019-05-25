@@ -74,9 +74,28 @@ final class Node
         return $this->parent;
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function children(): Nodes
     {
         return Nodes::fromNodes(array_values($this->children));
+    }
+
+    /**
+     * @return Nodes<Node>
+     */
+    public function selfAndAncestors(): Nodes
+    {
+        $nodes = [ $this ];
+        $current = $this;
+
+        while ($parent = $current->parent()) {
+            $nodes[] = $parent;
+            $current = $parent;
+        }
+
+        return Nodes::fromNodes($nodes);
     }
 
     public function state(): State
@@ -97,6 +116,7 @@ final class Node
                 $this->state = State::IDLE();
             } catch (TaskFailed $failed) {
                 $this->state = State::FAILED();
+                $this->setArtifacts($failed->artifacts());
             }
             return new Success();
         });

@@ -2,7 +2,6 @@
 
 namespace Maestro\Tests\Unit\Task;
 
-use Amp\Success;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Node;

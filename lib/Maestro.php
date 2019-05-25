@@ -2,7 +2,6 @@
 
 namespace Maestro;
 
-use Amp\Loop;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Task\Node;
 use Maestro\Task\Scheduler;

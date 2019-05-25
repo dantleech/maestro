@@ -11,7 +11,6 @@ use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\TaskRunner\HandlingTaskRunner;
-use Maestro\Maestro;
 
 final class MaestroBuilder
 {

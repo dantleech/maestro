@@ -9,9 +9,7 @@ use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Test\HandlerTester;
-use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
-use Maestro\Workspace\WorkspaceFactory;
 use PHPUnit\Framework\TestCase;
 
 class GitHandlerTest extends TestCase
@@ -46,7 +44,7 @@ class GitHandlerTest extends TestCase
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
-            )
+                )
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [

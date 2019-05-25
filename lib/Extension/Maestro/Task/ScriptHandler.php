@@ -7,7 +7,6 @@ use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
-use Maestro\Extension\Maestro\Task\ScriptTask;
 
 class ScriptHandler implements TaskHandler
 {

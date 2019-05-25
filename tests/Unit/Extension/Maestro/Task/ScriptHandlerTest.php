@@ -13,7 +13,6 @@ use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
-use PHPUnit\Framework\TestCase;
 
 class ScriptHandlerTest extends IntegrationTestCase
 {
@@ -37,7 +36,7 @@ class ScriptHandlerTest extends IntegrationTestCase
         $artifacts = HandlerTester::create(
             new ScriptHandler(
                 $this->scriptRunner->reveal(),
-            )
+                )
         )->handle(ScriptTask::class, [
             'script' => self::EXAMPLE_SCRIPT,
         ], [
@@ -62,7 +61,7 @@ class ScriptHandlerTest extends IntegrationTestCase
             $artifacts = HandlerTester::create(
                 new ScriptHandler(
                     $this->scriptRunner->reveal(),
-                )
+                    )
             )->handle(ScriptTask::class, [
                 'script' => self::EXAMPLE_SCRIPT,
             ], [

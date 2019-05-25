@@ -22,7 +22,7 @@ class RunCommand extends Command
     const POLL_TIME_RENDER = 100;
 
     /**
-     * @var RunnerBuilder
+     * @var MaestroBuilder
      */
     private $builder;
 

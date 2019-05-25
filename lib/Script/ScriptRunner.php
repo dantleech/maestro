@@ -26,9 +26,8 @@ class ScriptRunner
         return \Amp\call(function () use ($script, $workingDirectory, $env) {
             $env = array_merge(getenv(), $env);
             $process = new Process($script, $workingDirectory, $env);
-
-            $this->logger->debug(sprintf('Script "%s" in %s with %s', $script, $workingDirectory, json_encode($env)));
             $pid  = yield $process->start();
+            $this->logger->debug(sprintf('Process %s "%s" in %s with %s', $pid, $script, $workingDirectory, json_encode($env)));
 
             $outs = yield from $this->handleStreamOutput($process);
             $exitCode = yield $process->join();

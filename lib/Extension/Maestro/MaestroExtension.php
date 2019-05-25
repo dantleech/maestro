@@ -3,9 +3,12 @@
 namespace Maestro\Extension\Maestro;
 
 use Maestro\Extension\Maestro\Command\RunCommand;
+use Maestro\Extension\Maestro\Task\GitHandler;
+use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\RunnerBuilder;
+use Maestro\Script\ScriptRunner;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
 use Maestro\Task\Task\PackageTask;
@@ -37,6 +40,7 @@ class MaestroExtension implements Extension
         $this->loadWorkspace($container);
         $this->loadConsole($container);
         $this->loadMaestro($container);
+        $this->loadScript($container);
     }
 
     private function loadWorkspace(ContainerBuilder $container)
@@ -95,10 +99,24 @@ class MaestroExtension implements Extension
         ]]);
 
         $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler();
+            return new ScriptHandler($container->get('script.runner'));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'script',
             'job_class' => ScriptTask::class,
         ]]);
+
+        $container->register('task.job_handler.git', function (Container $container) {
+            return new GitHandler($container->get('script.runner'));
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'git',
+            'job_class' => GitTask::class,
+        ]]);
+    }
+
+    private function loadScript(ContainerBuilder $container)
+    {
+        $container->register('script.runner', function (Container $container) {
+            return new ScriptRunner();
+        });
     }
 }

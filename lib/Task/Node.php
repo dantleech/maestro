@@ -121,7 +121,7 @@ final class Node
             return Artifacts::create([]);
         }
 
-        return $this->parent->artifacts->merge($this->artifacts);
+        return $this->parent->mergedArtifacts()->merge($this->artifacts);
     }
 
     private function setArtifacts(?Artifacts $artifacts): void
@@ -130,5 +130,10 @@ final class Node
             return;
         }
         $this->artifacts = $artifacts;
+    }
+
+    public function artifacts(): Artifacts
+    {
+        return $this->artifacts;
     }
 }

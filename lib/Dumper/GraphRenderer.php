@@ -23,11 +23,12 @@ class GraphRenderer
         }
 
         $out .= sprintf(
-            '%s[%s] %s (%s)',
+            '%s[%s] %s (%s) %s',
             str_repeat('  ', $depth),
             "\033[34m" . $node->name() . "\033[0m",
             $node->task()->description(),
-            "\033[32m" . $node->state()->toString() . "\033[0m"
+            "\033[32m" . $node->state()->toString() . "\033[0m",
+            " " . json_encode($node->artifacts()->toArray()),
         ) . PHP_EOL;
 
         foreach ($node->children() as $child) {

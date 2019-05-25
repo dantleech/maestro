@@ -4,10 +4,12 @@ namespace Maestro\Extension\Maestro;
 
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Task\PackageHandler;
+use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\RunnerBuilder;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
 use Maestro\Task\Task\PackageTask;
+use Maestro\Task\Task\ScriptTask;
 use Maestro\Workspace\WorkspaceFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -90,6 +92,13 @@ class MaestroExtension implements Extension
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'package',
             'job_class' => PackageTask::class,
+        ]]);
+
+        $container->register('task.job_handler.script', function (Container $container) {
+            return new ScriptHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'script',
+            'job_class' => ScriptTask::class,
         ]]);
     }
 }

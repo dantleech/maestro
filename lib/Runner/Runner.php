@@ -36,7 +36,7 @@ class Runner
     {
         $graph = $this->builder->build($manifest);
 
-        Loop::repeat(1000, function () use ($graph) {
+        Loop::repeat(100, function () use ($graph) {
             $queue = $this->scheduler->schedule($graph, new Queue());
             $this->dispatcher->dispatch($queue);
         });

@@ -15,7 +15,9 @@
         "phpactor/console-extension": "^0.1.1",
         "webmozart/path-util": "^2.3",
         "amphp/amp": "^2.1",
-        "phpactor/logging-extension": "^0.3.0"
+        "phpactor/logging-extension": "^0.3.0",
+        "dnoegel/php-xdg-base-dir": "^0.1.0",
+        "amphp/process": "^1.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.13",

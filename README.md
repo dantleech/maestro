@@ -164,6 +164,8 @@ Use this to clone a GIT repository for the package.
 }
 ```
 
+![Untitled](https://user-images.githubusercontent.com/530801/58379062-3b67ef80-7f96-11e9-998b-e65de8b749fb.png)
+
 Documentation
 -------------
 

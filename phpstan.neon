@@ -1,4 +1,2 @@
 parameters:
     paths: [ lib ]
-    ignoreErrors:
-        - "/call expects callable/"

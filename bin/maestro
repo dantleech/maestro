@@ -1,64 +1,23 @@
 #!/usr/bin/env php
 <?php
 
-use Maestro\Extension\CoreExtension\CoreExtension;
-use Maestro\Extension\Process\ProcessExtension;
-use Maestro\Extension\Template\TemplateExtension;
-use Phpactor\ConfigLoader\ConfigLoaderBuilder;
-use Phpactor\ConfigLoader\Core\ConfigLoader;
+use Amp\Loop;
+use Maestro\Console\ApplicationBuilder;
+use Maestro\Dumper\GraphRenderer;
+use Maestro\Extension\Maestro\MaestroExtension;
+use Maestro\Loader\Manifest;
+use Maestro\RunnerBuilder;
+use Maestro\Task\Task\NullHandler;
+use Maestro\Task\Task\NullTask;
+use Maestro\Task\Task\PackageTask;
 use Phpactor\Container\PhpactorContainer;
-use Phpactor\Extension\Completion\CompletionExtension;
 use Phpactor\Extension\Console\ConsoleExtension;
-use Maestro\MaestroExtension;
+use Phpactor\Extension\Logger\LoggingExtension;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\Input;
 use Symfony\Component\Console\Input\InputOption;
-use Webmozart\PathUtil\Path;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$configBuilder = ConfigLoaderBuilder::create()
-    ->addCandidate(getcwd() . '/maestro.json', 'json')
-    ->enableJsonDeserializer('json');
-
-$arg = new ArgvInput();
-
-$configFile = $arg->getParameterOption(['-c', '--config']);
-$configDir = getcwd();
-if (false !== $configFile) {
-    if (!file_exists($configFile)) {
-        throw new RuntimeException(sprintf(
-            'Config file "%s" not found', $configFile
-        ));
-    }
-    $configPath = Path::makeAbsolute($configFile, getcwd());
-    $configDir = dirname($configPath);
-    $configBuilder->addCandidate($configPath, 'json');
-}
-
-$container = PhpactorContainer::fromExtensions([
-    ConsoleExtension::class,
-    MaestroExtension::class,
-    TemplateExtension::class,
-    ProcessExtension::class,
-], array_merge(
-    $configBuilder->loader()->load(),
-    [
-        MaestroExtension::PARAM_CONFIG_DIR => $configDir
-    ]
-));
-
-$application = new Application();
-$application->getDefinition()->addOptions([
-    new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to configuration file'),
-    new InputOption('progress', 'p', InputOption::VALUE_REQUIRED, 'Progress', 'silent')
-]);
-$application->setCommandLoader(
-    $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
-);
-$application->run(
-    $container->get(ConsoleExtension::SERVICE_INPUT),
-    $container->get(ConsoleExtension::SERVICE_OUTPUT)
-);
-
+$application = (new ApplicationBuilder())->build();
+$application->run();

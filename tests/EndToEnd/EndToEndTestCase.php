@@ -3,19 +3,13 @@
 namespace Maestro\Tests\EndToEnd;
 
 use Maestro\Extension\NamespaceResolver;
-use PHPUnit\Framework\TestCase;
-use Phpactor\TestUtils\Workspace;
+use Maestro\Tests\IntegrationTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;
 
-class EndToEndTestCase extends TestCase
+class EndToEndTestCase extends IntegrationTestCase
 {
-    protected function initWorkspace()
-    {
-        $this->workspace()->reset();
-    }
-
     protected function command(string $command): Process
     {
         $process = new Process(sprintf(
@@ -49,12 +43,6 @@ class EndToEndTestCase extends TestCase
         }
     }
 
-
-    protected function workspace(): Workspace
-    {
-        return Workspace::create(__DIR__ . '/../Workspace');
-    }
-
     protected function assertProcessSuccess(Process $process)
     {
         if ($process->getExitCode() === 0) {
@@ -70,6 +58,20 @@ class EndToEndTestCase extends TestCase
         ));
     }
 
+    protected function assertProcessFailure(Process $process)
+    {
+        if ($process->getExitCode() !== 0) {
+            $this->addToAssertionCount(1);
+            return;
+        }
+
+        $this->fail(sprintf(
+            'Process succeeded, but it should have failed: %s%s',
+            $process->getOutput(),
+            $process->getErrorOutput()
+        ));
+    }
+
     protected function packageWorkspacePath(string $subPath = ''): string
     {
         $paths = ['maestro-workspace'];
@@ -80,9 +82,8 @@ class EndToEndTestCase extends TestCase
         return $this->workspace()->path(Path::join($paths));
     }
 
-    protected function saveConfig(array $config)
+    protected function createPlan(string $name, array $data)
     {
-        $config['workspace_path'] = $this->packageWorkspacePath();
-        file_put_contents($this->workspace()->path('maestro.json'), json_encode($config));
+        $this->workspace()->put($name, json_encode($data, JSON_PRETTY_PRINT));
     }
 }

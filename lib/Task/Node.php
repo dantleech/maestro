@@ -162,4 +162,25 @@ final class Node
     {
         return $this->artifacts;
     }
+
+    public function allDone(): bool
+    {
+        if ($this->state()->isFailed()) {
+            return true;
+        }
+
+        foreach ($this->children() as $child) {
+            $done = $child->allDone();
+
+            if (!$done) {
+                return false;
+            }
+        }
+
+        if ($this->state()->isIdle()) {
+            return true;
+        }
+
+        return false;
+    }
 }

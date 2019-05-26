@@ -2,6 +2,7 @@
 <?php
 
 use Amp\Loop;
+use Maestro\Console\ApplicationBuilder;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Loader\Manifest;
@@ -13,19 +14,10 @@ use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$container = PhpactorContainer::fromExtensions([
-    ConsoleExtension::class,
-    MaestroExtension::class,
-    LoggingExtension::class,
-], [
-    LoggingExtension::PARAM_ENABLED => true,
-    LoggingExtension::PARAM_LEVEL => 'debug',
-    LoggingExtension::PARAM_PATH => 'maestro.log',
-]);
-
-$application = new Application();
-$application->setCommandLoader($container->get(ConsoleExtension::SERVICE_COMMAND_LOADER));
+$application = (new ApplicationBuilder())->build();
 $application->run();

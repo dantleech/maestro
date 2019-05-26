@@ -28,12 +28,17 @@ class MaestroExtension implements Extension
 {
     const SERVICE_RUNNER_BUILDER = 'runner_builder';
     const TAG_JOB_HANDLER = 'job_handler';
+
     const PARAM_WORKING_DIRECTORY = 'working_directory';
+    const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
+    const PARAM_NAMESPACE = 'namespace';
 
     public function configure(Resolver $schema)
     {
         $schema->setDefaults([
-            self::PARAM_WORKING_DIRECTORY => getcwd()
+            self::PARAM_WORKING_DIRECTORY => $this->defaultCwd(),
+            self::PARAM_WORKSPACE_DIRECTORY => Path::join([(new Xdg())->getHomeDataDir(), 'maestro']),
+            self::PARAM_NAMESPACE => $this->defaultNamespace(),
         ]);
     }
 
@@ -49,13 +54,9 @@ class MaestroExtension implements Extension
     {
         $container->register('workspace_factory', function (Container $container) {
             return new WorkspaceFactory(
-                substr(md5($container->getParameter(self::PARAM_WORKING_DIRECTORY)), 0, 10),
-                $container->get('workspace_path')
+                $container->getParameter('namespace'),
+                $container->getParameter('workspace_directory')
             );
-        });
-
-        $container->register('workspace_path', function () {
-            return Path::join([(new Xdg())->getHomeDataDir(), 'maestro']);
         });
     }
 
@@ -114,7 +115,7 @@ class MaestroExtension implements Extension
         $container->register('task.job_handler.git', function (Container $container) {
             return new GitHandler(
                 $container->get('script.runner'),
-                $container->get('workspace_path')
+                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
             );
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'git',
@@ -127,5 +128,23 @@ class MaestroExtension implements Extension
         $container->register('script.runner', function (Container $container) {
             return new ScriptRunner($container->get(LoggingExtension::SERVICE_LOGGER));
         });
+    }
+
+    private function defaultNamespace()
+    {
+        return substr(md5($this->defaultCwd()), 0, 10);
+    }
+
+    private function defaultCwd(): string
+    {
+        $cwd = getcwd();
+
+        if (false === $cwd) {
+            throw new RuntimeException(
+                'Could not determine cwd'
+            );
+        }
+
+        return $cwd;
     }
 }

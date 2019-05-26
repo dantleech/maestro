@@ -4,8 +4,6 @@ namespace Maestro\Tests\EndToEnd;
 
 use Maestro\Extension\NamespaceResolver;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
-use Phpactor\TestUtils\Workspace;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 use Webmozart\PathUtil\Path;

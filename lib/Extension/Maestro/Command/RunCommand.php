@@ -19,7 +19,7 @@ class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
     const POLL_TIME_DISPATCH = 10;
-    const POLL_TIME_RENDER = 100;
+    const POLL_TIME_RENDER = 250;
 
     /**
      * @var MaestroBuilder
@@ -56,6 +56,10 @@ class RunCommand extends Command
 
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($runner, $graph) {
             $runner->dispatch($graph);
+
+            if ($graph->allDone()) {
+                Loop::stop();
+            }
         });
 
         Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {

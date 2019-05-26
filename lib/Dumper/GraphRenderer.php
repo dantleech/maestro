@@ -37,7 +37,7 @@ class GraphRenderer
             str_repeat('  ', $depth),
             "\033[34m" . $node->name() . "\033[0m",
             $node->task()->description(),
-            $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",
+            $node->state()->isIdle() ? '' : $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",
             " " . json_encode($node->artifacts()->toArray()),
             ) . PHP_EOL;
         

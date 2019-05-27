@@ -49,6 +49,16 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     }
 
     /**
+     * @return string[]
+     */
+    public function names(): array
+    {
+        return array_map(function (Node $node) {
+            return $node->name();
+        }, $this->nodes);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function count(): int

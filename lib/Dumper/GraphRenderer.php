@@ -2,6 +2,7 @@
 
 namespace Maestro\Dumper;
 
+use Maestro\Task\Graph;
 use Maestro\Task\Node;
 
 class GraphRenderer
@@ -13,57 +14,32 @@ class GraphRenderer
         $this->clear = $clear;
     }
 
-    public function render(Node $node, $depth = 0)
+    public function render(Graph $graph, $depth = 0): string
     {
-        $visibility = $this->walkVisibility($node);
-        return $this->walkNode($node, $depth, $visibility);
+        $out = '';
+        foreach ($graph->roots() as $rootNode) {
+            $out .= $this->walkNode($graph, $rootNode, $depth);
+        }
+        return $out;
     }
 
-    private function walkNode(Node $node, int $depth, array $visibility)
+    private function walkNode(Graph $graph, Node $node, $depth): string
     {
-        $out ='';
-
-        if (isset($visibility[spl_object_hash($node)])) {
-            return $out;
-        }
-        
-        if ($this->clear && $depth === 0) {
-            $out .= "\033[2J";
-            $out .= "\033[H";
-        }
-        
-        $out .= sprintf(
-            '%s[%s] %s (%s) %s',
-            str_repeat('  ', $depth),
+        $out= sprintf(
+            '[%s] (%s) %s (%s) %s\n',
             "\033[34m" . $node->name() . "\033[0m",
+            implode(', ', array_map(function (Node $node) {
+                return $node->name();
+            }, iterator_to_array($graph->dependenciesFor($node->name())))),
             $node->task()->description(),
             $node->state()->isIdle() ? '' : $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",
             " " . json_encode($node->artifacts()->toArray()),
             ) . PHP_EOL;
         
-        foreach ($node->children() as $child) {
-            $out .= $this->walkNode($child, $depth + 1, $visibility);
+        foreach ($graph->dependentsOf($node->name()) as $child) {
+            $out .= $this->walkNode($graph, $child, $depth + 1);
         }
         
         return $out;
-    }
-
-    private function walkVisibility(Node $node): array
-    {
-        $visibility = [];
-        if ($node->children()->count() === 0) {
-            foreach ($node->selfAndAncestors() as $ancestor) {
-                if (!$ancestor->state()->isWaiting()) {
-                    break;
-                }
-
-                $visibility[spl_object_hash($ancestor)] = false;
-            }
-        }
-        foreach ($node->children() as $child) {
-            $visibility = array_merge($visibility, $this->walkVisibility($child));
-        }
-
-        return $visibility;
     }
 }

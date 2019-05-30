@@ -8,6 +8,7 @@ final class State
     private const IDLE = 'idle';
     private const BUSY = 'busy';
     private const FAILED = 'failed';
+    private const CANCELLED = 'cancelled';
 
     private $state;
 
@@ -31,9 +32,14 @@ final class State
         return new self(self::WAITING);
     }
 
-    public static function FAILED()
+    public static function FAILED(): self
     {
         return new self(self::FAILED);
+    }
+
+    public static function CANCELLED(): self
+    {
+        return new self(self::CANCELLED);
     }
 
     public function isIdle(): bool
@@ -56,8 +62,18 @@ final class State
         return $this->state === self::BUSY;
     }
 
+    public function isCancelled()
+    {
+        return $this->state === self::CANCELLED;
+    }
+
     public function toString(): string
     {
         return $this->state;
+    }
+
+    public function is(State $state): bool
+    {
+        return $state->state === $this->state;
     }
 }

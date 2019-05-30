@@ -3,11 +3,9 @@
 namespace Maestro;
 
 use Maestro\Loader\GraphBuilder;
-use Maestro\Task\Node;
-use Maestro\Task\Scheduler;
-use Maestro\Task\Dispatcher;
+use Maestro\Task\Graph;
+use Maestro\Task\GraphWalker;
 use Maestro\Loader\Manifest;
-use Maestro\Task\Queue;
 
 class Maestro
 {
@@ -15,30 +13,25 @@ class Maestro
      * @var GraphBuilder
      */
     private $builder;
-    /**
-     * @var Scheduler
-     */
-    private $scheduler;
-    /**
-     * @var Dispatcher
-     */
-    private $dispatcher;
 
-    public function __construct(GraphBuilder $builder, Scheduler $scheduler, Dispatcher $dispatcher)
+    /**
+     * @var GraphWalker
+     */
+    private $walker;
+
+    public function __construct(GraphBuilder $builder, GraphWalker $walker)
     {
         $this->builder = $builder;
-        $this->scheduler = $scheduler;
-        $this->dispatcher = $dispatcher;
+        $this->walker = $walker;
     }
 
-    public function buildGraph(Manifest $manifest): Node
+    public function buildGraph(Manifest $manifest): Graph
     {
         return $this->builder->build($manifest);
     }
 
-    public function dispatch(Node $graph): void
+    public function dispatch(Graph $graph): void
     {
-        $queue = $this->scheduler->schedule($graph, new Queue());
-        $this->dispatcher->dispatch($queue);
+        $this->walker->walk($graph);
     }
 }

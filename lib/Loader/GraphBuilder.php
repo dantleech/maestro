@@ -2,12 +2,14 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Exception\GraphContainsCircularReference;
+use Maestro\Task\Edge;
+use Maestro\Task\Graph;
 use Maestro\Task\Node;
-use RuntimeException;
 
 class GraphBuilder
 {
+    const NODE_ROOT = 'root';
+
     /**
      * @var TaskMap
      */
@@ -20,97 +22,64 @@ class GraphBuilder
 
     public function build(
         Manifest $manifest
-    ) {
-        $root = Node::createRoot();
-        $this->walkPackages($root, $manifest);
+    ): Graph {
+        $nodes = [ Node::create(self::NODE_ROOT) ];
+        $edges = [];
+        $this->walkPackages($manifest, $nodes, $edges);
 
-        return $root;
+        return Graph::create($nodes, $edges);
     }
 
-    private function walkPackages(Node $root, Manifest $manifest)
+    private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)
     {
         foreach ($manifest->packages() as $package) {
-            $packageNode = $root->addChild(
-                Node::create(
-                    $package->name(),
-                    Instantiator::create()->instantiate(
-                        $this->taskMap->classNameFor('package'),
-                        [
-                            'name' => $package->name()
-                        ]
-                    )
+            $nodes[] = $packageNode = Node::create(
+                $package->name(),
+                Instantiator::create()->instantiate(
+                    $this->taskMap->classNameFor('package'),
+                    [
+                        'name' => $package->name()
+                    ]
                 )
             );
+
+            $edges[] = Edge::create($package->name(), self::NODE_ROOT);
 
             $prototype = $package->prototype();
             $prototype = $prototype ? $manifest->prototype($prototype) : null;
 
-            $this->walkPackage($packageNode, $package, $prototype);
+            $this->walkPackage($packageNode, $package, $nodes, $edges, $prototype);
         }
     }
 
-    private function walkPackage(Node $packageNode, Package $package, ?Prototype $prototype)
+    private function walkPackage(Node $packageNode, Package $package, array &$nodes, &$edges, ?Prototype $prototype)
     {
         $tasks = array_merge($prototype ? $prototype->tasks() : [], $package->tasks());
-        $this->walkTasks($packageNode, $tasks);
-    }
 
-    private function walkTasks(Node $node, array $tasks)
-    {
-        $resolved = [];
+        /** @var Task $task */
         foreach ($tasks as $taskName => $task) {
-            $task = $this->walkTask($node, $taskName, $task, $tasks, $resolved);
-            $resolved[$taskName] = $task;
-        }
-    }
+            $taskName = $this->namespace($package, $taskName);
 
-    private function walkTask(Node $node, string $taskName, Task $task, array $tasks, array $resolved, $seen = []): Node
-    {
-        if (isset($resolved[$taskName])) {
-            return $resolved[$taskName];
-        }
-
-        if (in_array($taskName, $seen)) {
-            throw new GraphContainsCircularReference(sprintf(
-                'Graph contains circular reference: "%s -> %s"',
-                implode(' -> ', array_reverse($seen)),
-                $taskName
-            ));
-        }
-        $seen[] = $taskName;
-
-        $depName = $task->depends();
-        if ($depName) {
-            if (!isset($tasks[$taskName])) {
-                throw new RuntimeException(sprintf(
-                    'Task depends on unknown task "%s", known tasks: "%s"',
-                    $taskName,
-                    implode('", "', array_keys($tasks))
-                ));
-            }
-
-            if (isset($resolved[$depName])) {
-                $node = $resolved[$depName];
-            }
-
-            $node = $resolved[$depName] = $this->walkTask(
-                $node,
-                $depName,
-                $tasks[$taskName],
-                $tasks,
-                $resolved,
-                $seen
-            );
-        }
-
-        return $node->addChild(
-            Node::create(
+            $nodes[] = Node::create(
                 $taskName,
                 Instantiator::create()->instantiate(
                     $this->taskMap->classNameFor($task->type()),
                     $task->parameters()
                 )
-            )
-        );
+            );
+
+            if (empty($task->depends())) {
+                $edges[] = Edge::create($taskName, $package->name());
+            }
+
+            foreach ($task->depends() as $dependency) {
+                $edges[] = Edge::create($taskName, $this->namespace($package, $dependency));
+            }
+        }
+    }
+
+    private function namespace(Package $package, $taskName): string
+    {
+        return sprintf('%s%s%s', $package->name(), Node::NAMEPSPACE_SEPARATOR, $taskName);
     }
 }

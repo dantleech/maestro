@@ -2,33 +2,31 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
-use Maestro\Loader\Exception\GraphContainsCircularReference;
+use Closure;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\TaskMap;
+use Maestro\Task\Graph;
+use Maestro\Task\Node;
+use Maestro\Task\Nodes;
 use Maestro\Task\State;
 use Maestro\Task\Task;
 use Maestro\Task\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class GraphBuilderTest extends TestCase
 {
     /**
      * @dataProvider provideBuildGraph
      */
-    public function testBuildGraph(array $manifest, array $expectedValues = [])
+    public function testBuildGraph(array $manifest, Closure $assertion)
     {
         $builder = new GraphBuilder($this->taskMap());
         $manifest = Manifest::loadFromArray($manifest);
         $graph = $builder->build($manifest);
 
-        $propertyAccessor = new PropertyAccessor(false, true);
-
-        foreach ($expectedValues as $path => $expectedValue) {
-            $this->assertEquals($expectedValue, $propertyAccessor->getValue($graph, $path));
-        }
+        $assertion($graph);
     }
 
     public function provideBuildGraph()
@@ -36,9 +34,11 @@ class GraphBuilderTest extends TestCase
         yield 'empty' => [
             [
             ],
-            [
-                'name' => 'root',
-            ],
+            function (Graph $graph) {
+                $this->assertEquals(Nodes::fromNodes([
+                    Node::create('root')
+                ]), $graph->roots());
+            }
         ];
 
         yield 'package' => [
@@ -48,12 +48,11 @@ class GraphBuilderTest extends TestCase
                     ],
                 ]
             ],
-            [
-                'name' => 'root',
-                'children[0].name' => 'phpactor/phpactor',
-                'children[0].task.name' => 'phpactor/phpactor',
-                'children[0].state' => State::WAITING(),
-            ],
+            function (Graph $graph) {
+                $nodes = $graph->dependentsOf('root');
+                $this->assertCount(1, $nodes);
+                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->name());
+            }
         ];
 
         yield 'package with tasks' => [
@@ -74,15 +73,15 @@ class GraphBuilderTest extends TestCase
                     ],
                 ]
             ],
-            [
-                'name' => 'root',
-                'children[0].name' => 'phpactor/phpactor',
-                'children[0].task.name' => 'phpactor/phpactor',
-                'children[0].state' => State::WAITING(),
-                'children[0].children[0].name' => 'task1',
-                'children[0].children[1].task.param1' => 'foobar',
-                'children[0].children[1].task.param2' => 'no',
-            ],
+            function (Graph $graph) {
+                $nodes = $graph->dependentsOf('root');
+                $this->assertCount(1, $nodes);
+                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
+                $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
+                $tasks = $graph->dependentsOf('phpactor/phpactor');
+                $this->assertEquals('foobar', $tasks->get('phpactor/phpactor#task2')->task()->param1());
+                $this->assertEquals('no', $tasks->get('phpactor/phpactor#task2')->task()->param2());
+            }
         ];
 
         yield 'merges tasks from prototype' => [
@@ -102,94 +101,10 @@ class GraphBuilderTest extends TestCase
                     ],
                 ]
             ],
-            [
-                'name' => 'root',
-                'children[0].task.name' => 'foobar/barfoo',
-                'children[0].state' => State::WAITING(),
-                'children[0].children[0].name' => 'task1',
-            ],
-        ];
-
-        yield 'builds task graph based on dependencies' => [
-            [
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'tasks' => [
-                            'one' => [
-                                'type' => 'foobar',
-                            ],
-                            'two' => [
-                                'type' => 'foobar',
-                                'depends' => 'one',
-                            ],
-                            'three' => [
-                                'type' => 'foobar',
-                                'depends' => 'two',
-                            ],
-                            'four' => [
-                                'type' => 'foobar',
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            [
-                'name' => 'root',
-                'children[0].task.name' => 'foobar/barfoo',
-                'children[0].children[0].name' => 'one',
-                'children[0].children[0].children[0].name' => 'two',
-                'children[0].children[1].name' => 'four',
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider provideBuildGraphError
-     */
-    public function testBuildGraphError(array $manifest, string $expectedExceptionClass)
-    {
-        $this->expectException($expectedExceptionClass);
-        $builder = new GraphBuilder($this->taskMap());
-        $manifest = Manifest::loadFromArray($manifest);
-        $builder->build($manifest);
-    }
-
-    public function provideBuildGraphError()
-    {
-        yield 'circular dependency 1' => [
-            [
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'tasks' => [
-                            'two' => [
-                                'type' => 'foobar',
-                                'depends' => 'three',
-                            ],
-                            'three' => [
-                                'type' => 'foobar',
-                                'depends' => 'two',
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            GraphContainsCircularReference::class
-        ];
-
-        yield 'circular dependency 2' => [
-            [
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'tasks' => [
-                            'two' => [
-                                'type' => 'foobar',
-                                'depends' => 'two',
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            GraphContainsCircularReference::class
+            function (Graph $graph) {
+                $nodes = $graph->dependentsOf('foobar/barfoo');
+                $this->assertEquals('foobar/barfoo#task1', $nodes->get('foobar/barfoo#task1')->name());
+            },
         ];
     }
 

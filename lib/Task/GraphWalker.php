@@ -38,7 +38,7 @@ class GraphWalker
             }
         }
 
-        foreach ($graph->dependenciesOf($node->name()) as $dependentNode) {
+        foreach ($graph->dependentsOf($node->name()) as $dependentNode) {
             $this->walkNode($graph, $dependentNode);
         }
     }

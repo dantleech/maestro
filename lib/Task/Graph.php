@@ -53,12 +53,36 @@ class Graph
         $this->toFromMap[$node->name()] = [];
     }
 
-    public function dependenciesOf(string $nodeName): Nodes
+    public function dependentsOf(string $nodeName): Nodes
     {
         $this->validateNodeName($nodeName);
+
         return Nodes::fromNodes(array_map(function (string $nodeName) {
             return $this->nodes[$nodeName];
         }, $this->toFromMap[$nodeName]));
+    }
+
+    public function widthFirstAncestryOf(string $nodeName): Nodes
+    {
+        $this->validateNodeName($nodeName);
+
+        $ancestry = Nodes::empty();
+
+        if (!isset($this->fromToMap[$nodeName])) {
+            return $ancestry;
+        }
+
+        $parents = $this->nodesByNames(
+            $this->fromToMap[$nodeName]
+        );
+
+        $ancestry = $ancestry->merge($parents);
+
+        foreach ($parents as $parent) {
+            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->name()));
+        }
+
+        return $ancestry;
     }
 
     private function validateNodeName(string $nodeName)
@@ -98,6 +122,13 @@ class Graph
 
         $this->toFromMap[$edge->to()][] = $edge->from();
         $this->fromToMap[$edge->from()][] = $edge->to();
+    }
+
+    private function nodesByNames(array $nodeNames): Nodes
+    {
+        return Nodes::fromNodes(array_map(function (string $nodeName) {
+            return $this->nodes[$nodeName];
+        }, $nodeNames));
     }
 
     private function nodeNames(): array

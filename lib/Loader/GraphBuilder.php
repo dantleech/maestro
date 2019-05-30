@@ -27,7 +27,7 @@ class GraphBuilder
         $edges = [];
         $this->walkPackages($manifest, $nodes, $edges);
 
-        return new Graph($nodes, $edges);
+        return Graph::create($nodes, $edges);
     }
 
     private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)

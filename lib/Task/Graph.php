@@ -28,7 +28,7 @@ class Graph
      */
     private $edges = [];
 
-    public function __construct(array $nodes, array $edges)
+    private function __construct(array $nodes, array $edges)
     {
         foreach ($nodes as $node) {
             $this->addNode($node);

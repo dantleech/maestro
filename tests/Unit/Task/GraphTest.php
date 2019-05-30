@@ -15,7 +15,7 @@ class GraphTest extends TestCase
 {
     public function testDependenciesForNode()
     {
-        $graph = new Graph(
+        $graph = Graph::create(
             [
                 Node::create('n1'),
                 Node::create('n2'),
@@ -34,7 +34,7 @@ class GraphTest extends TestCase
 
     public function testReturnsRootNodes()
     {
-        $graph = new Graph(
+        $graph = Graph::create(
             [
                 Node::create('n1'),
                 Node::create('n2'),
@@ -63,7 +63,7 @@ class GraphTest extends TestCase
     {
         yield 'with no ancestors' => [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('n1'),
                     ],
@@ -77,7 +77,7 @@ class GraphTest extends TestCase
 
         yield 'width first 1' => [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('n1'),
                         Node::create('n2'),
@@ -98,7 +98,7 @@ class GraphTest extends TestCase
 
         yield 'width first 2' => [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('r'),
                         Node::create('p1'),
@@ -146,7 +146,7 @@ class GraphTest extends TestCase
     {
         yield [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('n1'),
                     ],
@@ -159,7 +159,7 @@ class GraphTest extends TestCase
 
         yield [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('n1'),
                         Node::create('n2'),
@@ -174,7 +174,7 @@ class GraphTest extends TestCase
 
         yield [
             function () {
-                return new Graph(
+                return Graph::create(
                     [
                         Node::create('n1'),
                         Node::create('n2'),
@@ -194,7 +194,7 @@ class GraphTest extends TestCase
     {
         $this->expectException(NodeDoesNotExist::class);
 
-        $graph = new Graph(
+        $graph = Graph::create(
             [
                 Node::create('n1'),
             ],
@@ -208,7 +208,7 @@ class GraphTest extends TestCase
     {
         $this->expectException(NodeDoesNotExist::class);
 
-        $graph = new Graph(
+        $graph = Graph::create(
             [
                 Node::create('n1'),
             ],

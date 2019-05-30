@@ -26,7 +26,7 @@ class AggregatingArtifactsResolverTest extends TestCase
     {
         yield 'root node' => [
             function (Node $node) {
-                return new Graph([
+                return Graph::create([
                     $node,
                 ], []);
             },
@@ -36,7 +36,7 @@ class AggregatingArtifactsResolverTest extends TestCase
 
         yield 'returns parent artifacts' => [
             function (Node $node) {
-                return new Graph([
+                return Graph::create([
                     $this->setArtifacts(
                         Node::create('root'),
                         ['foo' => 'bar']
@@ -52,7 +52,7 @@ class AggregatingArtifactsResolverTest extends TestCase
 
         yield 'merges ancestor artifacts' => [
             function (Node $node) {
-                return new Graph([
+                return Graph::create([
                     $this->setArtifacts(
                         Node::create('n1'),
                         ['foo' => 'bar']
@@ -73,7 +73,7 @@ class AggregatingArtifactsResolverTest extends TestCase
 
         yield 'closer ancestors override more distant ones' => [
             function (Node $node) {
-                return new Graph([
+                return Graph::create([
                     $this->setArtifacts(
                         Node::create('n1'),
                         ['foo' => 'bar']
@@ -99,7 +99,7 @@ class AggregatingArtifactsResolverTest extends TestCase
 
         yield 'parallel dependencies are merged' => [
             function (Node $node) {
-                return new Graph([
+                return Graph::create([
                     $this->setArtifacts(
                         Node::create('n1'),
                         ['foo' => 'bar']

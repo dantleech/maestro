@@ -18,6 +18,8 @@ use RuntimeException;
  */
 final class Node
 {
+    const NAMEPSPACE_SEPARATOR = '#';
+
     private $state;
     private $task;
     private $name;
@@ -69,6 +71,24 @@ final class Node
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function shortName(): string
+    {
+        if (false === strpos($this->name, '/')) {
+            return $this->name;
+        }
+
+        return substr($this->name, strrpos($this->name, self::NAMEPSPACE_SEPARATOR) + 1);
+    }
+
+    public function namespace(): string
+    {
+        if (false === strpos($this->name, self::NAMEPSPACE_SEPARATOR)) {
+            return $this->name;
+        }
+
+        return substr($this->name, 0, strrpos($this->name, self::NAMEPSPACE_SEPARATOR));
     }
 
     public function task(): Task

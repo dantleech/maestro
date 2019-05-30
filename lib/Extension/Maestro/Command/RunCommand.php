@@ -18,7 +18,7 @@ use Webmozart\PathUtil\Path;
 class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
-    const POLL_TIME_DISPATCH = 10;
+    const POLL_TIME_DISPATCH = 100;
     const POLL_TIME_RENDER = 250;
 
     /**
@@ -69,6 +69,10 @@ class RunCommand extends Command
         });
 
         Loop::run();
+
+        $section->overwrite(
+            (new GraphRenderer())->render($graph)
+        );
     }
 
     private function loadManifestArray(string $planPath)

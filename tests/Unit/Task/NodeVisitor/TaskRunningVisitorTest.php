@@ -45,19 +45,6 @@ class TaskRunningVisitorTest extends TestCase
         );
     }
 
-    public function testDoesNotWalkChildrenIfNodeIsFailed()
-    {
-        $this->assertTrue(
-            $this->visit(
-                Graph::create([], []),
-                $this->setState(
-                    Node::create('n1'),
-                    State::FAILED()
-                )
-            )->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())
-        );
-    }
-
     public function testRunsTask()
     {
         $task = new NullTask();
@@ -65,7 +52,9 @@ class TaskRunningVisitorTest extends TestCase
 
         $this->taskRunner->run($task, $artifacts)->shouldBeCalled();
         $node = Node::create('n1', $task);
-        $graph = Graph::create([], []);
+        $graph = Graph::create([
+            $node
+        ], []);
 
         $this->artifactsResolver->resolveFor($graph, $node)->willReturn($artifacts);
 

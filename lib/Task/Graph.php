@@ -61,6 +61,19 @@ class Graph
         }, $this->toFromMap[$nodeName]));
     }
 
+    public function dependenciesFor(string $nodeName): Nodes
+    {
+        $this->validateNodeName($nodeName);
+
+        if (!isset($this->fromToMap[$nodeName])) {
+            return Nodes::empty();
+        }
+
+        return Nodes::fromNodes(array_map(function (string $nodeName) {
+            return $this->nodes[$nodeName];
+        }, $this->fromToMap[$nodeName]));
+    }
+
     public function widthFirstAncestryOf(string $nodeName): Nodes
     {
         $this->validateNodeName($nodeName);
@@ -145,5 +158,11 @@ class Graph
     private function nodeNames(): array
     {
         return Nodes::fromNodes($this->nodes)->names();
+    }
+
+    public function node($nodeName): Node
+    {
+        $this->validateNodeName($nodeName);
+        return $this->nodes[$nodeName];
     }
 }

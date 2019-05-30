@@ -8,6 +8,7 @@ use Maestro\Task\Node;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\TaskRunner;
+use RuntimeException;
 
 class TaskRunningVisitor implements NodeVisitor
 {
@@ -29,18 +30,39 @@ class TaskRunningVisitor implements NodeVisitor
 
     public function visit(Graph $graph, Node $node): NodeVisitorDecision
     {
-        if ($node->state()->isFailed() || $node->state()->isBusy()) {
-            return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();
+        if ($node->state()->isCancelled()) {
+            return NodeVisitorDecision::CONTINUE();
         }
 
-        if ($node->state()->isWaiting()) {
+        if ($node->state()->isIdle()) {
+            return NodeVisitorDecision::CONTINUE();
+        }
+
+        if ($node->state()->isWaiting() && $this->areDependenciesSatisfied($graph, $node)) {
             $node->run(
                 $this->runner,
                 $this->resolver->resolveFor($graph, $node)
             );
-            return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();
+
         }
 
-        return NodeVisitorDecision::CONTINUE();
+        if ($node->state()->isFailed()) {
+            return NodeVisitorDecision::CANCEL_DESCENDANTS();
+        }
+
+        return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();
+    }
+
+    private function areDependenciesSatisfied(Graph $graph, Node $node)
+    {
+        $dependencies = $graph->dependenciesFor($node->name());
+
+        foreach ($dependencies as $node) {
+            if (!$node->state()->isIdle()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -46,6 +46,11 @@ final class Node
         return $this->state;
     }
 
+    public function cancel(): void
+    {
+        $this->state = State::CANCELLED();
+    }
+
     public function run(TaskRunner $taskRunner, Artifacts $artifacts): Promise
     {
         return \Amp\call(function () use ($taskRunner, $artifacts) {
@@ -56,12 +61,12 @@ final class Node
                     $this->task,
                     $artifacts
                 );
-                $this->artifacts = $artifacts ?: Artifacts::empty();
                 $this->state = State::IDLE();
             } catch (TaskFailed $failed) {
                 $this->state = State::FAILED();
                 $artifacts = $failed->artifacts();
             }
+            $this->artifacts = $artifacts ?: Artifacts::empty();
 
             return new Success($artifacts);
         });

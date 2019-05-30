@@ -23,23 +23,38 @@ class GraphWalker
         }
     }
 
-    private function walkNode(Graph $graph, Node $node): void
+    private function walkNode(Graph $graph, Node $node, bool $cancel = false): void
     {
         foreach ($this->visitors as $visitor) {
             $descision = $visitor->visit($graph, $node);
 
-            if ($descision->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())) {
+            if (true === $descision->is(NodeVisitorDecision::CANCEL_DESCENDANTS())) {
+                $cancel = true;
+            }
+
+            if (true === $descision->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())) {
                 return;
             }
         }
 
         foreach ($graph->dependentsOf($node->name()) as $dependentNode) {
-            $this->walkNode($graph, $dependentNode);
+            if ($cancel) {
+                $dependentNode->cancel();
+            }
+            $this->walkNode($graph, $dependentNode, $cancel);
         }
     }
 
-    private function addVisitor(NodeVisitor $visitor)
+    private function addVisitor(NodeVisitor $visitor): void
     {
         $this->visitors[] = $visitor;
+    }
+
+    private function cancelDescendants(Graph $graph, Node $node): void
+    {
+        foreach ($graph->dependentsOf($node->name()) as $dependentNode) {
+            $dependentNode->cancel();
+            $this->walkNode($graph, $dependentNode);
+        }
     }
 }

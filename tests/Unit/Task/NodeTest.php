@@ -27,7 +27,7 @@ class NodeTest extends TestCase
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        \Amp\Promise\wait($rootNode->run($taskRunner));
+        \Amp\Promise\wait($rootNode->run($taskRunner, Artifacts::empty()));
         $this->assertEquals(State::IDLE(), $rootNode->state());
     }
 
@@ -38,7 +38,7 @@ class NodeTest extends TestCase
 
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        \Amp\Promise\wait($rootNode->run($taskRunner->reveal()));
+        \Amp\Promise\wait($rootNode->run($taskRunner->reveal(), Artifacts::empty()));
         $this->assertEquals(State::FAILED(), $rootNode->state());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Maestro\Task;
 
+use Maestro\Task\Exception\GraphContainsCircularDependencies;
 use Maestro\Task\Exception\NodeAlreadyExists;
 use Maestro\Task\Exception\NodeDoesNotExist;
 use Maestro\Task\Node;
@@ -16,7 +17,12 @@ class Graph
     /**
      * @var array<string,Edge[]>
      */
-    private $edges = [];
+    private $toFromMap = [];
+
+    /**
+     * @var array<string,Edge[]>
+     */
+    private $fromToMap = [];
 
     public function __construct(array $nodes, array $edges)
     {
@@ -29,6 +35,11 @@ class Graph
         }
     }
 
+    public static function create(array $nodes, array $edges)
+    {
+        return new self($nodes, $edges);
+    }
+
     private function addNode(Node $node)
     {
         if (isset($this->nodes[$node->name()])) {
@@ -39,15 +50,7 @@ class Graph
         }
 
         $this->nodes[$node->name()] = $node;
-        $this->edges[$node->name()] = [];
-    }
-
-    private function addEdge(Edge $edge)
-    {
-        $this->validateNodeName($edge->to());
-        $this->validateNodeName($edge->from());
-
-        $this->edges[$edge->to()][] = $edge->from();
+        $this->toFromMap[$node->name()] = [];
     }
 
     public function dependenciesOf(string $nodeName): Nodes
@@ -55,7 +58,7 @@ class Graph
         $this->validateNodeName($nodeName);
         return Nodes::fromNodes(array_map(function (string $nodeName) {
             return $this->nodes[$nodeName];
-        }, $this->edges[$nodeName]));
+        }, $this->toFromMap[$nodeName]));
     }
 
     private function validateNodeName(string $nodeName)
@@ -65,5 +68,40 @@ class Graph
                 'Node "%s" does not exist', $nodeName
             ));
         }
+    }
+
+    public function roots(): Nodes
+    {
+        $nodesWithNoOutboundEdges = array_diff(
+            $this->nodeNames(),
+            array_keys($this->fromToMap)
+        );
+
+        $nodes = [];
+        foreach ($nodesWithNoOutboundEdges as $nodeName) {
+            $nodes[] = $this->nodes[$nodeName];
+        }
+
+        if (empty($nodes)) {
+            throw new GraphContainsCircularDependencies(sprintf(
+                'Graph contains circular dependencies'
+            ));
+        }
+
+        return Nodes::fromNodes($nodes);
+    }
+
+    private function addEdge(Edge $edge)
+    {
+        $this->validateNodeName($edge->to());
+        $this->validateNodeName($edge->from());
+
+        $this->toFromMap[$edge->to()][] = $edge->from();
+        $this->fromToMap[$edge->from()][] = $edge->to();
+    }
+
+    private function nodeNames(): array
+    {
+        return Nodes::fromNodes($this->nodes)->names();
     }
 }

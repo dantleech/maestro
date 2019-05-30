@@ -4,5 +4,5 @@ namespace Maestro\Task;
 
 interface Scheduler
 {
-    public function schedule(Node $node, Queue $queue): Queue;
+    public function schedule(Graph $graph, Queue $queue): Queue;
 }

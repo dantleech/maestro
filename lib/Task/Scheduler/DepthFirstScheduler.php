@@ -2,32 +2,35 @@
 
 namespace Maestro\Task\Scheduler;
 
+use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\Queue;
 use Maestro\Task\Scheduler;
 
 class DepthFirstScheduler implements Scheduler
 {
-    public function schedule(Node $node, Queue $queue): Queue
+    public function schedule(Graph $graph, Queue $queue): Queue
     {
-        if ($node->state()->isBusy()) {
-            return $queue;
+        foreach ($graph->roots() as $rootNode) {
+            $this->walkNode($graph, $rootNode, $queue);
+        }
+
+        return $queue;
+    }
+
+    private function walkNode(Graph $graph, Node $node, Queue $queue): void
+    {
+        if ($node->state()->isFailed() || $node->state()->isBusy()) {
+            return;
         }
 
         if ($node->state()->isWaiting()) {
             $queue->enqueue($node);
-            return $queue;
+            return;
         }
 
-        if ($node->state()->isFailed()) {
-            return $queue;
+        foreach ($graph->dependenciesOf($node->name()) as $dependentNode) {
+            $this->walkNode($graph, $dependentNode, $queue);
         }
-
-        foreach ($node->children() as $child) {
-            assert($child instanceof Node);
-            $this->schedule($child, $queue);
-        }
-
-        return $queue;
     }
 }

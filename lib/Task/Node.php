@@ -22,11 +22,17 @@ final class Node
     private $task;
     private $name;
 
+    /**
+     * @var Artifacts
+     */
+    private $artifacts;
+
     public function __construct(string $name, ?Task $task = null)
     {
         $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
         $this->name = $name;
+        $this->artifacts = Artifacts::empty();
     }
 
     public static function create(string $name, ?Task $task = null): self
@@ -45,7 +51,7 @@ final class Node
             $this->state = State::BUSY();
 
             try {
-                $artifacts = yield $taskRunner->run(
+                $this->artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
@@ -67,5 +73,10 @@ final class Node
     public function task(): Task
     {
         return $this->task;
+    }
+
+    public function artifacts(): Artifacts
+    {
+        return $this->artifacts;
     }
 }

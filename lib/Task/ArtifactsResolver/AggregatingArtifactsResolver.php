@@ -11,5 +11,12 @@ class AggregatingArtifactsResolver implements ArtifactsResolver
 {
     public function resolveFor(Graph $graph, Node $node): Artifacts
     {
+        $artifacts = Artifacts::empty();
+        $ancestry = $graph->widthFirstAncestryOf($node->name());
+        foreach ($ancestry as $node) {
+            $artifacts = $artifacts->merge($node->artifacts());
+        }
+
+        return $artifacts;
     }
 }

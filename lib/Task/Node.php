@@ -51,10 +51,11 @@ final class Node
             $this->state = State::BUSY();
 
             try {
-                $this->artifacts = yield $taskRunner->run(
+                $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
+                $this->artifacts = $artifacts ?: Artifacts::empty();
                 $this->state = State::IDLE();
             } catch (TaskFailed $failed) {
                 $this->state = State::FAILED();

@@ -4,9 +4,12 @@ namespace Maestro;
 
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\TaskMap;
+use Maestro\Task\ArtifactsResolver;
+use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
 use Maestro\Task\Dispatcher;
 use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Task\GraphWalker;
+use Maestro\Task\NodeVisitor\TaskRunningVisitor;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
@@ -26,8 +29,7 @@ final class MaestroBuilder
     {
         return new Maestro(
             new GraphBuilder(new TaskMap($this->taskMap)),
-            new GraphWalker(),
-            new Dispatcher($this->buildTaskRunner())
+            $this->buildGraphWalker()
         );
     }
 
@@ -48,5 +50,18 @@ final class MaestroBuilder
     private function buildHandlerRegistry(): TaskHandlerRegistry
     {
         return new EagerHandlerRegistry($this->handlers);
+    }
+
+    private function buildGraphWalker(): GraphWalker
+    {
+        $visitors = [
+            new TaskRunningVisitor($this->buildTaskRunner(), $this->buildArtifactsResolver()),
+        ];
+        return new GraphWalker($visitors);
+    }
+
+    private function buildArtifactsResolver(): ArtifactsResolver
+    {
+        return new AggregatingArtifactsResolver();
     }
 }

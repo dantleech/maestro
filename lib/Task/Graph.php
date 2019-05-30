@@ -115,6 +115,17 @@ class Graph
         return Nodes::fromNodes($nodes);
     }
 
+    public function allDone(): bool
+    {
+        foreach ($this->nodes as $node) {
+            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function addEdge(Edge $edge)
     {
         $this->validateNodeName($edge->to());

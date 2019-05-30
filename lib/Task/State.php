@@ -60,4 +60,9 @@ final class State
     {
         return $this->state;
     }
+
+    public function is(State $state): bool
+    {
+        return $state->state === $this->state;
+    }
 }

@@ -6,7 +6,7 @@ use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\TaskMap;
 use Maestro\Task\Dispatcher;
 use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
-use Maestro\Task\Scheduler\DepthFirstScheduler;
+use Maestro\Task\GraphWalker;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
@@ -26,7 +26,7 @@ final class MaestroBuilder
     {
         return new Maestro(
             new GraphBuilder(new TaskMap($this->taskMap)),
-            new DepthFirstScheduler(),
+            new GraphWalker(),
             new Dispatcher($this->buildTaskRunner())
         );
     }

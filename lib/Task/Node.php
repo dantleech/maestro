@@ -6,7 +6,6 @@ use Amp\Promise;
 use Amp\Success;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Task\NullTask;
-use RuntimeException;
 
 /**
  * The node represents a task in the task graph.
@@ -71,24 +70,6 @@ final class Node
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function shortName(): string
-    {
-        if (false === strpos($this->name, '/')) {
-            return $this->name;
-        }
-
-        return substr($this->name, strrpos($this->name, self::NAMEPSPACE_SEPARATOR) + 1);
-    }
-
-    public function namespace(): string
-    {
-        if (false === strpos($this->name, self::NAMEPSPACE_SEPARATOR)) {
-            return $this->name;
-        }
-
-        return substr($this->name, 0, strrpos($this->name, self::NAMEPSPACE_SEPARATOR));
     }
 
     public function task(): Task

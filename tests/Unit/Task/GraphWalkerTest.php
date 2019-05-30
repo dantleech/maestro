@@ -8,11 +8,8 @@ use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
-use Maestro\Task\Queue;
 use Maestro\Task\GraphWalker;
-use Maestro\Task\State;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 class GraphWalkerTest extends TestCase
 {

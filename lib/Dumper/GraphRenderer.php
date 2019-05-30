@@ -26,9 +26,8 @@ class GraphRenderer
     private function walkNode(Graph $graph, Node $node, $depth): string
     {
         $out= sprintf(
-            '[%s#%s] %s (%s) %s\n',
-            "\033[34m" . $node->namespace() . "\033[0m",
-            "\033[34m" . $node->shortName() . "\033[0m",
+            '[%s] %s (%s) %s\n',
+            "\033[34m" . $node->name() . "\033[0m",
             $node->task()->description(),
             $node->state()->isIdle() ? '' : $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",
             " " . json_encode($node->artifacts()->toArray()),

@@ -188,7 +188,6 @@ class GraphTest extends TestCase
                 );
             }
         ];
-
     }
 
     public function testThrowsExceptionIfEdgeFromNodeDoesNotExist()

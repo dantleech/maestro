@@ -53,7 +53,8 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         if (!isset($this->nodes[$offset])) {
             throw new RuntimeException(sprintf(
                 'No node exists at offset "%s" for nodes with size "%s"',
-                $offset, count($this->nodes)
+                $offset,
+                count($this->nodes)
             ));
         }
         return $this->nodes[$offset];

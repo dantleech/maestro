@@ -2,12 +2,9 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Exception\GraphContainsCircularReference;
 use Maestro\Task\Edge;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
-use Maestro\Loader\Task;
-use RuntimeException;
 
 class GraphBuilder
 {
@@ -79,6 +76,6 @@ class GraphBuilder
 
     private function namespace(Package $package, $taskName): string
     {
-        return sprintf('%s#%s', $package->name(), $taskName);
+        return sprintf('%s%s%s', $package->name(), Node::NAMEPSPACE_SEPARATOR, $taskName);
     }
 }

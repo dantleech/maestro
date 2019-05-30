@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
-use Maestro\Loader\Exception\GraphContainsCircularReference;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\TaskMap;
@@ -15,7 +14,6 @@ use Maestro\Task\Task;
 use Maestro\Task\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class GraphBuilderTest extends TestCase
 {

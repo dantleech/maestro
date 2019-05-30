@@ -17,12 +17,12 @@ final class NodeVisitorDecision
         $this->action = $action;
     }
 
-    public function CONTINUE(): self
+    public static function CONTINUE(): self
     {
         return new self(self::CONTINUE);
     }
 
-    public function DO_NOT_WALK_CHILDREN(): self
+    public static function DO_NOT_WALK_CHILDREN(): self
     {
         return new self(self::DO_NOT_WALK_CHILDREN);
     }

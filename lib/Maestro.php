@@ -5,11 +5,7 @@ namespace Maestro;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Task\Graph;
 use Maestro\Task\GraphWalker;
-use Maestro\Task\Node;
-use Maestro\Task\Scheduler;
-use Maestro\Task\Dispatcher;
 use Maestro\Loader\Manifest;
-use Maestro\Task\Queue;
 
 class Maestro
 {

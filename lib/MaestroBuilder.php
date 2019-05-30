@@ -6,7 +6,6 @@ use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\TaskMap;
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
-use Maestro\Task\Dispatcher;
 use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Task\GraphWalker;
 use Maestro\Task\NodeVisitor\TaskRunningVisitor;

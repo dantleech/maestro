@@ -2,11 +2,6 @@
 
 namespace Maestro\Task;
 
-use Maestro\Task\Graph;
-use Maestro\Task\Node;
-use Maestro\Task\Queue;
-use Maestro\Task\Scheduler;
-
 class GraphWalker
 {
     /**

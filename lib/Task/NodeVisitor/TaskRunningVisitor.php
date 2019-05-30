@@ -2,7 +2,6 @@
 
 namespace Maestro\Task\NodeVisitor;
 
-use Maestro\Task\Artifacts;
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;

@@ -2,7 +2,6 @@
 
 namespace Maestro\Tests\Unit\Task;
 
-use Amp\Success;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Node;
@@ -12,7 +11,6 @@ use Maestro\Task\TaskRunner\NullTaskRunner;
 use Maestro\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use RuntimeException;
 
 class NodeTest extends TestCase
 {

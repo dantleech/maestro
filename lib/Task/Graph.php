@@ -5,7 +5,6 @@ namespace Maestro\Task;
 use Maestro\Task\Exception\GraphContainsCircularDependencies;
 use Maestro\Task\Exception\NodeAlreadyExists;
 use Maestro\Task\Exception\NodeDoesNotExist;
-use Maestro\Task\Node;
 
 class Graph
 {
@@ -89,7 +88,8 @@ class Graph
     {
         if (!isset($this->nodes[$nodeName])) {
             throw new NodeDoesNotExist(sprintf(
-                'Node "%s" does not exist', $nodeName
+                'Node "%s" does not exist',
+                $nodeName
             ));
         }
     }

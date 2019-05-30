@@ -97,4 +97,12 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
         $this->assertFileExists($this->workspace()->path('/my-workspace/testnamespace/mypackage/foobar'));
     }
+
+    public function testDumpsDotFileToStdout()
+    {
+        $this->createPlan('plan.json', [
+        ]);
+        $process = $this->command('run plan.json --dot');
+        $this->assertProcessSuccess($process);
+    }
 }

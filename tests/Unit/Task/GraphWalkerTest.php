@@ -85,8 +85,7 @@ class GraphWalkerTest extends TestCase
         Closure $graphFactory,
         array $decisions,
         array $expectedStates
-    )
-    {
+    ) {
         $visitor = $this->createVisitor($decisions);
         $visitor->decisions = $decisions;
 

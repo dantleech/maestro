@@ -8,7 +8,6 @@ use Maestro\Task\Node;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\TaskRunner;
-use RuntimeException;
 
 class TaskRunningVisitor implements NodeVisitor
 {
@@ -43,7 +42,6 @@ class TaskRunningVisitor implements NodeVisitor
                 $this->runner,
                 $this->resolver->resolveFor($graph, $node)
             );
-
         }
 
         if ($node->state()->isFailed()) {

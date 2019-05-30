@@ -23,6 +23,11 @@ class Graph
      */
     private $fromToMap = [];
 
+    /**
+     * @var array
+     */
+    private $edges = [];
+
     public function __construct(array $nodes, array $edges)
     {
         foreach ($nodes as $node) {
@@ -146,6 +151,15 @@ class Graph
 
         $this->toFromMap[$edge->to()][] = $edge->from();
         $this->fromToMap[$edge->from()][] = $edge->to();
+        $this->edges[] = $edge;
+    }
+
+    /**
+     * @return Edge[]
+     */
+    public function edges(): array
+    {
+        return $this->edges;
     }
 
     private function nodesByNames(array $nodeNames): Nodes

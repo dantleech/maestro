@@ -42,6 +42,7 @@ class GraphBuilder
                     ]
                 )
             );
+
             $edges[] = Edge::create($package->name(), self::NODE_ROOT);
 
             $prototype = $package->prototype();
@@ -66,7 +67,10 @@ class GraphBuilder
                     $task->parameters()
                 )
             );
-            $edges[] = Edge::create($taskName, $package->name());
+
+            if (empty($task->depends())) {
+                $edges[] = Edge::create($taskName, $package->name());
+            }
 
             foreach ($task->depends() as $dependency) {
                 $edges[] = Edge::create($taskName, $this->namespace($package, $dependency));

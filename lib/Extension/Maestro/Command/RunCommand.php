@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Maestro\Command;
 
 use Amp\Loop;
+use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Manifest;
 use Maestro\MaestroBuilder;
@@ -11,6 +12,7 @@ use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webmozart\PathUtil\Path;
@@ -20,6 +22,7 @@ class RunCommand extends Command
     const ARG_PLAN = 'plan';
     const POLL_TIME_DISPATCH = 100;
     const POLL_TIME_RENDER = 250;
+    const OPTION_DOT = 'dot';
 
     /**
      * @var MaestroBuilder
@@ -35,6 +38,7 @@ class RunCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED);
+        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -53,6 +57,10 @@ class RunCommand extends Command
                 )
             )
         );
+
+        if ($input->getOption(self::OPTION_DOT)) {
+            return $output->writeln((new DotDumper())->dump($graph));
+        }
 
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($runner, $graph) {
             $runner->dispatch($graph);

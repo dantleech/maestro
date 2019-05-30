@@ -33,7 +33,7 @@ class DepthFirstSchedulerTest extends TestCase
         yield 'root node' => [
             function () {
                 return Graph::create([
-                    Node::createRoot()
+                    Node::create('root')
                 ], []);
             },
             ['root'],

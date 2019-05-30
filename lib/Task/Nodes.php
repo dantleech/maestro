@@ -7,6 +7,7 @@ use ArrayIterator;
 use BadMethodCallException;
 use Countable;
 use IteratorAggregate;
+use RuntimeException;
 
 final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 {
@@ -45,6 +46,12 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 
     public function get(int $offset): Node
     {
+        if (!isset($this->nodes[$offset])) {
+            throw new RuntimeException(sprintf(
+                'No node exists at offset "%s" for nodes with size "%s"',
+                $offset, count($this->nodes)
+            ));
+        }
         return $this->nodes[$offset];
     }
 

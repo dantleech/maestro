@@ -23,6 +23,9 @@ class Prototype
         }
     }
 
+    /**
+     * @return Task[]
+     */
     public function tasks(): array
     {
         return $this->tasks;

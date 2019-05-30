@@ -16,6 +16,7 @@ class Dispatcher
 
     public function dispatch(Queue $queue): void
     {
+        $artifacts = Artifacts::empty();
         while ($node = $queue->dequeue()) {
             assert($node instanceof Node);
             \Amp\asyncCall(function () use ($node) {

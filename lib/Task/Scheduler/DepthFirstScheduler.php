@@ -7,7 +7,7 @@ use Maestro\Task\Node;
 use Maestro\Task\Queue;
 use Maestro\Task\Scheduler;
 
-class DepthFirstScheduler implements Scheduler
+class DepthFirstScheduler
 {
     public function schedule(Graph $graph, Queue $queue): Queue
     {

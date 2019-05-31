@@ -119,4 +119,11 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     {
         $this->nodes[$node->name()] = $node;
     }
+
+    public function byStates(State ...$states): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($states) {
+            return $node->state()->in(...$states);
+        }));
+    }
 }

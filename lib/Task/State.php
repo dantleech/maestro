@@ -76,4 +76,15 @@ final class State
     {
         return $state->state === $this->state;
     }
+
+    public function in(State ...$states): bool
+    {
+        foreach ($states as $state) {
+            if ($this->state === $state->state) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

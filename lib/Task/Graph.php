@@ -179,4 +179,9 @@ class Graph
         $this->validateNodeName($nodeName);
         return $this->nodes[$nodeName];
     }
+
+    public function nodes(): Nodes
+    {
+        return Nodes::fromNodes($this->nodes);
+    }
 }

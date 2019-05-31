@@ -57,8 +57,8 @@ final class ApplicationBuilder
         $definition->addOptions([
             new InputOption(self::OPTION_LOGGING_ENABLED, null, InputOption::VALUE_NONE, 'Enable logging'),
             new InputOption(self::OPTION_LOG_PATH, null, InputOption::VALUE_REQUIRED, 'File to log to', 'maestro.json'),
-            new InputOption(self::OPTION_LOG_LEVEL, null, InputOption::VALUE_REQUIRED, 'Log level', 'debug'),
             new InputOption(self::OPTION_LOG_FORMAT, null, InputOption::VALUE_REQUIRED, 'Log format', 'json'),
+            new InputOption(self::OPTION_LOG_LEVEL, null, InputOption::VALUE_REQUIRED, 'Log level', 'warning'),
             new InputOption(self::OPTION_WORKSPACE_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Path to workspace'),
             new InputOption(self::OPTION_WORKING_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Working directory'),
             new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
@@ -78,7 +78,7 @@ final class ApplicationBuilder
     private function buildConfiguration(InputDefinition $definition): array
     {
         $config = [
-            LoggingExtension::PARAM_LEVEL => 'debug',
+            LoggingExtension::PARAM_LEVEL => 'warning',
             LoggingExtension::PARAM_PATH => STDERR,
             LoggingExtension::PARAM_FORMATTER => 'json',
         ];

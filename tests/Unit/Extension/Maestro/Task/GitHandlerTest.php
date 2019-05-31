@@ -6,8 +6,10 @@ use Amp\Success;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Script\EnvVars;
+use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
+use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Test\HandlerTester;
 use Maestro\Workspace\Workspace;
 use PHPUnit\Framework\TestCase;
@@ -38,7 +40,7 @@ class GitHandlerTest extends TestCase
             ),
             self::EXAMPLE_WORKSPACE_ROOT,
             []
-        )->willReturn(new Success())->shouldBeCalled();
+        )->willReturn(new Success(new ScriptResult(0, '', '')))->shouldBeCalled();
 
         $artifacts = HandlerTester::create(
             new GitHandler(
@@ -53,5 +55,31 @@ class GitHandlerTest extends TestCase
         ]);
 
         $this->assertEquals(Artifacts::create([]), $artifacts, 'Returns no artifacts');
+    }
+
+    public function testFailsOnNonZeroExitCode()
+    {
+        $this->expectException(TaskFailed::class);
+        $this->scriptRunner->run(
+            sprintf(
+                'git clone %s %s',
+                self::EXAMPLE_URL,
+                self::EXAMPLE_WORKSPACE
+            ),
+            self::EXAMPLE_WORKSPACE_ROOT,
+            []
+        )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
+
+        $artifacts = HandlerTester::create(
+            new GitHandler(
+                $this->scriptRunner->reveal(),
+                self::EXAMPLE_WORKSPACE_ROOT,
+                )
+        )->handle(GitTask::class, [
+            'url' => self::EXAMPLE_URL,
+        ], [
+            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE),
+            'env' => EnvVars::create([]),
+        ]);
     }
 }

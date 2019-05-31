@@ -30,23 +30,15 @@ class RunCommandTest extends EndToEndTestCase
     public function testRunWithLogging()
     {
         $this->createPlan('plan.json', []);
-        $process = $this->command('run plan.json --log-enable');
-        $this->assertProcessSuccess($process);
-        $this->assertFileExists($this->workspace()->path('maestro.log'));
-    }
-
-    public function testRunWithLogLevel()
-    {
-        $this->createPlan('plan.json', []);
         $process = $this->command('run plan.json --log-enable --log-level=info');
         $this->assertProcessSuccess($process);
-        $this->assertFileExists($this->workspace()->path('maestro.log'));
+        $this->assertStringContainsString('Built application', $process->getErrorOutput());
     }
 
     public function testRunWithLogPath()
     {
         $this->createPlan('plan.json', []);
-        $process = $this->command('run plan.json --log-enable --log-path=foobar.log');
+        $process = $this->command('run plan.json --log-enable --log-level=debug --log-path=foobar.log');
         $this->assertProcessSuccess($process);
         $this->assertFileExists($this->workspace()->path('foobar.log'));
     }
@@ -57,7 +49,7 @@ class RunCommandTest extends EndToEndTestCase
 
         $this->createPlan('new-workdir/plan.json', []);
         $process = $this->command(sprintf(
-            'run plan.json --working-dir=%s --log-enable',
+            'run plan.json --working-dir=%s --log-enable --log-path=maestro.log --log-level=debug',
             $this->workspace()->path('new-workdir')
         ));
         $this->assertProcessSuccess($process);

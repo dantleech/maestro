@@ -66,6 +66,7 @@ final class Node
                 $this->state = State::FAILED();
                 $artifacts = $failed->artifacts();
             }
+
             $this->artifacts = $artifacts ?: Artifacts::empty();
 
             return new Success($artifacts);

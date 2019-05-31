@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Maestro;
 
+use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
@@ -14,6 +15,7 @@ use Maestro\Task\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Extension\Maestro\Task\ScriptTask;
 use Maestro\Workspace\WorkspaceFactory;
+use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -48,6 +50,7 @@ class MaestroExtension implements Extension
         $this->loadConsole($container);
         $this->loadMaestro($container);
         $this->loadScript($container);
+        $this->loadLogging($container);
     }
 
     private function loadWorkspace(ContainerBuilder $container)
@@ -146,5 +149,16 @@ class MaestroExtension implements Extension
         }
 
         return $cwd;
+    }
+
+    private function loadLogging(ContainerBuilder $container)
+    {
+        $container->register('logging.json', function (Container $container) {
+            return new JsonFormatter();
+        }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'json']]);
+
+        $container->register('logging.ansi', function (Container $container) {
+            return new AnsiFormatter();
+        }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'ansi']]);
     }
 }

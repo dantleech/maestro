@@ -5,6 +5,7 @@ namespace Maestro\Extension\Maestro\Task;
 use Amp\Promise;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
+use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
 
 class GitHandler implements TaskHandler
@@ -31,11 +32,18 @@ class GitHandler implements TaskHandler
             $workspace = $artifacts->get('workspace');
             $env = $artifacts->get('env');
 
-            yield $this->runner->run(
+            $result = yield $this->runner->run(
                 sprintf('git clone %s %s', $task->url(), $workspace->absolutePath()),
                 $this->rootWorkspacePath,
                 $env->toArray()
             );
+
+            if ($result->exitCode() !== 0) {
+                throw new TaskFailed(sprintf(
+                    'Exited with code "%s"',
+                    $result->exitCode()
+                ), $artifacts);
+            }
 
             return Artifacts::create([]);
         });

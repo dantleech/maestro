@@ -71,9 +71,7 @@ class RunCommand extends Command
         });
 
         Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
-            $section->overwrite(
-                (new GraphRenderer())->render($graph)
-            );
+            $section->overwrite((new GraphRenderer())->render($graph));
         });
 
         Loop::run();

@@ -53,7 +53,7 @@ class TaskRunningVisitor implements NodeVisitor
 
     private function areDependenciesSatisfied(Graph $graph, Node $node)
     {
-        $dependencies = $graph->dependenciesFor($node->name());
+        $dependencies = $graph->dependenciesFor($node->id());
 
         foreach ($dependencies as $node) {
             if (!$node->state()->isIdle()) {

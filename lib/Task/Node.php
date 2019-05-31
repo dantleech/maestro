@@ -21,24 +21,24 @@ final class Node
 
     private $state;
     private $task;
-    private $name;
+    private $id;
 
     /**
      * @var Artifacts
      */
     private $artifacts;
 
-    public function __construct(string $name, ?Task $task = null)
+    public function __construct(string $id, ?Task $task = null)
     {
         $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
-        $this->name = $name;
+        $this->id = $id;
         $this->artifacts = Artifacts::empty();
     }
 
-    public static function create(string $name, ?Task $task = null): self
+    public static function create(string $id, ?Task $task = null): self
     {
-        return new self($name, $task);
+        return new self($id, $task);
     }
 
     public function state(): State
@@ -73,9 +73,9 @@ final class Node
         });
     }
 
-    public function name(): string
+    public function id(): string
     {
-        return $this->name;
+        return $this->id;
     }
 
     public function task(): Task

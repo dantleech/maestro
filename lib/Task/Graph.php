@@ -46,15 +46,15 @@ class Graph
 
     private function addNode(Node $node)
     {
-        if (isset($this->nodes[$node->name()])) {
+        if (isset($this->nodes[$node->id()])) {
             throw new NodeAlreadyExists(sprintf(
                 'Node with name "%s" already exists',
-                $node->name()
+                $node->id()
             ));
         }
 
-        $this->nodes[$node->name()] = $node;
-        $this->toFromMap[$node->name()] = [];
+        $this->nodes[$node->id()] = $node;
+        $this->toFromMap[$node->id()] = [];
     }
 
     public function dependentsOf(string $nodeName): Nodes
@@ -96,7 +96,8 @@ class Graph
         $ancestry = $ancestry->merge($parents);
 
         foreach ($parents as $parent) {
-            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->name()));
+            assert($parent instanceof Node);
+            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->id()));
         }
 
         return $ancestry;

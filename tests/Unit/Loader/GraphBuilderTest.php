@@ -51,7 +51,7 @@ class GraphBuilderTest extends TestCase
             function (Graph $graph) {
                 $nodes = $graph->dependentsOf('root');
                 $this->assertCount(1, $nodes);
-                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->name());
+                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->id());
             }
         ];
 
@@ -103,7 +103,7 @@ class GraphBuilderTest extends TestCase
             ],
             function (Graph $graph) {
                 $nodes = $graph->dependentsOf('foobar/barfoo');
-                $this->assertEquals('foobar/barfoo#task1', $nodes->get('foobar/barfoo#task1')->name());
+                $this->assertEquals('foobar/barfoo#task1', $nodes->get('foobar/barfoo#task1')->id());
             },
         ];
     }

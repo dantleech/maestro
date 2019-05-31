@@ -55,6 +55,10 @@ class GraphRenderer
             return 31;
         }
 
+        if ($state->isBusy()) {
+            return 33;
+        }
+
         return 0;
     }
 }

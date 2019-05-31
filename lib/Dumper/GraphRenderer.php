@@ -27,9 +27,9 @@ class GraphRenderer
     {
         $out= sprintf(
             '[%s] (%s) %s (%s) %s\n',
-            "\033[34m" . $node->id() . "\033[0m",
+            "\033[34m" . $node->label() . "\033[0m",
             implode(', ', array_map(function (Node $node) {
-                return $node->id();
+                return $node->label();
             }, iterator_to_array($graph->dependenciesFor($node->id())))),
             $node->task()->description(),
             $node->state()->isIdle() ? '' : $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",

@@ -4,6 +4,7 @@ namespace Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Loader\Instantiator;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Task\NullTask;
 
@@ -17,7 +18,7 @@ use Maestro\Task\Task\NullTask;
  */
 final class Node
 {
-    const NAMEPSPACE_SEPARATOR = '#';
+    const NAMEPSPACE_SEPARATOR = '/';
 
     private $state;
     private $task;
@@ -28,17 +29,25 @@ final class Node
      */
     private $artifacts;
 
-    public function __construct(string $id, ?Task $task = null)
+    /**
+     * @var string
+     */
+    private $label;
+
+    public function __construct(string $id, string $label = null, ?Task $task = null)
     {
         $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
         $this->id = $id;
         $this->artifacts = Artifacts::empty();
+        $this->label = $label ?: $id;
     }
 
-    public static function create(string $id, ?Task $task = null): self
+    public static function create(string $id, array $options = []): self
     {
-        return new self($id, $task);
+        return Instantiator::create()->instantiate(self::class, array_merge($options, [
+            'id' => $id,
+        ]));
     }
 
     public function state(): State
@@ -76,6 +85,11 @@ final class Node
     public function id(): string
     {
         return $this->id;
+    }
+
+    public function label(): string
+    {
+        return $this->label;
     }
 
     public function task(): Task

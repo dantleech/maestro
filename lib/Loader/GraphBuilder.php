@@ -35,12 +35,15 @@ class GraphBuilder
         foreach ($manifest->packages() as $package) {
             $nodes[] = $packageNode = Node::create(
                 $package->name(),
-                Instantiator::create()->instantiate(
-                    $this->taskMap->classNameFor('package'),
-                    [
-                        'name' => $package->name()
-                    ]
-                )
+                [
+                    'label' => $package->name(),
+                    'task' => Instantiator::create()->instantiate(
+                        $this->taskMap->classNameFor('package'),
+                        [
+                            'name' => $package->name()
+                        ]
+                    )
+                ]
             );
 
             $edges[] = Edge::create($package->name(), self::NODE_ROOT);
@@ -58,22 +61,25 @@ class GraphBuilder
 
         /** @var Task $task */
         foreach ($tasks as $taskName => $task) {
-            $taskName = $this->namespace($package, $taskName);
+            $nodeId = $this->namespace($package, $taskName);
 
             $nodes[] = Node::create(
-                $taskName,
-                Instantiator::create()->instantiate(
-                    $this->taskMap->classNameFor($task->type()),
-                    $task->parameters()
-                )
+                $nodeId,
+                [
+                    'label' => $taskName,
+                    'task' => Instantiator::create()->instantiate(
+                        $this->taskMap->classNameFor($task->type()),
+                        $task->parameters()
+                    )
+                ]
             );
 
             if (empty($task->depends())) {
-                $edges[] = Edge::create($taskName, $package->name());
+                $edges[] = Edge::create($nodeId, $package->name());
             }
 
             foreach ($task->depends() as $dependency) {
-                $edges[] = Edge::create($taskName, $this->namespace($package, $dependency));
+                $edges[] = Edge::create($nodeId, $this->namespace($package, $dependency));
             }
         }
     }

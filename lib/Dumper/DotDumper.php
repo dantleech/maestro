@@ -12,8 +12,14 @@ class DotDumper
             'digraph maestro {'
         ];
 
-        $lines[] = '    rankdir=BT';
+        $lines[] = '  rankdir=BT';
+        foreach ($graph->nodes() as $node) {
+            $lines[] = sprintf('  "%s" [label="%s"]', $node->id(), $node->label());
+        }
+
         foreach ($graph->edges() as $edge) {
+            $nodeFrom = $graph->node($edge->from());
+            $nodeTo = $graph->node($edge->to());
             $lines[] = sprintf('  "%s"->"%s"', $edge->from(), $edge->to());
         }
 

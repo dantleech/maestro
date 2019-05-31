@@ -14,6 +14,14 @@ use Prophecy\Argument;
 
 class NodeTest extends TestCase
 {
+    public function testReturnsLabelIfGiven()
+    {
+        $rootNode = Node::create('root', [
+            'label' => 'Foobar',
+        ]);
+        $this->assertEquals('Foobar', $rootNode->label());
+    }
+
     public function testDefaultStateIsWaiting()
     {
         $rootNode = Node::create('root');

@@ -51,7 +51,7 @@ class TaskRunningVisitorTest extends TestCase
         $artifacts = Artifacts::empty();
 
         $this->taskRunner->run($task, $artifacts)->shouldBeCalled();
-        $node = Node::create('n1', $task);
+        $node = Node::create('n1', ['task'=> $task]);
         $graph = Graph::create([
             $node
         ], []);

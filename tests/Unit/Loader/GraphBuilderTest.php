@@ -79,8 +79,8 @@ class GraphBuilderTest extends TestCase
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
                 $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
                 $tasks = $graph->dependentsOf('phpactor/phpactor');
-                $this->assertEquals('foobar', $tasks->get('phpactor/phpactor#task2')->task()->param1());
-                $this->assertEquals('no', $tasks->get('phpactor/phpactor#task2')->task()->param2());
+                $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
+                $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
             }
         ];
 
@@ -103,7 +103,7 @@ class GraphBuilderTest extends TestCase
             ],
             function (Graph $graph) {
                 $nodes = $graph->dependentsOf('foobar/barfoo');
-                $this->assertEquals('foobar/barfoo#task1', $nodes->get('foobar/barfoo#task1')->id());
+                $this->assertEquals('foobar/barfoo/task1', $nodes->get('foobar/barfoo/task1')->id());
             },
         ];
     }

@@ -39,7 +39,7 @@ class Graph
         }
     }
 
-    public static function create(array $nodes, array $edges)
+    public static function create(array $nodes, array $edges): self
     {
         return new self($nodes, $edges);
     }
@@ -184,5 +184,30 @@ class Graph
     public function nodes(): Nodes
     {
         return Nodes::fromNodes($this->nodes);
+    }
+
+    public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes
+    {
+        if (isset($seen[$nodeName])) {
+            return Nodes::empty();
+        }
+
+        $this->validateNodeName($nodeName);
+
+        if ($level > 0) {
+            $nodes = Nodes::fromNodes([$this->node($nodeName)]);
+            $seen[$nodeName] = true;
+        } else {
+            $nodes = Nodes::empty();
+        }
+
+        $level++;
+        foreach ($this->dependentsOf($nodeName) as $dependent) {
+            $nodes = $nodes->merge(
+                $this->descendantsOf($dependent->id(), $seen, $level)
+            );
+        }
+
+        return $nodes;
     }
 }

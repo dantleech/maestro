@@ -133,6 +133,28 @@ class GraphTest extends TestCase
         ];
     }
 
+    public function testReturnsDescendantsOfGivenNode()
+    {
+        $graph = Graph::create(
+            [
+                Node::create('r'),
+                Node::create('p1'),
+                Node::create('p2'),
+                Node::create('p3'),
+                Node::create('init'),
+            ],
+            [
+                Edge::create('p1', 'r'),
+                Edge::create('p2', 'r'),
+                Edge::create('init', 'p1'),
+            ]
+        );
+
+        $this->assertEquals([
+            'p1', 'init', 'p2'
+        ], $graph->descendantsOf('r')->names());
+    }
+
     /**
      * @dataProvider provideThrowsExceptionOnCicularDependencies
      */

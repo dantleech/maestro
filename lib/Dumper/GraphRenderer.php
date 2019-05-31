@@ -4,6 +4,7 @@ namespace Maestro\Dumper;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\State;
 
 class GraphRenderer
 {
@@ -18,28 +19,42 @@ class GraphRenderer
     {
         $out = '';
         foreach ($graph->roots() as $rootNode) {
-            $out .= $this->walkNode($graph, $rootNode, $depth);
+            foreach ($graph->dependentsOf($rootNode->id()) as $packageNode) {
+                $out .= $this->walkNode($graph, $packageNode, $depth);
+            }
         }
         return $out;
     }
 
-    private function walkNode(Graph $graph, Node $node, $depth): string
+    private function walkNode(Graph $graph, Node $packageNode, $depth): string
     {
-        $out= sprintf(
-            '[%s] (%s) %s (%s) %s\n',
-            "\033[34m" . $node->label() . "\033[0m",
-            implode(', ', array_map(function (Node $node) {
-                return $node->label();
-            }, iterator_to_array($graph->dependenciesFor($node->id())))),
-            $node->task()->description(),
-            $node->state()->isIdle() ? '' : $node->state()->isFailed() ? "\033[31m" . $node->state()->toString() . "\033[0m" : "\033[32m" . $node->state()->toString() . "\033[0m",
-            " " . json_encode($node->artifacts()->toArray()),
-            ) . PHP_EOL;
-        
-        foreach ($graph->dependentsOf($node->id()) as $child) {
-            $out .= $this->walkNode($graph, $child, $depth + 1);
+        $busyTasks= [];
+        foreach ($graph->descendantsOf($packageNode->id())->byState(State::BUSY(), State::FAILED()) as $node) {
+            $busyTasks[] = sprintf(
+                "\033[32m%s\033[0m [\033[%sm%s\033[0m] %s %s",
+                $node->label(),
+                $this->stateColor($node->state()),
+                $node->state()->toString(),
+                $node->task()->description(),
+                json_encode($node->artifacts()->toArray()),
+            );
         }
+
+        $out = sprintf(
+            "[%s] %s\n",
+            "\033[34m" . $packageNode->label() . "\033[0m",
+            implode(', ', $busyTasks)
+        );
         
         return $out;
+    }
+
+    private function stateColor(State $state): int
+    {
+        if ($state->isFailed()) {
+            return 31;
+        }
+
+        return 0;
     }
 }

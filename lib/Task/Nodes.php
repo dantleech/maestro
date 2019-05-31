@@ -48,16 +48,17 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         return new ArrayIterator($this->nodes);
     }
 
-    public function get(string $offset): Node
+    public function get(string $key): Node
     {
-        if (!isset($this->nodes[$offset])) {
+        if (!isset($this->nodes[$key])) {
             throw new RuntimeException(sprintf(
                 'No node exists at offset "%s" in set "%s"',
-                $offset,
+                $key,
                 implode('", "', $this->names())
             ));
         }
-        return $this->nodes[$offset];
+
+        return $this->nodes[$key];
     }
 
     /**
@@ -113,6 +114,13 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function offsetUnset($offset)
     {
         throw new BadMethodCallException();
+    }
+
+    public function byState(State ...$states): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($states) {
+            return $node->state()->in(...$states);
+        }));
     }
 
     private function addNode(Node $node): void

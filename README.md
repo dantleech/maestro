@@ -19,7 +19,9 @@ It may also, in the future:
 - Perform releases
 - Run as a local CI server
 
-![Untitled](https://user-images.githubusercontent.com/530801/58379062-3b67ef80-7f96-11e9-998b-e65de8b749fb.png)
+![out](https://user-images.githubusercontent.com/530801/58695020-3d61f200-838c-11e9-8ca0-de086cb7450a.png)
+
+*Task Graph*
 
 Background
 ----------

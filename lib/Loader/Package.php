@@ -23,7 +23,18 @@ class Package
      */
     private $parameters = [];
 
-    public function __construct(string $name, string $prototype = null, array $tasks = [], array $parameters = [])
+    /**
+     * @var bool
+     */
+    private $purgeWorkspace;
+
+    public function __construct(
+        string $name,
+        string $prototype = null,
+        array $tasks = [],
+        array $parameters = [],
+        bool $purgeWorkspace = false
+    )
     {
         $this->name = $name;
 
@@ -32,6 +43,7 @@ class Package
         }
         $this->prototype = $prototype;
         $this->parameters = $parameters;
+        $this->purgeWorkspace = $purgeWorkspace;
     }
 
     /**
@@ -55,5 +67,10 @@ class Package
     public function parameters(): array
     {
         return $this->parameters;
+    }
+
+    public function purgeWorkspace(): bool
+    {
+        return $this->purgeWorkspace;
     }
 }

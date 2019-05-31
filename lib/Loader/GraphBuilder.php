@@ -32,7 +32,11 @@ class GraphBuilder
 
     private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)
     {
+
         foreach ($manifest->packages() as $package) {
+
+            $prototype = $package->prototype();
+            $prototype = $prototype ? $manifest->prototype($prototype) : null;
             $nodes[] = $packageNode = Node::create(
                 $package->name(),
                 [
@@ -40,16 +44,15 @@ class GraphBuilder
                     'task' => Instantiator::create()->instantiate(
                         $this->taskMap->classNameFor('package'),
                         [
-                            'name' => $package->name()
+                            'name' => $package->name(),
+                            'purgeWorkspace' => $package->purgeWorkspace() ?: $prototype ? $prototype->purgeWorkspace() : false,
                         ]
-                    )
+                    ),
                 ]
             );
 
             $edges[] = Edge::create($package->name(), self::NODE_ROOT);
 
-            $prototype = $package->prototype();
-            $prototype = $prototype ? $manifest->prototype($prototype) : null;
 
             $this->walkPackage($packageNode, $package, $nodes, $edges, $prototype);
         }

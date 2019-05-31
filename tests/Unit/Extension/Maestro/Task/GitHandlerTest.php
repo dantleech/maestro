@@ -82,4 +82,30 @@ class GitHandlerTest extends TestCase
             'env' => EnvVars::create([]),
         ]);
     }
+
+    public function testPurgeExistingProjectWorkspace()
+    {
+        $this->expectException(TaskFailed::class);
+        $this->scriptRunner->run(
+            sprintf(
+                'git clone %s %s',
+                self::EXAMPLE_URL,
+                self::EXAMPLE_WORKSPACE
+            ),
+            self::EXAMPLE_WORKSPACE_ROOT,
+            []
+        )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
+
+        $artifacts = HandlerTester::create(
+            new GitHandler(
+                $this->scriptRunner->reveal(),
+                self::EXAMPLE_WORKSPACE_ROOT,
+                )
+        )->handle(GitTask::class, [
+            'url' => self::EXAMPLE_URL,
+        ], [
+            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE),
+            'env' => EnvVars::create([]),
+        ]);
+    }
 }

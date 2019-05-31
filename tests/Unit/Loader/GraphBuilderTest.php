@@ -84,10 +84,11 @@ class GraphBuilderTest extends TestCase
             }
         ];
 
-        yield 'merges tasks from prototype' => [
+        yield 'prototype which purges' => [
             [
                 'prototypes' => [
                     'default' => [
+                        'purgeWorkspace' => true,
                         'tasks' => [
                             'task1' => [
                                 'type' => 'foobar',
@@ -102,8 +103,9 @@ class GraphBuilderTest extends TestCase
                 ]
             ],
             function (Graph $graph) {
-                $nodes = $graph->dependentsOf('foobar/barfoo');
-                $this->assertEquals('foobar/barfoo/task1', $nodes->get('foobar/barfoo/task1')->id());
+                $this->assertTrue(
+                    $graph->node('foobar/barfoo')->task()->purgeWorkspace()
+                );
             },
         ];
     }

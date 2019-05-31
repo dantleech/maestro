@@ -27,7 +27,11 @@ class PackageHandler implements TaskHandler
     {
         $workspace = $this->factory->createNamedWorkspace($package->name());
 
-        $this->createWorkspaceFolderIfNotExists($workspace);
+        if ($package->purgeWorkspace()) {
+            $workspace->purge();
+        } else {
+            $this->createWorkspaceFolderIfNotExists($workspace);
+        }
 
         return new Success(Artifacts::create([
             'package' => $package,

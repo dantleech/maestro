@@ -35,4 +35,13 @@ class WorkspaceTest extends IntegrationTestCase
             '',
         ];
     }
+
+    public function testCanBePurged()
+    {
+        $workspace = new Workspace($this->workspace()->path('/'));
+        $this->workspace()->put('goodday/foobar', 'Hello');
+        $this->assertFileExists($this->workspace()->path('/goodday/foobar'));
+        $workspace->purge();
+        $this->assertFileNotExists($this->workspace()->path('/goodday/foobar'));
+    }
 }

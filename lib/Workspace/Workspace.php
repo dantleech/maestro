@@ -2,6 +2,7 @@
 
 namespace Maestro\Workspace;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
 class Workspace
@@ -11,9 +12,15 @@ class Workspace
      */
     private $rootPath;
 
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
     public function __construct(string $rootPath)
     {
         $this->rootPath = $rootPath;
+        $this->filesystem = new Filesystem();
     }
 
     public function absolutePath(?string $relative = null): string
@@ -22,5 +29,14 @@ class Workspace
             return $this->rootPath;
         }
         return Path::join([$this->rootPath, $relative]);
+    }
+
+    public function purge(): void
+    {
+        if (!file_exists($this->rootPath)) {
+            return;
+        }
+
+        $this->filesystem->remove($this->rootPath);
     }
 }

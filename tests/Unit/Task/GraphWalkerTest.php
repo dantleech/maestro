@@ -139,9 +139,9 @@ class GraphWalkerTest extends TestCase
         
             public function visit(Graph $graph, Node $node): NodeVisitorDecision
             {
-                $this->visitedNodes[] = $node->name();
-                if (isset($this->decisions[$node->name()])) {
-                    return $this->decisions[$node->name()];
+                $this->visitedNodes[] = $node->name()->toString();
+                if (isset($this->decisions[$node->name()->toString()])) {
+                    return $this->decisions[$node->name()->toString()];
                 }
         
                 return NodeVisitorDecision::CONTINUE();

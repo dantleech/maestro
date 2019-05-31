@@ -36,7 +36,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function add(Node $node): Nodes
     {
         return new self(array_merge($this->nodes, [
-            $node->name() => $node
+            $node->name()->toString() => $node
         ]));
     }
 
@@ -66,7 +66,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function names(): array
     {
         return array_values(array_map(function (Node $node) {
-            return $node->name();
+            return $node->name()->toString();
         }, $this->nodes));
     }
 
@@ -117,7 +117,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 
     private function addNode(Node $node): void
     {
-        $this->nodes[$node->name()] = $node;
+        $this->nodes[$node->name()->toString()] = $node;
     }
 
     public function byStates(State ...$states): Nodes

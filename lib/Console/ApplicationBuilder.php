@@ -19,6 +19,7 @@ final class ApplicationBuilder
     private const OPTION_LOGGING_ENABLED = 'log-enable';
     private const OPTION_LOG_PATH = 'log-path';
     private const OPTION_LOG_LEVEL = 'log-level';
+    private const OPTION_LOG_FORMAT = 'log-format';
     private const OPTION_WORKSPACE_DIRECTORY = 'workspace-dir';
     private const OPTION_WORKING_DIRECTORY = 'working-dir';
     private const OPTION_NAMESPACE = 'namespace';
@@ -57,6 +58,7 @@ final class ApplicationBuilder
             new InputOption(self::OPTION_LOGGING_ENABLED, null, InputOption::VALUE_NONE, 'Enable logging'),
             new InputOption(self::OPTION_LOG_PATH, null, InputOption::VALUE_REQUIRED, 'File to log to', 'maestro.json'),
             new InputOption(self::OPTION_LOG_LEVEL, null, InputOption::VALUE_REQUIRED, 'Log level', 'debug'),
+            new InputOption(self::OPTION_LOG_FORMAT, null, InputOption::VALUE_REQUIRED, 'Log format', 'json'),
             new InputOption(self::OPTION_WORKSPACE_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Path to workspace'),
             new InputOption(self::OPTION_WORKING_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Working directory'),
             new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
@@ -77,13 +79,15 @@ final class ApplicationBuilder
     {
         $config = [
             LoggingExtension::PARAM_LEVEL => 'debug',
-            LoggingExtension::PARAM_PATH => 'maestro.log',
+            LoggingExtension::PARAM_PATH => STDERR,
+            LoggingExtension::PARAM_FORMATTER => 'json',
         ];
 
         foreach ([
             LoggingExtension::PARAM_ENABLED => self::OPTION_LOGGING_ENABLED,
             LoggingExtension::PARAM_LEVEL => self::OPTION_LOG_LEVEL,
             LoggingExtension::PARAM_PATH => self::OPTION_LOG_PATH,
+            LoggingExtension::PARAM_FORMATTER => self::OPTION_LOG_FORMAT,
             MaestroExtension::PARAM_WORKING_DIRECTORY => self::OPTION_WORKING_DIRECTORY,
             MaestroExtension::PARAM_WORKSPACE_DIRECTORY => self::OPTION_WORKSPACE_DIRECTORY,
             MaestroExtension::PARAM_NAMESPACE => self::OPTION_NAMESPACE

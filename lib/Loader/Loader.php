@@ -1,0 +1,69 @@
+<?php
+
+namespace Maestro\Loader;
+
+use Maestro\Util\Cast;
+use RuntimeException;
+use Webmozart\PathUtil\Path;
+
+class Loader
+{
+    /**
+     * @var array
+     */
+    private $processors = [];
+
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    public function __construct(string $workingDirectory, array $processors)
+    {
+        $this->processors = $processors;
+        $this->workingDirectory = $workingDirectory;
+    }
+
+    public function load(string $planPath)
+    {
+        $data = $this->loadManifestArray($planPath);
+
+        foreach ($this->processors as $processor) {
+            $data = $processor->process($data);
+        }
+
+        return Manifest::loadFromArray($data);
+    }
+
+    private function loadManifestArray(string $planPath)
+    {
+        $path = $this->resolvePath($planPath);
+
+        if (!file_exists($path)) {
+            throw new RuntimeException(sprintf(
+                'Plan file "%s" does not exist',
+                $path
+            ));
+        }
+
+        $array = json_decode(Cast::toString(file_get_contents($path)), true);
+
+        if (false === $array) {
+            throw new RuntimeException(sprintf(
+                'Could not decode JSON: "%s"',
+                json_last_error_msg()
+            ));
+        }
+
+        return $array;
+    }
+
+    private function resolvePath(string $planPath)
+    {
+        if (Path::isAbsolute($planPath)) {
+            return $planPath;
+        }
+
+        return Path::join($this->workingDirectory, $planPath);
+    }
+}

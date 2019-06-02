@@ -81,9 +81,4 @@ class EndToEndTestCase extends IntegrationTestCase
         }
         return $this->workspace()->path(Path::join($paths));
     }
-
-    protected function createPlan(string $name, array $data)
-    {
-        $this->workspace()->put($name, json_encode($data, JSON_PRETTY_PRINT));
-    }
 }

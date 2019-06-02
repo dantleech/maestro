@@ -83,31 +83,6 @@ class GraphBuilderTest extends TestCase
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
             }
         ];
-
-        yield 'prototype which purges' => [
-            [
-                'prototypes' => [
-                    'default' => [
-                        'purgeWorkspace' => true,
-                        'tasks' => [
-                            'task1' => [
-                                'type' => 'foobar',
-                            ],
-                        ],
-                    ],
-                ],
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'prototype' => 'default',
-                    ],
-                ]
-            ],
-            function (Graph $graph) {
-                $this->assertTrue(
-                    $graph->node('foobar/barfoo')->task()->purgeWorkspace()
-                );
-            },
-        ];
     }
 
     private function taskMap(): TaskMap

@@ -33,8 +33,6 @@ class GraphBuilder
     private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)
     {
         foreach ($manifest->packages() as $package) {
-            $prototype = $package->prototype();
-            $prototype = $prototype ? $manifest->prototype($prototype) : null;
             $nodes[] = $packageNode = Node::create(
                 $package->name(),
                 [
@@ -43,7 +41,7 @@ class GraphBuilder
                         $this->taskMap->classNameFor('package'),
                         [
                             'name' => $package->name(),
-                            'purgeWorkspace' => $this->shouldPurgeWorkspace($package, $prototype),
+                            'purgeWorkspace' => $package->purgeWorkspace(),
                         ]
                     ),
                 ]
@@ -52,16 +50,14 @@ class GraphBuilder
             $edges[] = Edge::create($package->name(), self::NODE_ROOT);
 
 
-            $this->walkPackage($packageNode, $package, $nodes, $edges, $prototype);
+            $this->walkPackage($packageNode, $package, $nodes, $edges);
         }
     }
 
-    private function walkPackage(Node $packageNode, Package $package, array &$nodes, &$edges, ?Prototype $prototype)
+    private function walkPackage(Node $packageNode, Package $package, array &$nodes, &$edges)
     {
-        $tasks = array_merge($prototype ? $prototype->tasks() : [], $package->tasks());
-
         /** @var Task $task */
-        foreach ($tasks as $taskName => $task) {
+        foreach ($package->tasks() as $taskName => $task) {
             $nodeId = $this->namespace($package, $taskName);
 
             $nodes[] = Node::create(
@@ -87,19 +83,11 @@ class GraphBuilder
 
     private function namespace(Package $package, $taskName): string
     {
-        return sprintf('%s%s%s', $package->name(), Node::NAMEPSPACE_SEPARATOR, $taskName);
-    }
-
-    private function shouldPurgeWorkspace(Package $package, ?Prototype $prototype): bool
-    {
-        if ($package->purgeWorkspace()) {
-            return true;
-        }
-       
-        if ($prototype) {
-            $prototype->purgeWorkspace();
-        }
-
-        return false;
+        return sprintf(
+            '%s%s%s',
+            $package->name(),
+            Node::NAMEPSPACE_SEPARATOR,
+            $taskName
+        );
     }
 }

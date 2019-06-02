@@ -5,7 +5,7 @@ namespace Maestro\Extension\Maestro\Command;
 use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
-use Maestro\Loader\Manifest;
+use Maestro\Loader\Loader;
 use Maestro\MaestroBuilder;
 use Maestro\Util\Cast;
 use RuntimeException;
@@ -32,10 +32,16 @@ class RunCommand extends Command
      */
     private $builder;
 
-    public function __construct(MaestroBuilder $builder)
+    /**
+     * @var Loader
+     */
+    private $loader;
+
+    public function __construct(MaestroBuilder $builder, Loader $loader)
     {
         parent::__construct();
         $this->builder = $builder;
+        $this->loader = $loader;
     }
 
     protected function configure()
@@ -57,11 +63,9 @@ class RunCommand extends Command
         $runner = $builder->build();
 
         $graph = $runner->buildGraph(
-            Manifest::loadFromArray(
-                $this->loadManifestArray(
-                    Cast::toString(
-                        $input->getArgument(self::ARG_PLAN)
-                    )
+            $this->loader->load(
+                Cast::toString(
+                    $input->getArgument(self::ARG_PLAN)
                 )
             )
         );
@@ -92,6 +96,7 @@ class RunCommand extends Command
     private function loadManifestArray(string $planPath)
     {
         $path = $this->resolvePath($planPath);
+
         if (!file_exists($path)) {
             throw new RuntimeException(sprintf(
                 'Plan file "%s" does not exist',

@@ -2,8 +2,6 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Exception\PrototypeNotFound;
-
 final class Manifest
 {
     /**
@@ -12,23 +10,13 @@ final class Manifest
     private $parameters;
 
     /**
-     * @var Prototype[]
-     */
-    private $prototypes = [];
-
-    /**
      * @var Package[]
      */
     private $packages = [];
 
-    public function __construct(array $parameters = [], array $prototypes = [], array $packages = [])
+    public function __construct(array $parameters = [], array $packages = [])
     {
         $this->parameters = $parameters;
-
-        foreach ($prototypes as $name => $prototype) {
-            $prototype['name'] = $name;
-            $this->prototypes[$name] = Instantiator::create()->instantiate(Prototype::class, $prototype);
-        }
 
         foreach ($packages as $name => $package) {
             $package['name'] = $name;
@@ -47,31 +35,10 @@ final class Manifest
     }
 
     /**
-     * @return Prototype[]
-     */
-    public function prototypes(): array
-    {
-        return $this->prototypes;
-    }
-
-    /**
      * @return Package[]
      */
     public function packages(): array
     {
         return $this->packages;
-    }
-
-    public function prototype(string $name): Prototype
-    {
-        if (!isset($this->prototypes[$name])) {
-            throw new PrototypeNotFound(sprintf(
-                'Could not find prototype "%s", known prototypes "%s"',
-                $name,
-                implode('", "', array_keys($this->prototypes))
-            ));
-        }
-
-        return $this->prototypes[$name];
     }
 }

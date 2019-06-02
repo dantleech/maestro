@@ -39,15 +39,6 @@ class GitHandler implements TaskHandler
                 $env->toArray()
             );
 
-<<<<<<< HEAD
-            if ($result->exitCode() !== 0) {
-                throw new TaskFailed(sprintf(
-                    'Exited with code "%s"',
-                    $result->exitCode()
-                ), $artifacts);
-=======
-            assert($result instanceof ScriptResult);
-
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(
                     'Git clone failed with exit code "%s": %s',
@@ -57,7 +48,6 @@ class GitHandler implements TaskHandler
                     'stderr' => $result->lastStderr(),
                     'stdout' => $result->lastStdout(),
                 ]));
->>>>>>> Show per-package progress
             }
 
             return Artifacts::create([]);

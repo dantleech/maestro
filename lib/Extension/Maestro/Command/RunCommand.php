@@ -20,9 +20,12 @@ use Webmozart\PathUtil\Path;
 class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
+
     const POLL_TIME_DISPATCH = 100;
     const POLL_TIME_RENDER = 100;
+
     const OPTION_DOT = 'dot';
+    const OPTION_CONCURRENCY = 'concurrency';
 
     /**
      * @var MaestroBuilder
@@ -39,6 +42,7 @@ class RunCommand extends Command
     {
         $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED);
         $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE);
+        $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 10);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,7 +50,11 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $runner = $this->builder->build();
+        $builder = $this->builder;
+        $builder->withMaxConcurrency(Cast::toInt(
+            $input->getOption(self::OPTION_CONCURRENCY)
+        ));
+        $runner = $builder->build();
 
         $graph = $runner->buildGraph(
             Manifest::loadFromArray(

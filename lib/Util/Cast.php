@@ -25,4 +25,9 @@ class Cast
 
         return self::toString($string);
     }
+
+    public static function toInt($value): int
+    {
+        return (int) $value;
+    }
 }

@@ -11,6 +11,7 @@ use Maestro\Task\NodeVisitor\TaskRunningVisitor;
 use Maestro\Task\State;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\Task\NullTask;
+use Maestro\Tests\Unit\Task\NodeHelper;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -37,7 +38,7 @@ class TaskRunningVisitorTest extends TestCase
         $this->assertTrue(
             $this->visit(
                 Graph::create([], []),
-                $this->setState(
+                NodeHelper::setState(
                     Node::create('n1'),
                     State::BUSY()
                 )
@@ -61,7 +62,7 @@ class TaskRunningVisitorTest extends TestCase
         $this->assertTrue(
             $this->visit(
                 $graph,
-                $this->setState(
+                NodeHelper::setState(
                     $node,
                     State::WAITING()
                 )
@@ -73,15 +74,6 @@ class TaskRunningVisitorTest extends TestCase
             $node->state()->is(State::BUSY()),
             'node is busy'
         );
-    }
-
-    private function setState(Node $node, State $state): Node
-    {
-        $reflection = new ReflectionClass($node);
-        $property = $reflection->getProperty('state');
-        $property->setAccessible(true);
-        $property->setValue($node, $state);
-        return $node;
     }
 
     private function visit(Graph $graph, Node $node)

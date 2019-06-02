@@ -40,9 +40,9 @@ class RunCommand extends Command
 
     protected function configure()
     {
-        $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED);
-        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE);
-        $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 10);
+        $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
+        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
+        $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

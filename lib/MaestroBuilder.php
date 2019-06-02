@@ -8,6 +8,7 @@ use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
 use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Task\GraphWalker;
+use Maestro\Task\NodeVisitor\ConcurrencyLimitingVisitor;
 use Maestro\Task\NodeVisitor\TaskRunningVisitor;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
@@ -18,6 +19,7 @@ final class MaestroBuilder
 {
     private $taskMap = [];
     private $handlers = [];
+    private $maxConcurrency = 10;
 
     public static function create(): self
     {
@@ -39,6 +41,12 @@ final class MaestroBuilder
         return $this;
     }
 
+    public function withMaxConcurrency(int $maxConcurrency)
+    {
+        $this->maxConcurrency = $maxConcurrency;
+        return $this;
+    }
+
     private function buildTaskRunner(): TaskRunner
     {
         return new HandlingTaskRunner(
@@ -54,6 +62,7 @@ final class MaestroBuilder
     private function buildGraphWalker(): GraphWalker
     {
         $visitors = [
+            new ConcurrencyLimitingVisitor($this->maxConcurrency),
             new TaskRunningVisitor($this->buildTaskRunner(), $this->buildArtifactsResolver()),
         ];
         return new GraphWalker($visitors);

@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\PackageHandler;
+use Maestro\Loader\Instantiator;
 use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
 use Maestro\Extension\Maestro\Task\PackageTask;
@@ -19,8 +20,12 @@ class PackageHandlerTest extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->workspace()->reset();
-        $this->workspaceFactory = new WorkspaceFactory('foobar', $this->workspace()->path('/'));
+        $this->workspaceFactory = new WorkspaceFactory(
+            'foobar',
+            $this->workspace()->path('/')
+        );
     }
+
     public function testProducesArtifacts()
     {
         $package = new PackageTask('hello');
@@ -35,5 +40,17 @@ class PackageHandlerTest extends IntegrationTestCase
                 'PACKAGE_NAME' => 'hello'
             ])
         ], $artifacts->toArray());
+    }
+
+    public function testPurgeWorkspace()
+    {
+        $package = Instantiator::create()->instantiate(PackageTask::class, [
+            'name' => 'hello',
+            'purgeWorkspace' => true
+        ]);
+
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
+        $this->assertFileNotExists($workspace->absolutePath());
     }
 }

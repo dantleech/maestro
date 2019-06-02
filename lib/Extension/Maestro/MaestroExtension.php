@@ -8,12 +8,15 @@ use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
+use Maestro\Loader\Loader;
+use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\MaestroBuilder;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Task\NullHandler;
 use Maestro\Task\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Extension\Maestro\Task\ScriptTask;
+use Maestro\Util\Cast;
 use Maestro\Workspace\WorkspaceFactory;
 use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
@@ -34,6 +37,7 @@ class MaestroExtension implements Extension
     const PARAM_WORKING_DIRECTORY = 'working_directory';
     const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
     const PARAM_NAMESPACE = 'namespace';
+    const SERVICE_MANIFEST_LOADER = 'config.loader';
 
     public function configure(Resolver $schema)
     {
@@ -66,7 +70,10 @@ class MaestroExtension implements Extension
     private function loadConsole(ContainerBuilder $container)
     {
         $container->register('console.command.run', function (Container $container) {
-            return new RunCommand($container->get(self::SERVICE_RUNNER_BUILDER));
+            return new RunCommand(
+                $container->get(self::SERVICE_RUNNER_BUILDER),
+                $container->get(self::SERVICE_MANIFEST_LOADER)
+            );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
     }
 
@@ -92,6 +99,12 @@ class MaestroExtension implements Extension
             }
 
             return $builder;
+        });
+
+        $container->register(self::SERVICE_MANIFEST_LOADER, function (Container $container) {
+            return new Loader(Cast::toString(getcwd()), [
+                new PrototypeExpandingProcessor(),
+            ]);
         });
 
         $container->register('task.job_handler.null', function () {

@@ -14,13 +14,19 @@ class Prototype
      */
     private $name;
 
-    public function __construct(string $name, array $tasks = [])
+    /**
+     * @var bool
+     */
+    private $purgeWorkspace;
+
+    public function __construct(string $name, array $tasks = [], bool $purgeWorkspace = false)
     {
         $this->name = $name;
 
         foreach ($tasks as $name => $task) {
             $this->tasks[$name] = Instantiator::create()->instantiate(Task::class, $task);
         }
+        $this->purgeWorkspace = $purgeWorkspace;
     }
 
     /**
@@ -34,5 +40,10 @@ class Prototype
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function purgeWorkspace(): bool
+    {
+        return $this->purgeWorkspace;
     }
 }

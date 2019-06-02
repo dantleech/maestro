@@ -124,15 +124,24 @@ class Instantiator
                 $typeName = $this->resolveInternalTypeName($value);
             }
 
-            if ($reflectionType->getName() === $typeName) {
+            if ($reflectionType->isBuiltin() && $reflectionType->getName() === $typeName) {
                 continue;
             }
+
+            if (!$reflectionType->isBuiltin()) {
+                $reflectionClass = new ReflectionClass($typeName);
+
+                if ($typeName === $reflectionType->__toString() || $reflectionClass->isSubclassOf($reflectionType->__toString())) {
+                    continue;
+                }
+            }
+
 
             throw new InvalidParameterType(sprintf(
                 'Argument "%s" has type "%s" but was passed "%s"',
                 $parameter->getName(),
                 $reflectionType->getName(),
-                gettype($value)
+                is_object($value) ? get_class($value) : gettype($value)
             ));
         }
     }

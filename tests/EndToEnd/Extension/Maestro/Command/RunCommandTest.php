@@ -97,4 +97,12 @@ class RunCommandTest extends EndToEndTestCase
         $process = $this->command('run plan.json --dot');
         $this->assertProcessSuccess($process);
     }
+
+    public function testCanLimitConcurrency()
+    {
+        $this->createPlan('plan.json', [
+        ]);
+        $process = $this->command('run plan.json --concurrency=5');
+        $this->assertProcessSuccess($process);
+    }
 }

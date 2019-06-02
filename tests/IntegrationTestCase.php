@@ -17,4 +17,9 @@ class IntegrationTestCase extends TestCase
 
         return $this->workspace;
     }
+
+    protected function createPlan(string $name, array $data)
+    {
+        $this->workspace()->put($name, json_encode($data, JSON_PRETTY_PRINT));
+    }
 }

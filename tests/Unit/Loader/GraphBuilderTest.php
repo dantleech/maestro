@@ -51,7 +51,7 @@ class GraphBuilderTest extends TestCase
             function (Graph $graph) {
                 $nodes = $graph->dependentsOf('root');
                 $this->assertCount(1, $nodes);
-                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->name());
+                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->id());
             }
         ];
 
@@ -79,32 +79,9 @@ class GraphBuilderTest extends TestCase
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
                 $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
                 $tasks = $graph->dependentsOf('phpactor/phpactor');
-                $this->assertEquals('foobar', $tasks->get('phpactor/phpactor#task2')->task()->param1());
-                $this->assertEquals('no', $tasks->get('phpactor/phpactor#task2')->task()->param2());
+                $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
+                $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
             }
-        ];
-
-        yield 'merges tasks from prototype' => [
-            [
-                'prototypes' => [
-                    'default' => [
-                        'tasks' => [
-                            'task1' => [
-                                'type' => 'foobar',
-                            ],
-                        ],
-                    ],
-                ],
-                'packages' => [
-                    'foobar/barfoo' => [
-                        'prototype' => 'default',
-                    ],
-                ]
-            ],
-            function (Graph $graph) {
-                $nodes = $graph->dependentsOf('foobar/barfoo');
-                $this->assertEquals('foobar/barfoo#task1', $nodes->get('foobar/barfoo#task1')->name());
-            },
         ];
     }
 

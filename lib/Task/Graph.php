@@ -39,22 +39,22 @@ class Graph
         }
     }
 
-    public static function create(array $nodes, array $edges)
+    public static function create(array $nodes, array $edges): self
     {
         return new self($nodes, $edges);
     }
 
     private function addNode(Node $node)
     {
-        if (isset($this->nodes[$node->name()])) {
+        if (isset($this->nodes[$node->id()])) {
             throw new NodeAlreadyExists(sprintf(
                 'Node with name "%s" already exists',
-                $node->name()
+                $node->id()
             ));
         }
 
-        $this->nodes[$node->name()] = $node;
-        $this->toFromMap[$node->name()] = [];
+        $this->nodes[$node->id()] = $node;
+        $this->toFromMap[$node->id()] = [];
     }
 
     public function dependentsOf(string $nodeName): Nodes
@@ -96,7 +96,8 @@ class Graph
         $ancestry = $ancestry->merge($parents);
 
         foreach ($parents as $parent) {
-            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->name()));
+            assert($parent instanceof Node);
+            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->id()));
         }
 
         return $ancestry;
@@ -183,5 +184,30 @@ class Graph
     public function nodes(): Nodes
     {
         return Nodes::fromNodes($this->nodes);
+    }
+
+    public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes
+    {
+        if (isset($seen[$nodeName])) {
+            return Nodes::empty();
+        }
+
+        $this->validateNodeName($nodeName);
+
+        if ($level > 0) {
+            $nodes = Nodes::fromNodes([$this->node($nodeName)]);
+            $seen[$nodeName] = true;
+        } else {
+            $nodes = Nodes::empty();
+        }
+
+        $level++;
+        foreach ($this->dependentsOf($nodeName) as $dependent) {
+            $nodes = $nodes->merge(
+                $this->descendantsOf($dependent->id(), $seen, $level)
+            );
+        }
+
+        return $nodes;
     }
 }

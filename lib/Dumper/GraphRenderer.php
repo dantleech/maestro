@@ -17,29 +17,51 @@ class GraphRenderer
 
     public function render(Graph $graph, $depth = 0): string
     {
-        $out = '';
+        $out = "\n";
         foreach ($graph->roots() as $rootNode) {
-            $out .= $this->walkNode($graph, $rootNode, $depth);
+            foreach ($graph->dependentsOf($rootNode->id()) as $packageNode) {
+                $out .= $this->walkNode($graph, $packageNode, $depth);
+            }
         }
         return $out;
     }
 
-    private function walkNode(Graph $graph, Node $node, $depth): string
+    private function walkNode(Graph $graph, Node $packageNode, $depth): string
     {
-        $out = '';
-        foreach ($graph->nodes()->byStates(State::BUSY(), State::FAILED()) as $node) {
-            $out .= sprintf(
-                '[%s] %s (%s) %s %s\n',
-                "\033[34m" . $node->name() . "\033[0m",
+        $busyTasks= [];
+        $nodes = $graph->descendantsOf($packageNode->id());
+        foreach ($nodes->byState(State::BUSY(), State::FAILED()) as $node) {
+            $busyTasks[] = sprintf(
+                "[\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",
+                $node->label(),
+                $this->stateColor($node->state()),
                 $node->state()->toString(),
-                implode(', ', array_map(function (Node $node) {
-                    return $node->name();
-                }, iterator_to_array($graph->dependenciesFor($node->name())))),
                 $node->task()->description(),
-                " " . json_encode($node->artifacts()->toArray()),
-                ) . PHP_EOL;
+                json_encode($node->artifacts()->toArray()),
+                );
         }
+
+        $out = sprintf(
+            "  [%s/%s] [%s] %s\n",
+            $nodes->byState(State::DONE())->count(),
+            $nodes->count(),
+            "\033[34m" . $packageNode->label() . "\033[0m",
+            implode(', ', $busyTasks)
+        );
         
         return $out;
+    }
+
+    private function stateColor(State $state): int
+    {
+        if ($state->isFailed()) {
+            return 31;
+        }
+
+        if ($state->isBusy()) {
+            return 33;
+        }
+
+        return 0;
     }
 }

@@ -14,6 +14,14 @@ use Prophecy\Argument;
 
 class NodeTest extends TestCase
 {
+    public function testReturnsLabelIfGiven()
+    {
+        $rootNode = Node::create('root', [
+            'label' => 'Foobar',
+        ]);
+        $this->assertEquals('Foobar', $rootNode->label());
+    }
+
     public function testDefaultStateIsWaiting()
     {
         $rootNode = Node::create('root');
@@ -26,7 +34,7 @@ class NodeTest extends TestCase
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
         \Amp\Promise\wait($rootNode->run($taskRunner, Artifacts::empty()));
-        $this->assertEquals(State::IDLE(), $rootNode->state());
+        $this->assertEquals(State::DONE(), $rootNode->state());
     }
 
     public function testSetsStateToFailWhenTaskFails()

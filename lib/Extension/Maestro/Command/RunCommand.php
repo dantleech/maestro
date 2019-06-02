@@ -5,7 +5,7 @@ namespace Maestro\Extension\Maestro\Command;
 use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
-use Maestro\Loader\Manifest;
+use Maestro\Loader\Loader;
 use Maestro\MaestroBuilder;
 use Maestro\Util\Cast;
 use RuntimeException;
@@ -20,25 +20,35 @@ use Webmozart\PathUtil\Path;
 class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
+
     const POLL_TIME_DISPATCH = 100;
-    const POLL_TIME_RENDER = 250;
+    const POLL_TIME_RENDER = 100;
+
     const OPTION_DOT = 'dot';
+    const OPTION_CONCURRENCY = 'concurrency';
 
     /**
      * @var MaestroBuilder
      */
     private $builder;
 
-    public function __construct(MaestroBuilder $builder)
+    /**
+     * @var Loader
+     */
+    private $loader;
+
+    public function __construct(MaestroBuilder $builder, Loader $loader)
     {
         parent::__construct();
         $this->builder = $builder;
+        $this->loader = $loader;
     }
 
     protected function configure()
     {
-        $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED);
-        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE);
+        $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
+        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
+        $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,14 +56,16 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $runner = $this->builder->build();
+        $builder = $this->builder;
+        $builder->withMaxConcurrency(Cast::toInt(
+            $input->getOption(self::OPTION_CONCURRENCY)
+        ));
+        $runner = $builder->build();
 
         $graph = $runner->buildGraph(
-            Manifest::loadFromArray(
-                $this->loadManifestArray(
-                    Cast::toString(
-                        $input->getArgument(self::ARG_PLAN)
-                    )
+            $this->loader->load(
+                Cast::toString(
+                    $input->getArgument(self::ARG_PLAN)
                 )
             )
         );
@@ -84,6 +96,7 @@ class RunCommand extends Command
     private function loadManifestArray(string $planPath)
     {
         $path = $this->resolvePath($planPath);
+
         if (!file_exists($path)) {
             throw new RuntimeException(sprintf(
                 'Plan file "%s" does not exist',

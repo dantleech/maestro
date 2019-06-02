@@ -82,6 +82,18 @@ class InstantiatorTest extends TestCase
             ],
             'Argument "array" has type "array" but was passed "string"'
         ];
+
+        yield 'subclass of declared class' => [
+            [
+                'subclass' => new SubClassOfTestClass1(),
+            ],
+        ];
+
+        yield 'declared class' => [
+            [
+                'subclass' => new TestClass1(),
+            ],
+        ];
     }
 }
 
@@ -139,11 +151,15 @@ class TestClass4
      */
     private $bool;
 
-    public function __construct(string $string = '', array $array = [], int $int = 1, bool $bool = false)
+    public function __construct(string $string = '', array $array = [], int $int = 1, bool $bool = false, TestClass1 $subclass = null)
     {
         $this->string = $string;
         $this->array = $array;
         $this->int = $int;
         $this->bool = $bool;
     }
+}
+
+class SubClassOfTestClass1 extends TestClass1
+{
 }

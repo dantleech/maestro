@@ -36,7 +36,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function add(Node $node): Nodes
     {
         return new self(array_merge($this->nodes, [
-            $node->name() => $node
+            $node->id() => $node
         ]));
     }
 
@@ -48,16 +48,17 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         return new ArrayIterator($this->nodes);
     }
 
-    public function get(string $offset): Node
+    public function get(string $key): Node
     {
-        if (!isset($this->nodes[$offset])) {
+        if (!isset($this->nodes[$key])) {
             throw new RuntimeException(sprintf(
                 'No node exists at offset "%s" in set "%s"',
-                $offset,
+                $key,
                 implode('", "', $this->names())
             ));
         }
-        return $this->nodes[$offset];
+
+        return $this->nodes[$key];
     }
 
     /**
@@ -66,7 +67,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function names(): array
     {
         return array_values(array_map(function (Node $node) {
-            return $node->name();
+            return $node->id();
         }, $this->nodes));
     }
 
@@ -115,9 +116,16 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         throw new BadMethodCallException();
     }
 
+    public function byState(State ...$states): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($states) {
+            return $node->state()->in(...$states);
+        }));
+    }
+
     private function addNode(Node $node): void
     {
-        $this->nodes[$node->name()] = $node;
+        $this->nodes[$node->id()] = $node;
     }
 
     public function byStates(State ...$states): Nodes

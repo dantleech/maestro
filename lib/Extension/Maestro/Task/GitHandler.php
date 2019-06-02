@@ -40,9 +40,14 @@ class GitHandler implements TaskHandler
 
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(
-                    'Exited with code "%s"',
-                    $result->exitCode()
-                ), $artifacts);
+                    'Git clone failed with exit code "%s": %s',
+                    $result->exitCode(),
+                    $result->lastStderr()
+                ), Artifacts::create([
+                    'exitCode' => $result->exitCode(),
+                    'stderr' => $result->lastStderr(),
+                    'stdout' => $result->lastStdout(),
+                ]));
             }
 
             return Artifacts::create([]);

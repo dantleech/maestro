@@ -32,9 +32,9 @@ class ConcurrencyLimitingVisitorTest extends TestCase
         yield 'no busy nodes with limit of 1 will continue' => [
             1,
             [
-                NodeHelper::setState(Node::create('n1'), State::IDLE()),
-                NodeHelper::setState(Node::create('n2'), State::IDLE()),
-                NodeHelper::setState(Node::create('n3'), State::IDLE()),
+                NodeHelper::setState(Node::create('n1'), State::DONE()),
+                NodeHelper::setState(Node::create('n2'), State::DONE()),
+                NodeHelper::setState(Node::create('n3'), State::DONE()),
             ],
             NodeHelper::setState(Node::create('n4'), State::WAITING()),
             NodeVisitorDecision::CONTINUE()
@@ -44,7 +44,7 @@ class ConcurrencyLimitingVisitorTest extends TestCase
             1,
             [
                 NodeHelper::setState(Node::create('n1'), State::BUSY()),
-                NodeHelper::setState(Node::create('n3'), State::IDLE()),
+                NodeHelper::setState(Node::create('n3'), State::DONE()),
             ],
             NodeHelper::setState(Node::create('n4'), State::WAITING()),
             NodeVisitorDecision::DO_NOT_WALK_CHILDREN()

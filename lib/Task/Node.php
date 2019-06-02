@@ -70,7 +70,7 @@ final class Node
                     $this->task,
                     $artifacts
                 );
-                $this->state = State::IDLE();
+                $this->state = State::DONE();
             } catch (TaskFailed $failed) {
                 $this->state = State::FAILED();
                 $artifacts = $failed->artifacts();

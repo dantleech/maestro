@@ -22,7 +22,7 @@ final class State
         return new self(self::BUSY);
     }
 
-    public static function IDLE(): self
+    public static function DONE(): self
     {
         return new self(self::IDLE);
     }

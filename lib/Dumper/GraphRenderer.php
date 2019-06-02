@@ -43,7 +43,7 @@ class GraphRenderer
 
         $out = sprintf(
             "  [%s/%s] [%s] %s\n",
-            $nodes->byState(State::IDLE())->count(),
+            $nodes->byState(State::DONE())->count(),
             $nodes->count(),
             "\033[34m" . $packageNode->label() . "\033[0m",
             implode(', ', $busyTasks)

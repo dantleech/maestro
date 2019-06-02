@@ -32,7 +32,7 @@ class GraphRenderer
         $nodes = $graph->descendantsOf($packageNode->id());
         foreach ($nodes->byState(State::BUSY(), State::FAILED()) as $node) {
             $busyTasks[] = sprintf(
-                "\033[32m%s\033[0m [\033[%sm%s\033[0m] %s %s",
+                "[\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",
                 $node->label(),
                 $this->stateColor($node->state()),
                 $node->state()->toString(),

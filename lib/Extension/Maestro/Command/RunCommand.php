@@ -21,7 +21,7 @@ class RunCommand extends Command
 {
     const ARG_PLAN = 'plan';
     const POLL_TIME_DISPATCH = 100;
-    const POLL_TIME_RENDER = 250;
+    const POLL_TIME_RENDER = 100;
     const OPTION_DOT = 'dot';
 
     /**

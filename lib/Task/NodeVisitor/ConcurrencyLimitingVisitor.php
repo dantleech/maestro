@@ -2,13 +2,11 @@
 
 namespace Maestro\Task\NodeVisitor;
 
-use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\State;
-use Maestro\Task\TaskRunner;
 use RuntimeException;
 
 class ConcurrencyLimitingVisitor implements NodeVisitor

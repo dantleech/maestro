@@ -34,8 +34,7 @@ class Package
         array $tasks = [],
         array $parameters = [],
         bool $purgeWorkspace = false
-    )
-    {
+    ) {
         $this->name = $name;
 
         foreach ($tasks as $name => $task) {

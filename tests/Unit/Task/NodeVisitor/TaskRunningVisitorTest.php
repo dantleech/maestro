@@ -13,7 +13,6 @@ use Maestro\Task\TaskRunner;
 use Maestro\Task\Task\NullTask;
 use Maestro\Tests\Unit\Task\NodeHelper;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 
 class TaskRunningVisitorTest extends TestCase
 {

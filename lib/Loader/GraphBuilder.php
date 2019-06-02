@@ -32,9 +32,7 @@ class GraphBuilder
 
     private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)
     {
-
         foreach ($manifest->packages() as $package) {
-
             $prototype = $package->prototype();
             $prototype = $prototype ? $manifest->prototype($prototype) : null;
             $nodes[] = $packageNode = Node::create(
@@ -45,7 +43,7 @@ class GraphBuilder
                         $this->taskMap->classNameFor('package'),
                         [
                             'name' => $package->name(),
-                            'purgeWorkspace' => $package->purgeWorkspace() ?: $prototype ? $prototype->purgeWorkspace() : false,
+                            'purgeWorkspace' => $this->shouldPurgeWorkspace($package, $prototype),
                         ]
                     ),
                 ]
@@ -90,5 +88,18 @@ class GraphBuilder
     private function namespace(Package $package, $taskName): string
     {
         return sprintf('%s%s%s', $package->name(), Node::NAMEPSPACE_SEPARATOR, $taskName);
+    }
+
+    private function shouldPurgeWorkspace(Package $package, ?Prototype $prototype): bool
+    {
+        if ($package->purgeWorkspace()) {
+            return true;
+        }
+       
+        if ($prototype) {
+            $prototype->purgeWorkspace();
+        }
+
+        return false;
     }
 }

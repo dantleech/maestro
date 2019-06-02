@@ -3,7 +3,6 @@
 namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
-use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
@@ -42,7 +41,8 @@ class GitHandler implements TaskHandler
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(
                     'Git clone failed with exit code "%s": %s',
-                    $result->exitCode(), $result->lastStderr()
+                    $result->exitCode(),
+                    $result->lastStderr()
                 ), Artifacts::create([
                     'exitCode' => $result->exitCode(),
                     'stderr' => $result->lastStderr(),

@@ -38,7 +38,7 @@ class GraphRenderer
                 $node->state()->toString(),
                 $node->task()->description(),
                 json_encode($node->artifacts()->toArray()),
-            );
+                );
         }
 
         $out = sprintf(

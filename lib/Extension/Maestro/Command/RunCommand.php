@@ -97,38 +97,6 @@ class RunCommand extends Command
         );
     }
 
-    private function loadManifestArray(string $planPath)
-    {
-        $path = $this->resolvePath($planPath);
-
-        if (!file_exists($path)) {
-            throw new RuntimeException(sprintf(
-                'Plan file "%s" does not exist',
-                $path
-            ));
-        }
-
-        $array = json_decode(Cast::toString(file_get_contents($planPath)), true);
-
-        if (false === $array) {
-            throw new RuntimeException(sprintf(
-                'Could not decode JSON: "%s"',
-                json_last_error_msg()
-            ));
-        }
-
-        return $array;
-    }
-
-    private function resolvePath(string $planPath)
-    {
-        if (Path::isAbsolute($planPath)) {
-            return $planPath;
-        }
-
-        return Path::join(Cast::toString(getcwd()), $planPath);
-    }
-
     private function buildRunner(InputInterface $input): Maestro
     {
         $builder = $this->builder;

@@ -19,4 +19,14 @@ class NodesTest extends TestCase
         $this->assertCount(1, $nodes->byStates(State::WAITING()));
         $this->assertCount(1, $nodes->byStates(State::BUSY(), State::WAITING()));
     }
+
+    public function testContainsId()
+    {
+        $nodes = Nodes::fromNodes([
+            Node::create('foo')
+        ]);
+
+        $this->assertTrue($nodes->containsId('foo'));
+        $this->assertFalse($nodes->containsId('bar'));
+    }
 }

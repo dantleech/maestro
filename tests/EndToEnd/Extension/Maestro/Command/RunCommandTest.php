@@ -149,7 +149,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json goodbye -v');
+        $process = $this->command('run plan.json "mypackage/goodbye" -v');
         $this->assertProcessSuccess($process);
         $this->assertStringNotContainsString('Hello World', $process->getErrorOutput());
         $this->assertStringContainsString('Goodbye World', $process->getErrorOutput());

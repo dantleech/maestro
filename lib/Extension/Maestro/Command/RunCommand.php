@@ -68,7 +68,8 @@ class RunCommand extends Command
                 Cast::toString(
                     $input->getArgument(self::ARG_PLAN)
                 )
-            )
+            ),
+            Cast::toStringOrNull($input->getArgument(self::ARG_TARGET))
         );
 
         if ($input->getOption(self::OPT_DOT)) {

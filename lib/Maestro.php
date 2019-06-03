@@ -25,9 +25,15 @@ class Maestro
         $this->walker = $walker;
     }
 
-    public function buildGraph(Manifest $manifest): Graph
+    public function buildGraph(Manifest $manifest, ?string $target): Graph
     {
-        return $this->builder->build($manifest);
+        $graph = $this->builder->build($manifest);
+
+        if ($target) {
+            $graph = $graph->pruneTo($target);
+        }
+
+        return $graph;
     }
 
     public function dispatch(Graph $graph): void

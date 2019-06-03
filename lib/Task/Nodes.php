@@ -134,4 +134,9 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
             return $node->state()->in(...$states);
         }));
     }
+
+    public function containsId(string $id): bool
+    {
+        return array_key_exists($id, $this->nodes);
+    }
 }

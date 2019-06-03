@@ -186,6 +186,26 @@ class Graph
         return Nodes::fromNodes($this->nodes);
     }
 
+    public function pruneTo(string $target): Graph
+    {
+        $node = $this->node($target);
+        $ancestry = $this->widthFirstAncestryOf($target);
+        $ancestry = $ancestry->add($node);
+        $edges = $this->edges;
+
+        foreach ($edges as $index => $edge) {
+            if (!$ancestry->containsId($edge->from())) {
+                unset($edges[$index]);
+            }
+
+            if (!$ancestry->containsId($edge->to())) {
+                unset($edges[$index]);
+            }
+        }
+
+        return Graph::create(iterator_to_array($ancestry), $edges);
+    }
+
     public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes
     {
         if (isset($seen[$nodeName])) {

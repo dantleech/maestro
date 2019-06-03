@@ -96,7 +96,7 @@ class GraphTest extends TestCase
             'n3'
         ];
 
-        yield 'width first 2' => [
+        yield 'for leaf node' => [
             function () {
                 return Graph::create(
                     [
@@ -130,6 +130,42 @@ class GraphTest extends TestCase
             },
             ['sa', 'ut', 'init', 'ci', 'gc', 'p1', 'r'],
             'qa'
+        ];
+
+        yield 'for node with siblings' => [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('r'),
+                        Node::create('p1'),
+                        Node::create('p2'),
+                        Node::create('p3'),
+                        Node::create('init'),
+                        Node::create('gc'),
+                        Node::create('ci'),
+                        Node::create('qa'),
+                        Node::create('ut'),
+                        Node::create('sa'),
+                    ],
+                    [
+                        Edge::create('qa', 'sa'),
+                        Edge::create('qa', 'ut'),
+                        Edge::create('qa', 'init'),
+                        Edge::create('sa', 'init'),
+                        Edge::create('ut', 'init'),
+                        Edge::create('init', 'ci'),
+                        Edge::create('init', 'gc'),
+                        Edge::create('ci', 'p1'),
+                        Edge::create('gc', 'p1'),
+                        Edge::create('init', 'p1'),
+                        Edge::create('p1', 'r'),
+                        Edge::create('p2', 'r'),
+                        Edge::create('p3', 'r'),
+                    ]
+                );
+            },
+            ['p1','r'],
+            'ci'
         ];
     }
 
@@ -238,5 +274,30 @@ class GraphTest extends TestCase
                 Edge::create('n1', 'n2'),
             ]
         );
+    }
+
+    public function testReturnsAPrunedGraphForASpecifiedTarget()
+    {
+        $graph = Graph::create(
+            [
+                Node::create('n1'),
+                Node::create('n2'),
+                Node::create('n3'),
+                Node::create('n4'),
+                Node::create('n5'),
+                Node::create('n6'),
+            ],
+            [
+                Edge::create('n4', 'n3'),
+                Edge::create('n5', 'n3'),
+                Edge::create('n3', 'n2'),
+                Edge::create('n2', 'n1'),
+                Edge::create('n6', 'n1'),
+            ]
+        );
+
+        $graph = $graph->pruneTo('n5');
+        $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->names());
+        $this->assertCount(3, $graph->edges());
     }
 }

@@ -186,24 +186,29 @@ class Graph
         return Nodes::fromNodes($this->nodes);
     }
 
-    public function pruneTo(string $target): Graph
+    public function pruneTo(array $targets): Graph
     {
-        $node = $this->node($target);
-        $ancestry = $this->widthFirstAncestryOf($target);
-        $ancestry = $ancestry->add($node);
+        $nodes = Nodes::empty();
+        foreach ($targets as $target) {
+            $node = $this->node($target);
+            $ancestry = $this->widthFirstAncestryOf($target);
+            $ancestry = $ancestry->add($node);
+            $nodes = $nodes->merge($ancestry);
+        }
+
         $edges = $this->edges;
 
         foreach ($edges as $index => $edge) {
-            if (!$ancestry->containsId($edge->from())) {
+            if (!$nodes->containsId($edge->from())) {
                 unset($edges[$index]);
             }
 
-            if (!$ancestry->containsId($edge->to())) {
+            if (!$nodes->containsId($edge->to())) {
                 unset($edges[$index]);
             }
         }
 
-        return Graph::create(iterator_to_array($ancestry), $edges);
+        return Graph::create(iterator_to_array($nodes), $edges);
     }
 
     public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes

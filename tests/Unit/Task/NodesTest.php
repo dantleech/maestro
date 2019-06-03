@@ -29,4 +29,48 @@ class NodesTest extends TestCase
         $this->assertTrue($nodes->containsId('foo'));
         $this->assertFalse($nodes->containsId('bar'));
     }
+
+    /**
+     * @dataProvider provideQuery
+     */
+    public function testQuery(string $query, array $nodes, array $expectedNodes)
+    {
+        $nodes = Nodes::fromNodes($nodes);
+        $this->assertEquals(
+            $expectedNodes,
+            $nodes->query($query)->names()
+        );
+    }
+
+    public function provideQuery()
+    {
+        yield 'empty query always returns nothing' => [
+            '',
+            [
+                Node::create('n1'),
+                Node::create('n2'),
+            ],
+            [],
+        ];
+
+        yield 'explicit query' => [
+            'node1',
+            [
+                Node::create('node1'),
+                Node::create('node1node2'),
+                Node::create('node2node1'),
+            ],
+            ['node1'],
+        ];
+
+        yield 'wildcard query' => [
+            'node1*',
+            [
+                Node::create('node1'),
+                Node::create('node1node2'),
+                Node::create('node2node1'),
+            ],
+            ['node1', 'node1node2'],
+        ];
+    }
 }

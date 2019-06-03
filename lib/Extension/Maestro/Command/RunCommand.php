@@ -28,7 +28,7 @@ class RunCommand extends Command
     const OPT_DOT = 'dot';
     const OPT_CONCURRENCY = 'concurrency';
     const OPT_PROGRESS = 'progress';
-    const ARG_TARGET = 'target';
+    const ARG_QUERY = 'target';
 
     /**
      * @var MaestroBuilder
@@ -50,7 +50,7 @@ class RunCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
-        $this->addArgument(self::ARG_TARGET,  InputArgument::OPTIONAL, 'Limit execution to dependencies of specified target');
+        $this->addArgument(self::ARG_QUERY, InputArgument::OPTIONAL, 'Limit execution to dependencies of matching targets');
         $this->addOption(self::OPT_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
         $this->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
         $this->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
@@ -69,7 +69,7 @@ class RunCommand extends Command
                     $input->getArgument(self::ARG_PLAN)
                 )
             ),
-            Cast::toStringOrNull($input->getArgument(self::ARG_TARGET))
+            Cast::toStringOrNull($input->getArgument(self::ARG_QUERY))
         );
 
         if ($input->getOption(self::OPT_DOT)) {

@@ -296,7 +296,7 @@ class GraphTest extends TestCase
             ]
         );
 
-        $graph = $graph->pruneTo('n5');
+        $graph = $graph->pruneTo(['n5']);
         $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->names());
         $this->assertCount(3, $graph->edges());
     }

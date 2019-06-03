@@ -139,4 +139,23 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     {
         return array_key_exists($id, $this->nodes);
     }
+
+    public function query(string $query): Nodes
+    {
+        $nodes = [];
+        if (empty($query)) {
+            return Nodes::empty();
+        }
+        $pattern = sprintf('{^%s$}', str_replace('\*', '.*', preg_quote($query)));
+
+        foreach ($this->nodes as $id => $node) {
+            if (!preg_match($pattern, $id)) {
+                continue;
+            }
+
+            $nodes[$id] = $node;
+        }
+
+        return Nodes::fromNodes($nodes);
+    }
 }

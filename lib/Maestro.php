@@ -25,12 +25,13 @@ class Maestro
         $this->walker = $walker;
     }
 
-    public function buildGraph(Manifest $manifest, ?string $target): Graph
+    public function buildGraph(Manifest $manifest, ?string $query): Graph
     {
         $graph = $this->builder->build($manifest);
 
-        if ($target) {
-            $graph = $graph->pruneTo($target);
+        if ($query) {
+            $targets = $graph->nodes()->query($query);
+            $graph = $graph->pruneTo($targets->names());
         }
 
         return $graph;

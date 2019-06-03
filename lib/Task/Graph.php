@@ -9,9 +9,9 @@ use Maestro\Task\Exception\NodeDoesNotExist;
 class Graph
 {
     /**
-     * @var Node[]
+     * @var Nodes<Node>
      */
-    private $nodes = [];
+    private $nodes;
 
     /**
      * @var array<string,Edge[]>
@@ -24,12 +24,15 @@ class Graph
     private $fromToMap = [];
 
     /**
-     * @var array
+     * @var Edges<Edge>
      */
-    private $edges = [];
+    private $edges;
 
-    private function __construct(array $nodes, array $edges)
+    private function __construct(Nodes $nodes, Edges $edges)
     {
+        $this->nodes = $nodes;
+        $this->edges = $edges;
+
         foreach ($nodes as $node) {
             $this->addNode($node);
         }
@@ -41,20 +44,7 @@ class Graph
 
     public static function create(array $nodes, array $edges): self
     {
-        return new self($nodes, $edges);
-    }
-
-    private function addNode(Node $node)
-    {
-        if (isset($this->nodes[$node->id()])) {
-            throw new NodeAlreadyExists(sprintf(
-                'Node with name "%s" already exists',
-                $node->id()
-            ));
-        }
-
-        $this->nodes[$node->id()] = $node;
-        $this->toFromMap[$node->id()] = [];
+        return new self(Nodes::fromNodes($nodes), Edges::fromEdges($edges));
     }
 
     public function dependentsOf(string $nodeName): Nodes
@@ -116,13 +106,13 @@ class Graph
     public function roots(): Nodes
     {
         $nodesWithNoOutboundEdges = array_diff(
-            $this->nodeNames(),
+            $this->nodes->names(),
             array_keys($this->fromToMap)
         );
 
         $nodes = [];
         foreach ($nodesWithNoOutboundEdges as $nodeName) {
-            $nodes[] = $this->nodes[$nodeName];
+            $nodes[] = $this->nodes->get($nodeName);
         }
 
         if (empty($nodes)) {
@@ -152,7 +142,6 @@ class Graph
 
         $this->toFromMap[$edge->to()][] = $edge->from();
         $this->fromToMap[$edge->from()][] = $edge->to();
-        $this->edges[] = $edge;
     }
 
     /**
@@ -160,7 +149,7 @@ class Graph
      */
     public function edges(): Edges
     {
-        return new Edges($this->edges);
+        return $this->edges;
     }
 
     private function nodesByNames(array $nodeNames): Nodes
@@ -169,12 +158,6 @@ class Graph
             return $this->nodes[$nodeName];
         }, $nodeNames));
     }
-
-    private function nodeNames(): array
-    {
-        return Nodes::fromNodes($this->nodes)->names();
-    }
-
     public function node($nodeName): Node
     {
         $this->validateNodeName($nodeName);
@@ -183,7 +166,7 @@ class Graph
 
     public function nodes(): Nodes
     {
-        return Nodes::fromNodes($this->nodes);
+        return $this->nodes;
     }
 
     public function pruneTo(array $targets): Graph
@@ -200,15 +183,15 @@ class Graph
 
         foreach ($edges as $index => $edge) {
             if (!$nodes->containsId($edge->from())) {
-                unset($edges[$index]);
+                $edges = $edges->remove($edge);
             }
 
             if (!$nodes->containsId($edge->to())) {
-                unset($edges[$index]);
+                $edges = $edges->remove($edge);
             }
         }
 
-        return Graph::create(iterator_to_array($nodes), $edges);
+        return new self($nodes, $edges);
     }
 
     public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes
@@ -234,5 +217,10 @@ class Graph
         }
 
         return $nodes;
+    }
+
+    private function addNode(Node $node)
+    {
+        $this->toFromMap[$node->id()] = [];
     }
 }

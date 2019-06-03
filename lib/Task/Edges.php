@@ -9,13 +9,20 @@ use IteratorAggregate;
 final class Edges implements IteratorAggregate
 {
     /**
-     * @var array
+     * @var Edge[]
      */
-    private $edges;
+    private $edges = [];
 
-    public function __construct(array $edges)
+    private function __construct(array $edges)
     {
-        $this->edges = $edges;
+        foreach ($edges as $edge) {
+            $this->addEdge($edge);
+        }
+    }
+
+    public static function fromEdges(array $edges): self
+    {
+        return new self($edges);
     }
 
     /**
@@ -24,5 +31,25 @@ final class Edges implements IteratorAggregate
     public function getIterator(): Iterator
     {
         return new ArrayIterator($this->edges);
+    }
+
+    public function remove(Edge $targetEdge): Edges
+    {
+        $edges = [];
+
+        foreach ($this->edges as $edge) {
+            if ($targetEdge === $edge) {
+                continue;
+            }
+
+            $edges[] = $edge;
+        }
+
+        return new self($edges);
+    }
+
+    private function addEdge(Edge $edge)
+    {
+        $this->edges[] = $edge;
     }
 }

@@ -25,9 +25,10 @@ class RunCommand extends Command
     const POLL_TIME_DISPATCH = 100;
     const POLL_TIME_RENDER = 100;
 
-    const OPTION_DOT = 'dot';
-    const OPTION_CONCURRENCY = 'concurrency';
-    const OPTION_PROGRESS = 'progress';
+    const OPT_DOT = 'dot';
+    const OPT_CONCURRENCY = 'concurrency';
+    const OPT_PROGRESS = 'progress';
+    const ARG_TARGET = 'target';
 
     /**
      * @var MaestroBuilder
@@ -49,9 +50,10 @@ class RunCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
-        $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
-        $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
-        $this->addOption(self::OPTION_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
+        $this->addArgument(self::ARG_TARGET,  InputArgument::OPTIONAL, 'Limit execution to dependencies of specified target');
+        $this->addOption(self::OPT_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
+        $this->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
+        $this->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -69,7 +71,7 @@ class RunCommand extends Command
             )
         );
 
-        if ($input->getOption(self::OPTION_DOT)) {
+        if ($input->getOption(self::OPT_DOT)) {
             return $output->writeln((new DotDumper())->dump($graph));
         }
 
@@ -81,7 +83,7 @@ class RunCommand extends Command
             }
         });
 
-        if ($input->getOption(self::OPTION_PROGRESS)) {
+        if ($input->getOption(self::OPT_PROGRESS)) {
             Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
                 $section->overwrite((new GraphRenderer())->render($graph));
             });
@@ -130,7 +132,7 @@ class RunCommand extends Command
     {
         $builder = $this->builder;
         $builder->withMaxConcurrency(Cast::toInt(
-            $input->getOption(self::OPTION_CONCURRENCY)
+            $input->getOption(self::OPT_CONCURRENCY)
         ));
         $runner = $builder->build();
         return $runner;

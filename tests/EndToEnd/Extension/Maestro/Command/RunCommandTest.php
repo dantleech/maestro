@@ -126,4 +126,32 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('Hello World', $process->getErrorOutput());
     }
+
+    public function testTargetCanBeSpecified()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'echo "Hello World"',
+                            ]
+                        ],
+                        'goodbye' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'echo "Goodbye World"',
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json goodbye -v');
+        $this->assertProcessSuccess($process);
+        $this->assertStringNotContainsString('Hello World', $process->getErrorOutput());
+        $this->assertStringContainsString('Goodbye World', $process->getErrorOutput());
+    }
 }

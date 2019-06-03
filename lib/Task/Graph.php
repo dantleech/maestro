@@ -156,11 +156,11 @@ class Graph
     }
 
     /**
-     * @return Edge[]
+     * @return Edges<Edge>
      */
-    public function edges(): array
+    public function edges(): Edges
     {
-        return $this->edges;
+        return new Edges($this->edges);
     }
 
     private function nodesByNames(array $nodeNames): Nodes

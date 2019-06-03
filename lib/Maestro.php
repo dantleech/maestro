@@ -31,7 +31,7 @@ class Maestro
 
         if ($query) {
             $targets = $graph->nodes()->query($query);
-            $graph = $graph->pruneTo($targets->names());
+            $graph = $graph->pruneFor($targets->names());
         }
 
         return $graph;

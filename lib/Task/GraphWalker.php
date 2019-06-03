@@ -37,7 +37,7 @@ class GraphWalker
             }
         }
 
-        foreach ($graph->dependentsOf($node->id()) as $dependentNode) {
+        foreach ($graph->dependentsFor($node->id()) as $dependentNode) {
             if ($cancel) {
                 $dependentNode->cancel();
             }
@@ -52,7 +52,7 @@ class GraphWalker
 
     private function cancelDescendants(Graph $graph, Node $node): void
     {
-        foreach ($graph->dependentsOf($node->id()) as $dependentNode) {
+        foreach ($graph->dependentsFor($node->id()) as $dependentNode) {
             $dependentNode->cancel();
             $this->walkNode($graph, $dependentNode);
         }

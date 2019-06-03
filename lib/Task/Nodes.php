@@ -135,6 +135,13 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         }));
     }
 
+    public function byIds(array $ids): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($ids) {
+            return in_array($node->id(), $ids, true);
+        }));
+    }
+
     public function containsId(string $id): bool
     {
         return array_key_exists($id, $this->nodes);

@@ -49,7 +49,7 @@ class GraphBuilderTest extends TestCase
                 ]
             ],
             function (Graph $graph) {
-                $nodes = $graph->dependentsOf('root');
+                $nodes = $graph->dependentsFor('root');
                 $this->assertCount(1, $nodes);
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->id());
             }
@@ -74,11 +74,11 @@ class GraphBuilderTest extends TestCase
                 ]
             ],
             function (Graph $graph) {
-                $nodes = $graph->dependentsOf('root');
+                $nodes = $graph->dependentsFor('root');
                 $this->assertCount(1, $nodes);
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
                 $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
-                $tasks = $graph->dependentsOf('phpactor/phpactor');
+                $tasks = $graph->dependentsFor('phpactor/phpactor');
                 $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
             }

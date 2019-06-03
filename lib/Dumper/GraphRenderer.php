@@ -19,7 +19,7 @@ class GraphRenderer
     {
         $out = "\n";
         foreach ($graph->roots() as $rootNode) {
-            foreach ($graph->dependentsOf($rootNode->id()) as $packageNode) {
+            foreach ($graph->dependentsFor($rootNode->id()) as $packageNode) {
                 $out .= $this->walkNode($graph, $packageNode, $depth);
             }
         }
@@ -29,7 +29,7 @@ class GraphRenderer
     private function walkNode(Graph $graph, Node $packageNode, $depth): string
     {
         $busyTasks= [];
-        $nodes = $graph->descendantsOf($packageNode->id());
+        $nodes = $graph->descendantsFor($packageNode->id());
         foreach ($nodes->byState(State::BUSY(), State::FAILED()) as $node) {
             $busyTasks[] = sprintf(
                 "[\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",

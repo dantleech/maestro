@@ -47,62 +47,6 @@ class Graph
         return new self(Nodes::fromNodes($nodes), Edges::fromEdges($edges));
     }
 
-    public function dependentsOf(string $nodeName): Nodes
-    {
-        $this->validateNodeName($nodeName);
-
-        return Nodes::fromNodes(array_map(function (string $nodeName) {
-            return $this->nodes[$nodeName];
-        }, $this->toFromMap[$nodeName]));
-    }
-
-    public function dependenciesFor(string $nodeName): Nodes
-    {
-        $this->validateNodeName($nodeName);
-
-        if (!isset($this->fromToMap[$nodeName])) {
-            return Nodes::empty();
-        }
-
-        return Nodes::fromNodes(array_map(function (string $nodeName) {
-            return $this->nodes[$nodeName];
-        }, $this->fromToMap[$nodeName]));
-    }
-
-    public function widthFirstAncestryOf(string $nodeName): Nodes
-    {
-        $this->validateNodeName($nodeName);
-
-        $ancestry = Nodes::empty();
-
-        if (!isset($this->fromToMap[$nodeName])) {
-            return $ancestry;
-        }
-
-        $parents = $this->nodesByNames(
-            $this->fromToMap[$nodeName]
-        );
-
-        $ancestry = $ancestry->merge($parents);
-
-        foreach ($parents as $parent) {
-            assert($parent instanceof Node);
-            $ancestry = $ancestry->merge($this->widthFirstAncestryOf($parent->id()));
-        }
-
-        return $ancestry;
-    }
-
-    private function validateNodeName(string $nodeName)
-    {
-        if (!isset($this->nodes[$nodeName])) {
-            throw new NodeDoesNotExist(sprintf(
-                'Node "%s" does not exist',
-                $nodeName
-            ));
-        }
-    }
-
     public function roots(): Nodes
     {
         $nodesWithNoOutboundEdges = array_diff(
@@ -124,26 +68,6 @@ class Graph
         return Nodes::fromNodes($nodes);
     }
 
-    public function allDone(): bool
-    {
-        foreach ($this->nodes as $node) {
-            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private function addEdge(Edge $edge)
-    {
-        $this->validateNodeName($edge->to());
-        $this->validateNodeName($edge->from());
-
-        $this->toFromMap[$edge->to()][] = $edge->from();
-        $this->fromToMap[$edge->from()][] = $edge->to();
-    }
-
     /**
      * @return Edges<Edge>
      */
@@ -152,13 +76,7 @@ class Graph
         return $this->edges;
     }
 
-    private function nodesByNames(array $nodeNames): Nodes
-    {
-        return Nodes::fromNodes(array_map(function (string $nodeName) {
-            return $this->nodes[$nodeName];
-        }, $nodeNames));
-    }
-    public function node($nodeName): Node
+    public function node(string $nodeName): Node
     {
         $this->validateNodeName($nodeName);
         return $this->nodes[$nodeName];
@@ -169,12 +87,58 @@ class Graph
         return $this->nodes;
     }
 
-    public function pruneTo(array $targets): Graph
+    public function dependentsFor(string $nodeName): Nodes
+    {
+        $this->validateNodeName($nodeName);
+
+        return Nodes::fromNodes(array_map(function (string $nodeName) {
+            return $this->nodes[$nodeName];
+        }, $this->toFromMap[$nodeName]));
+    }
+
+    public function dependenciesFor(string $nodeName): Nodes
+    {
+        $this->validateNodeName($nodeName);
+
+        if (!isset($this->fromToMap[$nodeName])) {
+            return Nodes::empty();
+        }
+
+        return Nodes::fromNodes(array_map(function (string $nodeName) {
+            return $this->nodes[$nodeName];
+        }, $this->fromToMap[$nodeName]));
+    }
+
+    public function ancestryFor(string $nodeName): Nodes
+    {
+        $this->validateNodeName($nodeName);
+
+        $ancestry = Nodes::empty();
+
+        if (!isset($this->fromToMap[$nodeName])) {
+            return $ancestry;
+        }
+
+        $parents = $this->nodes->byIds(
+            $this->fromToMap[$nodeName]
+        );
+
+        $ancestry = $ancestry->merge($parents);
+
+        foreach ($parents as $parent) {
+            assert($parent instanceof Node);
+            $ancestry = $ancestry->merge($this->ancestryFor($parent->id()));
+        }
+
+        return $ancestry;
+    }
+
+    public function pruneFor(array $targets): Graph
     {
         $nodes = Nodes::empty();
         foreach ($targets as $target) {
             $node = $this->node($target);
-            $ancestry = $this->widthFirstAncestryOf($target);
+            $ancestry = $this->ancestryFor($target);
             $ancestry = $ancestry->add($node);
             $nodes = $nodes->merge($ancestry);
         }
@@ -194,7 +158,7 @@ class Graph
         return new self($nodes, $edges);
     }
 
-    public function descendantsOf(string $nodeName, array $seen = [], $level = 0): Nodes
+    public function descendantsFor(string $nodeName, array $seen = [], $level = 0): Nodes
     {
         if (isset($seen[$nodeName])) {
             return Nodes::empty();
@@ -210,17 +174,49 @@ class Graph
         }
 
         $level++;
-        foreach ($this->dependentsOf($nodeName) as $dependent) {
+        foreach ($this->dependentsFor($nodeName) as $dependent) {
             $nodes = $nodes->merge(
-                $this->descendantsOf($dependent->id(), $seen, $level)
+                $this->descendantsFor($dependent->id(), $seen, $level)
             );
         }
 
         return $nodes;
     }
 
-    private function addNode(Node $node)
+    public function allDone(): bool
+    {
+        foreach ($this->nodes as $node) {
+            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function addNode(Node $node): void
     {
         $this->toFromMap[$node->id()] = [];
+    }
+
+    private function validateNodeName(string $nodeName): void
+    {
+        if (isset($this->nodes[$nodeName])) {
+            return;
+        }
+
+        throw new NodeDoesNotExist(sprintf(
+            'Node "%s" does not exist',
+            $nodeName
+        ));
+    }
+
+    private function addEdge(Edge $edge): void
+    {
+        $this->validateNodeName($edge->to());
+        $this->validateNodeName($edge->from());
+
+        $this->toFromMap[$edge->to()][] = $edge->from();
+        $this->fromToMap[$edge->from()][] = $edge->to();
     }
 }

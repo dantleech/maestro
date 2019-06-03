@@ -29,7 +29,7 @@ class GraphTest extends TestCase
 
         $this->assertEquals([
             'n2', 'n3',
-        ], $graph->dependentsOf('n1')->names());
+        ], $graph->dependentsFor('n1')->names());
     }
 
     public function testReturnsRootNodes()
@@ -54,9 +54,9 @@ class GraphTest extends TestCase
     /**
      * @dataProvider provideReturnsAllAncestorsForGivenNode
      */
-    public function testReturnsAllAncestorsForGivenNode(Closure $graphFactory, array $expectedOrder, string $targetNode)
+    public function testReturnsAncestryForNode(Closure $graphFactory, array $expectedOrder, string $targetNode)
     {
-        $this->assertEquals($expectedOrder, $graphFactory()->widthFirstAncestryOf($targetNode)->names());
+        $this->assertEquals($expectedOrder, $graphFactory()->ancestryFor($targetNode)->names());
     }
 
     public function provideReturnsAllAncestorsForGivenNode()
@@ -128,7 +128,7 @@ class GraphTest extends TestCase
                     ]
                 );
             },
-            ['sa', 'ut', 'init', 'ci', 'gc', 'p1', 'r'],
+            ['init', 'ut', 'sa', 'p1', 'gc', 'ci', 'r'],
             'qa'
         ];
 
@@ -188,7 +188,7 @@ class GraphTest extends TestCase
 
         $this->assertEquals([
             'p1', 'init', 'p2'
-        ], $graph->descendantsOf('r')->names());
+        ], $graph->descendantsFor('r')->names());
     }
 
     /**
@@ -296,7 +296,7 @@ class GraphTest extends TestCase
             ]
         );
 
-        $graph = $graph->pruneTo(['n5']);
+        $graph = $graph->pruneFor(['n5']);
         $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->names());
         $this->assertCount(3, $graph->edges());
     }

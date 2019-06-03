@@ -79,7 +79,7 @@ class RunCommand extends Command
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($runner, $graph) {
             $runner->dispatch($graph);
 
-            if ($graph->allDone()) {
+            if ($graph->nodes()->allDone()) {
                 Loop::stop();
             }
         });

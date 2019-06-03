@@ -98,7 +98,7 @@ class GraphWalkerTest extends TestCase
 
         foreach ($expectedStates as $nodeName => $state) {
             $this->assertTrue(
-                $graph->node($nodeName)->state()->is($state),
+                $graph->nodes()->get($nodeName)->state()->is($state),
                 sprintf('Node %s is %s', $nodeName, $state->toString())
             );
         }

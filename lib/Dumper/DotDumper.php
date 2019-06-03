@@ -18,8 +18,8 @@ class DotDumper
         }
 
         foreach ($graph->edges() as $edge) {
-            $nodeFrom = $graph->node($edge->from());
-            $nodeTo = $graph->node($edge->to());
+            $nodeFrom = $graph->nodes()->get($edge->from());
+            $nodeTo = $graph->nodes()->get($edge->to());
             $lines[] = sprintf('  "%s"->"%s"', $edge->from(), $edge->to());
         }
 

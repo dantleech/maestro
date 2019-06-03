@@ -3,7 +3,6 @@
 namespace Maestro\Task;
 
 use Maestro\Task\Exception\GraphContainsCircularDependencies;
-use Maestro\Task\Exception\NodeAlreadyExists;
 use Maestro\Task\Exception\NodeDoesNotExist;
 
 class Graph
@@ -76,12 +75,6 @@ class Graph
         return $this->edges;
     }
 
-    public function node(string $nodeName): Node
-    {
-        $this->validateNodeName($nodeName);
-        return $this->nodes[$nodeName];
-    }
-
     public function nodes(): Nodes
     {
         return $this->nodes;
@@ -137,7 +130,7 @@ class Graph
     {
         $nodes = Nodes::empty();
         foreach ($targets as $target) {
-            $node = $this->node($target);
+            $node = $this->nodes->get($target);
             $ancestry = $this->ancestryFor($target);
             $ancestry = $ancestry->add($node);
             $nodes = $nodes->merge($ancestry);
@@ -167,7 +160,7 @@ class Graph
         $this->validateNodeName($nodeName);
 
         if ($level > 0) {
-            $nodes = Nodes::fromNodes([$this->node($nodeName)]);
+            $nodes = Nodes::fromNodes([$this->nodes()->get($nodeName)]);
             $seen[$nodeName] = true;
         } else {
             $nodes = Nodes::empty();
@@ -181,17 +174,6 @@ class Graph
         }
 
         return $nodes;
-    }
-
-    public function allDone(): bool
-    {
-        foreach ($this->nodes as $node) {
-            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private function addNode(Node $node): void

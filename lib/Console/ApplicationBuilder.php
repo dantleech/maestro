@@ -108,6 +108,8 @@ final class ApplicationBuilder
             $config[$configKey] = $value;
         }
 
+        $config = $this->configureMetaStates($config);
+
         return $config;
     }
 
@@ -136,5 +138,16 @@ final class ApplicationBuilder
             'Could not change directory to "%s"',
             $path
         ));
+    }
+
+    private function configureMetaStates(array $config)
+    {
+        if ($this->input->hasParameterOption(['-v','--verbose'])) {
+            $config[LoggingExtension::PARAM_ENABLED] = true;
+            $config[LoggingExtension::PARAM_LEVEL] = 'debug';
+            $config[LoggingExtension::PARAM_FORMATTER] = 'ansi';
+        }
+
+        return $config;
     }
 }

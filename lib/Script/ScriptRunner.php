@@ -27,7 +27,7 @@ class ScriptRunner
             $env = array_merge(getenv(), $env);
             $process = new Process($script, $workingDirectory, $env);
             $pid  = yield $process->start();
-            $this->logger->debug(sprintf('Process %s "%s" in %s with %s', $pid, $script, $workingDirectory, json_encode($env)));
+            $this->logger->info(sprintf('Process started: PID: %s Script:%s in %s', $pid, $script, $workingDirectory));
 
             $outs = yield from $this->handleStreamOutput($process);
             $exitCode = yield $process->join();

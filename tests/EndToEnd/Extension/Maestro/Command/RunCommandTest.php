@@ -105,4 +105,25 @@ class RunCommandTest extends EndToEndTestCase
         $process = $this->command('run plan.json --concurrency=5');
         $this->assertProcessSuccess($process);
     }
+
+    public function testVerboseModeLogsDebugMessagesToStderr()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'echo "Hello World"',
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json -v');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('Hello World', $process->getErrorOutput());
+    }
 }

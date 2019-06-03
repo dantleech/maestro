@@ -6,6 +6,7 @@ use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Loader;
+use Maestro\Maestro;
 use Maestro\MaestroBuilder;
 use Maestro\Util\Cast;
 use RuntimeException;
@@ -26,6 +27,7 @@ class RunCommand extends Command
 
     const OPTION_DOT = 'dot';
     const OPTION_CONCURRENCY = 'concurrency';
+    const OPTION_PROGRESS = 'progress';
 
     /**
      * @var MaestroBuilder
@@ -49,6 +51,7 @@ class RunCommand extends Command
         $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
         $this->addOption(self::OPTION_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
         $this->addOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
+        $this->addOption(self::OPTION_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -56,11 +59,7 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $builder = $this->builder;
-        $builder->withMaxConcurrency(Cast::toInt(
-            $input->getOption(self::OPTION_CONCURRENCY)
-        ));
-        $runner = $builder->build();
+        $runner = $this->buildRunner($input);
 
         $graph = $runner->buildGraph(
             $this->loader->load(
@@ -82,9 +81,11 @@ class RunCommand extends Command
             }
         });
 
-        Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
-            $section->overwrite((new GraphRenderer())->render($graph));
-        });
+        if ($input->getOption(self::OPTION_PROGRESS)) {
+            Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
+                $section->overwrite((new GraphRenderer())->render($graph));
+            });
+        }
 
         Loop::run();
 
@@ -123,5 +124,15 @@ class RunCommand extends Command
         }
 
         return Path::join(Cast::toString(getcwd()), $planPath);
+    }
+
+    private function buildRunner(InputInterface $input): Maestro
+    {
+        $builder = $this->builder;
+        $builder->withMaxConcurrency(Cast::toInt(
+            $input->getOption(self::OPTION_CONCURRENCY)
+        ));
+        $runner = $builder->build();
+        return $runner;
     }
 }

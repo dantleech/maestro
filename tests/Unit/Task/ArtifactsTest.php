@@ -16,6 +16,15 @@ class ArtifactsTest extends TestCase
         $this->assertEquals('bar', $artifacts->get('foo'));
     }
 
+    public function testHasMethodToDetermineIfArtifactExists()
+    {
+        $artifacts = Artifacts::create([
+            'foo' => 'bar'
+        ]);
+        $this->assertTrue($artifacts->has('foo'));
+        $this->assertFalse($artifacts->has('bar'));
+    }
+
     public function testThrowsExceptionUnknownArtifact()
     {
         $this->expectException(ArtifactNotFound::class);

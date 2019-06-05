@@ -154,4 +154,37 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringNotContainsString('Hello World', $process->getErrorOutput());
         $this->assertStringContainsString('Goodbye World', $process->getErrorOutput());
     }
+
+    public function testExitsWithNumberOfFailedTasksAsCode()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'exit 1',
+                            ]
+                        ],
+                        'goodbye' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'exit 1',
+                            ]
+                        ],
+                        'foobar' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'exit 0',
+                            ]
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json -v');
+        $this->assertProcessFailure($process);
+        $this->assertEquals(2, $process->getExitCode());
+    }
 }

@@ -54,4 +54,9 @@ final class Artifacts
     {
         return $this->map;
     }
+
+    public function has(string $string): bool
+    {
+        return isset($this->map[$string]);
+    }
 }

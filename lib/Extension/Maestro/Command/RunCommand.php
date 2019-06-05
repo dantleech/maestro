@@ -8,15 +8,14 @@ use Maestro\Dumper\GraphRenderer;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
+use Maestro\Task\State;
 use Maestro\Util\Cast;
-use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Webmozart\PathUtil\Path;
 
 class RunCommand extends Command
 {
@@ -95,6 +94,8 @@ class RunCommand extends Command
         $section->overwrite(
             (new GraphRenderer())->render($graph)
         );
+
+        return $graph->nodes()->byState(State::FAILED())->count();
     }
 
     private function buildRunner(InputInterface $input): Maestro

@@ -4,6 +4,7 @@ namespace Maestro\Dumper;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\Nodes;
 use Maestro\Task\State;
 
 class GraphRenderer
@@ -32,7 +33,7 @@ class GraphRenderer
         $nodes = $graph->descendantsFor($packageNode->id());
         foreach ($nodes->byState(State::BUSY(), State::FAILED()) as $node) {
             $busyTasks[] = sprintf(
-                "[\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",
+                "\n           [\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",
                 $node->label(),
                 $this->stateColor($node->state()),
                 $node->state()->toString(),
@@ -42,11 +43,12 @@ class GraphRenderer
         }
 
         $out = sprintf(
-            "  [%s/%s] [%s] %s\n",
+            "  %-2s/ %-2s %s [%s]%s\n",
             $nodes->byState(State::DONE())->count(),
             $nodes->count(),
+            $this->successMark($nodes),
             "\033[34m" . $packageNode->label() . "\033[0m",
-            implode(', ', $busyTasks)
+            implode("", $busyTasks),
         );
         
         return $out;
@@ -63,5 +65,18 @@ class GraphRenderer
         }
 
         return 0;
+    }
+
+    private function successMark(Nodes $nodes)
+    {
+        if ($nodes->byState(State::DONE())->count() === $nodes->count()) {
+            return  "\033[32m✔\033[0m";
+        }
+
+        if ($nodes->byState(State::FAILED())->count()) {
+            return  "\033[31m✘\033[0m";
+        }
+
+        return  "\033[35m↻\033[0m";
     }
 }

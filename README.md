@@ -23,6 +23,10 @@ It may also, in the future:
 
 *Task Graph*
 
+![Untitled](https://user-images.githubusercontent.com/530801/58994540-c643b800-87e8-11e9-8c83-83e8347298f9.png)
+
+*Progress*
+
 Background
 ----------
 

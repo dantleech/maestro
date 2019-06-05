@@ -159,11 +159,11 @@ class Graph
 
         $this->validateNodeName($nodeName);
 
+        $nodes = Nodes::empty();
+
         if ($level > 0) {
             $nodes = Nodes::fromNodes([$this->nodes()->get($nodeName)]);
             $seen[$nodeName] = true;
-        } else {
-            $nodes = Nodes::empty();
         }
 
         $level++;

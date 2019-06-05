@@ -48,17 +48,19 @@ class ScriptRunner
     {
         $outs = [];
         foreach ([
-            $process->getStdout(),
-            $process->getStderr(),
-            ] as $stream) {
-            $outs[] = \Amp\call(function () use ($stream) {
+            'STDOUT' => $process->getStdout(),
+            'STDERR' => $process->getStderr(),
+            ] as $name => $stream) {
+            $outs[] = \Amp\call(function () use ($name, $stream) {
                 $lastLine = '';
                 $buffer = '';
                 while (null !== $chunk = yield $stream->read()) {
                     $buffer .= $chunk;
                 }
 
-                $this->logger->debug($buffer);
+                if ($buffer) {
+                    $this->logger->debug(sprintf('%s: %s', $name, $buffer));
+                }
 
                 return StringUtil::lastLine($buffer);
             });

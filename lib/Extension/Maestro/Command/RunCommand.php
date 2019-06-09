@@ -5,6 +5,7 @@ namespace Maestro\Extension\Maestro\Command;
 use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
+use Maestro\Dumper\TargetDumper;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
@@ -28,6 +29,7 @@ class RunCommand extends Command
     const OPT_CONCURRENCY = 'concurrency';
     const OPT_PROGRESS = 'progress';
     const ARG_QUERY = 'target';
+    const OPT_LIST_TARGETS = 'targets';
 
     /**
      * @var MaestroBuilder
@@ -53,6 +55,7 @@ class RunCommand extends Command
         $this->addOption(self::OPT_DOT, null, InputOption::VALUE_NONE, 'Dump the task graph to a dot file');
         $this->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
         $this->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
+        $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -70,6 +73,11 @@ class RunCommand extends Command
             ),
             Cast::toStringOrNull($input->getArgument(self::ARG_QUERY))
         );
+
+        if ($input->getOption(self::OPT_LIST_TARGETS)) {
+            $output->writeln((new TargetDumper())->dump($graph));
+            return 0;
+        }
 
         if ($input->getOption(self::OPT_DOT)) {
             return $output->writeln((new DotDumper())->dump($graph));

@@ -187,4 +187,28 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessFailure($process);
         $this->assertEquals(2, $process->getExitCode());
     }
+
+    public function testListsTargets()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'null',
+                        ],
+                        'goodbye' => [
+                            'type' => 'null',
+                        ],
+                        'foobar' => [
+                            'type' => 'null',
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json --targets');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('mypackage/hello', $process->getOutput());
+    }
 }

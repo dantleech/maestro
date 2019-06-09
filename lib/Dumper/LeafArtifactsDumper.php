@@ -2,7 +2,6 @@
 
 namespace Maestro\Dumper;
 
-use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
 use Maestro\Task\Graph;
 

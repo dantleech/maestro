@@ -15,7 +15,7 @@ final class Manifest
     private $packages = [];
 
     /**
-     * @var string
+     * @var string|null
      */
     private $path;
 

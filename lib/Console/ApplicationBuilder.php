@@ -3,6 +3,7 @@
 namespace Maestro\Console;
 
 use Maestro\Extension\Maestro\MaestroExtension;
+use Maestro\Extension\Twig\TwigExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -72,6 +73,7 @@ final class ApplicationBuilder
             ConsoleExtension::class,
             MaestroExtension::class,
             LoggingExtension::class,
+            TwigExtension::class,
         ], $this->buildConfiguration($definition));
     }
 

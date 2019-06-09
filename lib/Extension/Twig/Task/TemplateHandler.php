@@ -9,6 +9,8 @@ use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
 use Maestro\Workspace\Workspace;
+use RuntimeException;
+use Twig\Error\Error;
 use Webmozart\PathUtil\Path;
 
 class TemplateHandler implements TaskHandler
@@ -30,9 +32,16 @@ class TemplateHandler implements TaskHandler
         assert($workspace instanceof Workspace);
 
         $environment = $this->factory->get($manifestDir);
-        $rendered = $environment->render($task->path(), $artifacts->toArray());
 
-        file_put_contents($workspace->absolutePath($task->targetPath()), $rendered);
+        try {
+            $rendered = $environment->render($task->path(), $artifacts->toArray());
+        } catch (Error $error) {
+            throw new TaskFailed($error->getMessage(), Artifacts::create([
+                'error' => $error->getMessage(),
+            ]));
+        }
+
+        $this->writeContents($workspace, $task, $rendered);
 
         return new Success(Artifacts::empty());
     }
@@ -47,5 +56,21 @@ class TemplateHandler implements TaskHandler
         }
 
         return Path::join($manifestDir, $targetPath);
+    }
+
+    private function writeContents(Workspace $workspace, TemplateTask $task, string $rendered): void
+    {
+        $targetPath = $workspace->absolutePath($task->targetPath());
+
+        if (!file_exists(dirname($targetPath))) {
+            mkdir(dirname($targetPath), 0777, true);
+        }
+
+        if (!file_put_contents($targetPath, $rendered)) {
+            throw new RuntimeException(sprintf(
+                'Could not write file contents to "%s"',
+                $targetPath
+            ));
+        }
     }
 }

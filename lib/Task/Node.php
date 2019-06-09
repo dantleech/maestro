@@ -2,9 +2,7 @@
 
 namespace Maestro\Task;
 
-use Amp\Promise;
 use Amp\Success;
-use Exception;
 use Maestro\Loader\Instantiator;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Task\NullTask;

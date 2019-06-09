@@ -6,13 +6,10 @@ use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
 use Maestro\Dumper\TargetDumper;
-use Maestro\Extension\Maestro\Task\ScriptTask;
+use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
-use Maestro\Task\Edge;
-use Maestro\Task\Graph;
-use Maestro\Task\Node;
 use Maestro\Task\State;
 use Maestro\Util\Cast;
 use Symfony\Component\Console\Command\Command;
@@ -84,14 +81,7 @@ class RunCommand extends Command
         );
 
         if ($script = $input->getOption(self::OPT_EXEC_SCRIPT)) {
-            foreach ($graph->leafs() as $leaf) {
-                $scriptNodeId = sprintf($leaf->id() . '/script');
-                $nodes = $graph->nodes()->add(Node::create($scriptNodeId, [
-                    'task' => new ScriptTask($script)
-                ]));
-                $edges = $graph->edges()->add(Edge::create($scriptNodeId, $leaf->id()));
-                $graph = new Graph($nodes, $edges);
-            }
+            $graph = (new ExecScriptOnLeafNodesModifier($script))($graph);
         }
 
         if ($input->getOption(self::OPT_LIST_TARGETS)) {

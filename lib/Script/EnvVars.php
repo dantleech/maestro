@@ -2,7 +2,9 @@
 
 namespace Maestro\Script;
 
-class EnvVars
+use JsonSerializable;
+
+class EnvVars implements JsonSerializable
 {
     /**
      * @var array
@@ -22,5 +24,13 @@ class EnvVars
     public function toArray(): array
     {
         return $this->env;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

@@ -5,6 +5,7 @@ namespace Maestro\Extension\Maestro\Command;
 use Amp\Loop;
 use Maestro\Dumper\DotDumper;
 use Maestro\Dumper\GraphRenderer;
+use Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Loader\Loader;
@@ -33,6 +34,7 @@ class RunCommand extends Command
     private const OPT_LIST_TARGETS = 'targets';
     private const OPT_DEPTH = 'depth';
     private const OPT_EXEC_SCRIPT = 'exec';
+    const OPT_ARTIFACTS = 'artifacts';
 
     /**
      * @var MaestroBuilder
@@ -61,6 +63,7 @@ class RunCommand extends Command
         $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
         $this->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
         $this->addOption(self::OPT_EXEC_SCRIPT, null, InputOption::VALUE_REQUIRED, 'Execute command on targets');
+        $this->addOption(self::OPT_ARTIFACTS, null, InputOption::VALUE_NONE, 'Report artifacts for leaf nodes after execution');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -113,6 +116,10 @@ class RunCommand extends Command
             $section->overwrite(
                 (new GraphRenderer())->render($graph)
             );
+        }
+
+        if ($input->getOption(self::OPT_ARTIFACTS)) {
+            $output->writeln((new LeafArtifactsDumper())->dump($graph));
         }
 
         return $graph->nodes()->byState(State::FAILED())->count();

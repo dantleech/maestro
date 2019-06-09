@@ -12,8 +12,8 @@ class ManifestHandler implements TaskHandler
     public function __invoke(ManifestTask $manifest, Artifacts $artifacts): Promise
     {
         return new Success(Artifacts::create([
-            'manifest_path' => $manifest->path(),
-            'manifest_dir' => dirname($manifest->path())
+            'manifest.path' => $manifest->path(),
+            'manifest.dir' => dirname($manifest->path())
         ]));
     }
 }

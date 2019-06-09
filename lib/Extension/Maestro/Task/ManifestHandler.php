@@ -14,9 +14,9 @@ class ManifestHandler implements TaskHandler
     {
         $manifestPath = $manifest->path();
 
-        return new Success(Artifacts::create([
+        return new Success(Artifacts::create(array_merge($manifest->artifacts(), [
             'manifest.path' => $manifestPath,
             'manifest.dir' => $manifestPath ? Path::getDirectory($manifestPath) : null,
-        ]));
+        ])));
     }
 }

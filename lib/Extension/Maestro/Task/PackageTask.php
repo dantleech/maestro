@@ -16,10 +16,16 @@ class PackageTask implements Task
      */
     private $purgeWorkspace;
 
-    public function __construct(string $name, bool $purgeWorkspace = false)
+    /**
+     * @var array
+     */
+    private $artifacts;
+
+    public function __construct(string $name, bool $purgeWorkspace = false, array $artifacts = [])
     {
         $this->name = $name;
         $this->purgeWorkspace = $purgeWorkspace;
+        $this->artifacts = $artifacts;
     }
 
     public function name(): string
@@ -35,5 +41,10 @@ class PackageTask implements Task
     public function purgeWorkspace(): bool
     {
         return $this->purgeWorkspace;
+    }
+
+    public function artifacts(): array
+    {
+        return $this->artifacts;
     }
 }

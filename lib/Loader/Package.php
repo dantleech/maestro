@@ -23,11 +23,17 @@ class Package
      */
     private $purgeWorkspace;
 
+    /**
+     * @var array
+     */
+    private $artifacts;
+
     public function __construct(
         string $name,
         array $tasks = [],
         array $parameters = [],
-        bool $purgeWorkspace = false
+        bool $purgeWorkspace = false,
+        array $artifacts = []
     ) {
         $this->name = $name;
 
@@ -36,6 +42,7 @@ class Package
         }
         $this->parameters = $parameters;
         $this->purgeWorkspace = $purgeWorkspace;
+        $this->artifacts = $artifacts;
     }
 
     /**
@@ -59,5 +66,10 @@ class Package
     public function purgeWorkspace(): bool
     {
         return $this->purgeWorkspace;
+    }
+
+    public function artifacts(): array
+    {
+        return $this->artifacts;
     }
 }

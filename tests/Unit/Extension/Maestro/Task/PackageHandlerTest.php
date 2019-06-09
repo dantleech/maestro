@@ -7,6 +7,7 @@ use Maestro\Loader\Instantiator;
 use Maestro\Script\EnvVars;
 use Maestro\Task\Artifacts;
 use Maestro\Extension\Maestro\Task\PackageTask;
+use Maestro\Task\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\WorkspaceFactory;
 
@@ -40,6 +41,23 @@ class PackageHandlerTest extends IntegrationTestCase
                 'PACKAGE_NAME' => 'hello'
             ])
         ], $artifacts->toArray());
+    }
+
+    public function testProvidesConfiguredArtifacts()
+    {
+        $artifacts = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
+            PackageTask::class,
+            [
+                'name' => 'foobar',
+                'artifacts' => [
+                    'bonjour' => 'aurevoir'
+                ],
+            ],
+            []
+        );
+
+        $this->assertInstanceOf(Artifacts::class, $artifacts);
+        $this->assertEquals('aurevoir', $artifacts->get('bonjour'));
     }
 
     public function testPurgeWorkspace()

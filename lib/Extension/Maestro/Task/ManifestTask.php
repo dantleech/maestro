@@ -11,9 +11,15 @@ class ManifestTask implements Task
      */
     private $path;
 
-    public function __construct(?string $path)
+    /**
+     * @var array
+     */
+    private $artifacts;
+
+    public function __construct(?string $path, array $artifacts = [])
     {
         $this->path = $path;
+        $this->artifacts = $artifacts;
     }
 
     public function description(): string
@@ -24,5 +30,10 @@ class ManifestTask implements Task
     public function path(): ?string
     {
         return $this->path;
+    }
+
+    public function artifacts(): array
+    {
+        return $this->artifacts;
     }
 }

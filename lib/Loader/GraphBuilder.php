@@ -32,7 +32,7 @@ class GraphBuilder
     ): Graph {
         $nodes = [
             Node::create(self::NODE_ROOT, [
-                'task' => new ManifestTask($manifest->path())
+                'task' => new ManifestTask($manifest->path(), $manifest->artifacts())
             ])
         ];
         $edges = [];
@@ -53,6 +53,7 @@ class GraphBuilder
                         [
                             'name' => $package->name(),
                             'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
+                            'artifacts' => $package->artifacts()
                         ]
                     ),
                 ]

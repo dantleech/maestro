@@ -14,9 +14,15 @@ final class Manifest
      */
     private $packages = [];
 
-    public function __construct(array $parameters = [], array $packages = [])
+    /**
+     * @var string|null
+     */
+    private $path;
+
+    public function __construct(array $parameters = [], array $packages = [], string $path = null)
     {
         $this->parameters = $parameters;
+        $this->path = $path;
 
         foreach ($packages as $name => $package) {
             $package['name'] = $name;
@@ -40,5 +46,10 @@ final class Manifest
     public function packages(): array
     {
         return $this->packages;
+    }
+
+    public function path(): ?string
+    {
+        return $this->path;
     }
 }

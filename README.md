@@ -172,6 +172,29 @@ Use this to clone a GIT repository for the package.
 }
 ```
 
+### Twig
+
+This extension allows you to apply templates to packages.
+
+#### `template`
+
+Apply a template:
+
+e.g.
+
+```javascript
+{
+    "type": "template",
+    "parameters": {
+        "path": "templates/README.md.twig"
+        "targetPath": "README.md"
+    }
+}
+```
+
+- **path**: Where the template is located, relative to the Manifest file.
+- **targetPath**: Where to put the rendered template, relative to the package path.
+
 Documentation
 -------------
 

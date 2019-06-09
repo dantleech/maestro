@@ -6,6 +6,8 @@ use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
+use Maestro\Extension\Maestro\Task\ManifestHandler;
+use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\Loader\Loader;
@@ -112,6 +114,13 @@ class MaestroExtension implements Extension
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'null',
             'job_class' => NullTask::class,
+        ]]);
+
+        $container->register('task.job_handler.manifest', function () {
+            return new ManifestHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'manifest',
+            'job_class' => ManifestTask::class,
         ]]);
 
         $container->register('task.job_handler.package', function (Container $container) {

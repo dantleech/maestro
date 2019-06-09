@@ -208,6 +208,9 @@ class Graph
         return new self(Nodes::fromNodes($nodes), $edges);
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function leafs(): Nodes
     {
         return $this->nodes->filter(function (Node $node) {

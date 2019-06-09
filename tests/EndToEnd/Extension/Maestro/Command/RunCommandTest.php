@@ -252,4 +252,19 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('Hello mypackage', $process->getErrorOutput());
         $this->assertStringContainsString('Hello foobar', $process->getErrorOutput());
     }
+
+    public function testListsArtifactsForLeafNodes()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                ],
+                'foobar' => [
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json --artifacts');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('manifest.path', $process->getOutput());
+    }
 }

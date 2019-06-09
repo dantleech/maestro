@@ -5,6 +5,7 @@ namespace Maestro\Task;
 use ArrayAccess;
 use ArrayIterator;
 use BadMethodCallException;
+use Closure;
 use Countable;
 use IteratorAggregate;
 use RuntimeException;
@@ -130,16 +131,21 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 
     public function byStates(State ...$states): Nodes
     {
-        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($states) {
+        return $this->filter(function (Node $node) use ($states) {
             return $node->state()->in(...$states);
-        }));
+        });
     }
 
     public function byIds(array $ids): Nodes
     {
-        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($ids) {
+        return $this->filter(function (Node $node) use ($ids) {
             return in_array($node->id(), $ids, true);
-        }));
+        });
+    }
+
+    public function filter(Closure $predicate): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, $predicate));
     }
 
     public function containsId(string $id): bool

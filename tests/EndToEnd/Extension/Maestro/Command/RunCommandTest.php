@@ -236,4 +236,20 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringNotContainsString('mypackage/hello', $process->getOutput());
         $this->assertStringContainsString('mypackage', $process->getOutput());
     }
+
+    public function testScriptCanBeExecutedOnLeafNodes()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                ],
+                'foobar' => [
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json -v --exec="echo \"Hello \"\$PACKAGE_NAME"');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('Hello mypackage', $process->getErrorOutput());
+        $this->assertStringContainsString('Hello foobar', $process->getErrorOutput());
+    }
 }

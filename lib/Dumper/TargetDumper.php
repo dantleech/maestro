@@ -12,8 +12,9 @@ class TargetDumper
         foreach ($graph->roots() as $root) {
             foreach ($graph->descendantsFor($root->id()) as $node) {
                 $out[] = sprintf(
-                    '<info>%s</info> -> %s',
+                    '<info>%s</> (<comment>%s</>) -> %s',
                     $node->id(),
+                    $node->task() ? $node->task()->description() : '',
                     implode(', ', $graph->dependenciesFor($node->id())->names())
                 );
             }

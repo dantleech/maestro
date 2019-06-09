@@ -48,6 +48,14 @@ final class Edges implements IteratorAggregate
         return new self($edges);
     }
 
+    public function add(Edge $edge): self
+    {
+        $edges = $this->edges;
+        $edges[] = $edge;
+
+        return new self($edges);
+    }
+
     private function addEdge(Edge $edge)
     {
         $this->edges[] = $edge;

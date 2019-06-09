@@ -391,4 +391,28 @@ class GraphTest extends TestCase
         $this->expectExceptionMessage('Graph must have at least one node');
         Graph::create([], []);
     }
+
+    public function testReturnsLeafNodes()
+    {
+        $graph = Graph::create(
+            [
+                Node::create('n1'),
+                Node::create('n2'),
+                Node::create('n3'),
+                Node::create('n4'),
+                Node::create('n5'),
+                Node::create('n6'),
+            ],
+            [
+                Edge::create('n4', 'n3'),
+                Edge::create('n5', 'n3'),
+                Edge::create('n3', 'n2'),
+                Edge::create('n2', 'n1'),
+                Edge::create('n6', 'n1'),
+            ]
+        );
+
+        $nodes = $graph->leafs();
+        $this->assertEquals(['n4','n5','n6'], $nodes->names());
+    }
 }

@@ -6,24 +6,24 @@ use RuntimeException;
 
 class Cast
 {
-    public static function toString($string)
+    public static function toString($value)
     {
-        if (!is_string($string)) {
+        if (!is_string($value)) {
             throw new RuntimeException(sprintf(
                 'Expected string, got "%s"',
-                gettype($string)
+                gettype($value)
             ));
         }
-        return $string;
+        return $value;
     }
 
-    public static function toStringOrNull($string = null)
+    public static function toStringOrNull($value = null)
     {
-        if (null === $string) {
-            return $string;
+        if (null === $value) {
+            return $value;
         }
 
-        return self::toString($string);
+        return self::toString($value);
     }
 
     public static function toInt($value): int
@@ -38,5 +38,10 @@ class Cast
         }
 
         return self::toInt($value);
+    }
+
+    public function toBool(string $value)
+    {
+        return (bool) $value;
     }
 }

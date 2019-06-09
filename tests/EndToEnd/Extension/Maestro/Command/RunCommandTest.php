@@ -267,4 +267,17 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('manifest.path', $process->getOutput());
     }
+
+    public function testPurgesWorkspaces()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                ],
+                'foobar' => [
+                ],
+            ],
+        ]);
+        $this->command('run plan.json --purge');
+    }
 }

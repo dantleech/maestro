@@ -35,6 +35,7 @@ class RunCommand extends Command
     private const OPT_DEPTH = 'depth';
     private const OPT_EXEC_SCRIPT = 'exec';
     private const OPT_ARTIFACTS = 'artifacts';
+    private const OPT_PURGE = 'purge';
 
     /**
      * @var MaestroBuilder
@@ -64,6 +65,7 @@ class RunCommand extends Command
         $this->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
         $this->addOption(self::OPT_EXEC_SCRIPT, null, InputOption::VALUE_REQUIRED, 'Execute command on targets');
         $this->addOption(self::OPT_ARTIFACTS, null, InputOption::VALUE_NONE, 'Report artifacts for leaf nodes after execution');
+        $this->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge package workspaces before build');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -80,7 +82,8 @@ class RunCommand extends Command
                 )
             ),
             Cast::toStringOrNull($input->getArgument(self::ARG_QUERY)),
-            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH))
+            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH)),
+            Cast::toBool($input->getOption(self::OPT_PURGE))
         );
 
         if ($script = $input->getOption(self::OPT_EXEC_SCRIPT)) {

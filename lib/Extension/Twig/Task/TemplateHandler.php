@@ -11,7 +11,6 @@ use Maestro\Task\TaskHandler;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
 use Twig\Error\Error;
-use Webmozart\PathUtil\Path;
 
 class TemplateHandler implements TaskHandler
 {

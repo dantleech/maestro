@@ -30,6 +30,7 @@ class RunCommand extends Command
     const OPT_PROGRESS = 'progress';
     const ARG_QUERY = 'target';
     const OPT_LIST_TARGETS = 'targets';
+    const OPT_DEPTH = 'depth';
 
     /**
      * @var MaestroBuilder
@@ -56,6 +57,7 @@ class RunCommand extends Command
         $this->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
         $this->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
         $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
+        $this->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -71,7 +73,8 @@ class RunCommand extends Command
                     $input->getArgument(self::ARG_PLAN)
                 )
             ),
-            Cast::toStringOrNull($input->getArgument(self::ARG_QUERY))
+            Cast::toStringOrNull($input->getArgument(self::ARG_QUERY)),
+            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH))
         );
 
         if ($input->getOption(self::OPT_LIST_TARGETS)) {

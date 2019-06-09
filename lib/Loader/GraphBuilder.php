@@ -48,8 +48,6 @@ class GraphBuilder
             );
 
             $edges[] = Edge::create($package->name(), self::NODE_ROOT);
-
-
             $this->walkPackage($packageNode, $package, $nodes, $edges);
         }
     }

@@ -4,6 +4,7 @@ namespace Maestro\Task;
 
 use Maestro\Task\Exception\GraphContainsCircularDependencies;
 use Maestro\Task\Exception\NodeDoesNotExist;
+use RuntimeException;
 
 class Graph
 {
@@ -32,6 +33,13 @@ class Graph
         $this->nodes = $nodes;
         $this->edges = $edges;
 
+        if ($nodes->count() === 0) {
+            throw new RuntimeException(
+                'Graph must have at least one node'
+            );
+        }
+
+
         foreach ($nodes as $node) {
             $this->addNode($node);
         }
@@ -39,6 +47,9 @@ class Graph
         foreach ($edges as $edge) {
             $this->addEdge($edge);
         }
+
+        // validate and detect circular dependencies
+        $this->roots();
     }
 
     public static function create(array $nodes, array $edges): self
@@ -177,6 +188,25 @@ class Graph
         }
 
         return $nodes;
+    }
+
+    public function pruneToDepth(int $depth): Graph
+    {
+        $nodes = [];
+        $edges = $this->edges;
+
+        foreach ($this->nodes as $node) {
+            $nodeDepth = $this->ancestryFor($node->id())->count();
+
+            if ($nodeDepth > $depth) {
+                $edges = $edges->removeReferencesTo($node->id());
+                continue;
+            }
+
+            $nodes[] = $node;
+        }
+
+        return new self(Nodes::fromNodes($nodes), $edges);
     }
 
     private function addNode(Node $node): void

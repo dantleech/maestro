@@ -46,18 +46,6 @@ class TemplateHandler implements TaskHandler
         return new Success(Artifacts::empty());
     }
 
-    private function resolvePath(string $manifestDir, string $targetPath): string
-    {
-        if (Path::isAbsolute($targetPath)) {
-            throw new TaskFailed(sprintf(
-                'Template paths must be relative (i.e. they should not start with a forward slash). got: "%s"',
-                $targetPath
-            ));
-        }
-
-        return Path::join($manifestDir, $targetPath);
-    }
-
     private function writeContents(Workspace $workspace, TemplateTask $task, string $rendered): void
     {
         $targetPath = $workspace->absolutePath($task->targetPath());

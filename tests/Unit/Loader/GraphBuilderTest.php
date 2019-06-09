@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
+use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\TaskMap;
@@ -36,7 +37,9 @@ class GraphBuilderTest extends TestCase
             ],
             function (Graph $graph) {
                 $this->assertEquals(Nodes::fromNodes([
-                    Node::create('root')
+                    Node::create('root', [
+                        'task' => new ManifestTask(null),
+                    ])
                 ]), $graph->roots());
             }
         ];

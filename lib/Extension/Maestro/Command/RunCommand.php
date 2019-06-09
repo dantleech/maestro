@@ -34,7 +34,7 @@ class RunCommand extends Command
     private const OPT_LIST_TARGETS = 'targets';
     private const OPT_DEPTH = 'depth';
     private const OPT_EXEC_SCRIPT = 'exec';
-    const OPT_ARTIFACTS = 'artifacts';
+    private const OPT_ARTIFACTS = 'artifacts';
 
     /**
      * @var MaestroBuilder

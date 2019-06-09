@@ -21,6 +21,11 @@ final class MaestroBuilder
     private $handlers = [];
     private $maxConcurrency = 10;
 
+    /**
+     * @var bool|null
+     */
+    private $purge;
+
     public static function create(): self
     {
         return new self();
@@ -29,7 +34,10 @@ final class MaestroBuilder
     public function build(): Maestro
     {
         return new Maestro(
-            new GraphBuilder(new TaskMap($this->taskMap)),
+            new GraphBuilder(
+                new TaskMap($this->taskMap),
+                $this->purge
+            ),
             $this->buildGraphWalker()
         );
     }
@@ -44,6 +52,13 @@ final class MaestroBuilder
     public function withMaxConcurrency(int $maxConcurrency)
     {
         $this->maxConcurrency = $maxConcurrency;
+        return $this;
+    }
+
+    public function withPurge(?bool $purge): self
+    {
+        $this->purge = $purge;
+
         return $this;
     }
 

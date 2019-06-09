@@ -40,7 +40,7 @@ class Cast
         return self::toInt($value);
     }
 
-    public function toBool(string $value)
+    public static function toBool($value): bool
     {
         return (bool) $value;
     }

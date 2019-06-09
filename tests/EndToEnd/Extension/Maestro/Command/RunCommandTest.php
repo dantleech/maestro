@@ -278,6 +278,9 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $this->command('run plan.json --purge');
+
+        $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
+        $this->command('run plan.json  --namespace="" --purge');
+        $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
     }
 }

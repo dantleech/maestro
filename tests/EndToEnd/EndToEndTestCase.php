@@ -13,8 +13,9 @@ class EndToEndTestCase extends IntegrationTestCase
     protected function command(string $command): Process
     {
         $process = new Process(sprintf(
-            __DIR__ . '/../../bin/maestro %s',
-            $command
+            __DIR__ . '/../../bin/maestro %s --workspace-dir=%s',
+            $command,
+            $this->workspace()->path('/workspace')
         ), $this->workspace()->path('/'));
         $process->run();
 

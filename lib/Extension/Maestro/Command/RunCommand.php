@@ -82,8 +82,7 @@ class RunCommand extends Command
                 )
             ),
             Cast::toStringOrNull($input->getArgument(self::ARG_QUERY)),
-            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH)),
-            Cast::toBool($input->getOption(self::OPT_PURGE))
+            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH))
         );
 
         if ($script = $input->getOption(self::OPT_EXEC_SCRIPT)) {
@@ -134,6 +133,7 @@ class RunCommand extends Command
         $builder->withMaxConcurrency(Cast::toInt(
             $input->getOption(self::OPT_CONCURRENCY)
         ));
+        $builder->withPurge(Cast::toBool($input->getOption(self::OPT_PURGE)));
         $runner = $builder->build();
         return $runner;
     }

@@ -75,6 +75,9 @@ class Graph
         return $this->edges;
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function nodes(): Nodes
     {
         return $this->nodes;

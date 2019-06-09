@@ -38,8 +38,8 @@ class GraphRenderer
                 $this->stateColor($node->state()),
                 $node->state()->toString(),
                 $node->task()->description(),
-                json_encode($node->artifacts()->toArray()),
-                );
+                json_encode($node->artifacts()->toArray())
+            );
         }
 
         $out = sprintf(
@@ -49,7 +49,7 @@ class GraphRenderer
             $this->successMark($nodes),
             "\033[34m" . $packageNode->label() . "\033[0m",
             implode("", $busyTasks),
-        );
+            );
         
         return $out;
     }

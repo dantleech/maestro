@@ -52,4 +52,23 @@ final class Edges implements IteratorAggregate
     {
         $this->edges[] = $edge;
     }
+
+    public function removeReferencesTo(string $nodeId): Edges
+    {
+        return new self(array_filter($this->edges, function (Edge $edge) use ($nodeId) {
+            if ($edge->to() === $nodeId) {
+                return false;
+            }
+            if ($edge->from() === $nodeId) {
+                return false;
+            }
+
+            return true;
+        }));
+    }
+
+    public function append(Edges $edges): Edges
+    {
+        return new self(array_merge($this->edges, $edges->edges));
+    }
 }

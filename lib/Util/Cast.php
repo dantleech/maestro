@@ -30,4 +30,13 @@ class Cast
     {
         return (int) $value;
     }
+
+    public static function toIntOrNull($value): ?int
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return self::toInt($value);
+    }
 }

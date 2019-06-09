@@ -10,6 +10,7 @@ use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\Nodes;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class GraphTest extends TestCase
 {
@@ -197,7 +198,7 @@ class GraphTest extends TestCase
     public function testThrowsExceptionIfThereAreCircularDependencies($graphFactory)
     {
         $this->expectException(GraphContainsCircularDependencies::class);
-        $graphFactory()->roots();
+        $graphFactory();
     }
 
     public function provideThrowsExceptionOnCicularDependencies()
@@ -299,5 +300,95 @@ class GraphTest extends TestCase
         $graph = $graph->pruneFor(['n5']);
         $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->names());
         $this->assertCount(3, $graph->edges());
+    }
+
+    /**
+     * @dataProvider providePrunesGraphToGivenDepth
+     */
+    public function testPrunesGraphToGivenDepth($graphFactory, int $depth, array $expectedNodeNames)
+    {
+        $this->assertEquals(
+            $expectedNodeNames,
+            $graphFactory()->pruneToDepth($depth)->nodes()->names()
+        );
+    }
+
+    public function providePrunesGraphToGivenDepth()
+    {
+        yield [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('n1'),
+                        Node::create('n2'),
+                    ],
+                    [
+                    ]
+                );
+            },
+            0,
+            ['n1', 'n2']
+        ];
+
+        yield [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('n1'),
+                        Node::create('n2'),
+                    ],
+                    [
+                        Edge::create('n2', 'n1'),
+                    ]
+                );
+            },
+            0,
+            ['n1']
+        ];
+
+        yield [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('n1'),
+                        Node::create('n2'),
+                        Node::create('n3'),
+                    ],
+                    [
+                        Edge::create('n2', 'n1'),
+                        Edge::create('n3', 'n2'),
+                        Edge::create('n3', 'n1'),
+                    ]
+                );
+            },
+            0,
+            ['n1']
+        ];
+
+        yield [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('n1'),
+                        Node::create('n2'),
+                        Node::create('n3'),
+                    ],
+                    [
+                        Edge::create('n2', 'n1'),
+                        Edge::create('n3', 'n2'),
+                        Edge::create('n3', 'n1'),
+                    ]
+                );
+            },
+            1,
+            ['n1', 'n2']
+        ];
+    }
+
+    public function testExceptionIsThrownWhenNoNodesAreGiven()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Graph must have at least one node');
+        Graph::create([], []);
     }
 }

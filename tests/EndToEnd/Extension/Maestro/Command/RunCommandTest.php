@@ -211,4 +211,29 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('mypackage/hello', $process->getOutput());
     }
+
+    public function testGraphDepthCanBeSpecified()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'null',
+                        ],
+                        'goodbye' => [
+                            'type' => 'null',
+                        ],
+                        'foobar' => [
+                            'type' => 'null',
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        $process = $this->command('run plan.json --depth=1 --targets');
+        $this->assertProcessSuccess($process);
+        $this->assertStringNotContainsString('mypackage/hello', $process->getOutput());
+        $this->assertStringContainsString('mypackage', $process->getOutput());
+    }
 }

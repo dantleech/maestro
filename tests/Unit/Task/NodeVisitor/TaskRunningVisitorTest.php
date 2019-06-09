@@ -34,11 +34,12 @@ class TaskRunningVisitorTest extends TestCase
 
     public function testDoesNotWalkChildrenIfNodeIsBusy()
     {
+        $node = Node::create('n1');
         $this->assertTrue(
             $this->visit(
-                Graph::create([], []),
+                Graph::create([$node], []),
                 NodeHelper::setState(
-                    Node::create('n1'),
+                    $node,
                     State::BUSY()
                 )
             )->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())

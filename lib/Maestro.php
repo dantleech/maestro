@@ -25,13 +25,17 @@ class Maestro
         $this->walker = $walker;
     }
 
-    public function buildGraph(Manifest $manifest, ?string $query): Graph
+    public function buildGraph(Manifest $manifest, ?string $query, ?int $depth): Graph
     {
         $graph = $this->builder->build($manifest);
 
         if ($query) {
             $targets = $graph->nodes()->query($query);
             $graph = $graph->pruneFor($targets->names());
+        }
+
+        if (null !== $depth) {
+            $graph = $graph->pruneToDepth($depth);
         }
 
         return $graph;

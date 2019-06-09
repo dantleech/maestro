@@ -14,11 +14,6 @@ class Package
     private $tasks = [];
 
     /**
-     * @var array
-     */
-    private $parameters = [];
-
-    /**
      * @var bool
      */
     private $purgeWorkspace;
@@ -31,7 +26,6 @@ class Package
     public function __construct(
         string $name,
         array $tasks = [],
-        array $parameters = [],
         bool $purgeWorkspace = false,
         array $artifacts = []
     ) {
@@ -40,7 +34,6 @@ class Package
         foreach ($tasks as $name => $task) {
             $this->tasks[$name] = Instantiator::create()->instantiate(Task::class, $task);
         }
-        $this->parameters = $parameters;
         $this->purgeWorkspace = $purgeWorkspace;
         $this->artifacts = $artifacts;
     }
@@ -56,11 +49,6 @@ class Package
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function parameters(): array
-    {
-        return $this->parameters;
     }
 
     public function purgeWorkspace(): bool

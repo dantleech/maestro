@@ -16,9 +16,15 @@ class GraphBuilder
      */
     private $taskMap;
 
-    public function __construct(TaskMap $taskMap)
+    /**
+     * @var bool|null
+     */
+    private $purge;
+
+    public function __construct(TaskMap $taskMap, ?bool $purge = null)
     {
         $this->taskMap = $taskMap;
+        $this->purge = $purge;
     }
 
     public function build(
@@ -46,7 +52,7 @@ class GraphBuilder
                         $this->taskMap->classNameFor('package'),
                         [
                             'name' => $package->name(),
-                            'purgeWorkspace' => $package->purgeWorkspace(),
+                            'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
                         ]
                     ),
                 ]

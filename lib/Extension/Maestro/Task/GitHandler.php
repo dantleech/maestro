@@ -3,10 +3,13 @@
 namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
+use Amp\Success;
+use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptRunner;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\TaskHandler;
+use Maestro\Workspace\Workspace;
 
 class GitHandler implements TaskHandler
 {
@@ -31,6 +34,12 @@ class GitHandler implements TaskHandler
         return \Amp\call(function () use ($task, $artifacts) {
             $workspace = $artifacts->get('workspace');
             $env = $artifacts->get('env');
+            assert($env instanceof EnvVars);
+            assert($workspace instanceof Workspace);
+
+            if ($this->isGitRepository($workspace->absolutePath())) {
+                return new Success();
+            }
 
             $result = yield $this->runner->run(
                 sprintf('git clone %s %s', $task->url(), $workspace->absolutePath()),
@@ -52,5 +61,10 @@ class GitHandler implements TaskHandler
 
             return Artifacts::create([]);
         });
+    }
+
+    private function isGitRepository(string $path): bool
+    {
+        return file_exists(sprintf('%s/.git', $path));
     }
 }

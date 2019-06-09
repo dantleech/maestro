@@ -267,4 +267,20 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('manifest.path', $process->getOutput());
     }
+
+    public function testPurgesWorkspaces()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                ],
+                'foobar' => [
+                ],
+            ],
+        ]);
+
+        $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
+        $this->command('run plan.json  --namespace="" --purge');
+        $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
+    }
 }

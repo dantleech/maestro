@@ -51,6 +51,8 @@ class PackageHandlerTest extends IntegrationTestCase
 
         \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
-        $this->assertFileNotExists($workspace->absolutePath());
+        file_put_contents($workspace->absolutePath() . '/README', 'Hello');
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        $this->assertFileNotExists($workspace->absolutePath() . '/README');
     }
 }

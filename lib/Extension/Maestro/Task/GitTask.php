@@ -11,9 +11,21 @@ class GitTask implements Task
      */
     private $url;
 
-    public function __construct(string $url)
+    /**
+     * @var bool
+     */
+    private $reset;
+
+    /**
+     * @var bool
+     */
+    private $update;
+
+    public function __construct(string $url, bool $reset = false, bool $update = false)
     {
         $this->url = $url;
+        $this->reset = $reset;
+        $this->update = $update;
     }
 
     public function description(): string

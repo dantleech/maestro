@@ -28,7 +28,7 @@ class Graph
      */
     private $edges;
 
-    private function __construct(Nodes $nodes, Edges $edges)
+    public function __construct(Nodes $nodes, Edges $edges)
     {
         $this->nodes = $nodes;
         $this->edges = $edges;
@@ -38,7 +38,6 @@ class Graph
                 'Graph must have at least one node'
             );
         }
-
 
         foreach ($nodes as $node) {
             $this->addNode($node);
@@ -207,6 +206,13 @@ class Graph
         }
 
         return new self(Nodes::fromNodes($nodes), $edges);
+    }
+
+    public function leafs(): Nodes
+    {
+        return $this->nodes->filter(function (Node $node) {
+            return empty($this->toFromMap[$node->id()]);
+        });
     }
 
     private function addNode(Node $node): void

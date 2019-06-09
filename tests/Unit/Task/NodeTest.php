@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Task;
 
+use Amp\Loop;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Node;
@@ -33,7 +34,8 @@ class NodeTest extends TestCase
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        \Amp\Promise\wait($rootNode->run($taskRunner, Artifacts::empty()));
+        $rootNode->run($taskRunner, Artifacts::empty());
+        Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
     }
 
@@ -44,7 +46,8 @@ class NodeTest extends TestCase
 
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        \Amp\Promise\wait($rootNode->run($taskRunner->reveal(), Artifacts::empty()));
+        $rootNode->run($taskRunner->reveal(), Artifacts::empty());
+        Loop::run();
         $this->assertEquals(State::FAILED(), $rootNode->state());
     }
 }

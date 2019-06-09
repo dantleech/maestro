@@ -247,9 +247,9 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json -v --exec="echo "Hello"$PACKAGE_NAME"');
+        $process = $this->command('run plan.json -v --exec="echo \"Hello \"\$PACKAGE_NAME"');
         $this->assertProcessSuccess($process);
-        $this->assertStringContainsString('Hello mypackage', $process->getOutput());
-        $this->assertStringContainsString('Hello foobar', $process->getOutput());
+        $this->assertStringContainsString('Hello mypackage', $process->getErrorOutput());
+        $this->assertStringContainsString('Hello foobar', $process->getErrorOutput());
     }
 }

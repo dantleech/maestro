@@ -6,6 +6,7 @@ use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Tests\IntegrationTestCase;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class ScriptRunnerTest extends IntegrationTestCase
 {
@@ -40,5 +41,12 @@ class ScriptRunnerTest extends IntegrationTestCase
         $result = \Amp\Promise\wait($this->runner->run('exit 5', $this->workspace()->path('/'), []));
         $this->assertInstanceOf(ScriptResult::class, $result);
         $this->assertEquals(5, $result->exitCode());
+    }
+
+    public function testThrowsExceptionIfWorkingDirectoryDoesNotExist()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Working directory ');
+        \Amp\Promise\wait($this->runner->run('exit 5', $this->workspace()->path('/not-existing'), []));
     }
 }

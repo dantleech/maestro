@@ -8,6 +8,7 @@ use Generator;
 use Maestro\Loader\Instantiator;
 use Maestro\Util\StringUtil;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 
 class ScriptRunner
 {
@@ -25,6 +26,11 @@ class ScriptRunner
     {
         return \Amp\call(function () use ($script, $workingDirectory, $env) {
             $env = array_merge(getenv(), $env);
+
+            if (!file_exists($workingDirectory)) {
+                throw new RuntimeException(sprintf('Working directory "%s" does not exist', $workingDirectory));
+            }
+
             $process = new Process($script, $workingDirectory, $env);
             $pid  = yield $process->start();
             $this->logger->info(sprintf('Process started: PID: %s Script:%s in %s', $pid, $script, $workingDirectory));

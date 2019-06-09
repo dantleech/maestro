@@ -4,6 +4,7 @@ namespace Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Exception;
 use Maestro\Loader\Instantiator;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Task\NullTask;
@@ -60,9 +61,9 @@ final class Node
         $this->state = State::CANCELLED();
     }
 
-    public function run(TaskRunner $taskRunner, Artifacts $artifacts): Promise
+    public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
     {
-        return \Amp\call(function () use ($taskRunner, $artifacts) {
+        \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
             $this->state = State::BUSY();
 
             try {

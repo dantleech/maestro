@@ -2,6 +2,7 @@
 
 namespace Maestro\Loader;
 
+use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Task\Edge;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
@@ -23,7 +24,11 @@ class GraphBuilder
     public function build(
         Manifest $manifest
     ): Graph {
-        $nodes = [ Node::create(self::NODE_ROOT) ];
+        $nodes = [
+            Node::create(self::NODE_ROOT, [
+                'task' => new ManifestTask($manifest->path())
+            ])
+        ];
         $edges = [];
         $this->walkPackages($manifest, $nodes, $edges);
 

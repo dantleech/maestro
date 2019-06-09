@@ -24,21 +24,22 @@ class Loader
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function load(string $planPath)
+    public function load(string $path)
     {
-        $data = $this->loadManifestArray($planPath);
+        $path = $this->resolvePath($path);
+        $data = $this->loadManifestArray($path);
 
         foreach ($this->processors as $processor) {
             $data = $processor->process($data);
         }
 
-        return Manifest::loadFromArray($data);
+        return Manifest::loadFromArray(array_merge($data, [
+            'path' => $path
+        ]));
     }
 
-    private function loadManifestArray(string $planPath)
+    private function loadManifestArray(string $path)
     {
-        $path = $this->resolvePath($planPath);
-
         if (!file_exists($path)) {
             throw new RuntimeException(sprintf(
                 'Plan file "%s" does not exist',

@@ -81,7 +81,7 @@ class RunCommand extends Command
         );
 
         if ($script = $input->getOption(self::OPT_EXEC_SCRIPT)) {
-            $graph = (new ExecScriptOnLeafNodesModifier($script))($graph);
+            $graph = (new ExecScriptOnLeafNodesModifier(Cast::toString($script)))($graph);
         }
 
         if ($input->getOption(self::OPT_LIST_TARGETS)) {

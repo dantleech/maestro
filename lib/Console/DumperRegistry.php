@@ -3,7 +3,6 @@
 namespace Maestro\Console;
 
 use Maestro\Console\Exception\DumperNotFound;
-use RuntimeException;
 
 class DumperRegistry
 {

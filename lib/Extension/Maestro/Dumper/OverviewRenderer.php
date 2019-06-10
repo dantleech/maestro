@@ -8,7 +8,7 @@ use Maestro\Task\Node;
 use Maestro\Task\Nodes;
 use Maestro\Task\State;
 
-class GraphRenderer implements Dumper
+class OverviewRenderer implements Dumper
 {
     private $clear;
 

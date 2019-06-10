@@ -5,6 +5,10 @@ namespace Maestro\Extension\Maestro;
 use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Extension\Maestro\Command\RunCommand;
+use Maestro\Extension\Maestro\Dumper\DotDumper;
+use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
+use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
+use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\ManifestHandler;
@@ -42,6 +46,7 @@ class MaestroExtension implements Extension
     const PARAM_NAMESPACE = 'namespace';
     const SERVICE_MANIFEST_LOADER = 'config.loader';
     const TAG_DUMPER = 'dumper';
+    const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
 
     public function configure(Resolver $schema)
     {
@@ -77,7 +82,8 @@ class MaestroExtension implements Extension
         $container->register('console.command.run', function (Container $container) {
             return new RunCommand(
                 $container->get(self::SERVICE_RUNNER_BUILDER),
-                $container->get(self::SERVICE_MANIFEST_LOADER)
+                $container->get(self::SERVICE_MANIFEST_LOADER),
+                $container->get(self::SERVICE_DUMPER_REGISTRY)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
     }
@@ -176,7 +182,7 @@ class MaestroExtension implements Extension
         return $cwd;
     }
 
-    private function loadLogging(ContainerBuilder $container)
+    private function loadLogging(ContainerBuilder $container): void
     {
         $container->register('logging.json', function (Container $container) {
             return new JsonFormatter();
@@ -187,9 +193,9 @@ class MaestroExtension implements Extension
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'ansi']]);
     }
 
-    private function loadDumpers(ContainerBuilder $container)
+    private function loadDumpers(ContainerBuilder $container): void
     {
-        $container->register('dumper.registry', function (Container $container) {
+        $container->register(self::SERVICE_DUMPER_REGISTRY, function (Container $container) {
             $dumpers = [];
             foreach ($container->getServiceIdsForTag(self::TAG_DUMPER) as $serviceId => $attrs) {
                 if (!isset($attrs['name'])) {
@@ -204,5 +210,21 @@ class MaestroExtension implements Extension
 
             return new DumperRegistry($dumpers);
         });
+
+        $container->register('dumper.dot', function (Container $container) {
+            return new DotDumper();
+        }, [ self::TAG_DUMPER => [ 'name' => 'dot' ] ]);
+
+        $container->register('dumper.overview', function (Container $container) {
+            return new OverviewRenderer();
+        }, [ self::TAG_DUMPER => [ 'name' => 'overview' ] ]);
+
+        $container->register('dumper.artifacts', function (Container $container) {
+            return new LeafArtifactsDumper();
+        }, [ self::TAG_DUMPER => [ 'name' => 'artifacts' ] ]);
+
+        $container->register('dumper.targets', function (Container $container) {
+            return new TargetDumper();
+        }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
     }
 }

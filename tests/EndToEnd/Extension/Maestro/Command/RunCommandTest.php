@@ -90,12 +90,25 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertFileExists($this->workspace()->path('/my-workspace/testnamespace/mypackage/foobar'));
     }
 
-    public function testDumpsDotFileToStdout()
+    public function testDumperDumpsToDotWhenDotIsGivenAsValue()
     {
         $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'script',
+                            'parameters' => [
+                                'script' => 'echo "Hello World"',
+                            ]
+                        ]
+                    ],
+                ],
+            ],
         ]);
-        $process = $this->command('run plan.json --dot');
+        $process = $this->command('run plan.json --dump=dot');
         $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('digraph', $process->getOutput());
     }
 
     public function testCanLimitConcurrency()
@@ -127,7 +140,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('Hello World', $process->getErrorOutput());
     }
 
-    public function testTargetCanBeSpecified()
+    public function testTargetsCanBeSpecified()
     {
         $this->createPlan('plan.json', [
             'packages' => [
@@ -218,7 +231,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json --targets');
+        $process = $this->command('run plan.json mypackage/hello --dump=targets');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('mypackage/hello', $process->getOutput());
     }
@@ -242,7 +255,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json --depth=1 --targets');
+        $process = $this->command('run plan.json --depth=1 --dump=targets');
         $this->assertProcessSuccess($process);
         $this->assertStringNotContainsString('mypackage/hello', $process->getOutput());
         $this->assertStringContainsString('mypackage', $process->getOutput());
@@ -264,7 +277,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('Hello foobar', $process->getErrorOutput());
     }
 
-    public function testListsArtifactsForLeafNodes()
+    public function testShowsReportAfterTheRunWhenAReportIsSpecified()
     {
         $this->createPlan('plan.json', [
             'packages' => [
@@ -274,7 +287,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json --artifacts');
+        $process = $this->command('run plan.json --report=artifacts');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('manifest.path', $process->getOutput());
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Dumper;
+namespace Maestro\Console\Dumper;
 
 use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
 use Maestro\Task\Graph;

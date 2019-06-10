@@ -3,10 +3,10 @@
 namespace Maestro\Extension\Maestro\Command;
 
 use Amp\Loop;
-use Maestro\Dumper\DotDumper;
-use Maestro\Dumper\GraphRenderer;
-use Maestro\Dumper\LeafArtifactsDumper;
-use Maestro\Dumper\TargetDumper;
+use Maestro\Console\Dumper\DotDumper;
+use Maestro\Console\Dumper\TargetDumper;
+use Maestro\Console\Dumper\GraphRenderer;
+use Maestro\Console\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;

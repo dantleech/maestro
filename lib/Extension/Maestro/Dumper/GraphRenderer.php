@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Console\Dumper;
+namespace Maestro\Extension\Maestro\Dumper;
 
 use Maestro\Console\Dumper;
 use Maestro\Task\Graph;
@@ -17,7 +17,7 @@ class GraphRenderer implements Dumper
         $this->clear = $clear;
     }
 
-    public function render(Graph $graph, $depth = 0): string
+    public function dump(Graph $graph, $depth = 0): string
     {
         $out = "\n";
         foreach ($graph->roots() as $rootNode) {

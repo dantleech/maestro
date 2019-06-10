@@ -3,10 +3,10 @@
 namespace Maestro\Extension\Maestro\Command;
 
 use Amp\Loop;
-use Maestro\Console\Dumper\DotDumper;
-use Maestro\Console\Dumper\TargetDumper;
-use Maestro\Console\Dumper\GraphRenderer;
-use Maestro\Console\Dumper\LeafArtifactsDumper;
+use Maestro\Extension\Maestro\Dumper\DotDumper;
+use Maestro\Extension\Maestro\Dumper\TargetDumper;
+use Maestro\Extension\Maestro\Dumper\GraphRenderer;
+use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;
@@ -108,7 +108,7 @@ class RunCommand extends Command
 
         if ($input->getOption(self::OPT_PROGRESS)) {
             Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
-                $section->overwrite((new GraphRenderer())->render($graph));
+                $section->overwrite((new GraphRenderer())->dump($graph));
             });
         }
 
@@ -116,7 +116,7 @@ class RunCommand extends Command
 
         if ($input->getOption(self::OPT_PROGRESS)) {
             $section->overwrite(
-                (new GraphRenderer())->render($graph)
+                (new GraphRenderer())->dump($graph)
             );
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Console\Dumper;
+namespace Maestro\Extension\Maestro\Dumper;
 
 use Maestro\Console\Dumper;
 use Maestro\Task\Graph;

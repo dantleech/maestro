@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Maestro;
 
+use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Task\GitHandler;
@@ -40,6 +41,7 @@ class MaestroExtension implements Extension
     const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
     const PARAM_NAMESPACE = 'namespace';
     const SERVICE_MANIFEST_LOADER = 'config.loader';
+    const TAG_DUMPER = 'dumper';
 
     public function configure(Resolver $schema)
     {
@@ -57,6 +59,7 @@ class MaestroExtension implements Extension
         $this->loadMaestro($container);
         $this->loadScript($container);
         $this->loadLogging($container);
+        $this->loadDumpers($container);
     }
 
     private function loadWorkspace(ContainerBuilder $container)
@@ -182,5 +185,24 @@ class MaestroExtension implements Extension
         $container->register('logging.ansi', function (Container $container) {
             return new AnsiFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'ansi']]);
+    }
+
+    private function loadDumpers(ContainerBuilder $container)
+    {
+        $container->register('dumper.registry', function (Container $container) {
+            $dumpers = [];
+            foreach ($container->getServiceIdsForTag(self::TAG_DUMPER) as $serviceId => $attrs) {
+                if (!isset($attrs['name'])) {
+                    throw new RuntimeException(sprintf(
+                        'Dumper definition "%s" must include the `name` attribute',
+                        $serviceId
+                    ));
+                }
+
+                $dumpers[$attrs['name']] = $container->get($serviceId);
+            }
+
+            return new DumperRegistry($dumpers);
+        });
     }
 }

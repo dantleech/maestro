@@ -155,6 +155,17 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('Goodbye World', $process->getErrorOutput());
     }
 
+    public function testFailureIfTargetNotFound()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+            ],
+        ]);
+        $process = $this->command('run plan.json hellogoodbye -v');
+        $this->assertProcessFailure($process);
+        $this->assertStringContainsString('No targets found for query "hellogoodbye"', $process->getErrorOutput());
+    }
+
     public function testExitsWithNumberOfFailedTasksAsCode()
     {
         $this->createPlan('plan.json', [

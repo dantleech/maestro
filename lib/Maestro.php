@@ -6,6 +6,7 @@ use Maestro\Loader\GraphBuilder;
 use Maestro\Task\Graph;
 use Maestro\Task\GraphWalker;
 use Maestro\Loader\Manifest;
+use RuntimeException;
 
 class Maestro
 {
@@ -31,6 +32,14 @@ class Maestro
 
         if ($query) {
             $targets = $graph->nodes()->query($query);
+
+            if ($targets->count() === 0) {
+                throw new RuntimeException(sprintf(
+                    'No targets found for query "%s"',
+                    $query
+                ));
+            }
+
             $graph = $graph->pruneFor($targets->names());
         }
 

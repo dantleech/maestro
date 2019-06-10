@@ -117,6 +117,9 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         throw new BadMethodCallException();
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function byState(State ...$states): Nodes
     {
         return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($states) {

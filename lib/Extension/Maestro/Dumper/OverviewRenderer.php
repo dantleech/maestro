@@ -10,19 +10,12 @@ use Maestro\Task\State;
 
 class OverviewRenderer implements Dumper
 {
-    private $clear;
-
-    public function __construct($clear = false)
-    {
-        $this->clear = $clear;
-    }
-
-    public function dump(Graph $graph, $depth = 0): string
+    public function dump(Graph $graph): string
     {
         $out = "\n";
         foreach ($graph->roots() as $rootNode) {
             foreach ($graph->dependentsFor($rootNode->id()) as $packageNode) {
-                $out .= $this->walkNode($graph, $packageNode, $depth);
+                $out .= $this->walkNode($graph, $packageNode, 0);
             }
         }
         return $out;

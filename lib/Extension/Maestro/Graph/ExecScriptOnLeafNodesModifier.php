@@ -24,6 +24,7 @@ final class ExecScriptOnLeafNodesModifier
         foreach ($graph->leafs() as $leaf) {
             $scriptNodeId = sprintf($leaf->id() . '/script');
             $nodes = $graph->nodes()->add(Node::create($scriptNodeId, [
+                'label' => 'script',
                 'task' => new ScriptTask($this->script)
             ]));
             $edges = $graph->edges()->add(Edge::create($scriptNodeId, $leaf->id()));

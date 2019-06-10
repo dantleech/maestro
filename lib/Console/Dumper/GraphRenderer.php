@@ -2,12 +2,13 @@
 
 namespace Maestro\Console\Dumper;
 
+use Maestro\Console\Dumper;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\Nodes;
 use Maestro\Task\State;
 
-class GraphRenderer
+class GraphRenderer implements Dumper
 {
     private $clear;
 

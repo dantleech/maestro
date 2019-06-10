@@ -2,9 +2,10 @@
 
 namespace Maestro\Console\Dumper;
 
+use Maestro\Console\Dumper;
 use Maestro\Task\Graph;
 
-class DotDumper
+class DotDumper implements Dumper
 {
     public function dump(Graph $graph): string
     {

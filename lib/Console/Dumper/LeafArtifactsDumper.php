@@ -2,12 +2,13 @@
 
 namespace Maestro\Console\Dumper;
 
+use Maestro\Console\Dumper;
 use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
 use Maestro\Task\Graph;
 
-class LeafArtifactsDumper
+class LeafArtifactsDumper implements Dumper
 {
-    public function dump(Graph $graph)
+    public function dump(Graph $graph): string
     {
         $resolver = new AggregatingArtifactsResolver();
         $out = [];

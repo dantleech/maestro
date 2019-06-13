@@ -16,7 +16,7 @@ class EdgesTest extends TestCase
             Edge::create('n4', 'n1'),
         ]);
         $expectedEdges = Edges::fromEdges([
-            Edge::create('n9', 'n2'),
+            Edge::create('n1', 'n2'),
             Edge::create('n4', 'n1'),
         ]);
         $this->assertEquals(

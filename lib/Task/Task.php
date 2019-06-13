@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Maestro\Task;
 
 interface Task

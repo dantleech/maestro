@@ -19,7 +19,6 @@ final class Node
 {
     const NAMEPSPACE_SEPARATOR = '/';
 
-    private $state;
     private $task;
     private $id;
 
@@ -33,9 +32,14 @@ final class Node
      */
     private $label;
 
+    /**
+     * @var NodeStateMachine
+     */
+    private $stateMachine;
+
     public function __construct(string $id, string $label = null, ?Task $task = null)
     {
-        $this->state = State::WAITING();
+        $this->stateMachine = new NodeStateMachine();
         $this->task = $task ?: new NullTask();
         $this->id = $id;
         $this->artifacts = Artifacts::empty();
@@ -51,27 +55,27 @@ final class Node
 
     public function state(): State
     {
-        return $this->state;
+        return $this->stateMachine->state();
     }
 
     public function cancel(): void
     {
-        $this->state = State::CANCELLED();
+        $this->stateMachine->changeTo(State::CANCELLED());
     }
 
     public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
     {
         \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
-            $this->state = State::BUSY();
+            $this->stateMachine->changeTo(State::BUSY());
 
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
-                $this->state = State::DONE();
+                $this->stateMachine->changeTo(State::DONE());
             } catch (TaskFailed $failed) {
-                $this->state = State::FAILED();
+                $this->stateMachine->changeTo(State::FAILED());
                 $artifacts = $failed->artifacts();
             }
 

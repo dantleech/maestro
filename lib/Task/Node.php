@@ -33,11 +33,6 @@ final class Node
     private $label;
 
     /**
-     * @var NodeStateMachine
-     */
-    private $stateMachine;
-
-    /**
      * @var State
      */
     private $state;
@@ -48,7 +43,6 @@ final class Node
         $this->id = $id;
         $this->label = $label ?: $id;
         $this->state = State::WAITING();
-        $this->stateMachine = new NodeStateMachine();
         $this->task = $task ?: new NullTask();
     }
 
@@ -64,24 +58,24 @@ final class Node
         return $this->state;
     }
 
-    public function cancel(): void
+    public function cancel(NodeStateMachine $stateMachine): void
     {
-        $this->changeState(State::CANCELLED());
+        $this->changeState($stateMachine, State::CANCELLED());
     }
 
-    public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
+    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Artifacts $artifacts): void
     {
-        \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
-            $this->changeState(State::BUSY());
+        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $artifacts) {
+            $this->changeState($stateMachine, State::BUSY());
 
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
-                $this->changeState(State::DONE());
+                $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
-                $this->changeState(State::FAILED());
+                $this->changeState($stateMachine, State::FAILED());
                 $artifacts = $failed->artifacts();
             }
 
@@ -111,8 +105,8 @@ final class Node
         return $this->artifacts;
     }
 
-    private function changeState(State $state): void
+    private function changeState(NodeStateMachine $stateMachine, State $state): void
     {
-        $this->state = $this->stateMachine->transition($this, $state);
+        $this->state = $stateMachine->transition($this, $state);
     }
 }

@@ -9,11 +9,17 @@ class GraphWalker
      */
     private $visitors;
 
+    /**
+     * @var NodeStateMachine
+     */
+    private $stateMachine;
+
     public function __construct(array $visitors)
     {
         foreach ($visitors as $visitor) {
             $this->addVisitor($visitor);
         }
+        $this->stateMachine = new NodeStateMachine();
     }
 
     public function walk(Graph $graph): void
@@ -26,7 +32,7 @@ class GraphWalker
     private function walkNode(Graph $graph, Node $node, bool $cancel = false): void
     {
         foreach ($this->visitors as $visitor) {
-            $descision = $visitor->visit($graph, $node);
+            $descision = $visitor->visit($this->stateMachine, $graph, $node);
 
             if (true === $descision->is(NodeVisitorDecision::CANCEL_DESCENDANTS())) {
                 $cancel = true;
@@ -39,7 +45,7 @@ class GraphWalker
 
         foreach ($graph->dependentsFor($node->id()) as $dependentNode) {
             if ($cancel) {
-                $dependentNode->cancel();
+                $dependentNode->cancel($this->stateMachine);
             }
             $this->walkNode($graph, $dependentNode, $cancel);
         }

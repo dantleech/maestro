@@ -5,6 +5,7 @@ namespace Maestro\Task\NodeVisitor;
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\TaskRunner;
@@ -27,7 +28,7 @@ class TaskRunningVisitor implements NodeVisitor
         $this->resolver = $resolver;
     }
 
-    public function visit(Graph $graph, Node $node): NodeVisitorDecision
+    public function visit(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeVisitorDecision
     {
         if ($node->state()->isCancelled()) {
             return NodeVisitorDecision::CONTINUE();
@@ -39,6 +40,7 @@ class TaskRunningVisitor implements NodeVisitor
 
         if ($node->state()->isWaiting() && $this->areDependenciesSatisfied($graph, $node)) {
             $node->run(
+                $stateMachine,
                 $this->runner,
                 $this->resolver->resolveFor($graph, $node)
             );

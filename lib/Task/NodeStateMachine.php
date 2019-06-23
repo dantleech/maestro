@@ -6,7 +6,6 @@ use Maestro\Task\Exception\InvalidStateTransition;
 
 class NodeStateMachine
 {
-
     public function transition(Node $node, State $state): State
     {
         if ($state->is($node->state())) {

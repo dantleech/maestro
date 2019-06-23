@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Task;
 
 use Maestro\Task\Node;
-use Maestro\Task\NodeStateMachine;
 use Maestro\Task\State;
 use ReflectionClass;
 

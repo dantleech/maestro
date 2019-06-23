@@ -6,6 +6,7 @@ use Maestro\Task\Artifacts;
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\NodeVisitor\TaskRunningVisitor;
 use Maestro\Task\State;
@@ -26,10 +27,16 @@ class TaskRunningVisitorTest extends TestCase
      */
     private $artifactsResolver;
 
+    /**
+     * @var NodeStateMachine
+     */
+    private $stateMachine;
+
     protected function setUp(): void
     {
         $this->taskRunner = $this->prophesize(TaskRunner::class);
         $this->artifactsResolver = $this->prophesize(ArtifactsResolver::class);
+        $this->stateMachine = new NodeStateMachine();
     }
 
     public function testDoesNotWalkChildrenIfNodeIsBusy()
@@ -81,6 +88,6 @@ class TaskRunningVisitorTest extends TestCase
         return (new TaskRunningVisitor(
             $this->taskRunner->reveal(),
             $this->artifactsResolver->reveal()
-        ))->visit($graph, $node);
+        ))->visit($this->stateMachine, $graph, $node);
     }
 }

@@ -11,9 +11,9 @@ class NodeStateMachine
      */
     private $state;
 
-    public function __construct()
+    public function __construct(State $initialState = null)
     {
-        $this->state = State::WAITING();
+        $this->state = $initialState ?? State::WAITING();
     }
 
     public function changeTo(State $state): void

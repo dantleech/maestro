@@ -60,22 +60,22 @@ final class Node
 
     public function cancel(): void
     {
-        $this->stateMachine->changeTo(State::CANCELLED());
+        $this->stateMachine->transition($this, State::CANCELLED());
     }
 
     public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
     {
         \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
-            $this->stateMachine->changeTo(State::BUSY());
+            $this->stateMachine->transition($this, State::BUSY());
 
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
-                $this->stateMachine->changeTo(State::DONE());
+                $this->stateMachine->transition($this, State::DONE());
             } catch (TaskFailed $failed) {
-                $this->stateMachine->changeTo(State::FAILED());
+                $this->stateMachine->transition($this, State::FAILED());
                 $artifacts = $failed->artifacts();
             }
 

@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Task;
 
+use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
 use Maestro\Task\State;
 use PHPUnit\Framework\TestCase;
@@ -14,9 +15,10 @@ class NodeStateMachineTest extends TestCase
     public function testStateChange(array $states)
     {
         $stateMachine = new NodeStateMachine();
+        $node = Node::create('hello');
 
         foreach ($states as $state) {
-            $stateMachine->changeTo($state);
+            $stateMachine->transition($node, $state);
             $this->assertEquals($state, $stateMachine->state());
         }
     }

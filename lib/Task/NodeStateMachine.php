@@ -16,7 +16,7 @@ class NodeStateMachine
         $this->state = $initialState ?? State::WAITING();
     }
 
-    public function changeTo(State $state): void
+    public function transition(Node $node, State $state): void
     {
         if ($state->is($this->state)) {
             return;

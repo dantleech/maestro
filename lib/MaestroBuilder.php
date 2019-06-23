@@ -11,6 +11,7 @@ use Maestro\Task\GraphWalker;
 use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor\ConcurrencyLimitingVisitor;
 use Maestro\Task\NodeVisitor\TaskRunningVisitor;
+use Maestro\Task\StateObservers;
 use Maestro\Task\TaskHandler;
 use Maestro\Task\TaskHandlerRegistry;
 use Maestro\Task\TaskRunner;
@@ -94,6 +95,11 @@ final class MaestroBuilder
 
     private function buildNodeStateMachine(): NodeStateMachine
     {
-        return new NodeStateMachine();
+        return new NodeStateMachine($this->buildStateObservers());
+    }
+
+    private function buildStateObservers()
+    {
+        return new StateObservers();
     }
 }

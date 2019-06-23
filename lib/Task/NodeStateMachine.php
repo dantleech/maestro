@@ -6,6 +6,16 @@ use Maestro\Task\Exception\InvalidStateTransition;
 
 class NodeStateMachine
 {
+    /**
+     * @var StateObservers
+     */
+    private $stateObservers;
+
+    public function __construct(StateObservers $stateObservers = null)
+    {
+        $this->stateObservers = $stateObservers ?: new StateObservers();
+    }
+
     public function transition(Node $node, State $state): State
     {
         if ($state->is($node->state())) {

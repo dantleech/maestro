@@ -14,12 +14,12 @@ class GraphWalker
      */
     private $stateMachine;
 
-    public function __construct(array $visitors)
+    public function __construct(NodeStateMachine $stateMachine, array $visitors)
     {
         foreach ($visitors as $visitor) {
             $this->addVisitor($visitor);
         }
-        $this->stateMachine = new NodeStateMachine();
+        $this->stateMachine = $stateMachine;
     }
 
     public function walk(Graph $graph): void

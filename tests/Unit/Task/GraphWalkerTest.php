@@ -23,7 +23,7 @@ class GraphWalkerTest extends TestCase
         $visitor = $this->createVisitor($decisions);
         $visitor->decisions = $decisions;
 
-        $walker = new GraphWalker([
+        $walker = new GraphWalker(new NodeStateMachine(), [
             $visitor
         ]);
         $walker->walk($graphFactory());
@@ -90,7 +90,7 @@ class GraphWalkerTest extends TestCase
         $visitor = $this->createVisitor($decisions);
         $visitor->decisions = $decisions;
 
-        $walker = new GraphWalker([
+        $walker = new GraphWalker(new NodeStateMachine(), [
             $visitor
         ]);
         $graph = $graphFactory();

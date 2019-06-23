@@ -5,7 +5,8 @@ namespace Maestro\Extension\Maestro\Dumper;
 use Maestro\Console\Dumper;
 use Maestro\Task\Graph;
 
-class DotDumper implements Dumper {
+class DotDumper implements Dumper
+{
     public function dump(Graph $graph): string
     {
         $lines = [

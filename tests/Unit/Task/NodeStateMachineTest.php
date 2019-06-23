@@ -12,43 +12,41 @@ class NodeStateMachineTest extends TestCase
     /**
      * @dataProvider provideStateChange
      */
-    public function testStateChange(array $states)
+    public function testStateChange(State $from, State $to)
     {
         $stateMachine = new NodeStateMachine();
         $node = Node::create('hello');
+        $node = NodeHelper::setState($node, $from);
 
-        foreach ($states as $state) {
-            $stateMachine->transition($node, $state);
-            $this->assertEquals($state, $stateMachine->state());
-        }
+        $newState = $stateMachine->transition($node, $to);
+        $this->assertEquals($to, $newState);
     }
 
     public function provideStateChange()
     {
         yield 'waiting => waiting' => [
-            [
-                State::WAITING(),
-            ]
+            State::WAITING(),
+            State::WAITING(),
         ];
 
         yield 'waiting => cancelled' => [
-            [
-                State::CANCELLED(),
-            ]
+            State::WAITING(),
+            State::CANCELLED(),
         ];
 
-        yield 'waiting => busy => done' => [
-            [
-                State::BUSY(),
-                State::DONE(),
-            ]
+        yield 'waiting => busy' => [
+            State::WAITING(),
+            State::BUSY(),
         ];
 
-        yield 'waiting => busy => failed' => [
-            [
-                State::BUSY(),
-                State::FAILED(),
-            ]
+        yield 'busy => failed' => [
+            State::BUSY(),
+            State::FAILED(),
+        ];
+
+        yield 'busy => done' => [
+            State::BUSY(),
+            State::DONE(),
         ];
     }
 }

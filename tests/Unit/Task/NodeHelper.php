@@ -12,9 +12,9 @@ class NodeHelper
     public static function setState(Node $node, State $state): Node
     {
         $reflection = new ReflectionClass($node);
-        $property = $reflection->getProperty('stateMachine');
+        $property = $reflection->getProperty('state');
         $property->setAccessible(true);
-        $property->setValue($node, new NodeStateMachine($state));
+        $property->setValue($node, $state);
         return $node;
     }
 }

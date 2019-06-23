@@ -6,75 +6,55 @@ use Maestro\Task\Exception\InvalidStateTransition;
 
 class NodeStateMachine
 {
-    /**
-     * @var State
-     */
-    private $state;
 
-    public function __construct(State $initialState = null)
+    public function transition(Node $node, State $state): State
     {
-        $this->state = $initialState ?? State::WAITING();
-    }
-
-    public function transition(Node $node, State $state): void
-    {
-        if ($state->is($this->state)) {
-            return;
+        if ($state->is($node->state())) {
+            return $state;
         }
 
-        if ($this->state->is(State::WAITING())) {
-            $this->fromWaiting($state);
-            return;
+        if ($node->state()->is(State::WAITING())) {
+            return $this->fromWaiting($node, $state);
         }
 
-        if ($this->state->is(State::BUSY())) {
-            $this->fromBusy($state);
-            return;
+        if ($node->state()->is(State::BUSY())) {
+            return $this->fromBusy($node, $state);
         }
 
-        $this->fail($state);
+        $this->fail($node, $state);
     }
 
-    public function state(): State
-    {
-        return $this->state;
-    }
-
-    private function fromWaiting(State $state): void
+    private function fromWaiting(Node $node, State $state): State
     {
         if ($state->is(State::BUSY())) {
-            $this->state = State::BUSY();
-            return;
+            return State::BUSY();
         }
 
         if ($state->is(State::CANCELLED())) {
-            $this->state = State::CANCELLED();
-            return;
+            return State::CANCELLED();
         }
 
-        $this->fail($state);
+        $this->fail($node, $state);
     }
 
-    private function fromBusy(State $state): void
+    private function fromBusy(Node $node, State $state): State
     {
         if ($state->is(State::DONE())) {
-            $this->state = State::DONE();
-            return;
+            return State::DONE();
         }
 
         if ($state->is(State::FAILED())) {
-            $this->state = State::FAILED();
-            return;
+            return State::FAILED();
         }
 
-        $this->fail($state);
+        $this->fail($node, $state);
     }
 
-    private function fail(State $state)
+    private function fail(Node $node, State $state)
     {
         throw new InvalidStateTransition(sprintf(
             'Cannot transition from "%s" to "%s"',
-            $this->state->toString(),
+            $node->state()->toString(),
             $state->toString()
         ));
     }

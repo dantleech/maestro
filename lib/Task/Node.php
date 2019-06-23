@@ -37,13 +37,19 @@ final class Node
      */
     private $stateMachine;
 
+    /**
+     * @var State
+     */
+    private $state;
+
     public function __construct(string $id, string $label = null, ?Task $task = null)
     {
+        $this->artifacts = Artifacts::empty();
+        $this->id = $id;
+        $this->label = $label ?: $id;
+        $this->state = State::WAITING();
         $this->stateMachine = new NodeStateMachine();
         $this->task = $task ?: new NullTask();
-        $this->id = $id;
-        $this->artifacts = Artifacts::empty();
-        $this->label = $label ?: $id;
     }
 
     public static function create(string $id, array $options = []): self
@@ -55,27 +61,27 @@ final class Node
 
     public function state(): State
     {
-        return $this->stateMachine->state();
+        return $this->state;
     }
 
     public function cancel(): void
     {
-        $this->stateMachine->transition($this, State::CANCELLED());
+        $this->changeState(State::CANCELLED());
     }
 
     public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
     {
         \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
-            $this->stateMachine->transition($this, State::BUSY());
+            $this->changeState(State::BUSY());
 
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
-                $this->stateMachine->transition($this, State::DONE());
+                $this->changeState(State::DONE());
             } catch (TaskFailed $failed) {
-                $this->stateMachine->transition($this, State::FAILED());
+                $this->changeState(State::FAILED());
                 $artifacts = $failed->artifacts();
             }
 
@@ -103,5 +109,10 @@ final class Node
     public function artifacts(): Artifacts
     {
         return $this->artifacts;
+    }
+
+    private function changeState(State $state): void
+    {
+        $this->state = $this->stateMachine->transition($this, $state);
     }
 }

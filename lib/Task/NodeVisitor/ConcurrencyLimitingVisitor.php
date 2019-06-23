@@ -4,6 +4,7 @@ namespace Maestro\Task\NodeVisitor;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\State;
@@ -28,7 +29,7 @@ class ConcurrencyLimitingVisitor implements NodeVisitor
         $this->maxConcurrency = $maxConcurrency;
     }
 
-    public function visit(Graph $graph, Node $node): NodeVisitorDecision
+    public function visit(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeVisitorDecision
     {
         if ($graph->nodes()->byState(State::BUSY())->count() >= $this->maxConcurrency) {
             return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();

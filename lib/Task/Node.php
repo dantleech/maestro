@@ -19,7 +19,6 @@ final class Node
 {
     const NAMEPSPACE_SEPARATOR = '/';
 
-    private $state;
     private $task;
     private $id;
 
@@ -33,13 +32,18 @@ final class Node
      */
     private $label;
 
+    /**
+     * @var State
+     */
+    private $state;
+
     public function __construct(string $id, string $label = null, ?Task $task = null)
     {
+        $this->artifacts = Artifacts::empty();
+        $this->id = $id;
+        $this->label = $label ?: $id;
         $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
-        $this->id = $id;
-        $this->artifacts = Artifacts::empty();
-        $this->label = $label ?: $id;
     }
 
     public static function create(string $id, array $options = []): self
@@ -54,24 +58,24 @@ final class Node
         return $this->state;
     }
 
-    public function cancel(): void
+    public function cancel(NodeStateMachine $stateMachine): void
     {
-        $this->state = State::CANCELLED();
+        $this->changeState($stateMachine, State::CANCELLED());
     }
 
-    public function run(TaskRunner $taskRunner, Artifacts $artifacts): void
+    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Artifacts $artifacts): void
     {
-        \Amp\asyncCall(function () use ($taskRunner, $artifacts) {
-            $this->state = State::BUSY();
+        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $artifacts) {
+            $this->changeState($stateMachine, State::BUSY());
 
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
                     $artifacts
                 );
-                $this->state = State::DONE();
+                $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
-                $this->state = State::FAILED();
+                $this->changeState($stateMachine, State::FAILED());
                 $artifacts = $failed->artifacts();
             }
 
@@ -99,5 +103,10 @@ final class Node
     public function artifacts(): Artifacts
     {
         return $this->artifacts;
+    }
+
+    private function changeState(NodeStateMachine $stateMachine, State $state): void
+    {
+        $this->state = $stateMachine->transition($this, $state);
     }
 }

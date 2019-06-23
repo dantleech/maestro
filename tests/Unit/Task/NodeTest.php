@@ -6,6 +6,7 @@ use Amp\Loop;
 use Maestro\Task\Artifacts;
 use Maestro\Task\Exception\TaskFailed;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\State;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\TaskRunner\NullTaskRunner;
@@ -15,6 +16,19 @@ use Prophecy\Argument;
 
 class NodeTest extends TestCase
 {
+    /**
+     * @var ObjectProphecy
+     */
+    private $stateMachine;
+
+    protected function setUp(): void
+    {
+        $this->stateMachine = $this->prophesize(NodeStateMachine::class);
+        $this->stateMachine->transition(Argument::type(Node::class), Argument::type(State::class))->will(function ($args) {
+            return $args[1];
+        });
+    }
+
     public function testReturnsLabelIfGiven()
     {
         $rootNode = Node::create('root', [
@@ -34,7 +48,7 @@ class NodeTest extends TestCase
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        $rootNode->run($taskRunner, Artifacts::empty());
+        $rootNode->run($this->stateMachine->reveal(), $taskRunner, Artifacts::empty());
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
     }
@@ -46,7 +60,7 @@ class NodeTest extends TestCase
 
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        $rootNode->run($taskRunner->reveal(), Artifacts::empty());
+        $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Artifacts::empty());
         Loop::run();
         $this->assertEquals(State::FAILED(), $rootNode->state());
     }

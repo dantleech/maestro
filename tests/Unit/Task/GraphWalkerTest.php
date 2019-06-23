@@ -6,6 +6,7 @@ use Closure;
 use Maestro\Task\Edge;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\GraphWalker;
@@ -22,7 +23,7 @@ class GraphWalkerTest extends TestCase
         $visitor = $this->createVisitor($decisions);
         $visitor->decisions = $decisions;
 
-        $walker = new GraphWalker([
+        $walker = new GraphWalker(new NodeStateMachine(), [
             $visitor
         ]);
         $walker->walk($graphFactory());
@@ -89,7 +90,7 @@ class GraphWalkerTest extends TestCase
         $visitor = $this->createVisitor($decisions);
         $visitor->decisions = $decisions;
 
-        $walker = new GraphWalker([
+        $walker = new GraphWalker(new NodeStateMachine(), [
             $visitor
         ]);
         $graph = $graphFactory();
@@ -137,7 +138,7 @@ class GraphWalkerTest extends TestCase
             public $decisions = [];
             public $visitedNodes = [];
         
-            public function visit(Graph $graph, Node $node): NodeVisitorDecision
+            public function visit(NodeStateMachine $sm, Graph $graph, Node $node): NodeVisitorDecision
             {
                 $this->visitedNodes[] = $node->id();
                 if (isset($this->decisions[$node->id()])) {

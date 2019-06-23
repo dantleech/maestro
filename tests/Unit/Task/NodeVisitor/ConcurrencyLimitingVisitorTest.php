@@ -4,6 +4,7 @@ namespace Maestro\Tests\Unit\Task\NodeVisitor;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
+use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitorDecision;
 use Maestro\Task\NodeVisitor\ConcurrencyLimitingVisitor;
 use Maestro\Task\State;
@@ -22,7 +23,7 @@ class ConcurrencyLimitingVisitorTest extends TestCase
         $node4 = NodeHelper::setState(Node::create('n4'), State::WAITING());
 
         $visitor = new ConcurrencyLimitingVisitor($concurrency);
-        $decision = $visitor->visit($graph, $node4);
+        $decision = $visitor->visit($this->prophesize(NodeStateMachine::class)->reveal(), $graph, $node4);
 
         $this->assertEquals($expectedDecision, $decision);
     }

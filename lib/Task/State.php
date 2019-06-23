@@ -5,7 +5,7 @@ namespace Maestro\Task;
 final class State
 {
     private const WAITING = 'waiting';
-    private const IDLE = 'idle';
+    private const DONE = 'done';
     private const BUSY = 'busy';
     private const FAILED = 'failed';
     private const CANCELLED = 'cancelled';
@@ -24,7 +24,7 @@ final class State
 
     public static function DONE(): self
     {
-        return new self(self::IDLE);
+        return new self(self::DONE);
     }
 
     public static function WAITING(): self
@@ -44,7 +44,7 @@ final class State
 
     public function isIdle(): bool
     {
-        return $this->state === self::IDLE;
+        return $this->state === self::DONE;
     }
 
     public function isWaiting(): bool

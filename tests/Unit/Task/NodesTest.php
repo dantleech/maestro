@@ -73,4 +73,14 @@ class NodesTest extends TestCase
             ['node1', 'node1node2'],
         ];
     }
+
+    public function testReversesOrder()
+    {
+        $nodes = Nodes::fromNodes([
+            Node::create('one'),
+            Node::create('two'),
+            Node::create('three'),
+        ]);
+        $this->assertEquals(['three', 'two', 'one'], $nodes->reverse()->names());
+    }
 }

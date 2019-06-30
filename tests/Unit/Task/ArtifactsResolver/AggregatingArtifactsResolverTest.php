@@ -94,7 +94,7 @@ class AggregatingArtifactsResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['foo' => 'bar','bar' => 'foo']
+            ['foo' => 'bar','bar' => 'baz']
         ];
 
         yield 'parallel dependencies are merged' => [

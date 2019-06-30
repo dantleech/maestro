@@ -13,7 +13,7 @@ class AggregatingArtifactsResolver implements ArtifactsResolver
     {
         $artifacts = Artifacts::empty();
         $ancestry = $graph->ancestryFor($node->id());
-        foreach ($ancestry as $ancestor) {
+        foreach ($ancestry->reverse() as $ancestor) {
             $artifacts = $artifacts->merge($ancestor->artifacts());
         }
         return $artifacts->merge($node->artifacts());

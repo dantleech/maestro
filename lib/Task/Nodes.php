@@ -185,4 +185,9 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 
         return true;
     }
+
+    public function reverse(): Nodes
+    {
+        return new self(array_reverse($this->nodes));
+    }
 }

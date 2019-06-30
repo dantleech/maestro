@@ -159,6 +159,31 @@ e.g.
 }
 ```
 
+#### `json`
+
+Create or manipulate a JSON file
+
+e.g.
+
+```javascript
+{
+    "type": "json",
+    "parameters": {
+        "targetPath": "composer.json",
+        "merge": {
+            "require-dev": {
+                 "phpunit": "~7.0"
+            },
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            }
+        }
+    }
+}
+```
+
 #### `git`
 
 Use this to clone a GIT repository for the package.

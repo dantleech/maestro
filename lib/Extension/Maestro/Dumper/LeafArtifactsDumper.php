@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Maestro\Dumper;
 
 use Maestro\Console\Dumper;
-use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
-use Maestro\Task\Graph;
+use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
+use Maestro\Node\Graph;
 
 class LeafArtifactsDumper implements Dumper
 {

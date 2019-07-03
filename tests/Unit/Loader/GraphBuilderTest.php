@@ -7,12 +7,12 @@ use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\TaskMap;
-use Maestro\Task\Graph;
-use Maestro\Task\Node;
-use Maestro\Task\Nodes;
-use Maestro\Task\State;
-use Maestro\Task\Task;
-use Maestro\Task\Task\NullTask;
+use Maestro\Node\Graph;
+use Maestro\Node\Node;
+use Maestro\Node\Nodes;
+use Maestro\Node\State;
+use Maestro\Node\Task;
+use Maestro\Node\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use PHPUnit\Framework\TestCase;
 

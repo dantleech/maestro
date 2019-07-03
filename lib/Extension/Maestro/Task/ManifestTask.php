@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Maestro\Task;
 
-use Maestro\Task\Task;
+use Maestro\Node\Task;
 
 class ManifestTask implements Task
 {

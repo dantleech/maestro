@@ -3,10 +3,10 @@
 namespace Maestro\Extension\Maestro\Dumper;
 
 use Maestro\Console\Dumper;
-use Maestro\Task\Graph;
-use Maestro\Task\Node;
-use Maestro\Task\Nodes;
-use Maestro\Task\State;
+use Maestro\Node\Graph;
+use Maestro\Node\Node;
+use Maestro\Node\Nodes;
+use Maestro\Node\State;
 
 class OverviewRenderer implements Dumper
 {

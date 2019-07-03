@@ -3,8 +3,8 @@
 namespace Maestro;
 
 use Maestro\Loader\GraphBuilder;
-use Maestro\Task\Graph;
-use Maestro\Task\GraphWalker;
+use Maestro\Node\Graph;
+use Maestro\Node\GraphWalker;
 use Maestro\Loader\Manifest;
 use RuntimeException;
 

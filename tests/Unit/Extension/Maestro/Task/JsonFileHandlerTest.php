@@ -4,7 +4,7 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\JsonFileHandler;
 use Maestro\Extension\Maestro\Task\JsonFileTask;
-use Maestro\Task\Test\HandlerTester;
+use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 use function Safe\json_decode;

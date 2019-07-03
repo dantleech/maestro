@@ -8,9 +8,9 @@ use Maestro\Extension\Maestro\Task\ScriptTask;
 use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Task\Artifacts;
-use Maestro\Task\Exception\TaskFailed;
-use Maestro\Task\Test\HandlerTester;
+use Maestro\Node\Artifacts;
+use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 

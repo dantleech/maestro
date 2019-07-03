@@ -4,18 +4,18 @@ namespace Maestro;
 
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\TaskMap;
-use Maestro\Task\ArtifactsResolver;
-use Maestro\Task\ArtifactsResolver\AggregatingArtifactsResolver;
-use Maestro\Task\HandlerRegistry\EagerHandlerRegistry;
-use Maestro\Task\GraphWalker;
-use Maestro\Task\NodeStateMachine;
-use Maestro\Task\NodeDecider\ConcurrencyLimitingDecider;
-use Maestro\Task\NodeDecider\TaskRunningDecider;
-use Maestro\Task\StateObservers;
-use Maestro\Task\TaskHandler;
-use Maestro\Task\TaskHandlerRegistry;
-use Maestro\Task\TaskRunner;
-use Maestro\Task\TaskRunner\HandlingTaskRunner;
+use Maestro\Node\ArtifactsResolver;
+use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
+use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
+use Maestro\Node\GraphWalker;
+use Maestro\Node\NodeStateMachine;
+use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
+use Maestro\Node\NodeDecider\TaskRunningDecider;
+use Maestro\Node\StateObservers;
+use Maestro\Node\TaskHandler;
+use Maestro\Node\TaskHandlerRegistry;
+use Maestro\Node\TaskRunner;
+use Maestro\Node\TaskRunner\HandlingTaskRunner;
 
 final class MaestroBuilder
 {

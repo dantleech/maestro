@@ -10,7 +10,7 @@ use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Loader\Loader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
-use Maestro\Task\State;
+use Maestro\Node\State;
 use Maestro\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

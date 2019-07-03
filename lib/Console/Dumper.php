@@ -2,7 +2,7 @@
 
 namespace Maestro\Console;
 
-use Maestro\Task\Graph;
+use Maestro\Node\Graph;
 
 interface Dumper
 {

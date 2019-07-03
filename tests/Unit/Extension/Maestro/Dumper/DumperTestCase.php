@@ -2,9 +2,9 @@
 
 namespace Maestro\Tests\Unit\Extension\Maestro\Dumper;
 
-use Maestro\Task\Edge;
-use Maestro\Task\Graph;
-use Maestro\Task\Node;
+use Maestro\Node\Edge;
+use Maestro\Node\Graph;
+use Maestro\Node\Node;
 use PHPUnit\Framework\TestCase;
 
 class DumperTestCase extends TestCase

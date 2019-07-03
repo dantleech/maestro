@@ -5,9 +5,9 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Loader\Instantiator;
 use Maestro\Script\EnvVars;
-use Maestro\Task\Artifacts;
+use Maestro\Node\Artifacts;
 use Maestro\Extension\Maestro\Task\PackageTask;
-use Maestro\Task\Test\HandlerTester;
+use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\WorkspaceFactory;
 

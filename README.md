@@ -159,7 +159,7 @@ e.g.
 }
 ```
 
-#### `json`
+#### `json_file`
 
 Create or manipulate a JSON file
 

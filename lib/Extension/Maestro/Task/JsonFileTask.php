@@ -2,7 +2,9 @@
 
 namespace Maestro\Extension\Maestro\Task;
 
-class JsonFileTask
+use Maestro\Task\Task;
+
+class JsonFileTask implements Task
 {
     /**
      * @var string
@@ -28,5 +30,10 @@ class JsonFileTask
     public function targetPath(): string
     {
         return $this->targetPath;
+    }
+
+    public function description(): string
+    {
+        return sprintf('Updating/creating json file "%s"', $this->targetPath);
     }
 }

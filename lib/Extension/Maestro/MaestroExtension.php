@@ -11,6 +11,8 @@ use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
+use Maestro\Extension\Maestro\Task\JsonFileHandler;
+use Maestro\Extension\Maestro\Task\JsonFileTask;
 use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
@@ -154,6 +156,13 @@ class MaestroExtension implements Extension
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'git',
             'job_class' => GitTask::class,
+        ]]);
+
+        $container->register('task.job_handler.json_file', function (Container $container) {
+            return new JsonFileHandler();
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'json_file',
+            'job_class' => JsonFileTask::class,
         ]]);
     }
 

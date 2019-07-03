@@ -8,5 +8,5 @@ namespace Maestro\Task;
  */
 interface NodeVisitor
 {
-    public function visit(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeVisitorDecision;
+    public function decide(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeDeciderDecision;
 }

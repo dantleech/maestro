@@ -1,21 +1,21 @@
 <?php
 
-namespace Maestro\Tests\Unit\Task\NodeVisitor;
+namespace Maestro\Tests\Unit\Task\NodeDecider;
 
 use Maestro\Task\Artifacts;
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
-use Maestro\Task\NodeVisitorDecision;
-use Maestro\Task\NodeVisitor\TaskRunningVisitor;
+use Maestro\Task\NodeDeciderDecision;
+use Maestro\Task\NodeDecider\TaskRunningDecider;
 use Maestro\Task\State;
 use Maestro\Task\TaskRunner;
 use Maestro\Task\Task\NullTask;
 use Maestro\Tests\Unit\Task\NodeHelper;
 use PHPUnit\Framework\TestCase;
 
-class TaskRunningVisitorTest extends TestCase
+class TaskRunningDeciderTest extends TestCase
 {
     /**
      * @var ObjectProphecy|TaskRunner
@@ -49,7 +49,7 @@ class TaskRunningVisitorTest extends TestCase
                     $node,
                     State::BUSY()
                 )
-            )->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())
+            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN())
         );
     }
 
@@ -73,7 +73,7 @@ class TaskRunningVisitorTest extends TestCase
                     $node,
                     State::WAITING()
                 )
-            )->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN()),
+            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN()),
             'does not walk children when running node'
         );
 
@@ -85,9 +85,9 @@ class TaskRunningVisitorTest extends TestCase
 
     private function visit(Graph $graph, Node $node)
     {
-        return (new TaskRunningVisitor(
+        return (new TaskRunningDecider(
             $this->taskRunner->reveal(),
             $this->artifactsResolver->reveal()
-        ))->visit($this->stateMachine, $graph, $node);
+        ))->decide($this->stateMachine, $graph, $node);
     }
 }

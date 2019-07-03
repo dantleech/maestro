@@ -1,29 +1,29 @@
 <?php
 
-namespace Maestro\Tests\Unit\Task\NodeVisitor;
+namespace Maestro\Tests\Unit\Task\NodeDecider;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
-use Maestro\Task\NodeVisitorDecision;
-use Maestro\Task\NodeVisitor\ConcurrencyLimitingVisitor;
+use Maestro\Task\NodeDeciderDecision;
+use Maestro\Task\NodeDecider\ConcurrencyLimitingDecider;
 use Maestro\Task\State;
 use Maestro\Tests\Unit\Task\NodeHelper;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class ConcurrencyLimitingVisitorTest extends TestCase
+class ConcurrencyLimitingDeciderTest extends TestCase
 {
     /**
      * @dataProvider provideVisit
      */
-    public function testVisit(int $concurrency, array $nodes, Node $node, NodeVisitorDecision $expectedDecision)
+    public function testVisit(int $concurrency, array $nodes, Node $node, NodeDeciderDecision $expectedDecision)
     {
         $graph = Graph::create($nodes, []);
         $node4 = NodeHelper::setState(Node::create('n4'), State::WAITING());
 
-        $visitor = new ConcurrencyLimitingVisitor($concurrency);
-        $decision = $visitor->visit($this->prophesize(NodeStateMachine::class)->reveal(), $graph, $node4);
+        $visitor = new ConcurrencyLimitingDecider($concurrency);
+        $decision = $visitor->decide($this->prophesize(NodeStateMachine::class)->reveal(), $graph, $node4);
 
         $this->assertEquals($expectedDecision, $decision);
     }
@@ -38,7 +38,7 @@ class ConcurrencyLimitingVisitorTest extends TestCase
                 NodeHelper::setState(Node::create('n3'), State::DONE()),
             ],
             NodeHelper::setState(Node::create('n4'), State::WAITING()),
-            NodeVisitorDecision::CONTINUE()
+            NodeDeciderDecision::CONTINUE()
         ];
 
         yield 'one busy node with limit of 1 will not traverse child nodes' => [
@@ -48,7 +48,7 @@ class ConcurrencyLimitingVisitorTest extends TestCase
                 NodeHelper::setState(Node::create('n3'), State::DONE()),
             ],
             NodeHelper::setState(Node::create('n4'), State::WAITING()),
-            NodeVisitorDecision::DO_NOT_WALK_CHILDREN()
+            NodeDeciderDecision::DO_NOT_WALK_CHILDREN()
         ];
 
         yield 'two busy nodes with limit of 1 will not traverse child nodes' => [
@@ -58,7 +58,7 @@ class ConcurrencyLimitingVisitorTest extends TestCase
                 NodeHelper::setState(Node::create('n3'), State::BUSY()),
             ],
             NodeHelper::setState(Node::create('n4'), State::WAITING()),
-            NodeVisitorDecision::DO_NOT_WALK_CHILDREN()
+            NodeDeciderDecision::DO_NOT_WALK_CHILDREN()
         ];
     }
 
@@ -66,6 +66,6 @@ class ConcurrencyLimitingVisitorTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Max concurrency must be 1 or more');
-        $visitor = new ConcurrencyLimitingVisitor(0);
+        $visitor = new ConcurrencyLimitingDecider(0);
     }
 }

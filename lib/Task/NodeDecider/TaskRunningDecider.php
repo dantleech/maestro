@@ -1,16 +1,16 @@
 <?php
 
-namespace Maestro\Task\NodeVisitor;
+namespace Maestro\Task\NodeDecider;
 
 use Maestro\Task\ArtifactsResolver;
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
-use Maestro\Task\NodeVisitorDecision;
+use Maestro\Task\NodeDeciderDecision;
 use Maestro\Task\TaskRunner;
 
-class TaskRunningVisitor implements NodeVisitor
+class TaskRunningDecider implements NodeVisitor
 {
     /**
      * @var TaskRunner
@@ -28,14 +28,14 @@ class TaskRunningVisitor implements NodeVisitor
         $this->resolver = $resolver;
     }
 
-    public function visit(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeVisitorDecision
+    public function decide(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeDeciderDecision
     {
         if ($node->state()->isCancelled()) {
-            return NodeVisitorDecision::CONTINUE();
+            return NodeDeciderDecision::CONTINUE();
         }
 
         if ($node->state()->isIdle()) {
-            return NodeVisitorDecision::CONTINUE();
+            return NodeDeciderDecision::CONTINUE();
         }
 
         if ($node->state()->isWaiting() && $this->areDependenciesSatisfied($graph, $node)) {
@@ -47,10 +47,10 @@ class TaskRunningVisitor implements NodeVisitor
         }
 
         if ($node->state()->isFailed()) {
-            return NodeVisitorDecision::CANCEL_DESCENDANTS();
+            return NodeDeciderDecision::CANCEL_DESCENDANTS();
         }
 
-        return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();
+        return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
     }
 
     private function areDependenciesSatisfied(Graph $graph, Node $node)

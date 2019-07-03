@@ -1,16 +1,16 @@
 <?php
 
-namespace Maestro\Task\NodeVisitor;
+namespace Maestro\Task\NodeDecider;
 
 use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
-use Maestro\Task\NodeVisitorDecision;
+use Maestro\Task\NodeDeciderDecision;
 use Maestro\Task\State;
 use RuntimeException;
 
-class ConcurrencyLimitingVisitor implements NodeVisitor
+class ConcurrencyLimitingDecider implements NodeVisitor
 {
     /**
      * @var int
@@ -29,12 +29,12 @@ class ConcurrencyLimitingVisitor implements NodeVisitor
         $this->maxConcurrency = $maxConcurrency;
     }
 
-    public function visit(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeVisitorDecision
+    public function decide(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeDeciderDecision
     {
         if ($graph->nodes()->byState(State::BUSY())->count() >= $this->maxConcurrency) {
-            return NodeVisitorDecision::DO_NOT_WALK_CHILDREN();
+            return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
         }
 
-        return NodeVisitorDecision::CONTINUE();
+        return NodeDeciderDecision::CONTINUE();
     }
 }

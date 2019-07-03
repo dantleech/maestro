@@ -2,7 +2,7 @@
 
 namespace Maestro\Task;
 
-final class NodeVisitorDecision
+final class NodeDeciderDecision
 {
     private const DO_NOT_WALK_CHILDREN = 'DO_NOT_WALK_CHILDREN';
     private const CONTINUE = 'CONTINUE';
@@ -33,7 +33,7 @@ final class NodeVisitorDecision
         return new self(self::DO_NOT_WALK_CHILDREN);
     }
 
-    public function is(NodeVisitorDecision $nodeVisitorDecision): bool
+    public function is(NodeDeciderDecision $nodeVisitorDecision): bool
     {
         return $nodeVisitorDecision->action === $this->action;
     }

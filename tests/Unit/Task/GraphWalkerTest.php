@@ -8,7 +8,7 @@ use Maestro\Task\Graph;
 use Maestro\Task\Node;
 use Maestro\Task\NodeStateMachine;
 use Maestro\Task\NodeVisitor;
-use Maestro\Task\NodeVisitorDecision;
+use Maestro\Task\NodeDeciderDecision;
 use Maestro\Task\GraphWalker;
 use Maestro\Task\State;
 use PHPUnit\Framework\TestCase;
@@ -55,7 +55,7 @@ class GraphWalkerTest extends TestCase
                 ]);
             },
             [
-                'n1' => NodeVisitorDecision::DO_NOT_WALK_CHILDREN(),
+                'n1' => NodeDeciderDecision::DO_NOT_WALK_CHILDREN(),
             ],
             ['n1'],
         ];
@@ -121,7 +121,7 @@ class GraphWalkerTest extends TestCase
                 ]);
             },
             [
-                'root' => NodeVisitorDecision::CANCEL_DESCENDANTS(),
+                'root' => NodeDeciderDecision::CANCEL_DESCENDANTS(),
             ],
             [
                 'root' => State::WAITING(),
@@ -138,14 +138,14 @@ class GraphWalkerTest extends TestCase
             public $decisions = [];
             public $visitedNodes = [];
         
-            public function visit(NodeStateMachine $sm, Graph $graph, Node $node): NodeVisitorDecision
+            public function decide(NodeStateMachine $sm, Graph $graph, Node $node): NodeDeciderDecision
             {
                 $this->visitedNodes[] = $node->id();
                 if (isset($this->decisions[$node->id()])) {
                     return $this->decisions[$node->id()];
                 }
         
-                return NodeVisitorDecision::CONTINUE();
+                return NodeDeciderDecision::CONTINUE();
             }
         };
 

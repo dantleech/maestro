@@ -7,7 +7,7 @@ class GraphWalker
     /**
      * @var NodeVisitor[]
      */
-    private $visitors;
+    private $deciders;
 
     /**
      * @var NodeStateMachine
@@ -31,14 +31,14 @@ class GraphWalker
 
     private function walkNode(Graph $graph, Node $node, bool $cancel = false): void
     {
-        foreach ($this->visitors as $visitor) {
-            $descision = $visitor->visit($this->stateMachine, $graph, $node);
+        foreach ($this->deciders as $visitor) {
+            $descision = $visitor->decide($this->stateMachine, $graph, $node);
 
-            if (true === $descision->is(NodeVisitorDecision::CANCEL_DESCENDANTS())) {
+            if (true === $descision->is(NodeDeciderDecision::CANCEL_DESCENDANTS())) {
                 $cancel = true;
             }
 
-            if (true === $descision->is(NodeVisitorDecision::DO_NOT_WALK_CHILDREN())) {
+            if (true === $descision->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN())) {
                 return;
             }
         }
@@ -53,7 +53,7 @@ class GraphWalker
 
     private function addVisitor(NodeVisitor $visitor): void
     {
-        $this->visitors[] = $visitor;
+        $this->deciders[] = $visitor;
     }
 
     private function cancelDescendants(Graph $graph, Node $node): void

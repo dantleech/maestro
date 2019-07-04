@@ -6,7 +6,6 @@ use Amp\Success;
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Task\NullTask;
-use Maestro\Node\Artifacts;
 
 /**
  * The node represents a task in the task graph.

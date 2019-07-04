@@ -2,8 +2,6 @@
 
 namespace Maestro\Node;
 
-use Maestro\Node\Graph;
-
 class GraphWalker
 {
     /**

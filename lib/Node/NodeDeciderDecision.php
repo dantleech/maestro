@@ -2,8 +2,6 @@
 
 namespace Maestro\Node;
 
-use Maestro\Node\NodeDeciderDecision;
-
 final class NodeDeciderDecision
 {
     private const DO_NOT_WALK_CHILDREN = 'DO_NOT_WALK_CHILDREN';

@@ -6,7 +6,6 @@ use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\State;
 use PHPUnit\Framework\TestCase;
-use Maestro\Tests\Unit\Node\NodeHelper;
 
 class NodeStateMachineTest extends TestCase
 {

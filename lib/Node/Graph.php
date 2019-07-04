@@ -5,9 +5,6 @@ namespace Maestro\Node;
 use Maestro\Node\Exception\GraphContainsCircularDependencies;
 use Maestro\Node\Exception\NodeDoesNotExist;
 use RuntimeException;
-use Maestro\Node\Edge;
-use Maestro\Node\Edges;
-use Maestro\Node\Graph;
 
 class Graph
 {

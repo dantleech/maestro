@@ -5,8 +5,6 @@ namespace Maestro\Node;
 use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
-use Maestro\Node\Edge;
-use Maestro\Node\Edges;
 
 final class Edges implements IteratorAggregate
 {

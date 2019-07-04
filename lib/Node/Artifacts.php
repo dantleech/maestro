@@ -3,7 +3,6 @@
 namespace Maestro\Node;
 
 use Maestro\Node\Exception\ArtifactNotFound;
-use Maestro\Node\Artifacts;
 
 /**
  * Artifacts are the map made available by ancestoral tasks.

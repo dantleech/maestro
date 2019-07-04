@@ -2,9 +2,6 @@
 
 namespace Maestro\Node;
 
-use Maestro\Node\Node;
-use Maestro\Node\State;
-
 class StateChangeEvent
 {
     /**

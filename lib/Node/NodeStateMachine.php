@@ -3,7 +3,6 @@
 namespace Maestro\Node;
 
 use Maestro\Node\Exception\InvalidStateTransition;
-use Maestro\Node\Node;
 
 class NodeStateMachine
 {

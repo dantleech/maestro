@@ -9,8 +9,6 @@ use Closure;
 use Countable;
 use IteratorAggregate;
 use RuntimeException;
-use Maestro\Node\Node;
-use Maestro\Node\Nodes;
 
 final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 {

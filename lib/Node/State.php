@@ -2,8 +2,6 @@
 
 namespace Maestro\Node;
 
-use Maestro\Node\State;
-
 final class State
 {
     private const WAITING = 'waiting';

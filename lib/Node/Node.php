@@ -73,13 +73,13 @@ final class Node
                     $this->task,
                     $artifacts
                 );
+                $this->artifacts = $artifacts ?: Artifacts::empty();
                 $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
+                $this->artifacts = $failed->artifacts();
                 $this->changeState($stateMachine, State::FAILED());
-                $artifacts = $failed->artifacts();
             }
 
-            $this->artifacts = $artifacts ?: Artifacts::empty();
 
             return new Success($artifacts);
         });

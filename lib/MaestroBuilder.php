@@ -11,6 +11,7 @@ use Maestro\Node\GraphWalker;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
+use Maestro\Node\StateObserver;
 use Maestro\Node\StateObservers;
 use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
@@ -27,6 +28,11 @@ final class MaestroBuilder
      * @var bool|null
      */
     private $purge;
+
+    /**
+     * @var array
+     */
+    private $stateObservers = [];
 
     public static function create(): self
     {
@@ -48,6 +54,12 @@ final class MaestroBuilder
     {
         $this->taskMap[$alias] = $jobClass;
         $this->handlers[$jobClass] = $handler;
+        return $this;
+    }
+
+    public function addStateObserver(StateObserver $stateObserver): self
+    {
+        $this->stateObservers[] = $stateObserver;
         return $this;
     }
 
@@ -100,6 +112,6 @@ final class MaestroBuilder
 
     private function buildStateObservers()
     {
-        return new StateObservers();
+        return new StateObservers($this->stateObservers);
     }
 }

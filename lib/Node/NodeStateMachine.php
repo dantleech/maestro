@@ -18,18 +18,25 @@ class NodeStateMachine
 
     public function transition(Node $node, State $state): State
     {
+        $newState = $this->performTransition($state, $node);
+        $this->stateObservers->notify(new StateChangeEvent($node, $node->state(), $newState));
+        return $newState;
+    }
+
+    private function performTransition(State $state, Node $node)
+    {
         if ($state->is($node->state())) {
             return $state;
         }
-
+        
         if ($node->state()->is(State::WAITING())) {
             return $this->fromWaiting($node, $state);
         }
-
+        
         if ($node->state()->is(State::BUSY())) {
             return $this->fromBusy($node, $state);
         }
-
+        
         $this->fail($node, $state);
     }
 

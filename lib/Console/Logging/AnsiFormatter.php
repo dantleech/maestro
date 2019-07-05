@@ -41,7 +41,7 @@ class AnsiFormatter implements FormatterInterface
                 break;
         }
 
-        return sprintf("\033[%sm%s\033[0m", $color, $level);
+        return sprintf("\033[%sm%-5s\033[0m", $color, substr($level, 0, 5));
     }
 
     private function formatMessage(string $message)

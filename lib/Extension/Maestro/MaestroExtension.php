@@ -20,6 +20,7 @@ use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\Loader\Loader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\MaestroBuilder;
+use Maestro\Node\StateObserver\LoggingStateObserver;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Task\NullHandler;
 use Maestro\Node\Task\NullTask;
@@ -94,6 +95,7 @@ class MaestroExtension implements Extension
     {
         $container->register(self::SERVICE_RUNNER_BUILDER, function (Container $container) {
             $builder = MaestroBuilder::create();
+            $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
             foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
                 if (!isset($attrs['alias'])) {
                     throw new RuntimeException(sprintf(

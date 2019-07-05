@@ -8,6 +8,6 @@ class NullTask implements Task
 {
     public function description(): string
     {
-        return 'null';
+        return 'being a taskless node';
     }
 }

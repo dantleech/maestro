@@ -24,7 +24,7 @@ class ManifestTask implements Task
 
     public function description(): string
     {
-        return 'Manifest';
+        return 'initalizing manifest';
     }
 
     public function path(): ?string

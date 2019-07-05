@@ -33,13 +33,13 @@ class ScriptRunner
 
             $process = new Process($script, $workingDirectory, $env);
             $pid  = yield $process->start();
-            $this->logger->info(sprintf('Process started: PID: %s Script:%s in %s', $pid, $script, $workingDirectory));
+            $this->logger->debug(sprintf('running process "%s" in "%s": %s', $pid, basename($workingDirectory), $script));
 
             $outs = yield from $this->handleStreamOutput($process);
             $exitCode = yield $process->join();
 
             if ($exitCode !== 0) {
-                $this->logger->error(sprintf('Process %s "%s" exited with %s: %s', $pid, $script, $exitCode, $outs[1]));
+                $this->logger->error(sprintf('process %s in "%s" "%s" exited with %s: %s', $pid, basename($workingDirectory), $script, $exitCode, $outs[1]));
             }
 
             return Instantiator::create()->instantiate(ScriptResult::class, [

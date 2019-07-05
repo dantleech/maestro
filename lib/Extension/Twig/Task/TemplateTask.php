@@ -24,7 +24,7 @@ class TemplateTask implements Task
 
     public function description(): string
     {
-        return sprintf('Apply template "%s" to "%s"', $this->path, $this->targetPath);
+        return sprintf('applying template "%s" to "%s"', $this->path, $this->targetPath);
     }
 
     public function path(): string

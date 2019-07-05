@@ -33,6 +33,6 @@ class LoggingStateObserverTest extends TestCase
     {
         $event = new StateChangeEvent(Node::create('foo'), State::BUSY(), State::CANCELLED());
         $this->observer->observe($event);
-        $this->logger->debug(Argument::containingString('foo'), [])->shouldHaveBeenCalled();
+        $this->logger->info(Argument::containingString('foo'), [])->shouldHaveBeenCalled();
     }
 }

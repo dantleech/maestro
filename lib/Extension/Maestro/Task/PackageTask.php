@@ -35,7 +35,7 @@ class PackageTask implements Task
 
     public function description(): string
     {
-        return $this->name;
+        return sprintf('initializing %s', $this->name);
     }
 
     public function purgeWorkspace(): bool

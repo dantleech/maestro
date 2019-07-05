@@ -146,8 +146,12 @@ final class ApplicationBuilder
     {
         if ($this->input->hasParameterOption(['-v','--verbose'])) {
             $config[LoggingExtension::PARAM_ENABLED] = true;
-            $config[LoggingExtension::PARAM_LEVEL] = 'debug';
+            $config[LoggingExtension::PARAM_LEVEL] = 'info';
             $config[LoggingExtension::PARAM_FORMATTER] = 'ansi';
+        }
+
+        if ($this->input->hasParameterOption(['-vv','-vvv'])) {
+            $config[LoggingExtension::PARAM_LEVEL] = 'debug';
         }
 
         return $config;

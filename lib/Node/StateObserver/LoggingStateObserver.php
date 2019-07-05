@@ -33,8 +33,8 @@ class LoggingStateObserver implements StateObserver
             $this->startTime = microtime(true);
         }
 
-        $this->logger->debug(sprintf(
-            "%-9s %-50s %7s => %s %s",
+        $this->logger->info(sprintf(
+            "%-9s%-50s %7s => %s %s",
             number_format(microtime(true) - $this->startTime, 6),
             '['.$stateChangeEvent->node()->id().']',
             strtoupper($stateChangeEvent->from()->toString()),

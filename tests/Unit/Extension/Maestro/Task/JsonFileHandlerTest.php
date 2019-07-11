@@ -96,7 +96,9 @@ class JsonFileHandlerTest extends IntegrationTestCase
 
     public function testDoesNotEscapeSlashes()
     {
-        file_put_contents($this->packageWorkspace->absolutePath('composer.json'), <<<'EOT'
+        file_put_contents(
+            $this->packageWorkspace->absolutePath('composer.json'),
+            <<<'EOT'
 {
     "name": "foobar/barfoo"
 }
@@ -115,7 +117,8 @@ EOT
             'manifest.dir' => $this->workspace()->path('/'),
             'workspace' => $this->packageWorkspace,
         ]);
-        $this->assertEquals(<<<'EOT'
+        $this->assertEquals(
+            <<<'EOT'
 {
     "name": "foobar/barfoo",
     "require": {
@@ -123,7 +126,8 @@ EOT
     }
 }
 EOT
-        , file_get_contents($this->packageWorkspace->absolutePath('composer.json')),
+        ,
+            file_get_contents($this->packageWorkspace->absolutePath('composer.json')),
         );
     }
 }

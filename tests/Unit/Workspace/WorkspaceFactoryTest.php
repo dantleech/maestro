@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Workspace;
 
 use Maestro\Tests\IntegrationTestCase;
+use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;
 use Phpactor\TestUtils\Workspace;
 
@@ -54,6 +55,6 @@ class WorkspaceFactoryTest extends IntegrationTestCase
 
     private function create(string $namespace): WorkspaceFactory
     {
-        return new WorkspaceFactory($namespace, $this->workspace()->path('/'));
+        return new WorkspaceFactory(new NestedDirectoryStrategy(), $namespace, $this->workspace()->path('/'));
     }
 }

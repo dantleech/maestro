@@ -16,21 +16,22 @@ class WorkspaceFactory
      */
     private $namespace;
 
-    public function __construct(string $namespace, string $rootPath)
+    /**
+     * @var PathStrategy
+     */
+    private $pathStrategy;
+
+    public function __construct(PathStrategy $pathStrategy, string $namespace, string $rootPath)
     {
         $this->rootPath = $rootPath;
         $this->namespace = $namespace;
+        $this->pathStrategy = $pathStrategy;
     }
 
     public function createNamedWorkspace(string $name): Workspace
     {
-        $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->normalize($name)]);
+        $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->pathStrategy->packageNameToPath($name)]);
 
         return new Workspace($workspacePath);
-    }
-
-    private function normalize(string $name): string
-    {
-        return Path::normalize($name);
     }
 }

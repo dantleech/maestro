@@ -9,6 +9,7 @@ use Maestro\Node\Artifacts;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
+use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;
 
 class PackageHandlerTest extends IntegrationTestCase
@@ -22,6 +23,7 @@ class PackageHandlerTest extends IntegrationTestCase
     {
         $this->workspace()->reset();
         $this->workspaceFactory = new WorkspaceFactory(
+            new NestedDirectoryStrategy(),
             'foobar',
             $this->workspace()->path('/')
         );

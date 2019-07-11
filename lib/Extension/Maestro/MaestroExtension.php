@@ -27,6 +27,7 @@ use Maestro\Node\Task\NullTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Extension\Maestro\Task\ScriptTask;
 use Maestro\Util\Cast;
+use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;
 use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
@@ -74,6 +75,7 @@ class MaestroExtension implements Extension
     {
         $container->register('workspace_factory', function (Container $container) {
             return new WorkspaceFactory(
+                new NestedDirectoryStrategy(),
                 $container->getParameter('namespace'),
                 $container->getParameter('workspace_directory')
             );

@@ -6,7 +6,7 @@ use Maestro\Workspace\PathStrategy;
 
 class NestedDirectoryStrategy implements PathStrategy
 {
-    public function packageNameToPath(string $packageName): string
+    public function packageNameToSubPath(string $packageName): string
     {
         return $packageName;
     }
@@ -14,5 +14,10 @@ class NestedDirectoryStrategy implements PathStrategy
     public function listingGlobPattern(): string
     {
         return '*/*';
+    }
+
+    public function subPathToPackageName(string $subPath)
+    {
+        return $subPath;
     }
 }

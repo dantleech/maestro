@@ -220,6 +220,25 @@ e.g.
 - **path**: Where the template is located, relative to the Manifest file.
 - **targetPath**: Where to put the rendered template, relative to the package path.
 
+### Tmux
+
+Automatically setup and switch to [Tmux](https://github.com/tmux/tmux/wiki)
+sessions for package workspaces [tmux]
+
+```bash
+$ maestro tmux phpactor/worse-reflection
+```
+
+- If there is an existing Tmux session called `phpactor/worse-reflection`,
+  then switch to it.
+- If no session, exists create one.
+- Switch the current tmux session to the new or existing one.
+
+This is very useful to quicly create an environment where you can
+manipulate the package after maestro has executed.
+
+Note that this only works if you are already inside a Tmux session.
+
 Documentation
 -------------
 

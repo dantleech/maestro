@@ -18,9 +18,19 @@ class Workspaces implements IteratorAggregate
         }
     }
 
+    public function has(string $name): bool
+    {
+        return isset($this->workspaces[$name]);
+    }
+
+    public function names(): array
+    {
+        return array_keys($this->workspaces);
+    }
+
     private function add(Workspace $workspace): void
     {
-        $this->workspaces[] = $workspace;
+        $this->workspaces[$workspace->name()] = $workspace;
     }
 
     public function getIterator(): Iterator

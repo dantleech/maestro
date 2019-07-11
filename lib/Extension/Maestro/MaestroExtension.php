@@ -51,6 +51,7 @@ class MaestroExtension implements Extension
     const SERVICE_MANIFEST_LOADER = 'config.loader';
     const TAG_DUMPER = 'dumper';
     const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
+    const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
 
     public function configure(Resolver $schema)
     {
@@ -73,7 +74,7 @@ class MaestroExtension implements Extension
 
     private function loadWorkspace(ContainerBuilder $container)
     {
-        $container->register('workspace_factory', function (Container $container) {
+        $container->register(self::SERVICE_WORKSPACE_FACTORY, function (Container $container) {
             return new WorkspaceFactory(
                 new NestedDirectoryStrategy(),
                 $container->getParameter('namespace'),
@@ -139,7 +140,7 @@ class MaestroExtension implements Extension
         ]]);
 
         $container->register('task.job_handler.package', function (Container $container) {
-            return new PackageHandler($container->get('workspace_factory'));
+            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'package',
             'job_class' => PackageTask::class,

@@ -10,4 +10,9 @@ class NestedDirectoryStrategy implements PathStrategy
     {
         return $packageName;
     }
+
+    public function listingGlobPattern(): string
+    {
+        return '*/*';
+    }
 }

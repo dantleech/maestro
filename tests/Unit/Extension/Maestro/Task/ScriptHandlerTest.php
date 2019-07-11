@@ -40,7 +40,7 @@ class ScriptHandlerTest extends IntegrationTestCase
         )->handle(ScriptTask::class, [
             'script' => self::EXAMPLE_SCRIPT,
         ], [
-            'workspace' => new Workspace($this->workspace()->path('/')),
+            'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
             'env' => EnvVars::create([]),
         ]);
 
@@ -65,7 +65,7 @@ class ScriptHandlerTest extends IntegrationTestCase
             )->handle(ScriptTask::class, [
                 'script' => self::EXAMPLE_SCRIPT,
             ], [
-                'workspace' => new Workspace($this->workspace()->path('/')),
+                'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
                 'env' => EnvVars::create([]),
             ]);
         } catch (TaskFailed $failed) {

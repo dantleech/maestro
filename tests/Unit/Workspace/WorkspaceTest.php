@@ -19,7 +19,7 @@ class WorkspaceTest extends IntegrationTestCase
     {
         $this->assertEquals(
             rtrim($this->workspace()->path($expected), '/'),
-            (new Workspace($this->workspace()->path('/')))->absolutePath($relative)
+            (new Workspace($this->workspace()->path('/'), 'test'))->absolutePath($relative)
         );
     }
 
@@ -38,10 +38,16 @@ class WorkspaceTest extends IntegrationTestCase
 
     public function testCanBePurged()
     {
-        $workspace = new Workspace($this->workspace()->path('/'));
+        $workspace = new Workspace($this->workspace()->path('/'), 'test');
         $this->workspace()->put('goodday/foobar', 'Hello');
         $this->assertFileExists($this->workspace()->path('/goodday/foobar'));
         $workspace->purge();
         $this->assertFileNotExists($this->workspace()->path('/goodday/foobar'));
+    }
+
+    public function testReturnsName()
+    {
+        $workspace = new Workspace('path', 'name');
+        $this->assertEquals('name', $workspace->name());
     }
 }

@@ -19,6 +19,7 @@ class GitHandlerTest extends TestCase
     const EXAMPLE_URL = 'http://test_url';
     const EXAMPLE_WORKSPACE_ROOT = '/path/to/example/workspace-container';
     const EXAMPLE_WORKSPACE = self::EXAMPLE_WORKSPACE_ROOT . '/blah';
+    const EXAMPLE_WORKSPACE_NAME = 'workspace_name';
 
     /**
      * @var ObjectProphecy
@@ -50,7 +51,7 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE),
+            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
             'env' => EnvVars::create([]),
         ]);
 
@@ -78,7 +79,7 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE),
+            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
             'env' => EnvVars::create([]),
         ]);
     }
@@ -104,7 +105,7 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE),
+            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
             'env' => EnvVars::create([]),
         ]);
     }

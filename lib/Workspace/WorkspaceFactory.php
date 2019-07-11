@@ -1,8 +1,9 @@
 <?php
 
-namespace Maestro\Workspace;
 
+namespace Maestro\Workspace;
 use Webmozart\PathUtil\Path;
+use function Safe\glob;
 
 class WorkspaceFactory
 {
@@ -32,6 +33,24 @@ class WorkspaceFactory
     {
         $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->pathStrategy->packageNameToPath($name)]);
 
-        return new Workspace($workspacePath);
+        return new Workspace($workspacePath, $name);
+    }
+
+    public function listWorkspaces(): Workspaces
+    {
+        return new Workspaces(array_map(function (string $path) {
+            return $this->createNamedWorkspace(substr(
+                $path,
+                strlen(
+                    Path::join($this->rootPath, $this->namespace)
+                ) + 1
+            ));
+        }, glob(
+            Path::join(
+                $this->rootPath,
+                $this->namespace,
+                $this->pathStrategy->listingGlobPattern()
+            )
+        )));
     }
 }

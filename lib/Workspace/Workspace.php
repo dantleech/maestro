@@ -17,10 +17,16 @@ class Workspace
      */
     private $filesystem;
 
-    public function __construct(string $rootPath)
+    /**
+     * @var string
+     */
+    private $name;
+
+    public function __construct(string $rootPath, string $name)
     {
         $this->rootPath = $rootPath;
         $this->filesystem = new Filesystem();
+        $this->name = $name;
     }
 
     public function absolutePath(?string $relative = null): string
@@ -38,5 +44,10 @@ class Workspace
         }
 
         $this->filesystem->remove($this->rootPath);
+    }
+
+    public function name(): string
+    {
+        return $this->name;
     }
 }

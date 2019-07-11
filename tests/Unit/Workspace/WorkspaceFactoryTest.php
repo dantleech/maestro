@@ -53,6 +53,15 @@ class WorkspaceFactoryTest extends IntegrationTestCase
         ];
     }
 
+    public function testListsWorkspaces()
+    {
+        $this->workspace()->put('foobar/barfoo/README.md', '');
+        $this->workspace()->put('foobar/foobar/README.md', '');
+        $workspaces = $this->create('')->listWorkspaces();
+        $this->assertCount(2, $workspaces);
+        $this->assertEquals('foobar/barfoo', $workspaces->first()->name());
+    }
+
     private function create(string $namespace): WorkspaceFactory
     {
         return new WorkspaceFactory(new NestedDirectoryStrategy(), $namespace, $this->workspace()->path('/'));

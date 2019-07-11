@@ -93,4 +93,37 @@ class JsonFileHandlerTest extends IntegrationTestCase
             ],
         ];
     }
+
+    public function testDoesNotEscapeSlashes()
+    {
+        file_put_contents($this->packageWorkspace->absolutePath('composer.json'), <<<'EOT'
+{
+    "name": "foobar/barfoo"
+}
+EOT
+
+    );
+
+        $artifacts = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, [
+            'targetPath' => 'composer.json',
+            'merge' => [
+                "require" => [
+                    "barfoo/foobar" => "12.2"
+                ],
+            ],
+        ], [
+            'manifest.dir' => $this->workspace()->path('/'),
+            'workspace' => $this->packageWorkspace,
+        ]);
+        $this->assertEquals(<<<'EOT'
+{
+    "name": "foobar/barfoo",
+    "require": {
+        "barfoo/foobar": "12.2"
+    }
+}
+EOT
+        , file_get_contents($this->packageWorkspace->absolutePath('composer.json')),
+        );
+    }
 }

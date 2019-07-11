@@ -33,7 +33,7 @@ class JsonFileHandler implements TaskHandler
                 $workspace->absolutePath($task->targetPath()),
                 json_encode(
                     array_replace_recursive($existingData, $task->merge()),
-                    JSON_PRETTY_PRINT
+                    JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES
                 ),
             );
         }

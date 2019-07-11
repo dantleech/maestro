@@ -24,13 +24,13 @@ class WorkspaceFactory
 
     public function createNamedWorkspace(string $name): Workspace
     {
-        $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->slugify($name)]);
+        $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->normalize($name)]);
 
         return new Workspace($workspacePath);
     }
 
-    private function slugify(string $name): string
+    private function normalize(string $name): string
     {
-        return str_replace('/', '-', Path::normalize($name));
+        return Path::normalize($name);
     }
 }

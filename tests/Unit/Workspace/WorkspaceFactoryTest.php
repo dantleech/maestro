@@ -42,13 +42,13 @@ class WorkspaceFactoryTest extends IntegrationTestCase
         yield [
             'hello',
             'hello/world',
-            'hello/hello-world'
+            'hello/hello/world'
         ];
 
         yield [
             'namespace/with/slashes',
             'vendor/my-package',
-            'namespace/with/slashes/vendor-my-package',
+            'namespace/with/slashes/vendor/my-package',
         ];
     }
 

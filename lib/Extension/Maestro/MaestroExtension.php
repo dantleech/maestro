@@ -175,9 +175,9 @@ class MaestroExtension implements Extension
         });
     }
 
-    private function defaultNamespace()
+    private function defaultNamespace(): string
     {
-        return substr(md5($this->defaultCwd()), 0, 10);
+        return basename($this->defaultCwd()) . '-' . substr(md5($this->defaultCwd()), 0, 10);
     }
 
     private function defaultCwd(): string

@@ -20,12 +20,12 @@ class TaskRunningDecider implements NodeVisitor
     /**
      * @var ArtifactsResolver
      */
-    private $resolver;
+    private $artifactResolver;
 
     public function __construct(TaskRunner $runner, ArtifactsResolver $resolver)
     {
         $this->runner = $runner;
-        $this->resolver = $resolver;
+        $this->artifactResolver = $resolver;
     }
 
     public function decide(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeDeciderDecision
@@ -42,7 +42,7 @@ class TaskRunningDecider implements NodeVisitor
             $node->run(
                 $stateMachine,
                 $this->runner,
-                $this->resolver->resolveFor($graph, $node)
+                $this->artifactResolver->resolveFor($graph, $node)
             );
         }
 
@@ -55,9 +55,7 @@ class TaskRunningDecider implements NodeVisitor
 
     private function areDependenciesSatisfied(Graph $graph, Node $node)
     {
-        $dependencies = $graph->dependenciesFor($node->id());
-
-        foreach ($dependencies as $node) {
+        foreach ($graph->dependenciesFor($node->id()) as $node) {
             if (!$node->state()->isIdle()) {
                 return false;
             }

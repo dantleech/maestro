@@ -68,7 +68,7 @@ class GraphBuilder
     {
         /** @var Task $task */
         foreach ($package->tasks() as $taskName => $task) {
-            $nodeId = $this->namespace($package, $taskName);
+            $nodeId = $this->namespacedTaskName($package, $taskName);
 
             $nodes[] = Node::create(
                 $nodeId,
@@ -86,12 +86,12 @@ class GraphBuilder
             }
 
             foreach ($task->depends() as $dependency) {
-                $edges[] = Edge::create($nodeId, $this->namespace($package, $dependency));
+                $edges[] = Edge::create($nodeId, $this->namespacedTaskName($package, $dependency));
             }
         }
     }
 
-    private function namespace(Package $package, $taskName): string
+    private function namespacedTaskName(Package $package, $taskName): string
     {
         return sprintf(
             '%s%s%s',

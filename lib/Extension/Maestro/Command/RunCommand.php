@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends Command
 {
-    private const POLL_TIME_DISPATCH = 100;
+    private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
 
     private const ARG_PLAN = 'plan';

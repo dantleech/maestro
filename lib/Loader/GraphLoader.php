@@ -6,6 +6,7 @@ use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Node\Edge;
 use Maestro\Node\Graph;
+use Maestro\Node\GraphBuilder;
 use Maestro\Node\Node;
 
 class GraphLoader
@@ -25,21 +26,21 @@ class GraphLoader
     public function build(
         Manifest $manifest
     ): Graph {
-        $nodes = [
+        $builder = GraphBuilder::create();
+        $builder->addNode(
             Node::create(self::NODE_ROOT, [
                 'task' => new ManifestTask($manifest->path(), $manifest->artifacts())
             ])
-        ];
-        $edges = [];
-        $this->walkPackages($manifest, $nodes, $edges);
+        );
+        $this->walkPackages($manifest, $builder);
 
-        return Graph::create($nodes, $edges);
+        return $builder->build();
     }
 
-    private function walkPackages(Manifest $manifest, array &$nodes, array &$edges)
+    private function walkPackages(Manifest $manifest, GraphBuilder $builder)
     {
         foreach ($manifest->packages() as $package) {
-            $nodes[] = $packageNode = Node::create(
+            $builder->addNode($packageNode = Node::create(
                 $package->name(),
                 [
                     'label' => $package->name(),
@@ -52,20 +53,20 @@ class GraphLoader
                         ]
                     ),
                 ]
-            );
+            ));
 
-            $edges[] = Edge::create($package->name(), self::NODE_ROOT);
-            $this->walkPackage($packageNode, $package, $nodes, $edges);
+            $builder->addEdge(Edge::create($package->name(), self::NODE_ROOT));
+            $this->walkPackage($packageNode, $package, $builder);
         }
     }
 
-    private function walkPackage(Node $packageNode, Package $package, array &$nodes, &$edges)
+    private function walkPackage(Node $packageNode, Package $package, GraphBuilder $builder)
     {
         /** @var Task $task */
         foreach ($package->tasks() as $taskName => $task) {
             $nodeId = $this->namespacedTaskName($package, $taskName);
 
-            $nodes[] = Node::create(
+            $builder->addNode(Node::create(
                 $nodeId,
                 [
                     'label' => $taskName,
@@ -74,14 +75,17 @@ class GraphLoader
                         $task->parameters()
                     )
                 ]
-            );
+            ));
 
             if (empty($task->depends())) {
-                $edges[] = Edge::create($nodeId, $package->name());
+                $builder->addEdge(Edge::create($nodeId, $package->name()));
             }
 
             foreach ($task->depends() as $dependency) {
-                $edges[] = Edge::create($nodeId, $this->namespacedTaskName($package, $dependency));
+                $builder->addEdge(Edge::create(
+                    $nodeId,
+                    $this->namespacedTaskName($package, $dependency)
+                ));
             }
         }
     }

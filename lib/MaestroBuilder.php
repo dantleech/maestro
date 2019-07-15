@@ -2,7 +2,7 @@
 
 namespace Maestro;
 
-use Maestro\Loader\GraphLoader;
+use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\LoaderHandler;
 use Maestro\Loader\LoaderHandlerRegistry;
 use Maestro\Loader\LoaderHandlerRegistry\EagerLoaderHandlerRegistry;
@@ -63,7 +63,7 @@ final class MaestroBuilder
     {
         return new Maestro(
             $this->buildLoader(),
-            new GraphLoader(
+            new GraphConstructor(
                 $this->buildLoaderHandlerRegistry(),
                 $this->purge
             ),

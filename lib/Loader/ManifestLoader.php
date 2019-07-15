@@ -43,7 +43,7 @@ class ManifestLoader
     {
         if (!file_exists($path)) {
             throw new RuntimeException(sprintf(
-                'Plan file "%s" does not exist',
+                'Manifest file "%s" does not exist',
                 $path
             ));
         }

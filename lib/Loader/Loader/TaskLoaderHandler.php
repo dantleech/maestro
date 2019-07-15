@@ -29,28 +29,33 @@ class TaskLoaderHandler implements LoaderHandler
 
         /** @var Task $task */
         foreach ($loader->tasks() as $taskName => $task) {
-            $nodeId = $this->namespacedTaskName($parentId, $taskName);
-            $builder->addNode(Node::create(
+            $this->processTask($parentId, $builder, $taskName, $task);
+        }
+    }
+
+    private function processTask(string $parentId, GraphBuilder $builder, string $taskName, Task $task)
+    {
+        $nodeId = $this->namespacedTaskName($parentId, $taskName);
+        $builder->addNode(Node::create(
+            $nodeId,
+            [
+                'label' => $taskName,
+                'task' => Instantiator::create()->instantiate(
+                    $this->taskMap->classNameFor($task->type()),
+                    $task->parameters()
+                )
+            ]
+        ));
+        
+        if (empty($task->depends())) {
+            $builder->addEdge(Edge::create($nodeId, $parentId));
+        }
+        
+        foreach ($task->depends() as $dependency) {
+            $builder->addEdge(Edge::create(
                 $nodeId,
-                [
-                    'label' => $taskName,
-                    'task' => Instantiator::create()->instantiate(
-                        $this->taskMap->classNameFor($task->type()),
-                        $task->parameters()
-                    )
-                ]
+                $this->namespacedTaskName($parentId, $dependency)
             ));
-
-            if (empty($task->depends())) {
-                $builder->addEdge(Edge::create($nodeId, $parentId));
-            }
-
-            foreach ($task->depends() as $dependency) {
-                $builder->addEdge(Edge::create(
-                    $nodeId,
-                    $this->namespacedTaskName($parentId, $dependency)
-                ));
-            }
         }
     }
 

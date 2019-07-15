@@ -5,7 +5,7 @@ namespace Maestro\Tests\Unit\Loader;
 use Closure;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Loader\AliasToClassMap;
-use Maestro\Loader\GraphLoader;
+use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\LoaderHandlerRegistry\EagerLoaderHandlerRegistry;
 use Maestro\Loader\Loader\TaskLoader;
 use Maestro\Loader\Loader\TaskLoaderHandler;
@@ -18,7 +18,7 @@ use Maestro\Node\Task;
 use Maestro\Node\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 
-class GraphLoaderTest extends TestCase
+class GraphConstructorTest extends TestCase
 {
     /**
      * @dataProvider provideBuildGraph
@@ -31,7 +31,7 @@ class GraphLoaderTest extends TestCase
                 'example' => ExampleTask::class,
             ])),
         ]);
-        $builder = new GraphLoader($registry);
+        $builder = new GraphConstructor($registry);
         $manifest = Manifest::loadFromArray($manifest);
         $graph = $builder->build($manifest);
 

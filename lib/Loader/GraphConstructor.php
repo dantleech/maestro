@@ -9,7 +9,7 @@ use Maestro\Node\Graph;
 use Maestro\Node\GraphBuilder;
 use Maestro\Node\Node;
 
-class GraphLoader
+class GraphConstructor
 {
     const NODE_ROOT = 'root';
 

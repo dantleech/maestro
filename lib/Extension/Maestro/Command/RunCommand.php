@@ -129,12 +129,9 @@ class RunCommand extends Command
 
     private function buildRunner(InputInterface $input): Maestro
     {
-        $builder = $this->builder;
-        $builder->withMaxConcurrency(Cast::toInt(
-            $input->getOption(self::OPT_CONCURRENCY)
-        ));
-        $builder->withPurge(Cast::toBool($input->getOption(self::OPT_PURGE)));
-        $maestro = $builder->build();
-        return $maestro;
+        return $this->builder
+            ->withMaxConcurrency(Cast::toInt($input->getOption(self::OPT_CONCURRENCY)))
+            ->withPurge(Cast::toBool($input->getOption(self::OPT_PURGE)))
+            ->build();
     }
 }

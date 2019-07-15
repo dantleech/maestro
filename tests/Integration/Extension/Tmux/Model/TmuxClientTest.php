@@ -6,6 +6,9 @@ use Maestro\Extension\Tmux\Model\Exception\TmuxFailure;
 use Maestro\Extension\Tmux\Model\TmuxClient;
 use Maestro\Tests\IntegrationTestCase;
 
+/**
+ * @group tmux
+ */
 class TmuxClientTest extends IntegrationTestCase
 {
     /**
@@ -16,6 +19,7 @@ class TmuxClientTest extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->workspace()->reset();
+
         $this->client = new TmuxClient(
             $this->workspace()->path('tmuxsocket')
         );

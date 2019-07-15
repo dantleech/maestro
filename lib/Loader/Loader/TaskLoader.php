@@ -9,7 +9,7 @@ use Maestro\Loader\Task;
 class TaskLoader implements Loader
 {
     /**
-     * @var array
+     * @var Task[]
      */
     private $tasks;
 

@@ -3,6 +3,8 @@
 namespace Maestro;
 
 use Maestro\Loader\GraphBuilder;
+use Maestro\Loader\ManifestLoader;
+use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Loader\TaskMap;
 use Maestro\Node\ArtifactsResolver;
 use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
@@ -17,6 +19,7 @@ use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\TaskRunner\HandlingTaskRunner;
+use Maestro\Util\Cast;
 
 final class MaestroBuilder
 {
@@ -34,6 +37,16 @@ final class MaestroBuilder
      */
     private $stateObservers = [];
 
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    public function __construct(?string $workingDirectory = null)
+    {
+        $this->workingDirectory = $workingDirectory ?: Cast::toString(getcwd());
+    }
+
     public static function create(): self
     {
         return new self();
@@ -42,6 +55,7 @@ final class MaestroBuilder
     public function build(): Maestro
     {
         return new Maestro(
+            $this->buildLoader(),
             new GraphBuilder(
                 new TaskMap($this->taskMap),
                 $this->purge
@@ -113,5 +127,12 @@ final class MaestroBuilder
     private function buildStateObservers()
     {
         return new StateObservers($this->stateObservers);
+    }
+
+    private function buildLoader(): ManifestLoader
+    {
+        return new ManifestLoader($this->workingDirectory, [
+            new PrototypeExpandingProcessor(),
+        ]);
     }
 }

@@ -88,7 +88,6 @@ class MaestroExtension implements Extension
         $container->register('console.command.run', function (Container $container) {
             return new RunCommand(
                 $container->get(self::SERVICE_RUNNER_BUILDER),
-                $container->get(self::SERVICE_MANIFEST_LOADER),
                 $container->get(self::SERVICE_DUMPER_REGISTRY)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
@@ -117,12 +116,6 @@ class MaestroExtension implements Extension
             }
 
             return $builder;
-        });
-
-        $container->register(self::SERVICE_MANIFEST_LOADER, function (Container $container) {
-            return new ManifestLoader(Cast::toString(getcwd()), [
-                new PrototypeExpandingProcessor(),
-            ]);
         });
 
         $container->register('task.job_handler.null', function () {

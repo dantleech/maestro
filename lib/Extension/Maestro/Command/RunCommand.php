@@ -43,20 +43,14 @@ class RunCommand extends Command
     private $builder;
 
     /**
-     * @var Loader
-     */
-    private $loader;
-
-    /**
      * @var DumperRegistry
      */
     private $dumper;
 
-    public function __construct(MaestroBuilder $builder, ManifestLoader $loader, DumperRegistry $dumper)
+    public function __construct(MaestroBuilder $builder, DumperRegistry $dumper)
     {
         parent::__construct();
         $this->builder = $builder;
-        $this->loader = $loader;
         $this->dumper = $dumper;
     }
 
@@ -80,10 +74,10 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $runner = $this->buildRunner($input);
+        $maestro = $this->buildRunner($input);
 
-        $graph = $runner->buildGraph(
-            $this->loader->load(
+        $graph = $maestro->buildGraph(
+            $maestro->loadManifest(
                 Cast::toString(
                     $input->getArgument(self::ARG_PLAN)
                 )
@@ -110,8 +104,8 @@ class RunCommand extends Command
             return $this->dumper->get($dumperName);
         }, (array) $input->getOption(self::OPT_REPORT));
 
-        Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($runner, $graph) {
-            $runner->dispatch($graph);
+        Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($maestro, $graph) {
+            $maestro->dispatch($graph);
 
             if ($graph->nodes()->allDone()) {
                 Loop::stop();
@@ -141,7 +135,7 @@ class RunCommand extends Command
             $input->getOption(self::OPT_CONCURRENCY)
         ));
         $builder->withPurge(Cast::toBool($input->getOption(self::OPT_PURGE)));
-        $runner = $builder->build();
-        return $runner;
+        $maestro = $builder->build();
+        return $maestro;
     }
 }

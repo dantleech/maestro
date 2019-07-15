@@ -19,6 +19,11 @@ class TaskAliasExpandingProcessor implements Processor
 
     public function process(array $manifest): array
     {
+        foreach ($manifest['packages'] ?? [] as $packageName => &$package) {
+            foreach ($package['tasks'] ?? [] as $taskName => &$task) {
+                $manifest['packages'][$packageName]['tasks'][$taskName]['type'] = $this->taskMap->classNameFor($task['type']);
+            }
+        }
         return $manifest;
     }
 }

@@ -58,7 +58,6 @@ final class MaestroBuilder
         return new Maestro(
             $this->buildLoader(),
             new GraphBuilder(
-                new TaskMap($this->taskMap),
                 $this->purge
             ),
             $this->buildGraphWalker()

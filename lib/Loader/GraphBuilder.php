@@ -3,6 +3,7 @@
 namespace Maestro\Loader;
 
 use Maestro\Extension\Maestro\Task\ManifestTask;
+use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Node\Edge;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
@@ -12,18 +13,12 @@ class GraphBuilder
     const NODE_ROOT = 'root';
 
     /**
-     * @var TaskMap
-     */
-    private $taskMap;
-
-    /**
      * @var bool|null
      */
     private $purge;
 
-    public function __construct(TaskMap $taskMap, ?bool $purge = null)
+    public function __construct(?bool $purge = null)
     {
-        $this->taskMap = $taskMap;
         $this->purge = $purge;
     }
 
@@ -49,7 +44,7 @@ class GraphBuilder
                 [
                     'label' => $package->name(),
                     'task' => Instantiator::create()->instantiate(
-                        $this->taskMap->classNameFor('package'),
+                        PackageTask::class,
                         [
                             'name' => $package->name(),
                             'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
@@ -75,7 +70,7 @@ class GraphBuilder
                 [
                     'label' => $taskName,
                     'task' => Instantiator::create()->instantiate(
-                        $this->taskMap->classNameFor($task->type()),
+                        $task->type(),
                         $task->parameters()
                     )
                 ]

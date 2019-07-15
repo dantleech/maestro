@@ -4,6 +4,9 @@ namespace Maestro\Tests\EndToEnd\Extension\Tmux\Command;
 
 use Maestro\Tests\EndToEnd\EndToEndTestCase;
 
+/**
+ * @group tmux
+ */
 class TmuxCommandTest extends EndToEndTestCase
 {
     public function testFailsOnUnknownWorkspace()

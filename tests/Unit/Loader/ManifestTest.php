@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
+use Maestro\Loader\Loader\NullLoader;
 use Maestro\Loader\Manifest;
 use PHPUnit\Framework\TestCase;
 
@@ -20,17 +21,14 @@ class ManifestTest extends TestCase
         ], $manifest->parameters());
     }
 
-    public function testLoadsWithPackages()
+    public function testLoadsWithLoaders()
     {
         $manifest = Manifest::loadFromArray([
             'packages' => [
                 'some-vendor/some-foobar' => [
-                    'tasks' => [
+                    'loaders' => [
                         [
-                            'type' => 'command',
-                            'parameters' => [
-                                'command' => 'composer install',
-                            ],
+                            'type' => NullLoader::class
                         ],
                     ]
                 ],
@@ -39,8 +37,7 @@ class ManifestTest extends TestCase
 
         $this->assertCount(1, $manifest->packages());
         $this->assertEquals('some-vendor/some-foobar', $manifest->packages()[0]->name());
-        $tasks = $manifest->packages()[0]->tasks();
-        $this->assertCount(1, $tasks);
-        $this->assertEquals('command', $tasks[0]->type());
+        $loaders = $manifest->packages()[0]->loaders();
+        $this->assertCount(1, $loaders);
     }
 }

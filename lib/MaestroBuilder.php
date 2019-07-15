@@ -2,11 +2,17 @@
 
 namespace Maestro;
 
-use Maestro\Loader\GraphBuilder;
-use Maestro\Loader\TaskMap;
+use Maestro\Loader\GraphConstructor;
+use Maestro\Loader\LoaderHandler;
+use Maestro\Loader\LoaderHandlerRegistry;
+use Maestro\Loader\LoaderHandlerRegistry\EagerLoaderHandlerRegistry;
+use Maestro\Loader\ManifestLoader;
+use Maestro\Loader\Processor\LoaderAliasExpandingProcessor;
+use Maestro\Loader\Processor\PrototypeExpandingProcessor;
+use Maestro\Loader\AliasToClassMap;
 use Maestro\Node\ArtifactsResolver;
 use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
-use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
+use Maestro\Node\HandlerRegistry\EagerTaskHandlerRegistry;
 use Maestro\Node\GraphWalker;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
@@ -17,11 +23,15 @@ use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\TaskRunner\HandlingTaskRunner;
+use Maestro\Util\Cast;
 
 final class MaestroBuilder
 {
-    private $taskMap = [];
-    private $handlers = [];
+    private $taskHandlers = [];
+
+    private $loaderMap = [];
+    private $loaderHandlers = [];
+
     private $maxConcurrency = 10;
 
     /**
@@ -30,9 +40,19 @@ final class MaestroBuilder
     private $purge;
 
     /**
-     * @var array
+     * @var StateObserver[]
      */
     private $stateObservers = [];
+
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    public function __construct(?string $workingDirectory = null)
+    {
+        $this->workingDirectory = $workingDirectory ?: Cast::toString(getcwd());
+    }
 
     public static function create(): self
     {
@@ -42,20 +62,28 @@ final class MaestroBuilder
     public function build(): Maestro
     {
         return new Maestro(
-            new GraphBuilder(
-                new TaskMap($this->taskMap),
+            $this->buildLoader(),
+            new GraphConstructor(
+                $this->buildLoaderHandlerRegistry(),
                 $this->purge
             ),
             $this->buildGraphWalker()
         );
     }
 
-    public function addJobHandler(string $alias, string $jobClass, TaskHandler $handler): self
+    public function addTaskHandler(string $taskClass, TaskHandler $handler): self
     {
-        $this->taskMap[$alias] = $jobClass;
-        $this->handlers[$jobClass] = $handler;
+        $this->taskHandlers[$taskClass] = $handler;
         return $this;
     }
+
+    public function addLoaderHandler(string $alias, string $loaderClass, LoaderHandler $handler): self
+    {
+        $this->loaderMap[$alias] = $loaderClass;
+        $this->loaderHandlers[$loaderClass] = $handler;
+        return $this;
+    }
+
 
     public function addStateObserver(StateObserver $stateObserver): self
     {
@@ -79,13 +107,13 @@ final class MaestroBuilder
     private function buildTaskRunner(): TaskRunner
     {
         return new HandlingTaskRunner(
-            $this->buildHandlerRegistry()
+            $this->buildTaskHandlerRegistry()
         );
     }
 
-    private function buildHandlerRegistry(): TaskHandlerRegistry
+    private function buildTaskHandlerRegistry(): TaskHandlerRegistry
     {
-        return new EagerHandlerRegistry($this->handlers);
+        return new EagerTaskHandlerRegistry($this->taskHandlers);
     }
 
     private function buildGraphWalker(): GraphWalker
@@ -113,5 +141,23 @@ final class MaestroBuilder
     private function buildStateObservers()
     {
         return new StateObservers($this->stateObservers);
+    }
+
+    private function buildLoader(): ManifestLoader
+    {
+        return new ManifestLoader($this->workingDirectory, [
+            new PrototypeExpandingProcessor(),
+            new LoaderAliasExpandingProcessor($this->buildLoaderHandlerMap()),
+        ]);
+    }
+
+    private function buildLoaderHandlerRegistry(): LoaderHandlerRegistry
+    {
+        return new EagerLoaderHandlerRegistry($this->loaderHandlers);
+    }
+
+    private function buildLoaderHandlerMap(): AliasToClassMap
+    {
+        return new AliasToClassMap($this->loaderMap);
     }
 }

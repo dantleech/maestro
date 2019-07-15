@@ -2,16 +2,14 @@
 
 namespace Maestro\Loader;
 
+use RuntimeException;
+
 class Package
 {
     /**
      * @var string
      */
     private $name;
-    /**
-     * @var array
-     */
-    private $tasks = [];
 
     /**
      * @var bool
@@ -23,27 +21,32 @@ class Package
      */
     private $artifacts;
 
+    /**
+     * @var Loader[]
+     */
+    private $loaders = [];
+
     public function __construct(
         string $name,
-        array $tasks = [],
+        array $loaders = [],
         bool $purgeWorkspace = false,
         array $artifacts = []
     ) {
         $this->name = $name;
 
-        foreach ($tasks as $name => $task) {
-            $this->tasks[$name] = Instantiator::create()->instantiate(Task::class, $task);
+        foreach ($loaders as $name => $loader) {
+            if (!isset($loader['type'])) {
+                throw new RuntimeException(
+                    '"type" key must be set for each loader'
+                );
+            }
+            $classFqn = $loader['type'];
+            unset($loader['type']);
+            $this->loaders[$name] = Instantiator::create()->instantiate($classFqn, $loader);
         }
+
         $this->purgeWorkspace = $purgeWorkspace;
         $this->artifacts = $artifacts;
-    }
-
-    /**
-     * @return Task[]
-     */
-    public function tasks(): array
-    {
-        return $this->tasks;
     }
 
     public function name(): string
@@ -59,5 +62,13 @@ class Package
     public function artifacts(): array
     {
         return $this->artifacts;
+    }
+
+    /**
+     * @return Loader[]
+     */
+    public function loaders(): array
+    {
+        return $this->loaders;
     }
 }

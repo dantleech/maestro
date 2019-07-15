@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Unit\Node\HandlerRegistry;
 
 use Maestro\Node\Exception\HandlerNotFound;
-use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
+use Maestro\Node\HandlerRegistry\EagerTaskHandlerRegistry;
 use Maestro\Node\Task;
 use Maestro\Node\Task\NullHandler;
 use Maestro\Node\Task\NullTask;
@@ -14,7 +14,7 @@ class EagerHandlerRegistryTest extends TestCase
     public function testThrowsExceptionWhenHandlerNotFoundForTask()
     {
         $this->expectException(HandlerNotFound::class);
-        $registry = new EagerHandlerRegistry([
+        $registry = new EagerTaskHandlerRegistry([
             NullTask::class => new NullHandler()
         ]);
         $task = $this->prophesize(Task::class);
@@ -23,7 +23,7 @@ class EagerHandlerRegistryTest extends TestCase
 
     public function testReturnsHandlerForTask()
     {
-        $registry = new EagerHandlerRegistry([
+        $registry = new EagerTaskHandlerRegistry([
             NullTask::class => new NullHandler()
         ]);
         $handler = $registry->getFor(new NullTask());

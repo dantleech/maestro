@@ -29,9 +29,8 @@ class TmuxClient
         $this->cmd([
             'new-session',
             '-d',
-            sprintf('-c%s', $workingDirectory),
             sprintf('-s%s', escapeshellarg($name))
-        ]);
+        ], $workingDirectory);
     }
 
     public function switchTo(string $name)
@@ -47,7 +46,7 @@ class TmuxClient
         return (bool) getenv('TMUX');
     }
 
-    private function cmd(array $args): string
+    private function cmd(array $args, string $workingDirectory = null): string
     {
         $command = 'tmux ' . $this->buildArgs($args);
         $process = proc_open(
@@ -57,7 +56,8 @@ class TmuxClient
                 ['pipe', 'w'],
                 ['pipe', 'w'],
             ],
-            $pipes
+            $pipes,
+            $workingDirectory
         );
 
         if (false === $process) {

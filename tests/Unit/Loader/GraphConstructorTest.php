@@ -4,26 +4,34 @@ namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
 use Maestro\Extension\Maestro\Task\ManifestTask;
-use Maestro\Loader\GraphBuilder;
+use Maestro\Loader\AliasToClassMap;
+use Maestro\Loader\GraphConstructor;
+use Maestro\Loader\LoaderHandlerRegistry\EagerLoaderHandlerRegistry;
+use Maestro\Loader\Loader\TaskLoader;
+use Maestro\Loader\Loader\TaskLoaderHandler;
 use Maestro\Loader\Manifest;
-use Maestro\Loader\TaskMap;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\Nodes;
 use Maestro\Node\State;
 use Maestro\Node\Task;
 use Maestro\Node\Task\NullTask;
-use Maestro\Extension\Maestro\Task\PackageTask;
 use PHPUnit\Framework\TestCase;
 
-class GraphBuilderTest extends TestCase
+class GraphConstructorTest extends TestCase
 {
     /**
      * @dataProvider provideBuildGraph
      */
     public function testBuildGraph(array $manifest, Closure $assertion)
     {
-        $builder = new GraphBuilder($this->taskMap());
+        $registry = new EagerLoaderHandlerRegistry([
+            TaskLoader::class => new TaskLoaderHandler(new AliasToClassMap([
+                'null' => NullTask::class,
+                'example' => ExampleTask::class,
+            ])),
+        ]);
+        $builder = new GraphConstructor($registry);
         $manifest = Manifest::loadFromArray($manifest);
         $graph = $builder->build($manifest);
 
@@ -62,16 +70,21 @@ class GraphBuilderTest extends TestCase
             [
                 'packages' => [
                     'phpactor/phpactor' => [
-                        'tasks' => [
-                            'task1' => [
-                                'type' => 'foobar',
-                            ],
-                            'task2' => [
-                                'type' => 'example',
-                                'parameters' => [
-                                    'param1' => 'foobar',
+                        'loaders' => [
+                            [
+                                'type' => TaskLoader::class,
+                                'tasks' => [
+                                    'task1' => [
+                                        'type' => 'null',
+                                    ],
+                                    'task2' => [
+                                        'type' => 'example',
+                                        'parameters' => [
+                                            'param1' => 'foobar',
+                                        ],
+                                    ]
                                 ],
-                            ]
+                            ],
                         ],
                     ],
                 ]
@@ -86,15 +99,6 @@ class GraphBuilderTest extends TestCase
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
             }
         ];
-    }
-
-    private function taskMap(): TaskMap
-    {
-        return new TaskMap([
-            'package' => PackageTask::class,
-            'foobar' => NullTask::class,
-            'example' => ExampleTask::class,
-        ]);
     }
 }
 

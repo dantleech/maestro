@@ -4,6 +4,6 @@ namespace Maestro\Loader\Exception;
 
 use RuntimeException;
 
-class UnknownTask extends RuntimeException
+class HandlerNotFound extends RuntimeException
 {
 }

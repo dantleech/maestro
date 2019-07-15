@@ -2,12 +2,12 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
-use Maestro\Loader\Loader;
+use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Manifest;
 use Maestro\Loader\Processor;
 use Maestro\Tests\IntegrationTestCase;
 
-class LoaderTest extends IntegrationTestCase
+class ManifestLoaderTest extends IntegrationTestCase
 {
     protected function setUp(): void
     {
@@ -59,6 +59,6 @@ class LoaderTest extends IntegrationTestCase
 
     protected function loadManifest(string $path, array $processors = []): Manifest
     {
-        return (new Loader($this->workspace()->path('/'), $processors))->load($path);
+        return (new ManifestLoader($this->workspace()->path('/'), $processors))->load($path);
     }
 }

@@ -71,13 +71,18 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'say hello' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'echo "Foobar" > foobar',
-                            ]
-                        ]
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'say hello' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'echo "Foobar" > foobar',
+                                    ]
+                                ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -95,11 +100,16 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'echo "Hello World"',
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'echo "Hello World"',
+                                    ]
+                                ]
                             ]
                         ]
                     ],
@@ -124,13 +134,18 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'echo "Hello World"',
-                            ]
-                        ]
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'echo "Hello World"',
+                                    ]
+                                ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -145,19 +160,24 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'echo "Hello World"',
-                            ]
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'echo "Hello World"',
+                                    ]
+                                ],
+                                'goodbye' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'echo "Goodbye World"',
+                                    ]
+                                ]
+                            ],
                         ],
-                        'goodbye' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'echo "Goodbye World"',
-                            ]
-                        ]
                     ],
                 ],
             ],
@@ -184,25 +204,30 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'exit 1',
-                            ]
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'exit 1',
+                                    ]
+                                ],
+                                'goodbye' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'exit 1',
+                                    ]
+                                ],
+                                'foobar' => [
+                                    'type' => 'script',
+                                    'parameters' => [
+                                        'script' => 'exit 0',
+                                    ]
+                                ]
+                            ],
                         ],
-                        'goodbye' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'exit 1',
-                            ]
-                        ],
-                        'foobar' => [
-                            'type' => 'script',
-                            'parameters' => [
-                                'script' => 'exit 0',
-                            ]
-                        ]
                     ],
                 ],
             ],
@@ -217,16 +242,21 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'null',
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'null',
+                                ],
+                                'goodbye' => [
+                                    'type' => 'null',
+                                ],
+                                'foobar' => [
+                                    'type' => 'null',
+                                ]
+                            ],
                         ],
-                        'goodbye' => [
-                            'type' => 'null',
-                        ],
-                        'foobar' => [
-                            'type' => 'null',
-                        ]
                     ],
                 ],
             ],
@@ -241,16 +271,21 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'mypackage' => [
-                    'tasks' => [
-                        'hello' => [
-                            'type' => 'null',
+                    'loaders' => [
+                        [
+                            'type' => 'tasks',
+                            'tasks' => [
+                                'hello' => [
+                                    'type' => 'null',
+                                ],
+                                'goodbye' => [
+                                    'type' => 'null',
+                                ],
+                                'foobar' => [
+                                    'type' => 'null',
+                                ]
+                            ],
                         ],
-                        'goodbye' => [
-                            'type' => 'null',
-                        ],
-                        'foobar' => [
-                            'type' => 'null',
-                        ]
                     ],
                 ],
             ],

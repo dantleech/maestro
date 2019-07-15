@@ -4,7 +4,11 @@ namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
 use Maestro\Extension\Maestro\Task\ManifestTask;
+use Maestro\Loader\AliasToClassMap;
 use Maestro\Loader\GraphLoader;
+use Maestro\Loader\LoaderHandlerRegistry\EagerLoaderHandlerRegistry;
+use Maestro\Loader\Loader\TaskLoader;
+use Maestro\Loader\Loader\TaskLoaderHandler;
 use Maestro\Loader\Manifest;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
@@ -21,7 +25,13 @@ class GraphLoaderTest extends TestCase
      */
     public function testBuildGraph(array $manifest, Closure $assertion)
     {
-        $builder = new GraphLoader();
+        $registry = new EagerLoaderHandlerRegistry([
+            TaskLoader::class => new TaskLoaderHandler(new AliasToClassMap([
+                'null' => NullTask::class,
+                'example' => ExampleTask::class,
+            ])),
+        ]);
+        $builder = new GraphLoader($registry);
         $manifest = Manifest::loadFromArray($manifest);
         $graph = $builder->build($manifest);
 
@@ -60,16 +70,21 @@ class GraphLoaderTest extends TestCase
             [
                 'packages' => [
                     'phpactor/phpactor' => [
-                        'tasks' => [
-                            'task1' => [
-                                'type' => NullTask::class,
-                            ],
-                            'task2' => [
-                                'type' => ExampleTask::class,
-                                'parameters' => [
-                                    'param1' => 'foobar',
+                        'loaders' => [
+                            [
+                                'type' => TaskLoader::class,
+                                'tasks' => [
+                                    'task1' => [
+                                        'type' => 'null',
+                                    ],
+                                    'task2' => [
+                                        'type' => 'example',
+                                        'parameters' => [
+                                            'param1' => 'foobar',
+                                        ],
+                                    ]
                                 ],
-                            ]
+                            ],
                         ],
                     ],
                 ]

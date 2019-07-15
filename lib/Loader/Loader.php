@@ -2,6 +2,6 @@
 
 namespace Maestro\Loader;
 
-class NodeLoader
+interface Loader
 {
 }

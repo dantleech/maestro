@@ -7,7 +7,7 @@ use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
 
-class EagerHandlerRegistry implements TaskHandlerRegistry
+class EagerTaskHandlerRegistry implements TaskHandlerRegistry
 {
     /**
      * @var array

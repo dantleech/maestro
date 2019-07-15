@@ -25,9 +25,9 @@ class TwigExtension implements Extension
     {
         $container->register(self::SERVICE_APPLY_TEMPLATE_HANDLER, function (Container $container) {
             return new TemplateHandler($container->get(self::SERVICE_TWIG_FACTORY));
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'template',
-            'job_class' => TemplateTask::class,
+            'class' => TemplateTask::class,
         ]]);
 
         $container->register(self::SERVICE_TWIG_FACTORY, function (Container $container) {

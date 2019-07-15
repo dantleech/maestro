@@ -2,9 +2,9 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Exception\UnknownTask;
+use Maestro\Loader\Exception\UnknownAlias;
 
-class TaskMap
+class AliasToClassMap
 {
     private $map = [];
 
@@ -18,8 +18,8 @@ class TaskMap
     public function classNameFor(string $alias): string
     {
         if (!isset($this->map[$alias])) {
-            throw new UnknownTask(sprintf(
-                'Task "%s" is not known, known tasks: "%s"',
+            throw new UnknownAlias(sprintf(
+                'Alias "%s" is not known, known aliases: "%s"',
                 $alias,
                 implode('", "', array_keys($this->map))
             ));

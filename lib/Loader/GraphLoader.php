@@ -18,9 +18,15 @@ class GraphLoader
      */
     private $purge;
 
-    public function __construct(?bool $purge = null)
+    /**
+     * @var LoaderHandlerRegistry
+     */
+    private $registry;
+
+    public function __construct(LoaderHandlerRegistry $registry, ?bool $purge = null)
     {
         $this->purge = $purge;
+        $this->registry = $registry;
     }
 
     public function build(
@@ -62,41 +68,8 @@ class GraphLoader
 
     private function walkPackage(Node $packageNode, Package $package, GraphBuilder $builder)
     {
-        /** @var Task $task */
-        foreach ($package->tasks() as $taskName => $task) {
-            $nodeId = $this->namespacedTaskName($package, $taskName);
-
-            $builder->addNode(Node::create(
-                $nodeId,
-                [
-                    'label' => $taskName,
-                    'task' => Instantiator::create()->instantiate(
-                        $task->type(),
-                        $task->parameters()
-                    )
-                ]
-            ));
-
-            if (empty($task->depends())) {
-                $builder->addEdge(Edge::create($nodeId, $package->name()));
-            }
-
-            foreach ($task->depends() as $dependency) {
-                $builder->addEdge(Edge::create(
-                    $nodeId,
-                    $this->namespacedTaskName($package, $dependency)
-                ));
-            }
+        foreach ($package->loaders() as $loader) {
+            $this->registry->getFor($loader)->load($packageNode->id(), $builder, $loader);
         }
-    }
-
-    private function namespacedTaskName(Package $package, $taskName): string
-    {
-        return sprintf(
-            '%s%s%s',
-            $package->name(),
-            Node::NAMEPSPACE_SEPARATOR,
-            $taskName
-        );
     }
 }

@@ -10,10 +10,6 @@ class Package
      * @var string
      */
     private $name;
-    /**
-     * @var array
-     */
-    private $tasks = [];
 
     /**
      * @var bool
@@ -26,22 +22,17 @@ class Package
     private $artifacts;
 
     /**
-     * @var array
+     * @var Loader[]
      */
-    private $loaders;
+    private $loaders = [];
 
     public function __construct(
         string $name,
-        array $tasks = [],
         array $loaders = [],
         bool $purgeWorkspace = false,
         array $artifacts = []
     ) {
         $this->name = $name;
-
-        foreach ($tasks as $name => $task) {
-            $this->tasks[$name] = Instantiator::create()->instantiate(Task::class, $task);
-        }
 
         foreach ($loaders as $name => $loader) {
             if (!isset($loader['type'])) {
@@ -49,20 +40,13 @@ class Package
                     '"type" key must be set for each loader'
                 );
             }
-
-            $this->loaders[$name] = Instantiator::create()->instantiate($loader['type'], $loader);
+            $classFqn = $loader['type'];
+            unset($loader['type']);
+            $this->loaders[$name] = Instantiator::create()->instantiate($classFqn, $loader);
         }
 
         $this->purgeWorkspace = $purgeWorkspace;
         $this->artifacts = $artifacts;
-    }
-
-    /**
-     * @return Task[]
-     */
-    public function tasks(): array
-    {
-        return $this->tasks;
     }
 
     public function name(): string
@@ -81,7 +65,7 @@ class Package
     }
 
     /**
-     * @return NodeLoader[]
+     * @return Loader[]
      */
     public function loaders(): array
     {

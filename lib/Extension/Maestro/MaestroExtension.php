@@ -17,6 +17,9 @@ use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
+use Maestro\Loader\AliasToClassMap;
+use Maestro\Loader\Loader\TaskLoader;
+use Maestro\Loader\Loader\TaskLoaderHandler;
 use Maestro\MaestroBuilder;
 use Maestro\Node\StateObserver\LoggingStateObserver;
 use Maestro\Script\ScriptRunner;
@@ -40,7 +43,8 @@ use XdgBaseDir\Xdg;
 class MaestroExtension implements Extension
 {
     const SERVICE_RUNNER_BUILDER = 'runner_builder';
-    const TAG_JOB_HANDLER = 'job_handler';
+    const TAG_TASK_HANDLER = 'task_handler';
+    const TAG_LOADER_HANDLER = 'loader_handler';
 
     const PARAM_WORKING_DIRECTORY = 'working_directory';
     const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
@@ -95,70 +99,21 @@ class MaestroExtension implements Extension
         $container->register(self::SERVICE_RUNNER_BUILDER, function (Container $container) {
             $builder = MaestroBuilder::create();
             $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
-            foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
-                if (!isset($attrs['alias'])) {
-                    throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify an alias',
-                        $serviceId
-                    ));
-                }
-                if (!isset($attrs['job_class'])) {
-                    throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify a job class',
-                        $serviceId
-                    ));
-                }
 
-                $builder->addJobHandler($attrs['alias'], $attrs['job_class'], $container->get($serviceId));
+            foreach ($container->getServiceIdsForTag(self::TAG_LOADER_HANDLER) as $serviceId => $attrs) {
+                $this->validateHandlerAttributes($serviceId, $attrs);
+                $builder->addLoaderHandler($attrs['alias'], $attrs['class'], $container->get($serviceId));
+            }
+
+            foreach ($container->getServiceIdsForTag(self::TAG_TASK_HANDLER) as $serviceId => $attrs) {
+                $builder->addTaskHandler($attrs['class'], $container->get($serviceId));
             }
 
             return $builder;
         });
 
-        $container->register('task.job_handler.null', function () {
-            return new NullHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'null',
-            'job_class' => NullTask::class,
-        ]]);
-
-        $container->register('task.job_handler.manifest', function () {
-            return new ManifestHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'manifest',
-            'job_class' => ManifestTask::class,
-        ]]);
-
-        $container->register('task.job_handler.package', function (Container $container) {
-            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'package',
-            'job_class' => PackageTask::class,
-        ]]);
-
-        $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler($container->get('script.runner'));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'script',
-            'job_class' => ScriptTask::class,
-        ]]);
-
-        $container->register('task.job_handler.git', function (Container $container) {
-            return new GitHandler(
-                $container->get('script.runner'),
-                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'git',
-            'job_class' => GitTask::class,
-        ]]);
-
-        $container->register('task.job_handler.json_file', function (Container $container) {
-            return new JsonFileHandler();
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
-            'alias' => 'json_file',
-            'job_class' => JsonFileTask::class,
-        ]]);
+        $this->registerTaskHandlers($container);
+        $this->registerLoaderHandlers($container);
     }
 
     private function loadScript(ContainerBuilder $container)
@@ -230,5 +185,90 @@ class MaestroExtension implements Extension
         $container->register('dumper.targets', function (Container $container) {
             return new TargetDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
+    }
+
+    private function validateHandlerAttributes(string $serviceId, array $attrs)
+    {
+        if (!isset($attrs['alias'])) {
+            throw new RuntimeException(sprintf(
+                'Job handler "%s" must specify an alias',
+                $serviceId
+            ));
+        }
+        if (!isset($attrs['class'])) {
+            throw new RuntimeException(sprintf(
+                'Job handler "%s" must specify a job class',
+                $serviceId
+            ));
+        }
+    }
+
+    private function registerTaskHandlers(ContainerBuilder $container)
+    {
+        $container->register('task.job_handler.null', function () {
+            return new NullHandler();
+        }, [ self::TAG_TASK_HANDLER => [
+            'alias' => 'null',
+            'class' => NullTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.manifest', function () {
+            return new ManifestHandler();
+        }, [ self::TAG_TASK_HANDLER => [
+            'alias' => 'manifest',
+            'class' => ManifestTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.package', function (Container $container) {
+            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
+        }, [ self::TAG_TASK_HANDLER => [
+            'alias' => 'package',
+            'class' => PackageTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.script', function (Container $container) {
+            return new ScriptHandler($container->get('script.runner'));
+        }, [ self::TAG_TASK_HANDLER => [
+            'alias' => 'script',
+            'class' => ScriptTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.git', function (Container $container) {
+            return new GitHandler(
+                $container->get('script.runner'),
+                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
+            );
+        }, [ self::TAG_TASK_HANDLER => [
+            'alias' => 'git',
+            'class' => GitTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.json_file', function (Container $container) {
+            return new JsonFileHandler();
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
+            'alias' => 'json_file',
+            'class' => JsonFileTask::class,
+        ]]);
+    }
+
+    private function registerLoaderHandlers(ContainerBuilder $container)
+    {
+        $container->register('task.loader_handler.tasks', function (Container $container) {
+            return new TaskLoaderHandler($this->buildTaskAliasMap($container));
+        }, [ MaestroExtension::TAG_LOADER_HANDLER => [
+            'alias' => 'tasks',
+            'class' => TaskLoader::class,
+        ]]);
+    }
+
+    private function buildTaskAliasMap(Container $container): AliasToClassMap
+    {
+        $map = [];
+        foreach ($container->getServiceIdsForTag(self::TAG_TASK_HANDLER) as $serviceId => $attrs) {
+            $this->validateHandlerAttributes($serviceId, $attrs);
+            $map[$attrs['alias']] = $attrs['class'];
+        }
+
+        return new AliasToClassMap($map);
     }
 }

@@ -11,7 +11,6 @@ class PrototypeExpandingProcessor implements Processor
     const KEY_PACKAGES = 'packages';
     const KEY_PROTOTYPE = 'prototype';
 
-
     public function process(array $manifest): array
     {
         $prototypes = [];
@@ -38,7 +37,10 @@ class PrototypeExpandingProcessor implements Processor
                 ));
             }
 
-            $package = array_merge_recursive($prototypes[$package[self::KEY_PROTOTYPE]], $package);
+            $package = array_merge_recursive(
+                $prototypes[$package[self::KEY_PROTOTYPE]],
+                $package
+            );
             unset($package[self::KEY_PROTOTYPE]);
         }
 

@@ -49,33 +49,38 @@ Maestro depends on a `maestro.json` configuration file such as:
     },
     "packages": {
         "dantleech/fink": {
-            "tasks": {
-                "vcs": {
-                    "type": "git",
-                    "parameters": {
-                        "url": "git@github.com:$PACKAGE_NAME"
+            "loaders": [
+                {
+                    "type": "tasks",
+                    "tasks": {
+                        "vcs": {
+                            "type": "git",
+                            "parameters": {
+                                "url": "git@github.com:$PACKAGE_NAME"
+                            }
+                        },
+                        "composer install": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "composer install"
+                            },
+                            "depends": "vcs"
+                        },
+                        "phpunit": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "./vendor/bin/phpunit"
+                            },
+                            "depends": "composer install"
+                        },
+                        "php-cs-fixer": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
+                            },
+                            "depends": "composer install"
+                        }
                     }
-                },
-                "composer install": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "composer install"
-                    },
-                    "depends": "vcs"
-                },
-                "phpunit": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "./vendor/bin/phpunit"
-                    },
-                    "depends": "composer install"
-                },
-                "php-cs-fixer": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
-                    },
-                    "depends": "composer install"
                 }
             }
         }
@@ -94,33 +99,38 @@ be re-written as:
     }
     "prototypes": {
         "base": {
-            "tasks": {
-                "vcs": {
-                    "type": "git",
-                    "parameters": {
-                        "url": "git@github.com:$PACKAGE_NAME"
+            "loaders": [
+                {
+                    "type": "tasks"
+                    "tasks": {
+                        "vcs": {
+                            "type": "git",
+                            "parameters": {
+                                "url": "git@github.com:$PACKAGE_NAME"
+                            }
+                        },
+                        "composer install": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "composer install"
+                            },
+                            "depends": "vcs"
+                        },
+                        "phpunit": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "./vendor/bin/phpunit"
+                            },
+                            "depends": "composer install"
+                        },
+                        "php-cs-fixer": {
+                            "type": "script",
+                            "parameters": {
+                                "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
+                            },
+                            "depends": "composer install"
+                        }
                     }
-                },
-                "composer install": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "composer install"
-                    },
-                    "depends": "vcs"
-                },
-                "phpunit": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "./vendor/bin/phpunit"
-                    },
-                    "depends": "composer install"
-                },
-                "php-cs-fixer": {
-                    "type": "script",
-                    "parameters": {
-                        "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
-                    },
-                    "depends": "composer install"
                 }
             }
         }

@@ -5,11 +5,12 @@ namespace Maestro\Loader;
 use Maestro\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
+use function Safe\json_decode;
 
 class ManifestLoader
 {
     /**
-     * @var array
+     * @var Processor[]
      */
     private $processors = [];
 
@@ -47,16 +48,7 @@ class ManifestLoader
             ));
         }
 
-        $array = json_decode(Cast::toString(file_get_contents($path)), true);
-
-        if (false === $array) {
-            throw new RuntimeException(sprintf(
-                'Could not decode JSON: "%s"',
-                json_last_error_msg()
-            ));
-        }
-
-        return $array;
+        return json_decode(Cast::toString(file_get_contents($path)), true);
     }
 
     private function resolvePath(string $planPath)

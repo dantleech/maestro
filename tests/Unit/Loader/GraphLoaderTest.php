@@ -4,7 +4,7 @@ namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
 use Maestro\Extension\Maestro\Task\ManifestTask;
-use Maestro\Loader\GraphBuilder;
+use Maestro\Loader\GraphLoader;
 use Maestro\Loader\Manifest;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
@@ -14,14 +14,14 @@ use Maestro\Node\Task;
 use Maestro\Node\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 
-class GraphBuilderTest extends TestCase
+class GraphLoaderTest extends TestCase
 {
     /**
      * @dataProvider provideBuildGraph
      */
     public function testBuildGraph(array $manifest, Closure $assertion)
     {
-        $builder = new GraphBuilder();
+        $builder = new GraphLoader();
         $manifest = Manifest::loadFromArray($manifest);
         $graph = $builder->build($manifest);
 

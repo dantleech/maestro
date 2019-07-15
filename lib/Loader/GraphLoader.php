@@ -8,7 +8,7 @@ use Maestro\Node\Edge;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 
-class GraphBuilder
+class GraphLoader
 {
     const NODE_ROOT = 'root';
 

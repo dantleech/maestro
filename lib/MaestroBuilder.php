@@ -2,7 +2,7 @@
 
 namespace Maestro;
 
-use Maestro\Loader\GraphBuilder;
+use Maestro\Loader\GraphLoader;
 use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Loader\Processor\TaskAliasExpandingProcessor;
@@ -57,7 +57,7 @@ final class MaestroBuilder
     {
         return new Maestro(
             $this->buildLoader(),
-            new GraphBuilder(
+            new GraphLoader(
                 $this->purge
             ),
             $this->buildGraphWalker()

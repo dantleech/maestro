@@ -17,7 +17,7 @@ use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
-use Maestro\Loader\Loader;
+use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\MaestroBuilder;
 use Maestro\Node\StateObserver\LoggingStateObserver;
@@ -120,7 +120,7 @@ class MaestroExtension implements Extension
         });
 
         $container->register(self::SERVICE_MANIFEST_LOADER, function (Container $container) {
-            return new Loader(Cast::toString(getcwd()), [
+            return new ManifestLoader(Cast::toString(getcwd()), [
                 new PrototypeExpandingProcessor(),
             ]);
         });

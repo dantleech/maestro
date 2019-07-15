@@ -6,7 +6,7 @@ use Maestro\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
 
-class Loader
+class ManifestLoader
 {
     /**
      * @var array

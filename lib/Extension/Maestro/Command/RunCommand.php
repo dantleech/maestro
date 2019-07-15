@@ -7,7 +7,7 @@ use Maestro\Console\DumperRegistry;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
-use Maestro\Loader\Loader;
+use Maestro\Loader\ManifestLoader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
 use Maestro\Node\State;
@@ -52,7 +52,7 @@ class RunCommand extends Command
      */
     private $dumper;
 
-    public function __construct(MaestroBuilder $builder, Loader $loader, DumperRegistry $dumper)
+    public function __construct(MaestroBuilder $builder, ManifestLoader $loader, DumperRegistry $dumper)
     {
         parent::__construct();
         $this->builder = $builder;

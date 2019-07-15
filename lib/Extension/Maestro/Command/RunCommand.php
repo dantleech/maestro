@@ -7,7 +7,6 @@ use Maestro\Console\DumperRegistry;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
-use Maestro\Loader\ManifestLoader;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
 use Maestro\Node\State;

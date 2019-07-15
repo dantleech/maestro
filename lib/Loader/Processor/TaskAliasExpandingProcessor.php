@@ -2,7 +2,6 @@
 
 namespace Maestro\Loader\Processor;
 
-use Maestro\Loader\Exception\PrototypeNotFound;
 use Maestro\Loader\Processor;
 use Maestro\Loader\TaskMap;
 
@@ -20,5 +19,6 @@ class TaskAliasExpandingProcessor implements Processor
 
     public function process(array $manifest): array
     {
+        return $manifest;
     }
 }

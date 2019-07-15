@@ -5,6 +5,7 @@ namespace Maestro;
 use Maestro\Loader\GraphBuilder;
 use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
+use Maestro\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Loader\TaskMap;
 use Maestro\Node\ArtifactsResolver;
 use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
@@ -133,6 +134,7 @@ final class MaestroBuilder
     {
         return new ManifestLoader($this->workingDirectory, [
             new PrototypeExpandingProcessor(),
+            new TaskAliasExpandingProcessor(new TaskMap($this->taskMap))
         ]);
     }
 }

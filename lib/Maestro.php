@@ -30,8 +30,7 @@ class Maestro
         ManifestLoader $loader,
         GraphBuilder $builder,
         GraphWalker $walker
-    )
-    {
+    ) {
         $this->builder = $builder;
         $this->walker = $walker;
         $this->loader = $loader;

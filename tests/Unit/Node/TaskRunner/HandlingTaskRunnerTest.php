@@ -6,6 +6,8 @@ use Amp\Success;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\InvalidHandler;
 use Maestro\Node\Exception\InvalidHandlerResponse;
+use Maestro\Node\Node;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
@@ -39,7 +41,7 @@ class HandlingTaskRunnerTest extends TestCase
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
         });
-        $this->runner->run($task, Artifacts::empty());
+        $this->runner->run($task, new TaskContext(Node::create('foo'), Artifacts::empty()));
     }
 
     public function testThrowsExceptionIfHandlerDoesNotReturnPromise()
@@ -52,7 +54,7 @@ class HandlingTaskRunnerTest extends TestCase
                 return '';
             }
         });
-        $this->runner->run($task, Artifacts::empty());
+        $this->runner->run($task, $this->createTaskContext());
     }
 
     public function testRunsTask()
@@ -64,7 +66,7 @@ class HandlingTaskRunnerTest extends TestCase
                 return new Success();
             }
         });
-        $promise = $this->runner->run($task, Artifacts::empty());
+        $promise = $this->runner->run($task, $this->createTaskContext());
         $this->assertInstanceOf(Success::class, $promise);
     }
 
@@ -72,12 +74,17 @@ class HandlingTaskRunnerTest extends TestCase
     {
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function __invoke(NullTask $task, Artifacts $artifacts)
+            public function __invoke(NullTask $task, TaskContext $context)
             {
                 return new Success();
             }
         });
-        $promise = $this->runner->run($task, Artifacts::empty());
+        $promise = $this->runner->run($task, $this->createTaskContext());
         $this->assertInstanceOf(Success::class, $promise);
+    }
+
+    private function createTaskContext(): TaskContext
+    {
+        return new TaskContext(Node::create('root'), Artifacts::empty());
     }
 }

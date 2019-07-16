@@ -4,6 +4,8 @@ namespace Maestro\Node\Test;
 
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Artifacts;
+use Maestro\Node\Node;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskHandler;
 use RuntimeException;
 
@@ -31,6 +33,10 @@ final class TaskHandlerTester
         if (!is_callable($this->handler)) {
             throw new RuntimeException(sprintf('Handler "%s" must be callable', get_class($this->handler)));
         }
-        return \Amp\Promise\wait(call_user_func($this->handler, $task, Artifacts::create($artifacts)));
+        return \Amp\Promise\wait(call_user_func(
+            $this->handler,
+            $task,
+            new TaskContext(Node::create('test'), Artifacts::create($artifacts))
+        ));
     }
 }

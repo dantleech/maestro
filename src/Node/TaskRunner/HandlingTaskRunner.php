@@ -3,10 +3,10 @@
 namespace Maestro\Node\TaskRunner;
 
 use Amp\Promise;
-use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\InvalidHandler;
 use Maestro\Node\Exception\InvalidHandlerResponse;
 use Maestro\Node\Task;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
 
@@ -27,7 +27,7 @@ final class HandlingTaskRunner implements TaskRunner
         $this->registry = $registry;
     }
 
-    public function run(Task $task, Artifacts $artifacts): Promise
+    public function run(Task $task, TaskContext $context): Promise
     {
         $handler = $this->registry->getFor($task);
 
@@ -38,7 +38,7 @@ final class HandlingTaskRunner implements TaskRunner
             ));
         }
 
-        $promise = call_user_func($handler, $task, $artifacts);
+        $promise = call_user_func($handler, $task, $context);
 
         if (!$promise instanceof Promise) {
             throw new InvalidHandlerResponse(sprintf(

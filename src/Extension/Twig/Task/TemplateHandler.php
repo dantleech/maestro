@@ -7,6 +7,7 @@ use Amp\Success;
 use Maestro\Extension\Twig\EnvironmentFactory;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
@@ -24,16 +25,16 @@ class TemplateHandler implements TaskHandler
         $this->factory = $factory;
     }
 
-    public function __invoke(TemplateTask $task, Artifacts $artifacts): Promise
+    public function __invoke(TemplateTask $task, TaskContext $context): Promise
     {
-        $manifestDir = $artifacts->get('manifest.dir');
-        $workspace = $artifacts->get('workspace');
+        $manifestDir = $context->artifacts()->get('manifest.dir');
+        $workspace = $context->artifacts()->get('workspace');
         assert($workspace instanceof Workspace);
 
         $environment = $this->factory->get($manifestDir);
 
         try {
-            $rendered = $environment->render($task->path(), $artifacts->toArray());
+            $rendered = $environment->render($task->path(), $context->artifacts()->toArray());
         } catch (Error $error) {
             throw new TaskFailed($error->getMessage(), Artifacts::create([
                 'error' => $error->getMessage(),

@@ -8,6 +8,7 @@ use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\State;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\TaskRunner\NullTaskRunner;
 use Maestro\Node\Task\NullTask;
@@ -55,10 +56,10 @@ class NodeTest extends TestCase
 
     public function testSetsStateToFailWhenTaskFails()
     {
-        $taskRunner = $this->prophesize(TaskRunner::class);
-        $taskRunner->run(Argument::type(NullTask::class), Artifacts::empty())->willThrow(new TaskFailed('No'));
-
         $rootNode = Node::create('root');
+        $taskRunner = $this->prophesize(TaskRunner::class);
+        $taskRunner->run(Argument::type(NullTask::class), new TaskContext($rootNode, Artifacts::empty()))->willThrow(new TaskFailed('No'));
+
         $this->assertEquals(State::WAITING(), $rootNode->state());
         $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Artifacts::empty());
         Loop::run();

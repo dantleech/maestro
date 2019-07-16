@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Success;
-use Maestro\Node\Artifacts;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
 use function Safe\json_encode;
@@ -13,11 +13,11 @@ use function Safe\file_get_contents;
 
 class JsonFileHandler implements TaskHandler
 {
-    public function __invoke(JsonFileTask $task, Artifacts $artifacts)
+    public function __invoke(JsonFileTask $task, TaskContext $context)
     {
-        $manifestDir = $artifacts->get('manifest.dir');
+        $manifestDir = $context->artifacts()->get('manifest.dir');
         assert(is_string($manifestDir));
-        $workspace = $artifacts->get('workspace');
+        $workspace = $context->artifacts()->get('workspace');
         assert($workspace instanceof Workspace);
         $existingData = [];
 

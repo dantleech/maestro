@@ -10,6 +10,7 @@ use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDeciderDecision;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
 use Maestro\Node\State;
+use Maestro\Node\TaskContext;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\Task\NullTask;
 use Maestro\Tests\Unit\Node\NodeHelper;
@@ -56,10 +57,11 @@ class TaskRunningDeciderTest extends TestCase
     public function testRunsTask()
     {
         $task = new NullTask();
-        $artifacts = Artifacts::empty();
-
-        $this->taskRunner->run($task, $artifacts)->shouldBeCalled();
         $node = Node::create('n1', ['task'=> $task]);
+        $artifacts = Artifacts::empty();
+        $context = new TaskContext($node, $artifacts);
+
+        $this->taskRunner->run($task, $context)->shouldBeCalled();
         $graph = Graph::create([
             $node
         ], []);

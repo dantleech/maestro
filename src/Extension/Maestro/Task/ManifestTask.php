@@ -32,7 +32,7 @@ class ManifestTask implements Task
         return $this->path;
     }
 
-    public function artifacts(): array
+    public function context(): array
     {
         return $this->artifacts;
     }

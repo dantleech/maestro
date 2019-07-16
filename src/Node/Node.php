@@ -71,7 +71,10 @@ final class Node
             try {
                 $artifacts = yield $taskRunner->run(
                     $this->task,
-                    $artifacts
+                    new TaskContext(
+                        $this,
+                        $artifacts
+                    )
                 );
                 $this->artifacts = $artifacts ?: Artifacts::empty();
                 $this->changeState($stateMachine, State::DONE());

@@ -13,7 +13,4 @@ before_script:
     - composer install
 
 script:
-    - ./vendor/bin/php-cs-fixer fix --dry-run
-    - ./vendor/bin/phpstan analyse --level=7 lib
-    - ./vendor/bin/phpunit --exclude-group=tmux
-    - tmux new -s maestro-test "./vendor/bin/phpunit --group=tmux"
+    - composer test

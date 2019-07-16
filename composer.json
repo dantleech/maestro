@@ -32,7 +32,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Maestro\\": "lib/"
+            "Maestro\\": "src/"
         }
     },
     "autoload-dev": {
@@ -45,5 +45,15 @@
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
+    },
+    "scripts": {
+        "test": [
+            "@php-cs-fixer",
+            "@phpunit",
+            "@phpstan"
+        ],
+        "phpstan": "./vendor/bin/phpstan analyse --level=7 --ansi src",
+        "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --ansi --dry-run",
+        "phpunit": "./vendor/bin/phpunit --colors=always --exclude-group=tmux"
     }
 }

@@ -191,13 +191,13 @@ class MaestroExtension implements Extension
     {
         if (!isset($attrs['alias'])) {
             throw new RuntimeException(sprintf(
-                'Job handler "%s" must specify an alias',
+                'Handler "%s" must specify an alias',
                 $serviceId
             ));
         }
         if (!isset($attrs['class'])) {
             throw new RuntimeException(sprintf(
-                'Job handler "%s" must specify a job class',
+                'Handler "%s" must specify a command `class`',
                 $serviceId
             ));
         }

@@ -15,7 +15,7 @@
         "action": "./vendor/bin/php-cs-fixer fix"
       },
       {
-        "action": "./vendor/bin/phpstan analyse --level=7 lib"
+        "action": "./vendor/bin/phpstan analyse --level=7 src"
       }
     ]
   },

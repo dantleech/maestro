@@ -7,9 +7,23 @@ final class GraphBuilder
     private $nodes = [];
     private $edges = [];
 
+    private function __construct(array $nodes = [], array $edges = [])
+    {
+        $this->nodes = $nodes;
+        $this->edges = $edges;
+    }
+
     public static function create(): self
     {
         return new self();
+    }
+
+    public static function fromGraph(Graph $graph): self
+    {
+        return new self(
+            iterator_to_array($graph->nodes()),
+            iterator_to_array($graph->edges())
+        );
     }
 
     public function addNode(Node $node): self

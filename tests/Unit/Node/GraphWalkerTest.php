@@ -4,6 +4,7 @@ namespace Maestro\Tests\Unit\Node;
 
 use Closure;
 use Maestro\Node\Edge;
+use Maestro\Node\Exception\GraphModification;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
@@ -12,6 +13,7 @@ use Maestro\Node\NodeDeciderDecision;
 use Maestro\Node\GraphWalker;
 use Maestro\Node\State;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 
 class GraphWalkerTest extends TestCase
 {
@@ -130,6 +132,33 @@ class GraphWalkerTest extends TestCase
                 'n3' => State::CANCELLED(),
             ],
         ];
+    }
+
+    public function testGraphModificationExceptionResetsWalker()
+    {
+        $graph = Graph::create([
+            Node::create('root'),
+        ], []);
+        $newGraph = Graph::create([
+            Node::create('boot'),
+        ], []);
+
+        $visitor = $this->prophesize(NodeVisitor::class);
+        $called = false;
+        $visitor->decide(Argument::cetera())->will(function () use ($newGraph, &$called) {
+            if ($called) {
+                return NodeDeciderDecision::CONTINUE();
+            }
+            $called = true;
+            throw new GraphModification($newGraph);
+        });
+
+        $walker = new GraphWalker(new NodeStateMachine(), [
+            $visitor->reveal()
+        ]);
+
+        $graph = $walker->walk($graph);
+        $this->assertEquals('boot', $graph->roots()->get('boot')->id());
     }
 
     private function createVisitor(array $decisions): NodeVisitor

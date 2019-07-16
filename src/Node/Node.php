@@ -4,6 +4,7 @@ namespace Maestro\Node;
 
 use Amp\Success;
 use Maestro\Loader\Instantiator;
+use Maestro\Node\Exception\GraphModification;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Task\NullTask;
 
@@ -83,6 +84,9 @@ final class Node
                 );
                 $this->artifacts = $artifacts ?: Artifacts::empty();
                 $this->changeState($stateMachine, State::DONE());
+            } catch (GraphModification $graphModification) {
+                $this->changeState($stateMachine, State::DONE());
+                throw $graphModification;
             } catch (TaskFailed $failed) {
                 $this->artifacts = $failed->artifacts();
                 $this->changeState($stateMachine, State::FAILED());

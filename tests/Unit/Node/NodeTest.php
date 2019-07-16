@@ -4,11 +4,13 @@ namespace Maestro\Tests\Unit\Node;
 
 use Amp\Loop;
 use Maestro\Node\Artifacts;
+use Maestro\Node\Exception\GraphModification;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\State;
+use Maestro\Node\Task;
 use Maestro\Node\TaskContext;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\TaskRunner\NullTaskRunner;
@@ -57,6 +59,32 @@ class NodeTest extends TestCase
             Graph::create([$rootNode], [])
         );
         Loop::run();
+        $this->assertEquals(State::DONE(), $rootNode->state());
+    }
+
+    public function testGraphRebuildAndSetsStateToDoneException()
+    {
+        $graph = Graph::create([Node::create('root')], []);
+        $taskRunner = $this->prophesize(TaskRunner::class);
+        $taskRunner->run(
+            Argument::type(Task::class),
+            Argument::type(TaskContext::class)
+        )->willThrow(new GraphModification($graph));
+
+        $rootNode = Node::create('root');
+        $this->assertEquals(State::WAITING(), $rootNode->state());
+        try {
+            $rootNode->run(
+                $this->stateMachine->reveal(),
+                $taskRunner->reveal(),
+                Artifacts::empty(),
+                Graph::create([$rootNode], [])
+            );
+
+            Loop::run();
+        } catch (GraphModification $modification) {
+        }
+
         $this->assertEquals(State::DONE(), $rootNode->state());
     }
 

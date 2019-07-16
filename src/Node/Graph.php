@@ -56,6 +56,11 @@ class Graph
         return new self(Nodes::fromNodes($nodes), Edges::fromEdges($edges));
     }
 
+    public function builder(): GraphBuilder
+    {
+        return GraphBuilder::fromGraph($this);
+    }
+
     public function roots(): Nodes
     {
         $nodesWithNoOutboundEdges = array_diff(

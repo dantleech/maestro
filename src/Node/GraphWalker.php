@@ -2,6 +2,8 @@
 
 namespace Maestro\Node;
 
+use Maestro\Node\Exception\GraphModification;
+
 class GraphWalker
 {
     /**
@@ -22,11 +24,17 @@ class GraphWalker
         $this->stateMachine = $stateMachine;
     }
 
-    public function walk(Graph $graph): void
+    public function walk(Graph $graph): Graph
     {
-        foreach ($graph->roots() as $rootNode) {
-            $this->walkNode($graph, $rootNode);
+        try {
+            foreach ($graph->roots() as $rootNode) {
+                $this->walkNode($graph, $rootNode);
+            }
+        } catch (GraphModification $modification) {
+            return $this->walk($modification->replacementGraph());
         }
+
+        return $graph;
     }
 
     private function walkNode(Graph $graph, Node $node, bool $cancel = false): void

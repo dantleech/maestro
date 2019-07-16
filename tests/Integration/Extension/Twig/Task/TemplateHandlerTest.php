@@ -6,7 +6,7 @@ use Maestro\Extension\Twig\EnvironmentFactory;
 use Maestro\Extension\Twig\Task\TemplateHandler;
 use Maestro\Extension\Twig\Task\TemplateTask;
 use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Test\TaskHandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 
@@ -43,7 +43,7 @@ Hello, Dave.
 EOT
         );
 
-        HandlerTester::create($this->handler)->handle(TemplateTask::class, [
+        TaskHandlerTester::create($this->handler)->handle(TemplateTask::class, [
             'path' => 'template.twig',
             'targetPath' => 'GREETINGS',
         ], [
@@ -65,7 +65,7 @@ EOT
         );
 
         try {
-            HandlerTester::create($this->handler)->handle(TemplateTask::class, [
+            TaskHandlerTester::create($this->handler)->handle(TemplateTask::class, [
                 'path' => 'template_2.twig',
                 'targetPath' => 'GREETINGS',
             ], [
@@ -86,7 +86,7 @@ EOT
 Hello, Dave.
 EOT
         );
-        HandlerTester::create($this->handler)->handle(TemplateTask::class, [
+        TaskHandlerTester::create($this->handler)->handle(TemplateTask::class, [
             'path' => 'template_3.twig',
             'targetPath' => 'foobar/GREETINGS',
         ], [

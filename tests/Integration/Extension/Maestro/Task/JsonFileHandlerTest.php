@@ -4,7 +4,7 @@ namespace Maestro\Tests\Integration\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\JsonFileHandler;
 use Maestro\Extension\Maestro\Task\JsonFileTask;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Test\TaskHandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 use function Safe\json_decode;
@@ -38,7 +38,7 @@ class JsonFileHandlerTest extends IntegrationTestCase
         if (null !== $existingData) {
             file_put_contents($this->packageWorkspace->absolutePath($config['targetPath']), json_encode($existingData, JSON_PRETTY_PRINT));
         }
-        $artifacts = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
+        $artifacts = TaskHandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
             'manifest.dir' => $this->workspace()->path('/'),
             'workspace' => $this->packageWorkspace,
         ]);

@@ -7,7 +7,7 @@ use Maestro\Node\Artifacts;
 use Maestro\Node\TaskHandler;
 use RuntimeException;
 
-final class HandlerTester
+final class TaskHandlerTester
 {
     /**
      * @var TaskHandler

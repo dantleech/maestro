@@ -7,7 +7,7 @@ use Maestro\Loader\Instantiator;
 use Maestro\Script\EnvVars;
 use Maestro\Node\Artifacts;
 use Maestro\Extension\Maestro\Task\PackageTask;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Test\TaskHandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;
@@ -47,7 +47,7 @@ class PackageHandlerTest extends IntegrationTestCase
 
     public function testProvidesConfiguredArtifacts()
     {
-        $artifacts = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
+        $artifacts = TaskHandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
             PackageTask::class,
             [
                 'name' => 'foobar',

@@ -10,7 +10,7 @@ use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Test\TaskHandlerTester;
 use Maestro\Workspace\Workspace;
 use PHPUnit\Framework\TestCase;
 
@@ -43,7 +43,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(0, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $artifacts = TaskHandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
@@ -71,7 +71,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $artifacts = TaskHandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
@@ -97,7 +97,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $artifacts = TaskHandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,

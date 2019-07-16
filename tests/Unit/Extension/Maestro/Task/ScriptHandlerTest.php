@@ -10,7 +10,7 @@ use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Test\TaskHandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 
@@ -33,7 +33,7 @@ class ScriptHandlerTest extends IntegrationTestCase
     {
         $this->primeScriptRunner(0, 'Yes', 'No');
 
-        $artifacts = HandlerTester::create(
+        $artifacts = TaskHandlerTester::create(
             new ScriptHandler(
                 $this->scriptRunner->reveal(),
                 )
@@ -58,7 +58,7 @@ class ScriptHandlerTest extends IntegrationTestCase
         $this->primeScriptRunner(1, 'Yes', 'No');
 
         try {
-            $artifacts = HandlerTester::create(
+            $artifacts = TaskHandlerTester::create(
                 new ScriptHandler(
                     $this->scriptRunner->reveal(),
                     )

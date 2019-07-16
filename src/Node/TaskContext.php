@@ -6,13 +6,16 @@ class TaskContext
 {
     private $containingNode;
     private $artifacts;
+    private $graph;
 
     public function __construct(
-        Node $containingNode,
-        Artifacts $artifacts
+        ?Node $containingNode = null,
+        ?Artifacts $artifacts = null,
+        ?Graph $graph = null
     ) {
-        $this->containingNode = $containingNode;
-        $this->artifacts = $artifacts;
+        $this->containingNode = $containingNode ?: Node::create('root');
+        $this->artifacts = $artifacts ?: Artifacts::empty();
+        $this->graph = $graph ?: Graph::create([$this->containingNode], []);
     }
 
     public function artifacts(): Artifacts
@@ -23,5 +26,10 @@ class TaskContext
     public function containingNode(): Node
     {
         return $this->containingNode;
+    }
+
+    public function graph(): Graph
+    {
+        return $this->graph;
     }
 }

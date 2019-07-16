@@ -63,9 +63,13 @@ final class Node
         $this->changeState($stateMachine, State::CANCELLED());
     }
 
-    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Artifacts $artifacts): void
-    {
-        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $artifacts) {
+    public function run(
+        NodeStateMachine $stateMachine,
+        TaskRunner $taskRunner,
+        Artifacts $artifacts,
+        Graph $graph
+    ): void {
+        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $artifacts, $graph) {
             $this->changeState($stateMachine, State::BUSY());
 
             try {
@@ -73,7 +77,8 @@ final class Node
                     $this->task,
                     new TaskContext(
                         $this,
-                        $artifacts
+                        $artifacts,
+                        $graph
                     )
                 );
                 $this->artifacts = $artifacts ?: Artifacts::empty();

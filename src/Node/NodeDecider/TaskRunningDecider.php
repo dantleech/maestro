@@ -42,7 +42,8 @@ class TaskRunningDecider implements NodeVisitor
             $node->run(
                 $stateMachine,
                 $this->runner,
-                $this->artifactResolver->resolveFor($graph, $node)
+                $this->artifactResolver->resolveFor($graph, $node),
+                $graph
             );
         }
 

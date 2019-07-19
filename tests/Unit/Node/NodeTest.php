@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Unit\Node;
 
 use Amp\Loop;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
@@ -48,7 +48,7 @@ class NodeTest extends TestCase
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        $rootNode->run($this->stateMachine->reveal(), $taskRunner, Artifacts::empty());
+        $rootNode->run($this->stateMachine->reveal(), $taskRunner, Environment::empty());
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
     }
@@ -56,11 +56,11 @@ class NodeTest extends TestCase
     public function testSetsStateToFailWhenTaskFails()
     {
         $taskRunner = $this->prophesize(TaskRunner::class);
-        $taskRunner->run(Argument::type(NullTask::class), Artifacts::empty())->willThrow(new TaskFailed('No'));
+        $taskRunner->run(Argument::type(NullTask::class), Environment::empty())->willThrow(new TaskFailed('No'));
 
         $rootNode = Node::create('root');
         $this->assertEquals(State::WAITING(), $rootNode->state());
-        $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Artifacts::empty());
+        $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Environment::empty());
         Loop::run();
         $this->assertEquals(State::FAILED(), $rootNode->state());
     }

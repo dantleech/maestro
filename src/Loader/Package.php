@@ -23,7 +23,7 @@ class Package
     /**
      * @var array
      */
-    private $artifacts;
+    private $environment;
 
     /**
      * @var array
@@ -35,7 +35,7 @@ class Package
         array $tasks = [],
         array $loaders = [],
         bool $purgeWorkspace = false,
-        array $artifacts = []
+        array $environment = []
     ) {
         $this->name = $name;
 
@@ -54,7 +54,7 @@ class Package
         }
 
         $this->purgeWorkspace = $purgeWorkspace;
-        $this->artifacts = $artifacts;
+        $this->environment = $environment;
     }
 
     /**
@@ -75,9 +75,9 @@ class Package
         return $this->purgeWorkspace;
     }
 
-    public function artifacts(): array
+    public function environment(): array
     {
-        return $this->artifacts;
+        return $this->environment;
     }
 
     /**

@@ -29,7 +29,7 @@ class GraphConstructor
         $builder = GraphBuilder::create();
         $builder->addNode(
             Node::create(self::NODE_ROOT, [
-                'task' => new ManifestTask($manifest->path(), $manifest->artifacts())
+                'task' => new ManifestTask($manifest->path(), $manifest->environment())
             ])
         );
         $this->walkPackages($manifest, $builder);
@@ -49,7 +49,7 @@ class GraphConstructor
                         [
                             'name' => $package->name(),
                             'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
-                            'artifacts' => $package->artifacts()
+                            'environment' => $package->environment()
                         ]
                     ),
                 ]

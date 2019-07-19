@@ -43,7 +43,7 @@ Maestro depends on a `maestro.json` configuration file such as:
 
 ```javascript
 {
-    "artifacts": {
+    "environment": {
         "php_versions": [ 7.1, 7.2, 7.3 ],
         "phpstan_level": 7
     },
@@ -88,7 +88,7 @@ be re-written as:
 
 ```javascript
 {
-    "artifacts": {
+    "environment": {
         "my-random-param1": "foobar",
         "php_versions": [ "3", "6.0", "7.4" ]
     }

@@ -38,7 +38,7 @@ class JsonFileHandlerTest extends IntegrationTestCase
         if (null !== $existingData) {
             file_put_contents($this->packageWorkspace->absolutePath($config['targetPath']), json_encode($existingData, JSON_PRETTY_PRINT));
         }
-        $artifacts = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
+        $environment = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
             'manifest.dir' => $this->workspace()->path('/'),
             'workspace' => $this->packageWorkspace,
         ]);
@@ -104,9 +104,9 @@ class JsonFileHandlerTest extends IntegrationTestCase
 }
 EOT
 
-    );
+        );
 
-        $artifacts = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, [
+        $environment = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, [
             'targetPath' => 'composer.json',
             'merge' => [
                 "require" => [

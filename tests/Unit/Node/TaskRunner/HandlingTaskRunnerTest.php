@@ -4,7 +4,7 @@ namespace Maestro\Tests\Unit\Node\TaskRunner;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
@@ -36,25 +36,25 @@ class HandlingTaskRunnerTest extends TestCase
     {
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function execute(Task $task, Artifacts $artifacts): Promise
+            public function execute(Task $task, Environment $environment): Promise
             {
                 return new Success();
             }
         });
-        $promise = $this->runner->run($task, Artifacts::empty());
+        $promise = $this->runner->run($task, Environment::empty());
         $this->assertInstanceOf(Success::class, $promise);
     }
 
-    public function testRunsTaskWithArtifacts()
+    public function testRunsTaskWithEnvironment()
     {
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function execute(Task $task, Artifacts $artifacts): Promise
+            public function execute(Task $task, Environment $environment): Promise
             {
                 return new Success();
             }
         });
-        $promise = $this->runner->run($task, Artifacts::empty());
+        $promise = $this->runner->run($task, Environment::empty());
         $this->assertInstanceOf(Success::class, $promise);
     }
 }

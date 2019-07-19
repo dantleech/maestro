@@ -5,12 +5,12 @@ namespace Maestro\Node;
 use Maestro\Node\Exception\ArtifactNotFound;
 
 /**
- * Artifacts are the map made available by ancestoral tasks.
+ * Environment are the map made available by ancestoral tasks.
  *
  * They can be used for example, to make the package name available to
  * dependent tasks, or provide the workspace, passwords, whatever.
  */
-final class Artifacts
+final class Environment
 {
     /**
      * @var array
@@ -36,7 +36,7 @@ final class Artifacts
     {
         if (!isset($this->map[$key])) {
             throw new ArtifactNotFound(sprintf(
-                'Artifact "%s" not known, probably caused by a missing dependency. Known artifacts: "%s"',
+                'Artifact "%s" not known, probably caused by a missing dependency. Known keys: "%s"',
                 $key,
                 implode('", "', array_keys($this->map))
             ));
@@ -45,9 +45,9 @@ final class Artifacts
         return $this->map[$key];
     }
 
-    public function merge(Artifacts $artifacts): self
+    public function merge(Environment $environment): self
     {
-        return self::create(array_merge($this->map, $artifacts->map));
+        return self::create(array_merge($this->map, $environment->map));
     }
 
     public function toArray(): array

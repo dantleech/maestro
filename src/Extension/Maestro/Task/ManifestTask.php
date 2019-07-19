@@ -14,12 +14,12 @@ class ManifestTask implements Task
     /**
      * @var array
      */
-    private $artifacts;
+    private $environment;
 
-    public function __construct(?string $path, array $artifacts = [])
+    public function __construct(?string $path, array $environment = [])
     {
         $this->path = $path;
-        $this->artifacts = $artifacts;
+        $this->environment = $environment;
     }
 
     public function description(): string
@@ -32,8 +32,8 @@ class ManifestTask implements Task
         return $this->path;
     }
 
-    public function artifacts(): array
+    public function environment(): array
     {
-        return $this->artifacts;
+        return $this->environment;
     }
 }

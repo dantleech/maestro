@@ -6,7 +6,7 @@ use Amp\Promise;
 use Amp\Success;
 use Maestro\Node\Task;
 use Maestro\Script\EnvVars;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
@@ -24,7 +24,7 @@ class PackageHandler implements TaskHandler
         $this->factory = $factory;
     }
 
-    public function execute(Task $package, Artifacts $artifacts): Promise
+    public function execute(Task $package, Environment $environment): Promise
     {
         assert($package instanceof PackageTask);
         $workspace = $this->factory->createNamedWorkspace($package->name());
@@ -35,7 +35,7 @@ class PackageHandler implements TaskHandler
 
         $this->createWorkspaceFolderIfNotExists($workspace);
 
-        return new Success(Artifacts::create(array_merge($package->artifacts(), [
+        return new Success(Environment::create(array_merge($package->environment(), [
             'package' => $package,
             'workspace' => $workspace,
             'env' => EnvVars::create([

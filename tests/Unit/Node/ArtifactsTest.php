@@ -2,52 +2,52 @@
 
 namespace Maestro\Tests\Unit\Node;
 
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\ArtifactNotFound;
 use PHPUnit\Framework\TestCase;
 
-class ArtifactsTest extends TestCase
+class EnvironmentTest extends TestCase
 {
     public function testReturnsArtifact()
     {
-        $artifacts = Artifacts::create([
+        $environment = Environment::create([
             'foo' => 'bar'
         ]);
-        $this->assertEquals('bar', $artifacts->get('foo'));
+        $this->assertEquals('bar', $environment->get('foo'));
     }
 
     public function testHasMethodToDetermineIfArtifactExists()
     {
-        $artifacts = Artifacts::create([
+        $environment = Environment::create([
             'foo' => 'bar'
         ]);
-        $this->assertTrue($artifacts->has('foo'));
-        $this->assertFalse($artifacts->has('bar'));
+        $this->assertTrue($environment->has('foo'));
+        $this->assertFalse($environment->has('bar'));
     }
 
     public function testThrowsExceptionUnknownArtifact()
     {
         $this->expectException(ArtifactNotFound::class);
-        $artifacts = Artifacts::create([
+        $environment = Environment::create([
             'foo' => 'bar'
         ]);
-        $artifacts->get('car');
+        $environment->get('car');
     }
 
-    public function testMergesArtifacts()
+    public function testMergesEnvironment()
     {
-        $artifacts1 = Artifacts::create([
+        $environment1 = Environment::create([
             'foo' => 'bar'
         ]);
-        $artifacts2 = Artifacts::create([
+        $environment2 = Environment::create([
             'foo' => 'doo',
             'bar' => 'foo'
         ]);
-        $expected = Artifacts::create([
+        $expected = Environment::create([
             'foo' => 'doo',
             'bar' => 'foo'
         ]);
 
-        $this->assertEquals($expected, $artifacts1->merge($artifacts2));
+        $this->assertEquals($expected, $environment1->merge($environment2));
     }
 }

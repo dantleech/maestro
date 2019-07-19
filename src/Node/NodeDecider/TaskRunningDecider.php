@@ -2,7 +2,7 @@
 
 namespace Maestro\Node\NodeDecider;
 
-use Maestro\Node\ArtifactsResolver;
+use Maestro\Node\EnvironmentResolver;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
@@ -18,11 +18,11 @@ class TaskRunningDecider implements NodeVisitor
     private $runner;
 
     /**
-     * @var ArtifactsResolver
+     * @var EnvironmentResolver
      */
     private $artifactResolver;
 
-    public function __construct(TaskRunner $runner, ArtifactsResolver $resolver)
+    public function __construct(TaskRunner $runner, EnvironmentResolver $resolver)
     {
         $this->runner = $runner;
         $this->artifactResolver = $resolver;

@@ -1,25 +1,25 @@
 <?php
 
-namespace Maestro\Tests\Unit\Node\ArtifactsResolver;
+namespace Maestro\Tests\Unit\Node\EnvironmentResolver;
 
 use Closure;
-use Maestro\Node\Artifacts;
-use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
+use Maestro\Node\Environment;
+use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
 use Maestro\Node\Edge;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
-class AggregatingArtifactsResolverTest extends TestCase
+class AggregatingEnvironmentResolverTest extends TestCase
 {
     /**
      * @dataProvider provideResolveFor
      */
-    public function testResolveFor(Closure $graphFactory, Node $node, array $expectedArtifacts)
+    public function testResolveFor(Closure $graphFactory, Node $node, array $expectedEnvironment)
     {
         $graph = $graphFactory($node);
-        $this->assertEquals($expectedArtifacts, (new AggregatingArtifactsResolver())->resolveFor($graph, $node)->toArray());
+        $this->assertEquals($expectedEnvironment, (new AggregatingEnvironmentResolver())->resolveFor($graph, $node)->toArray());
     }
 
     public function provideResolveFor()
@@ -34,10 +34,10 @@ class AggregatingArtifactsResolverTest extends TestCase
             []
         ];
 
-        yield 'returns parent artifacts' => [
+        yield 'returns parent environment' => [
             function (Node $node) {
                 return Graph::create([
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('root'),
                         ['foo' => 'bar']
                     ),
@@ -50,14 +50,14 @@ class AggregatingArtifactsResolverTest extends TestCase
             ['foo' => 'bar']
         ];
 
-        yield 'merges ancestor artifacts' => [
+        yield 'merges ancestor environment' => [
             function (Node $node) {
                 return Graph::create([
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n1'),
                         ['foo' => 'bar']
                     ),
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n2'),
                         ['bar' => 'foo']
                     ),
@@ -74,15 +74,15 @@ class AggregatingArtifactsResolverTest extends TestCase
         yield 'closer ancestors override more distant ones' => [
             function (Node $node) {
                 return Graph::create([
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n1'),
                         ['foo' => 'bar']
                     ),
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n2'),
                         ['bar' => 'foo']
                     ),
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n3'),
                         ['bar' => 'baz']
                     ),
@@ -100,11 +100,11 @@ class AggregatingArtifactsResolverTest extends TestCase
         yield 'parallel dependencies are merged' => [
             function (Node $node) {
                 return Graph::create([
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n1'),
                         ['foo' => 'bar']
                     ),
-                    $this->setArtifacts(
+                    $this->setEnvironment(
                         Node::create('n2'),
                         ['bar' => 'foo']
                     ),
@@ -119,12 +119,12 @@ class AggregatingArtifactsResolverTest extends TestCase
         ];
     }
 
-    private function setArtifacts(Node $node, array $array): Node
+    private function setEnvironment(Node $node, array $array): Node
     {
         $reflection = new ReflectionClass(Node::class);
-        $property = $reflection->getProperty('artifacts');
+        $property = $reflection->getProperty('environment');
         $property->setAccessible(true);
-        $property->setValue($node, Artifacts::create($array));
+        $property->setValue($node, Environment::create($array));
         return $node;
     }
 }

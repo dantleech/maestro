@@ -5,7 +5,7 @@ namespace Maestro\Extension\Maestro\Task;
 use Amp\Promise;
 use Maestro\Node\Task;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
 
@@ -21,16 +21,16 @@ class ScriptHandler implements TaskHandler
         $this->scriptRunner = $scriptRunner;
     }
 
-    public function execute(Task $script, Artifacts $artifacts): Promise
+    public function execute(Task $script, Environment $environment): Promise
     {
         assert($script instanceof ScriptTask);
-        return \Amp\call(function () use ($script, $artifacts) {
-            $path = $artifacts->get('workspace')->absolutePath();
-            $env = $artifacts->get('env')->toArray();
+        return \Amp\call(function () use ($script, $environment) {
+            $path = $environment->get('workspace')->absolutePath();
+            $env = $environment->get('env')->toArray();
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
 
-            $artifacts = Artifacts::create([
+            $environment = Environment::create([
                 'exitCode' => $result->exitCode(),
                 'stderr' => $result->lastStderr(),
                 'stdout' => $result->lastStdout(),
@@ -40,10 +40,10 @@ class ScriptHandler implements TaskHandler
                 throw new TaskFailed(sprintf(
                     'Exited with code "%s"',
                     $result->exitCode()
-                ), $artifacts);
+                ), $environment);
             }
 
-            return $artifacts;
+            return $environment;
         });
     }
 }

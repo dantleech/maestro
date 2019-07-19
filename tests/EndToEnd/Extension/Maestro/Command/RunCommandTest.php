@@ -287,7 +287,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json --report=artifacts');
+        $process = $this->command('run plan.json --report=environment');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('manifest.path', $process->getOutput());
     }

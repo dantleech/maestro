@@ -3,7 +3,7 @@
 namespace Maestro\Node\TaskRunner;
 
 use Amp\Promise;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Task;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
@@ -25,10 +25,10 @@ final class HandlingTaskRunner implements TaskRunner
         $this->registry = $registry;
     }
 
-    public function run(Task $task, Artifacts $artifacts): Promise
+    public function run(Task $task, Environment $environment): Promise
     {
         $handler = $this->registry->getFor($task);
-        $promise = $handler->execute($task, $artifacts);
+        $promise = $handler->execute($task, $environment);
 
         return $promise;
     }

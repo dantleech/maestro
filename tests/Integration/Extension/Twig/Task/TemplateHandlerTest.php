@@ -74,7 +74,7 @@ EOT
             ]);
             $this->fail('No exception thrown');
         } catch (TaskFailed $failed) {
-            $this->assertNotEmpty($failed->artifacts()->get('error'));
+            $this->assertNotEmpty($failed->environment()->get('error'));
         }
     }
 

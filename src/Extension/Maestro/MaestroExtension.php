@@ -6,8 +6,9 @@ use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Dumper\DotDumper;
-use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
+use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
+use Maestro\Extension\Maestro\Dumper\LeafEnvironmentDumper;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
@@ -223,9 +224,9 @@ class MaestroExtension implements Extension
             return new OverviewRenderer();
         }, [ self::TAG_DUMPER => [ 'name' => 'overview' ] ]);
 
-        $container->register('dumper.artifacts', function (Container $container) {
+        $container->register('dumper.environment', function (Container $container) {
             return new LeafArtifactsDumper();
-        }, [ self::TAG_DUMPER => [ 'name' => 'artifacts' ] ]);
+        }, [ self::TAG_DUMPER => [ 'name' => 'environment' ] ]);
 
         $container->register('dumper.targets', function (Container $container) {
             return new TargetDumper();

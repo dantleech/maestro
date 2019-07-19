@@ -3,7 +3,7 @@
 namespace Maestro\Node\Test;
 
 use Maestro\Loader\Instantiator;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\TaskHandler;
 
 final class HandlerTester
@@ -23,10 +23,10 @@ final class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $parameters, array $artifacts): ?Artifacts
+    public function handle(string $taskFqn, array $parameters, array $environment): ?Environment
     {
         $task = Instantiator::create()->instantiate($taskFqn, $parameters);
 
-        return \Amp\Promise\wait($this->handler->execute($task, Artifacts::create($artifacts)));
+        return \Amp\Promise\wait($this->handler->execute($task, Environment::create($environment)));
     }
 }

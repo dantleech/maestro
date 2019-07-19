@@ -9,11 +9,11 @@ use PHPUnit\Framework\TestCase;
 
 class ManifestHandlerTest extends TestCase
 {
-    public function testAddsArtifacts()
+    public function testAddsEnvironment()
     {
-        $artifacts = HandlerTester::create(new ManifestHandler())->handle(ManifestTask::class, [
+        $environment = HandlerTester::create(new ManifestHandler())->handle(ManifestTask::class, [
             'path' => 'foobar',
-            'artifacts' => [
+            'environment' => [
                 'hello' => 'goodbye',
             ],
         ], []);
@@ -22,6 +22,6 @@ class ManifestHandlerTest extends TestCase
             'manifest.path' => 'foobar',
             'manifest.dir' => '',
             'hello' => 'goodbye',
-        ], $artifacts->toArray());
+        ], $environment->toArray());
     }
 }

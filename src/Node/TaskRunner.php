@@ -6,5 +6,5 @@ use Amp\Promise;
 
 interface TaskRunner
 {
-    public function run(Task $task, Artifacts $artifacts): Promise;
+    public function run(Task $task, Environment $environment): Promise;
 }

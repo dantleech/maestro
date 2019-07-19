@@ -7,7 +7,7 @@ use Amp\Success;
 use Maestro\Node\Task;
 use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
@@ -30,12 +30,12 @@ class GitHandler implements TaskHandler
         $this->rootWorkspacePath = $rootWorkspacePath;
     }
 
-    public function execute(Task $task, Artifacts $artifacts): Promise
+    public function execute(Task $task, Environment $environment): Promise
     {
         assert($task instanceof GitTask);
-        return \Amp\call(function () use ($task, $artifacts) {
-            $workspace = $artifacts->get('workspace');
-            $env = $artifacts->get('env');
+        return \Amp\call(function () use ($task, $environment) {
+            $workspace = $environment->get('workspace');
+            $env = $environment->get('env');
             assert($env instanceof EnvVars);
             assert($workspace instanceof Workspace);
 
@@ -54,14 +54,14 @@ class GitHandler implements TaskHandler
                     'Git clone failed with exit code "%s": %s',
                     $result->exitCode(),
                     $result->lastStderr()
-                ), Artifacts::create([
+                ), Environment::create([
                     'exitCode' => $result->exitCode(),
                     'stderr' => $result->lastStderr(),
                     'stdout' => $result->lastStdout(),
                 ]));
             }
 
-            return Artifacts::create([]);
+            return Environment::create([]);
         });
     }
 

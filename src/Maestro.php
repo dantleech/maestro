@@ -2,7 +2,7 @@
 
 namespace Maestro;
 
-use Maestro\Loader\GraphLoader;
+use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\ManifestLoader;
 use Maestro\Node\Graph;
 use Maestro\Node\GraphWalker;
@@ -12,9 +12,9 @@ use RuntimeException;
 class Maestro
 {
     /**
-     * @var GraphLoader
+     * @var GraphConstructor
      */
-    private $builder;
+    private $constructor;
 
     /**
      * @var GraphWalker
@@ -28,10 +28,10 @@ class Maestro
 
     public function __construct(
         ManifestLoader $loader,
-        GraphLoader $builder,
+        GraphConstructor $constructor,
         GraphWalker $walker
     ) {
-        $this->builder = $builder;
+        $this->constructor = $constructor;
         $this->walker = $walker;
         $this->loader = $loader;
     }
@@ -43,7 +43,7 @@ class Maestro
 
     public function buildGraph(Manifest $manifest, ?string $query, ?int $depth): Graph
     {
-        $graph = $this->builder->build($manifest);
+        $graph = $this->constructor->construct($manifest);
 
         if ($query) {
             $targets = $graph->nodes()->query($query);

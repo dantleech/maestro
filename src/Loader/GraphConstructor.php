@@ -9,7 +9,7 @@ use Maestro\Node\Graph;
 use Maestro\Node\GraphBuilder;
 use Maestro\Node\Node;
 
-class GraphLoader
+class GraphConstructor
 {
     const NODE_ROOT = 'root';
 
@@ -23,7 +23,7 @@ class GraphLoader
         $this->purge = $purge;
     }
 
-    public function build(
+    public function construct(
         Manifest $manifest
     ): Graph {
         $builder = GraphBuilder::create();

@@ -32,7 +32,7 @@ class PackageHandlerTest extends IntegrationTestCase
     public function testProducesArtifacts()
     {
         $package = new PackageTask('hello');
-        $artifacts = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        $artifacts = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Artifacts::empty()));
         $this->assertInstanceOf(Artifacts::class, $artifacts);
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
         $this->assertEquals([
@@ -69,10 +69,11 @@ class PackageHandlerTest extends IntegrationTestCase
             'purgeWorkspace' => true
         ]);
 
-        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Artifacts::empty()));
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
+
         file_put_contents($workspace->absolutePath() . '/README', 'Hello');
-        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Artifacts::empty()));
         $this->assertFileNotExists($workspace->absolutePath() . '/README');
     }
 }

@@ -4,6 +4,7 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Node\Task;
 use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Artifacts;
@@ -29,8 +30,9 @@ class GitHandler implements TaskHandler
         $this->rootWorkspacePath = $rootWorkspacePath;
     }
 
-    public function __invoke(GitTask $task, Artifacts $artifacts): Promise
+    public function execute(Task $task, Artifacts $artifacts): Promise
     {
+        assert($task instanceof GitTask);
         return \Amp\call(function () use ($task, $artifacts) {
             $workspace = $artifacts->get('workspace');
             $env = $artifacts->get('env');

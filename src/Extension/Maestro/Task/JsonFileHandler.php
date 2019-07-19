@@ -2,7 +2,9 @@
 
 namespace Maestro\Extension\Maestro\Task;
 
+use Amp\Promise;
 use Amp\Success;
+use Maestro\Node\Task;
 use Maestro\Node\Artifacts;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
@@ -13,8 +15,9 @@ use function Safe\file_get_contents;
 
 class JsonFileHandler implements TaskHandler
 {
-    public function __invoke(JsonFileTask $task, Artifacts $artifacts)
+    public function execute(Task $task, Artifacts $artifacts): Promise
     {
+        assert($task instanceof JsonFileTask);
         $manifestDir = $artifacts->get('manifest.dir');
         assert(is_string($manifestDir));
         $workspace = $artifacts->get('workspace');

@@ -4,6 +4,7 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Node\Task;
 use Maestro\Script\EnvVars;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
@@ -23,8 +24,9 @@ class PackageHandler implements TaskHandler
         $this->factory = $factory;
     }
 
-    public function __invoke(PackageTask $package): Promise
+    public function execute(Task $package, Artifacts $artifacts): Promise
     {
+        assert($package instanceof PackageTask);
         $workspace = $this->factory->createNamedWorkspace($package->name());
 
         if ($package->purgeWorkspace()) {

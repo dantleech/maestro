@@ -4,6 +4,7 @@ namespace Maestro\Node\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Node\Artifacts;
 use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
 
@@ -14,7 +15,7 @@ class NullHandler implements TaskHandler
      */
     private $invoked = false;
 
-    public function __invoke(Task $task): Promise
+    public function execute(Task $task, Artifacts $artifacts): Promise
     {
         $this->invoked = true;
         return new Success();

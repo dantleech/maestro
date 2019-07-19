@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
+use Maestro\Node\Task;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
@@ -20,8 +21,9 @@ class ScriptHandler implements TaskHandler
         $this->scriptRunner = $scriptRunner;
     }
 
-    public function __invoke(ScriptTask $script, Artifacts $artifacts): Promise
+    public function execute(Task $script, Artifacts $artifacts): Promise
     {
+        assert($script instanceof ScriptTask);
         return \Amp\call(function () use ($script, $artifacts) {
             $path = $artifacts->get('workspace')->absolutePath();
             $env = $artifacts->get('env')->toArray();

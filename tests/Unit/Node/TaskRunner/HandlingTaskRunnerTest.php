@@ -2,10 +2,10 @@
 
 namespace Maestro\Tests\Unit\Node\TaskRunner;
 
+use Amp\Promise;
 use Amp\Success;
 use Maestro\Node\Artifacts;
-use Maestro\Node\Exception\InvalidHandler;
-use Maestro\Node\Exception\InvalidHandlerResponse;
+use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
 use Maestro\Node\TaskHandlerRegistry;
 use Maestro\Node\TaskRunner;
@@ -32,34 +32,11 @@ class HandlingTaskRunnerTest extends TestCase
         $this->runner = new HandlingTaskRunner($this->registry->reveal());
     }
 
-    public function testThrowsExceptionIfHandlerNotInvokable()
-    {
-        $this->expectException(InvalidHandler::class);
-        $this->expectExceptionMessage('is not __invoke');
-        $task = new NullTask();
-        $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-        });
-        $this->runner->run($task, Artifacts::empty());
-    }
-
-    public function testThrowsExceptionIfHandlerDoesNotReturnPromise()
-    {
-        $this->expectException(InvalidHandlerResponse::class);
-        $task = new NullTask();
-        $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function __invoke()
-            {
-                return '';
-            }
-        });
-        $this->runner->run($task, Artifacts::empty());
-    }
-
     public function testRunsTask()
     {
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function __invoke(NullTask $task)
+            public function execute(Task $task, Artifacts $artifacts): Promise
             {
                 return new Success();
             }
@@ -72,7 +49,7 @@ class HandlingTaskRunnerTest extends TestCase
     {
         $task = new NullTask();
         $this->registry->getFor($task)->willReturn(new class implements TaskHandler {
-            public function __invoke(NullTask $task, Artifacts $artifacts)
+            public function execute(Task $task, Artifacts $artifacts): Promise
             {
                 return new Success();
             }

@@ -12,6 +12,6 @@ class NullTaskRunner implements TaskRunner
 {
     public function run(Task $task, Environment $environment): Promise
     {
-        return new Success();
+        return new Success($environment);
     }
 }

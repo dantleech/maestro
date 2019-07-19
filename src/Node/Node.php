@@ -5,6 +5,7 @@ namespace Maestro\Node;
 use Amp\Success;
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
 use Maestro\Node\Task\NullTask;
 
 /**
@@ -73,7 +74,14 @@ final class Node
                     $this->task,
                     $environment
                 );
-                $this->environment = $environment ?: Environment::empty();
+                if (!$environment instanceof Environment) {
+                    throw new TaskHandlerDidNotReturnEnvironment(sprintf(
+                        'Promise from task handler for tas "%s" did not return an environment, ' .
+                        'all task handlers must return a modified/unmodified environment',
+                        get_class($this->task)
+                    ));
+                }
+                $this->environment = $environment;
                 $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
                 $this->environment = $failed->environment();

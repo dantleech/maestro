@@ -3,8 +3,11 @@
 namespace Maestro\Tests\Unit\Node;
 
 use Amp\Loop;
+use Amp\Promise;
+use Amp\Success;
 use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\State;
@@ -13,6 +16,7 @@ use Maestro\Node\TaskRunner\NullTaskRunner;
 use Maestro\Node\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use stdClass;
 
 class NodeTest extends TestCase
 {
@@ -41,6 +45,23 @@ class NodeTest extends TestCase
     {
         $rootNode = Node::create('root');
         $this->assertTrue($rootNode->state()->isWaiting());
+    }
+
+    public function testThrowsExceptionIfResolvedPromiseValueFromTaskHandlerIsNotAnEnvironment()
+    {
+        $this->expectException(TaskHandlerDidNotReturnEnvironment::class);
+
+        $taskRunner = $this->prophesize(TaskRunner::class);
+        $taskRunner->run(new NullTask(), Environment::empty())->willReturn(new Success(new stdClass()));
+
+        $rootNode = Node::create('root');
+        $rootNode->run(
+            $this->stateMachine->reveal(),
+            $taskRunner->reveal(),
+            Environment::empty()
+        );
+
+        Loop::run();
     }
 
     public function testRunsTask()

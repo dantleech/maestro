@@ -22,6 +22,8 @@ final class EnvironmentBuilder
 
     public function build(): Environment
     {
-        return new Environment($this->parameters);
+        return Environment::create([
+            'parameters' => $this->parameters
+        ]);
     }
 }

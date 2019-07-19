@@ -39,7 +39,11 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 return Graph::create([
                     $this->setEnvironment(
                         Node::create('root'),
-                        ['foo' => 'bar']
+                        [
+                            'parameters' => [
+                                'foo' => 'bar'
+                            ],
+                        ]
                     ),
                     $node,
                 ], [
@@ -55,11 +59,19 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 return Graph::create([
                     $this->setEnvironment(
                         Node::create('n1'),
-                        ['foo' => 'bar']
+                        [
+                            'parameters' => [
+                                'foo' => 'bar'
+                            ],
+                        ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
-                        ['bar' => 'foo']
+                        [
+                            'parameters' => [
+                                'bar' => 'foo'
+                            ],
+                        ]
                     ),
                     $node,
                 ], [
@@ -68,7 +80,10 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['foo' => 'bar','bar' => 'foo']
+            [
+                'foo' => 'bar',
+                'bar' => 'foo'
+            ]
         ];
 
         yield 'closer ancestors override more distant ones' => [
@@ -76,15 +91,27 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 return Graph::create([
                     $this->setEnvironment(
                         Node::create('n1'),
-                        ['foo' => 'bar']
+                        [
+                            'parameters' => [
+                                'foo' => 'bar'
+                            ],
+                        ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
-                        ['bar' => 'foo']
+                        [
+                            'parameters' => [
+                                'bar' => 'foo'
+                            ],
+                        ]
                     ),
                     $this->setEnvironment(
                         Node::create('n3'),
-                        ['bar' => 'baz']
+                        [
+                            'parameters' => [
+                                'bar' => 'baz'
+                            ],
+                        ]
                     ),
                     $node,
                 ], [
@@ -102,11 +129,19 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 return Graph::create([
                     $this->setEnvironment(
                         Node::create('n1'),
-                        ['foo' => 'bar']
+                        [
+                            'parameters' => [
+                                'foo' => 'bar'
+                            ],
+                        ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
-                        ['bar' => 'foo']
+                        [
+                            'parameters' => [
+                                'bar' => 'foo'
+                            ],
+                        ]
                     ),
                     $node,
                 ], [
@@ -115,7 +150,10 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['foo' => 'bar','bar' => 'foo']
+            [
+                'foo' => 'bar',
+                'bar' => 'foo'
+            ]
         ];
     }
 

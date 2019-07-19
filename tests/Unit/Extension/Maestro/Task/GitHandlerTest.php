@@ -50,8 +50,10 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
+            'parameters' => [
+                'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
+                'env' => EnvVars::create([]),
+            ],
         ]);
     }
 
@@ -76,8 +78,10 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
+            'parameters' => [
+                'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
+                'env' => EnvVars::create([]),
+            ],
         ]);
     }
 
@@ -102,8 +106,10 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
+            'parameters' => [
+                'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
+                'env' => EnvVars::create([]),
+            ],
         ]);
     }
 }

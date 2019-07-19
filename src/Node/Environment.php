@@ -2,7 +2,10 @@
 
 namespace Maestro\Node;
 
+use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\ParameterNotFound;
+use Maestro\Script\EnvVars;
+use Maestro\Workspace\Workspace;
 
 /**
  * Environment are the map made available by ancestoral tasks.
@@ -17,14 +20,26 @@ final class Environment
      */
     private $parameters;
 
-    public function __construct(array $parameters)
+    /**
+     * @var Workspace|null
+     */
+    private $workspace;
+
+    /**
+     * @var EnvVars
+     */
+    private $envVars;
+
+    public function __construct(array $parameters = [], Workspace $workspace = null, EnvVars $envVars = null)
     {
         $this->parameters = $parameters;
+        $this->workspace = $workspace;
+        $this->envVars = $envVars ?: EnvVars::create([]);
     }
 
     public static function create(array $parameters = []): self
     {
-        return new self($parameters);
+        return Instantiator::create()->instantiate(self::class, $parameters);
     }
 
     public static function empty(): self

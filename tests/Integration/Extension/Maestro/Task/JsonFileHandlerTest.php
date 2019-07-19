@@ -39,8 +39,10 @@ class JsonFileHandlerTest extends IntegrationTestCase
             file_put_contents($this->packageWorkspace->absolutePath($config['targetPath']), json_encode($existingData, JSON_PRETTY_PRINT));
         }
         $environment = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
-            'manifest.dir' => $this->workspace()->path('/'),
-            'workspace' => $this->packageWorkspace,
+            'parameters' => [
+                'manifest.dir' => $this->workspace()->path('/'),
+                'workspace' => $this->packageWorkspace,
+            ],
         ]);
         $this->assertEquals($expectedData, json_decode(
             file_get_contents($this->packageWorkspace->absolutePath($config['targetPath'])),

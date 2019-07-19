@@ -47,8 +47,10 @@ EOT
             'path' => 'template.twig',
             'targetPath' => 'GREETINGS',
         ], [
-            'workspace' => $this->packageWorkspace,
-            'manifest.dir' => $this->workspace()->path('/'),
+            'parameters' => [
+                'workspace' => $this->packageWorkspace,
+                'manifest.dir' => $this->workspace()->path('/'),
+            ],
         ]);
 
         $this->assertFileExists($this->workspace()->path('GREETINGS'));
@@ -69,8 +71,10 @@ EOT
                 'path' => 'template_2.twig',
                 'targetPath' => 'GREETINGS',
             ], [
-                'workspace' => $this->packageWorkspace,
-                'manifest.dir' => $this->workspace()->path('/'),
+                'parameters' => [
+                    'workspace' => $this->packageWorkspace,
+                    'manifest.dir' => $this->workspace()->path('/'),
+                ],
             ]);
             $this->fail('No exception thrown');
         } catch (TaskFailed $failed) {
@@ -90,8 +94,10 @@ EOT
             'path' => 'template_3.twig',
             'targetPath' => 'foobar/GREETINGS',
         ], [
-            'workspace' => $this->packageWorkspace,
-            'manifest.dir' => $this->workspace()->path('/'),
+            'parameters' => [
+                'workspace' => $this->packageWorkspace,
+                'manifest.dir' => $this->workspace()->path('/'),
+            ],
         ]);
         $this->assertFileExists($this->workspace()->path('foobar/GREETINGS'));
     }

@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Node;
 
 use Amp\Loop;
-use Amp\Promise;
 use Amp\Success;
 use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;

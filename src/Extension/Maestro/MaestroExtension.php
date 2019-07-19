@@ -8,7 +8,6 @@ use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Dumper\DotDumper;
 use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
-use Maestro\Extension\Maestro\Dumper\LeafEnvironmentDumper;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;

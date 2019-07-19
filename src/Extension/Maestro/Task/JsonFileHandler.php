@@ -41,6 +41,6 @@ class JsonFileHandler implements TaskHandler
             );
         }
 
-        return new Success();
+        return new Success($environment);
     }
 }

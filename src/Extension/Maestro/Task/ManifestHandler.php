@@ -16,9 +16,9 @@ class ManifestHandler implements TaskHandler
         assert($manifest instanceof ManifestTask);
         $manifestPath = $manifest->path();
 
-        return new Success(Environment::create(array_merge($manifest->environment(), [
+        return new Success($environment->builder()->withParameters(array_merge($manifest->environment(), [
             'manifest.path' => $manifestPath,
             'manifest.dir' => $manifestPath ? Path::getDirectory($manifestPath) : null,
-        ])));
+        ]))->build());
     }
 }

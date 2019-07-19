@@ -37,14 +37,12 @@ class TemplateHandler implements TaskHandler
         try {
             $rendered = $twigEnvironment->render($task->path(), $environment->toArray());
         } catch (Error $error) {
-            throw new TaskFailed($error->getMessage(), Environment::create([
-                'error' => $error->getMessage(),
-            ]));
+            throw new TaskFailed($error->getMessage());
         }
 
         $this->writeContents($workspace, $task, $rendered);
 
-        return new Success(Environment::empty());
+        return new Success($environment);
     }
 
     private function writeContents(Workspace $workspace, TemplateTask $task, string $rendered): void

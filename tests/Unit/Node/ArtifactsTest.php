@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Unit\Node;
 
 use Maestro\Node\Environment;
-use Maestro\Node\Exception\ArtifactNotFound;
+use Maestro\Node\Exception\ParameterNotFound;
 use PHPUnit\Framework\TestCase;
 
 class EnvironmentTest extends TestCase
@@ -27,7 +27,7 @@ class EnvironmentTest extends TestCase
 
     public function testThrowsExceptionUnknownArtifact()
     {
-        $this->expectException(ArtifactNotFound::class);
+        $this->expectException(ParameterNotFound::class);
         $environment = Environment::create([
             'foo' => 'bar'
         ]);

@@ -30,11 +30,11 @@ class ScriptHandler implements TaskHandler
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
 
-            $environment = Environment::create([
+            $environment = $environment->builder()->withParameters([
                 'exitCode' => $result->exitCode(),
                 'stderr' => $result->lastStderr(),
                 'stdout' => $result->lastStdout(),
-            ]);
+            ])->build();
 
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(

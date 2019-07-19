@@ -8,7 +8,6 @@ use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Test\HandlerTester;
 use Maestro\Workspace\Workspace;
@@ -54,8 +53,6 @@ class GitHandlerTest extends TestCase
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
             'env' => EnvVars::create([]),
         ]);
-
-        $this->assertEquals(Environment::create([]), $environment, 'Returns no environment');
     }
 
     public function testFailsOnNonZeroExitCode()

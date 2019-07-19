@@ -14,7 +14,7 @@ class TaskFailed extends RuntimeException
 
     public function __construct(string $message, Environment $environment = null)
     {
-        $this->environment = $environment ?: Environment::create([]);
+        $this->environment = $environment ?: Environment::create();
         parent::__construct($message);
         $this->message = $message;
     }

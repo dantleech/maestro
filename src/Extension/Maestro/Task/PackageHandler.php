@@ -35,14 +35,14 @@ class PackageHandler implements TaskHandler
 
         $this->createWorkspaceFolderIfNotExists($workspace);
 
-        return new Success(Environment::create(array_merge($package->environment(), [
+        return new Success($environment->builder()->withParameters(array_merge($package->environment(), [
             'package' => $package,
             'workspace' => $workspace,
             'env' => EnvVars::create([
                 'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
                 'PACKAGE_NAME' => $package->name()
             ])
-        ])));
+        ]))->build());
     }
 
     private function createWorkspaceFolderIfNotExists(Workspace $workspace): void

@@ -5,7 +5,6 @@ namespace Maestro\Extension\Maestro\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Node\Task;
-use Maestro\Script\EnvVars;
 use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
@@ -34,15 +33,17 @@ class PackageHandler implements TaskHandler
         }
 
         $this->createWorkspaceFolderIfNotExists($workspace);
-
-        return new Success($environment->builder()->withParameters(array_merge($package->environment(), [
+        $builder = $environment->builder();
+        $builder->withWorkspace($workspace);
+        $builder->mergeEnvVars([
+            'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
+            'PACKAGE_NAME' => $package->name()
+        ]);
+        $builder->withParameters(array_merge([
             'package' => $package,
-            'workspace' => $workspace,
-            'env' => EnvVars::create([
-                'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
-                'PACKAGE_NAME' => $package->name()
-            ])
-        ]))->build());
+        ], $package->environment()));
+
+        return new Success($builder->build());
     }
 
     private function createWorkspaceFolderIfNotExists(Workspace $workspace): void

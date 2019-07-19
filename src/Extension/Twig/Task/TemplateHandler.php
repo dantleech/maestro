@@ -29,8 +29,7 @@ class TemplateHandler implements TaskHandler
     {
         assert($task instanceof TemplateTask);
         $manifestDir = $environment->get('manifest.dir');
-        $workspace = $environment->get('workspace');
-        assert($workspace instanceof Workspace);
+        $workspace = $environment->workspace();
 
         $twigEnvironment = $this->factory->get($manifestDir);
 

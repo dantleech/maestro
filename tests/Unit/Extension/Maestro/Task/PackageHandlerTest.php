@@ -4,7 +4,6 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Loader\Instantiator;
-use Maestro\Script\EnvVars;
 use Maestro\Node\Environment;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Node\Test\HandlerTester;
@@ -35,13 +34,15 @@ class PackageHandlerTest extends IntegrationTestCase
         $environment = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Environment::empty()));
         $this->assertInstanceOf(Environment::class, $environment);
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
+
+        $this->assertEquals($workspace, $environment->workspace());
+        $this->assertEquals([
+            'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
+            'PACKAGE_NAME' => 'hello'
+        ], $environment->envVars()->toArray());
+
         $this->assertEquals([
             'package' => $package,
-            'workspace' => $workspace,
-            'env' => EnvVars::create([
-                'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
-                'PACKAGE_NAME' => 'hello'
-            ])
         ], $environment->toArray());
     }
 
@@ -59,6 +60,7 @@ class PackageHandlerTest extends IntegrationTestCase
         );
 
         $this->assertInstanceOf(Environment::class, $environment);
+
         $this->assertEquals('aurevoir', $environment->get('bonjour'));
     }
 

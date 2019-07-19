@@ -48,9 +48,9 @@ EOT
             'targetPath' => 'GREETINGS',
         ], [
             'parameters' => [
-                'workspace' => $this->packageWorkspace,
                 'manifest.dir' => $this->workspace()->path('/'),
             ],
+            'workspace' => $this->packageWorkspace,
         ]);
 
         $this->assertFileExists($this->workspace()->path('GREETINGS'));
@@ -72,9 +72,9 @@ EOT
                 'targetPath' => 'GREETINGS',
             ], [
                 'parameters' => [
-                    'workspace' => $this->packageWorkspace,
                     'manifest.dir' => $this->workspace()->path('/'),
                 ],
+                'workspace' => $this->packageWorkspace,
             ]);
             $this->fail('No exception thrown');
         } catch (TaskFailed $failed) {
@@ -95,9 +95,9 @@ EOT
             'targetPath' => 'foobar/GREETINGS',
         ], [
             'parameters' => [
-                'workspace' => $this->packageWorkspace,
                 'manifest.dir' => $this->workspace()->path('/'),
             ],
+            'workspace' => $this->packageWorkspace,
         ]);
         $this->assertFileExists($this->workspace()->path('foobar/GREETINGS'));
     }

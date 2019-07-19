@@ -7,7 +7,6 @@ use Amp\Success;
 use Maestro\Node\Task;
 use Maestro\Node\Environment;
 use Maestro\Node\TaskHandler;
-use Maestro\Workspace\Workspace;
 use function Safe\json_encode;
 use function Safe\json_decode;
 use function Safe\file_put_contents;
@@ -20,8 +19,7 @@ class JsonFileHandler implements TaskHandler
         assert($task instanceof JsonFileTask);
         $manifestDir = $environment->get('manifest.dir');
         assert(is_string($manifestDir));
-        $workspace = $environment->get('workspace');
-        assert($workspace instanceof Workspace);
+        $workspace = $environment->workspace();
         $existingData = [];
 
         if (file_exists($workspace->absolutePath($task->targetPath()))) {

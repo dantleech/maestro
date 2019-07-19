@@ -6,6 +6,7 @@ use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\ParameterNotFound;
 use Maestro\Script\EnvVars;
 use Maestro\Workspace\Workspace;
+use RuntimeException;
 
 /**
  * Environment are the map made available by ancestoral tasks.
@@ -62,7 +63,11 @@ final class Environment
 
     public function merge(Environment $environment): self
     {
-        return new self(array_merge($this->parameters, $environment->parameters));
+        return new self(
+            array_merge($this->parameters, $environment->parameters),
+            $environment->hasWorkspace() ? $environment->workspace() : $this->workspace,
+            $this->envVars->merge($environment->envVars())
+        );
     }
 
     public function toArray(): array
@@ -78,5 +83,26 @@ final class Environment
     public function builder(): EnvironmentBuilder
     {
         return new EnvironmentBuilder($this->parameters);
+    }
+
+    public function hasWorkspace(): bool
+    {
+        return null !== $this->workspace;
+    }
+
+    public function workspace(): Workspace
+    {
+        if (null === $this->workspace) {
+            throw new RuntimeException(
+                'Workspace has not been set'
+            );
+        }
+
+        return $this->workspace;
+    }
+
+    public function envVars(): EnvVars
+    {
+        return $this->envVars;
     }
 }

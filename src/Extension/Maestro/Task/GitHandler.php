@@ -5,12 +5,10 @@ namespace Maestro\Extension\Maestro\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Node\Task;
-use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
-use Maestro\Workspace\Workspace;
 
 class GitHandler implements TaskHandler
 {
@@ -34,10 +32,8 @@ class GitHandler implements TaskHandler
     {
         assert($task instanceof GitTask);
         return \Amp\call(function () use ($task, $environment) {
-            $workspace = $environment->get('workspace');
-            $env = $environment->get('env');
-            assert($env instanceof EnvVars);
-            assert($workspace instanceof Workspace);
+            $workspace = $environment->workspace();
+            $env = $environment->envVars();
 
             if ($this->isGitRepository($workspace->absolutePath())) {
                 return new Success();

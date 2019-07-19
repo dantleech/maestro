@@ -85,7 +85,12 @@ class GitHandlerTest extends TestCase
         ]);
     }
 
-    public function testPurgeExistingProjectWorkspace()
+    public function testReturnsEarlyIfRepositoryExists()
+    {
+        $this->markTestSkipped('This test should either be an integration test, or the filesystem should be abstracted');
+    }
+
+    public function testFailsIfUrlDoesNotExist()
     {
         $this->expectException(TaskFailed::class);
         $this->scriptRunner->run(

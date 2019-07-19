@@ -18,7 +18,7 @@ class NullHandler implements TaskHandler
     public function execute(Task $task, Environment $environment): Promise
     {
         $this->invoked = true;
-        return new Success();
+        return new Success($environment);
     }
 
     public function wasInvoked(): bool

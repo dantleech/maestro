@@ -36,7 +36,7 @@ class GitHandler implements TaskHandler
             $env = $environment->envVars();
 
             if ($this->isGitRepository($workspace->absolutePath())) {
-                return new Success();
+                return new Success($environment);
             }
 
             $result = yield $this->runner->run(

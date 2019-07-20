@@ -7,6 +7,7 @@ use Amp\Success;
 use Maestro\Node\Environment;
 use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
+use Maestro\Script\EnvVars;
 use Webmozart\PathUtil\Path;
 
 class ManifestHandler implements TaskHandler
@@ -16,9 +17,13 @@ class ManifestHandler implements TaskHandler
         assert($manifest instanceof ManifestTask);
         $manifestPath = $manifest->path();
 
-        return new Success($environment->builder()->withParameters(array_merge($manifest->environment(), [
+        $builder = $environment->builder();
+        $builder->withVars(array_merge($manifest->vars(), [
             'manifest.path' => $manifestPath,
             'manifest.dir' => $manifestPath ? Path::getDirectory($manifestPath) : null,
-        ]))->build());
+        ]));
+        $builder->mergeEnvVars($manifest->env());
+
+        return new Success($builder->build());
     }
 }

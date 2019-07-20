@@ -34,8 +34,8 @@ class Instantiator
 
         $parameters = $this->mapParameters($class);
         $this->assertCorrectKeys($data, $parameters, $className);
-        $this->assertRequiredKeys($data, $parameters, $className);
-        $data = $this->mergeDefaults($parameters, $data);
+    $this->assertRequiredKeys($data, $parameters, $className);
+    $data = $this->mergeDefaults($parameters, $data);
         $this->assertTypes($data, $parameters, $className);
 
         $arguments = [];

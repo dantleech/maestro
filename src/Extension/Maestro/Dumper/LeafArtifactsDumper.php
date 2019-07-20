@@ -14,7 +14,7 @@ class LeafArtifactsDumper implements Dumper
         $out = [];
         foreach ($graph->leafs() as $leafNode) {
             $out[] = sprintf('<info>%s</>:', $leafNode->id());
-            $out[] = json_encode($resolver->resolveFor($graph, $leafNode)->toArray(), JSON_PRETTY_PRINT);
+            $out[] = json_encode($resolver->resolveFor($graph, $leafNode)->debugInfo(), JSON_PRETTY_PRINT);
         }
 
         return implode(PHP_EOL, $out);

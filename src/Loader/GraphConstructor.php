@@ -29,7 +29,7 @@ class GraphConstructor
         $builder = GraphBuilder::create();
         $builder->addNode(
             Node::create(self::NODE_ROOT, [
-                'task' => new ManifestTask($manifest->path(), $manifest->environment())
+                'task' => new ManifestTask($manifest->path(), $manifest->vars(), $manifest->env())
             ])
         );
         $this->walkPackages($manifest, $builder);

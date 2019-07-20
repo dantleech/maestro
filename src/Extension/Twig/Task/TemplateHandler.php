@@ -34,7 +34,7 @@ class TemplateHandler implements TaskHandler
         $twigEnvironment = $this->factory->get($manifestDir);
 
         try {
-            $rendered = $twigEnvironment->render($task->path(), $environment->toArray());
+            $rendered = $twigEnvironment->render($task->path(), $environment->vars());
         } catch (Error $error) {
             throw new TaskFailed($error->getMessage());
         }

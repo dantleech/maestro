@@ -70,7 +70,7 @@ final class Environment
         );
     }
 
-    public function toArray(): array
+    public function vars(): array
     {
         return $this->vars;
     }
@@ -104,5 +104,14 @@ final class Environment
     public function envVars(): EnvVars
     {
         return $this->envVars;
+    }
+
+    public function debugInfo()
+    {
+        return [
+            'env' => $this->envVars->toArray(),
+            'vars' => $this->vars,
+            'workspace' => $this->workspace ? $this->workspace->absolutePath() : null,
+        ];
     }
 }

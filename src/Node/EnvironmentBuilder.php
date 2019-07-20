@@ -29,7 +29,7 @@ final class EnvironmentBuilder
         $this->envVars = $envVars ?: EnvVars::create([]);
     }
 
-    public function withParameters(array $vars): self
+    public function withVars(array $vars): self
     {
         $this->vars = $vars;
         return $this;

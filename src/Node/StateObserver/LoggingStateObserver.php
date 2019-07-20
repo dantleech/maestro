@@ -40,6 +40,6 @@ class LoggingStateObserver implements StateObserver
             strtoupper($stateChangeEvent->from()->toString()),
             strtoupper($stateChangeEvent->to()->toString()),
             $stateChangeEvent->node()->task()->description()
-        ), $stateChangeEvent->node()->environment()->toArray());
+        ), $stateChangeEvent->node()->environment()->debugInfo());
     }
 }

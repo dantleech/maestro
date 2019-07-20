@@ -19,7 +19,14 @@ class AggregatingEnvironmentResolverTest extends TestCase
     public function testResolveFor(Closure $graphFactory, Node $node, array $expectedEnvironment)
     {
         $graph = $graphFactory($node);
-        $this->assertEquals($expectedEnvironment, (new AggregatingEnvironmentResolver())->resolveFor($graph, $node)->toArray());
+        $this->assertEquals(
+            array_merge([
+                'env' => [],
+                'vars' => [],
+                'workspace' => null
+            ], $expectedEnvironment),
+            (new AggregatingEnvironmentResolver())->resolveFor($graph, $node)->debugInfo()
+        );
     }
 
     public function provideResolveFor()
@@ -31,7 +38,8 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ], []);
             },
             Node::create('n1'),
-            []
+            [
+            ]
         ];
 
         yield 'returns parent environment' => [
@@ -51,7 +59,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['foo' => 'bar']
+            ['vars' => ['foo' => 'bar']]
         ];
 
         yield 'merges ancestor environment' => [
@@ -81,8 +89,10 @@ class AggregatingEnvironmentResolverTest extends TestCase
             },
             Node::create('target'),
             [
-                'foo' => 'bar',
-                'bar' => 'foo'
+                'vars' => [
+                    'foo' => 'bar',
+                    'bar' => 'foo'
+                ],
             ]
         ];
 
@@ -121,7 +131,12 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['foo' => 'bar','bar' => 'baz']
+            [
+                'vars' => [
+                    'foo' => 'bar',
+                    'bar' => 'baz'
+                ],
+            ]
         ];
 
         yield 'parallel dependencies are merged' => [
@@ -151,8 +166,10 @@ class AggregatingEnvironmentResolverTest extends TestCase
             },
             Node::create('target'),
             [
-                'foo' => 'bar',
-                'bar' => 'foo'
+                'vars' => [
+                    'foo' => 'bar',
+                    'bar' => 'foo'
+                ],
             ]
         ];
     }

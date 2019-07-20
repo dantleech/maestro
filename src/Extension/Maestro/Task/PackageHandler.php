@@ -39,7 +39,7 @@ class PackageHandler implements TaskHandler
             'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
             'PACKAGE_NAME' => $package->name()
         ]);
-        $builder->withParameters(array_merge([
+        $builder->withVars(array_merge([
             'package' => $package,
         ], $package->environment()));
 

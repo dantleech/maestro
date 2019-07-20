@@ -35,9 +35,9 @@ class EnvVars implements JsonSerializable
         return $this->toArray();
     }
 
-    public function merge(EnvVars $envVars): self
+    public function merge(EnvVars $env): self
     {
-        return new self(array_merge($this->env, $envVars->env));
+        return new self(array_merge($this->env, $env->env));
     }
 
     public function get(string $name)

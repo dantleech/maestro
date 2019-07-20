@@ -7,20 +7,9 @@ use RuntimeException;
 
 class TaskFailed extends RuntimeException
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
-
-    public function __construct(string $message, Environment $environment = null)
+    public function __construct(string $message, $code = 1)
     {
-        $this->environment = $environment ?: Environment::create();
-        parent::__construct($message);
+        parent::__construct($message, $code);
         $this->message = $message;
-    }
-
-    public function environment(): Environment
-    {
-        return $this->environment;
     }
 }

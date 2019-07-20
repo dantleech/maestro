@@ -84,7 +84,6 @@ final class Node
                 $this->environment = $environment;
                 $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
-                $this->environment = $failed->environment();
                 $this->changeState($stateMachine, State::FAILED());
             }
 

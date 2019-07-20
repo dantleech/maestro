@@ -30,17 +30,11 @@ class ScriptHandler implements TaskHandler
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
 
-            $environment = $environment->builder()->withVars([
-                'exitCode' => $result->exitCode(),
-                'stderr' => $result->lastStderr(),
-                'stdout' => $result->lastStdout(),
-            ])->build();
-
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(
                     'Exited with code "%s"',
                     $result->exitCode()
-                ), $environment);
+                ), $result->exitCode());
             }
 
             return $environment;

@@ -22,11 +22,11 @@ final class EnvironmentBuilder
      */
     private $env;
 
-    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $envVars = null)
+    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $env = null)
     {
         $this->vars = $vars;
         $this->workspace = $workspace;
-        $this->env = $envVars ?: EnvVars::create([]);
+        $this->env = $env ?: EnvVars::create([]);
     }
 
     public function withVars(array $vars): self
@@ -41,9 +41,9 @@ final class EnvironmentBuilder
         return $this;
     }
 
-    public function mergeEnv(array $envVars): self
+    public function mergeEnv(array $env): self
     {
-        $this->env = $this->env->merge(EnvVars::create($envVars));
+        $this->env = $this->env->merge(EnvVars::create($env));
         return $this;
     }
 

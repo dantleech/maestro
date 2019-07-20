@@ -33,6 +33,7 @@ class ScriptHandlerTest extends IntegrationTestCase
     {
         $this->primeScriptRunner(0, 'Yes', 'No');
 
+        $workspace = new Workspace($this->workspace()->path('/'), 'test');
         $environment = HandlerTester::create(
             new ScriptHandler(
                 $this->scriptRunner->reveal(),
@@ -40,16 +41,11 @@ class ScriptHandlerTest extends IntegrationTestCase
         )->handle(ScriptTask::class, [
             'script' => self::EXAMPLE_SCRIPT,
         ], [
-            'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
-            'env' => EnvVars::create([]),
+            'workspace' => $workspace,
         ]);
 
         $this->assertEquals(Environment::create([
-            'vars' => [
-                'exitCode' => 0,
-                'stdout' => 'Yes',
-                'stderr' => 'No'
-            ],
+            'workspace' => $workspace
         ]), $environment, 'Returns no environment');
     }
 
@@ -71,10 +67,7 @@ class ScriptHandlerTest extends IntegrationTestCase
                 'env' => EnvVars::create([]),
             ]);
         } catch (TaskFailed $failed) {
-            $this->assertInstanceOf(Environment::class, $failed->environment());
-            $this->assertEquals(1, $failed->environment()->get('exitCode'));
-            $this->assertEquals('Yes', $failed->environment()->get('stdout'));
-            $this->assertEquals('No', $failed->environment()->get('stderr'));
+            $this->assertEquals(1, $failed->getCode());
             throw $failed;
         }
     }

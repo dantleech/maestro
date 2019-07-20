@@ -50,7 +50,7 @@ class GitHandler implements TaskHandler
                     'Git clone failed with exit code "%s": %s',
                     $result->exitCode(),
                     $result->lastStderr()
-                ));
+                ), $result->exitCode());
             }
 
             return $environment;

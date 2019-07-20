@@ -39,7 +39,7 @@ class PackageHandlerTest extends IntegrationTestCase
         $this->assertEquals([
             'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
             'PACKAGE_NAME' => 'hello'
-        ], $environment->envVars()->toArray());
+        ], $environment->env()->toArray());
 
         $this->assertEquals([
             'package' => $package,
@@ -77,7 +77,7 @@ class PackageHandlerTest extends IntegrationTestCase
             []
         );
 
-        $this->assertEquals('aurevoir', $environment->envVars()->get('BONJOUR'));
+        $this->assertEquals('aurevoir', $environment->env()->get('BONJOUR'));
     }
 
     public function testPurgeWorkspace()

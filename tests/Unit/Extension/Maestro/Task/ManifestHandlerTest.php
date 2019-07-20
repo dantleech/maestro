@@ -28,6 +28,6 @@ class ManifestHandlerTest extends TestCase
             'hello' => 'goodbye',
         ], $environment->vars());
 
-        $this->assertEquals(EnvVars::create(['HELLO' => 'goodbye']), $environment->envVars());
+        $this->assertEquals(EnvVars::create(['HELLO' => 'goodbye']), $environment->env());
     }
 }

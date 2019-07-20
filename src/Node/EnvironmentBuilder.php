@@ -20,13 +20,13 @@ final class EnvironmentBuilder
     /**
      * @var EnvVars
      */
-    private $envVars;
+    private $env;
 
     public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $envVars = null)
     {
         $this->vars = $vars;
         $this->workspace = $workspace;
-        $this->envVars = $envVars ?: EnvVars::create([]);
+        $this->env = $envVars ?: EnvVars::create([]);
     }
 
     public function withVars(array $vars): self
@@ -41,9 +41,9 @@ final class EnvironmentBuilder
         return $this;
     }
 
-    public function mergeEnvVars(array $envVars): self
+    public function mergeEnv(array $envVars): self
     {
-        $this->envVars = $this->envVars->merge(EnvVars::create($envVars));
+        $this->env = $this->env->merge(EnvVars::create($envVars));
         return $this;
     }
 
@@ -52,7 +52,7 @@ final class EnvironmentBuilder
         return Environment::create([
             'vars' => $this->vars,
             'workspace' => $this->workspace,
-            'envVars' => $this->envVars,
+            'env' => $this->env,
         ]);
     }
 }

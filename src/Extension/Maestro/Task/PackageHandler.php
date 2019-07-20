@@ -35,7 +35,7 @@ class PackageHandler implements TaskHandler
         $this->createWorkspaceFolderIfNotExists($workspace);
         $builder = $environment->builder();
         $builder->withWorkspace($workspace);
-        $builder->mergeEnvVars(array_merge($package->env(), [
+        $builder->mergeEnv(array_merge($package->env(), [
             'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
             'PACKAGE_NAME' => $package->name()
         ]));

@@ -26,7 +26,7 @@ class ScriptHandler implements TaskHandler
         assert($script instanceof ScriptTask);
         return \Amp\call(function () use ($script, $environment) {
             $path = $environment->workspace()->absolutePath();
-            $env = $environment->envVars()->toArray();
+            $env = $environment->env()->toArray();
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
 

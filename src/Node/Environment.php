@@ -29,13 +29,13 @@ final class Environment
     /**
      * @var EnvVars
      */
-    private $envVars;
+    private $env;
 
-    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $envVars = null)
+    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $env = null)
     {
         $this->vars = $vars;
         $this->workspace = $workspace;
-        $this->envVars = $envVars ?: EnvVars::create([]);
+        $this->env = $env ?: EnvVars::create([]);
     }
 
     public static function create(array $vars = []): self
@@ -66,7 +66,7 @@ final class Environment
         return new self(
             array_merge($this->vars, $environment->vars),
             $environment->hasWorkspace() ? $environment->workspace() : $this->workspace,
-            $this->envVars->merge($environment->envVars())
+            $this->env->merge($environment->env())
         );
     }
 
@@ -101,15 +101,15 @@ final class Environment
         return $this->workspace;
     }
 
-    public function envVars(): EnvVars
+    public function env(): EnvVars
     {
-        return $this->envVars;
+        return $this->env;
     }
 
     public function debugInfo()
     {
         return [
-            'env' => $this->envVars->toArray(),
+            'env' => $this->env->toArray(),
             'vars' => $this->vars,
             'workspace' => $this->workspace ? $this->workspace->absolutePath() : null,
         ];

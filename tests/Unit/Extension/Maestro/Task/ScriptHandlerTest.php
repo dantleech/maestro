@@ -41,7 +41,7 @@ class ScriptHandlerTest extends IntegrationTestCase
             'script' => self::EXAMPLE_SCRIPT,
         ], [
             'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
-            'envVars' => EnvVars::create([]),
+            'env' => EnvVars::create([]),
         ]);
 
         $this->assertEquals(Environment::create([
@@ -68,7 +68,7 @@ class ScriptHandlerTest extends IntegrationTestCase
                 'script' => self::EXAMPLE_SCRIPT,
             ], [
                 'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
-                'envVars' => EnvVars::create([]),
+                'env' => EnvVars::create([]),
             ]);
         } catch (TaskFailed $failed) {
             $this->assertInstanceOf(Environment::class, $failed->environment());

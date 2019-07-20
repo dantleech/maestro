@@ -21,7 +21,7 @@ class ManifestHandler implements TaskHandler
             'manifest.path' => $manifestPath,
             'manifest.dir' => $manifestPath ? Path::getDirectory($manifestPath) : null,
         ]));
-        $builder->mergeEnvVars($manifest->env());
+        $builder->mergeEnv($manifest->env());
 
         return new Success($builder->build());
     }

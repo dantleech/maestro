@@ -33,7 +33,7 @@ class GitHandler implements TaskHandler
         assert($task instanceof GitTask);
         return \Amp\call(function () use ($task, $environment) {
             $workspace = $environment->workspace();
-            $env = $environment->envVars();
+            $env = $environment->env();
 
             if ($this->isGitRepository($workspace->absolutePath())) {
                 return new Success($environment);

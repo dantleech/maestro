@@ -12,7 +12,7 @@
     "enabled": true,
     "actions": [
       {
-        "action": "./vendor/bin/php-cs-fixer fix"
+        "action": "./vendor/bin/php-cs-fixer fix --dry-run"
       },
       {
         "action": "./vendor/bin/phpstan analyse --level=7 src"

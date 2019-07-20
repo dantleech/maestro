@@ -11,6 +11,7 @@ use Maestro\Node\EnvironmentResolver;
 use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
 use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Node\GraphWalker;
+use Maestro\Node\NodeDecider\ScheduleDecider;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
@@ -106,6 +107,7 @@ final class MaestroBuilder
     {
         $visitors = [
             new ConcurrencyLimitingDecider($this->maxConcurrency),
+            new ScheduleDecider(),
             new TaskRunningDecider($this->buildTaskRunner(), $this->buildArtifactsResolver()),
         ];
         return new GraphWalker(

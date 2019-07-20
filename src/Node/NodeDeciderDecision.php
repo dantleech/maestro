@@ -7,6 +7,7 @@ final class NodeDeciderDecision
     private const DO_NOT_WALK_CHILDREN = 'DO_NOT_WALK_CHILDREN';
     private const CONTINUE = 'CONTINUE';
     private const CANCEL_DESCENDANTS = 'CANCEL_DESCENDANTS';
+    private const RESCHEDULE_DESCENDANTS = 'RESCHEDULE_DESCENDANTS';
 
     /**
      * @var string
@@ -31,6 +32,11 @@ final class NodeDeciderDecision
     public static function DO_NOT_WALK_CHILDREN(): self
     {
         return new self(self::DO_NOT_WALK_CHILDREN);
+    }
+
+    public static function RESCHEDULE_DESCENDANTS()
+    {
+        return new self(self::RESCHEDULE_DESCENDANTS);
     }
 
     public function is(NodeDeciderDecision $nodeVisitorDecision): bool

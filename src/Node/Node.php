@@ -6,6 +6,7 @@ use Amp\Success;
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
+use Maestro\Node\Schedule\AsapSchedule;
 use Maestro\Node\Task\NullTask;
 
 /**
@@ -43,14 +44,20 @@ final class Node
      */
     private $taskResult;
 
-    public function __construct(string $id, string $label = null, ?Task $task = null)
+    /**
+     * @var Schedule
+     */
+    private $schedule;
+
+    public function __construct(string $id, string $label = null, ?Task $task = null, ?Schedule $schedule = null)
     {
         $this->environment = Environment::empty();
         $this->id = $id;
         $this->label = $label ?: $id;
-        $this->state = State::WAITING();
+        $this->state = State::SCHEDULED();
         $this->task = $task ?: new NullTask();
         $this->taskResult = TaskResult::PENDING();
+        $this->schedule = $schedule ?: new AsapSchedule();
     }
 
     public static function create(string $id, array $options = []): self
@@ -58,6 +65,21 @@ final class Node
         return Instantiator::create()->instantiate(self::class, array_merge($options, [
             'id' => $id,
         ]));
+    }
+
+    public function checkSchedule(NodeStateMachine $stateMachine): bool
+    {
+        if ($this->state->isScheduled() && $this->schedule->shouldRun($this)) {
+            $this->changeState($stateMachine, State::WAITING());
+            return true;
+        }
+
+        return false;
+    }
+
+    public function reschedule(NodeStateMachine $stateMachine):void
+    {
+        $this->changeState($stateMachine, State::SCHEDULED());
     }
 
     public function state(): State
@@ -89,6 +111,10 @@ final class Node
                 }
                 $this->environment = $environment;
                 $this->taskResult = TaskResult::SUCCESS();
+
+                if ($this->schedule->shouldReschedule($this)) {
+                    $this->changeState($stateMachine, State::SCHEDULED());
+                }
             } catch (TaskFailed $failed) {
                 $this->taskResult = TaskResult::FAILURE();
             }

@@ -8,6 +8,7 @@ final class State
     private const DONE = 'done';
     private const BUSY = 'busy';
     private const CANCELLED = 'cancelled';
+    private const SCHEDULED = 'scheduled';
 
     private $state;
 
@@ -43,7 +44,12 @@ final class State
 
     public function isDone(): bool
     {
-        return $this->state === self::DONE;
+        return $this->state === self::DONE || $this->state === self::SCHEDULED;
+    }
+
+    public static function SCHEDULED(): self
+    {
+        return new self(self::SCHEDULED);
     }
 
     public function isWaiting(): bool
@@ -56,9 +62,14 @@ final class State
         return $this->state === self::BUSY;
     }
 
-    public function isCancelled()
+    public function isCancelled(): bool
     {
         return $this->state === self::CANCELLED;
+    }
+
+    public function isScheduled(): bool
+    {
+        return $this->state === self::SCHEDULED;
     }
 
     public function toString(): string

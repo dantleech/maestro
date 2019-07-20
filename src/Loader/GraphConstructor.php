@@ -74,6 +74,10 @@ class GraphConstructor
                     'task' => Instantiator::create()->instantiate(
                         $task->type(),
                         $task->args()
+                    ),
+                    'schedule' => Instantiator::create()->instantiate(
+                        $task->schedule()->type(),
+                        $task->schedule()->args()
                     )
                 ]
             ));

@@ -27,6 +27,11 @@ final class State
         return new self(self::DONE);
     }
 
+    public static function transition(State $from, State $to)
+    {
+        return new StateTransition($from, $to);
+    }
+
     public static function WAITING(): self
     {
         return new self(self::WAITING);

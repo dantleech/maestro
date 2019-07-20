@@ -7,12 +7,6 @@ use Maestro\Script\EnvVars;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
 
-/**
- * Environment are the map made available by ancestoral tasks.
- *
- * They can be used for example, to make the package name available to
- * dependent tasks, or provide the workspace, passwords, whatever.
- */
 final class Environment
 {
     /**
@@ -90,7 +84,7 @@ final class Environment
         return $this->env;
     }
 
-    public function debugInfo()
+    public function debugInfo(): array
     {
         return [
             'env' => $this->env->toArray(),

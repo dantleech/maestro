@@ -43,7 +43,7 @@ Maestro depends on a `maestro.json` configuration file such as:
 
 ```javascript
 {
-    "artifacts": {
+    "vars": {
         "php_versions": [ 7.1, 7.2, 7.3 ],
         "phpstan_level": 7
     },
@@ -52,27 +52,27 @@ Maestro depends on a `maestro.json` configuration file such as:
             "tasks": {
                 "vcs": {
                     "type": "git",
-                    "parameters": {
+                    "args": {
                         "url": "git@github.com:$PACKAGE_NAME"
                     }
                 },
                 "composer install": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "composer install"
                     },
                     "depends": "vcs"
                 },
                 "phpunit": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "./vendor/bin/phpunit"
                     },
                     "depends": "composer install"
                 },
                 "php-cs-fixer": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
                     },
                     "depends": "composer install"
@@ -88,7 +88,7 @@ be re-written as:
 
 ```javascript
 {
-    "artifacts": {
+    "vars": {
         "my-random-param1": "foobar",
         "php_versions": [ "3", "6.0", "7.4" ]
     }
@@ -97,27 +97,27 @@ be re-written as:
             "tasks": {
                 "vcs": {
                     "type": "git",
-                    "parameters": {
+                    "args": {
                         "url": "git@github.com:$PACKAGE_NAME"
                     }
                 },
                 "composer install": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "composer install"
                     },
                     "depends": "vcs"
                 },
                 "phpunit": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "./vendor/bin/phpunit"
                     },
                     "depends": "composer install"
                 },
                 "php-cs-fixer": {
                     "type": "script",
-                    "parameters": {
+                    "args": {
                         "script": "./vendor/bin/php-cs-fixer fix lib --dry-run"
                     },
                     "depends": "composer install"
@@ -153,7 +153,7 @@ e.g.
 ```javascript
 {
     "type": "script",
-    "parameters": {
+    "args": {
         "script": "echo 'This is my package '$PACKAGE_NAME"
     }
 }
@@ -168,7 +168,7 @@ e.g.
 ```javascript
 {
     "type": "json",
-    "parameters": {
+    "args": {
         "targetPath": "composer.json",
         "merge": {
             "require-dev": {
@@ -191,7 +191,7 @@ Use this to clone a GIT repository for the package.
 ```javascript
 {
     "type": "git",
-    "parameters": {
+    "args": {
         "url": "git@github.com:$PACKAGE_NAME"
     }
 }
@@ -210,7 +210,7 @@ e.g.
 ```javascript
 {
     "type": "template",
-    "parameters": {
+    "args": {
         "path": "templates/README.md.twig"
         "targetPath": "README.md"
     }

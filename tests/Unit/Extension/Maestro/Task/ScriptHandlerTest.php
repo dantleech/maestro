@@ -8,7 +8,7 @@ use Maestro\Extension\Maestro\Task\ScriptTask;
 use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
@@ -33,22 +33,20 @@ class ScriptHandlerTest extends IntegrationTestCase
     {
         $this->primeScriptRunner(0, 'Yes', 'No');
 
-        $artifacts = HandlerTester::create(
+        $workspace = new Workspace($this->workspace()->path('/'), 'test');
+        $environment = HandlerTester::create(
             new ScriptHandler(
                 $this->scriptRunner->reveal(),
                 )
         )->handle(ScriptTask::class, [
             'script' => self::EXAMPLE_SCRIPT,
         ], [
-            'workspace' => new Workspace($this->workspace()->path('/'), 'test'),
-            'env' => EnvVars::create([]),
+            'workspace' => $workspace,
         ]);
 
-        $this->assertEquals(Artifacts::create([
-            'exitCode' => 0,
-            'stdout' => 'Yes',
-            'stderr' => 'No'
-        ]), $artifacts, 'Returns no artifacts');
+        $this->assertEquals(Environment::create([
+            'workspace' => $workspace
+        ]), $environment, 'Returns no environment');
     }
 
     public function testFailsOnNonZeroExitCode()
@@ -58,7 +56,7 @@ class ScriptHandlerTest extends IntegrationTestCase
         $this->primeScriptRunner(1, 'Yes', 'No');
 
         try {
-            $artifacts = HandlerTester::create(
+            $environment = HandlerTester::create(
                 new ScriptHandler(
                     $this->scriptRunner->reveal(),
                     )
@@ -69,10 +67,7 @@ class ScriptHandlerTest extends IntegrationTestCase
                 'env' => EnvVars::create([]),
             ]);
         } catch (TaskFailed $failed) {
-            $this->assertInstanceOf(Artifacts::class, $failed->artifacts());
-            $this->assertEquals(1, $failed->artifacts()->get('exitCode'));
-            $this->assertEquals('Yes', $failed->artifacts()->get('stdout'));
-            $this->assertEquals('No', $failed->artifacts()->get('stderr'));
+            $this->assertEquals(1, $failed->getCode());
             throw $failed;
         }
     }

@@ -4,8 +4,7 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Loader\Instantiator;
-use Maestro\Script\EnvVars;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Node\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
@@ -29,37 +28,56 @@ class PackageHandlerTest extends IntegrationTestCase
         );
     }
 
-    public function testProducesArtifacts()
+    public function testProducesEnvironment()
     {
         $package = new PackageTask('hello');
-        $artifacts = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
-        $this->assertInstanceOf(Artifacts::class, $artifacts);
+        $environment = \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Environment::empty()));
+        $this->assertInstanceOf(Environment::class, $environment);
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
+
+        $this->assertEquals($workspace, $environment->workspace());
+        $this->assertEquals([
+            'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
+            'PACKAGE_NAME' => 'hello'
+        ], $environment->env()->toArray());
+
         $this->assertEquals([
             'package' => $package,
-            'workspace' => $workspace,
-            'env' => EnvVars::create([
-                'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
-                'PACKAGE_NAME' => 'hello'
-            ])
-        ], $artifacts->toArray());
+        ], $environment->vars()->toArray());
     }
 
-    public function testProvidesConfiguredArtifacts()
+    public function testProvidesConfiguredVars()
     {
-        $artifacts = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
+        $environment = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
             PackageTask::class,
             [
                 'name' => 'foobar',
-                'artifacts' => [
+                'vars' => [
                     'bonjour' => 'aurevoir'
                 ],
             ],
             []
         );
 
-        $this->assertInstanceOf(Artifacts::class, $artifacts);
-        $this->assertEquals('aurevoir', $artifacts->get('bonjour'));
+        $this->assertInstanceOf(Environment::class, $environment);
+
+        $this->assertEquals('aurevoir', $environment->vars()->get('bonjour'));
+    }
+
+    public function testProvidesConfiguredEnvVars()
+    {
+        $environment = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
+            PackageTask::class,
+            [
+                'name' => 'foobar',
+                'env' => [
+                    'BONJOUR' => 'aurevoir'
+                ],
+            ],
+            []
+        );
+
+        $this->assertEquals('aurevoir', $environment->env()->get('BONJOUR'));
     }
 
     public function testPurgeWorkspace()
@@ -69,10 +87,11 @@ class PackageHandlerTest extends IntegrationTestCase
             'purgeWorkspace' => true
         ]);
 
-        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Environment::empty()));
         $workspace = $this->workspaceFactory->createNamedWorkspace('hello');
+
         file_put_contents($workspace->absolutePath() . '/README', 'Hello');
-        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))($package));
+        \Amp\Promise\wait((new PackageHandler($this->workspaceFactory))->execute($package, Environment::empty()));
         $this->assertFileNotExists($workspace->absolutePath() . '/README');
     }
 }

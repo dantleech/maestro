@@ -7,7 +7,7 @@ final class Manifest
     /**
      * @var array
      */
-    private $parameters;
+    private $vars;
 
     /**
      * @var Package[]
@@ -22,18 +22,18 @@ final class Manifest
     /**
      * @var array
      */
-    private $artifacts;
+    private $env;
 
-    public function __construct(array $parameters = [], array $packages = [], string $path = null, array $artifacts = [])
+    public function __construct(array $vars = [], array $packages = [], string $path = null, array $env = [])
     {
-        $this->parameters = $parameters;
+        $this->vars = $vars;
         $this->path = $path;
 
         foreach ($packages as $name => $package) {
             $package['name'] = $name;
             $this->packages[] = Instantiator::create()->instantiate(Package::class, $package);
         }
-        $this->artifacts = $artifacts;
+        $this->env = $env;
     }
 
     public static function loadFromArray(array $manifest): self
@@ -41,9 +41,9 @@ final class Manifest
         return Instantiator::create()->instantiate(self::class, $manifest);
     }
 
-    public function parameters(): array
+    public function vars(): array
     {
-        return $this->parameters;
+        return $this->vars;
     }
 
     /**
@@ -59,8 +59,8 @@ final class Manifest
         return $this->path;
     }
 
-    public function artifacts(): array
+    public function env(): array
     {
-        return $this->artifacts;
+        return $this->env;
     }
 }

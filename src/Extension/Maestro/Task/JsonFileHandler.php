@@ -2,10 +2,11 @@
 
 namespace Maestro\Extension\Maestro\Task;
 
+use Amp\Promise;
 use Amp\Success;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Task;
+use Maestro\Node\Environment;
 use Maestro\Node\TaskHandler;
-use Maestro\Workspace\Workspace;
 use function Safe\json_encode;
 use function Safe\json_decode;
 use function Safe\file_put_contents;
@@ -13,12 +14,12 @@ use function Safe\file_get_contents;
 
 class JsonFileHandler implements TaskHandler
 {
-    public function __invoke(JsonFileTask $task, Artifacts $artifacts)
+    public function execute(Task $task, Environment $environment): Promise
     {
-        $manifestDir = $artifacts->get('manifest.dir');
+        assert($task instanceof JsonFileTask);
+        $manifestDir = $environment->vars()->get('manifest.dir');
         assert(is_string($manifestDir));
-        $workspace = $artifacts->get('workspace');
-        assert($workspace instanceof Workspace);
+        $workspace = $environment->workspace();
         $existingData = [];
 
         if (file_exists($workspace->absolutePath($task->targetPath()))) {
@@ -38,6 +39,6 @@ class JsonFileHandler implements TaskHandler
             );
         }
 
-        return new Success();
+        return new Success($environment);
     }
 }

@@ -32,7 +32,7 @@ class RunCommand extends Command
     private const OPT_LIST_TARGETS = 'targets';
     private const OPT_DEPTH = 'depth';
     private const OPT_EXEC_SCRIPT = 'exec';
-    private const OPT_ARTIFACTS = 'artifacts';
+    private const OPT_ENVIRONMENT = 'environment';
     private const OPT_PURGE = 'purge';
     private const OPT_REPORT = 'report';
 
@@ -64,7 +64,7 @@ class RunCommand extends Command
         $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
         $this->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
         $this->addOption(self::OPT_EXEC_SCRIPT, null, InputOption::VALUE_REQUIRED, 'Execute command on targets');
-        $this->addOption(self::OPT_ARTIFACTS, null, InputOption::VALUE_NONE, 'Report artifacts for leaf nodes after execution');
+        $this->addOption(self::OPT_ENVIRONMENT, null, InputOption::VALUE_NONE, 'Report environment for leaf nodes after execution');
         $this->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge package workspaces before build');
     }
 

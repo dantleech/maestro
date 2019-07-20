@@ -2,52 +2,53 @@
 
 namespace Maestro\Tests\Unit\Node;
 
-use Maestro\Node\Artifacts;
-use Maestro\Node\Exception\ArtifactNotFound;
+use Maestro\Node\Environment;
+use Maestro\Node\Vars;
 use PHPUnit\Framework\TestCase;
 
 class ArtifactsTest extends TestCase
 {
     public function testReturnsArtifact()
     {
-        $artifacts = Artifacts::create([
-            'foo' => 'bar'
+        $environment = Environment::create([
+            'vars' => Vars::fromArray([
+                'foo' => 'bar'
+            ]),
         ]);
-        $this->assertEquals('bar', $artifacts->get('foo'));
+        $this->assertEquals('bar', $environment->vars()->get('foo'));
     }
 
     public function testHasMethodToDetermineIfArtifactExists()
     {
-        $artifacts = Artifacts::create([
-            'foo' => 'bar'
+        $environment = Environment::create([
+            'vars' => Vars::fromArray([
+                'foo' => 'bar'
+            ]),
         ]);
-        $this->assertTrue($artifacts->has('foo'));
-        $this->assertFalse($artifacts->has('bar'));
+        $this->assertTrue($environment->vars()->has('foo'));
+        $this->assertFalse($environment->vars()->has('bar'));
     }
 
-    public function testThrowsExceptionUnknownArtifact()
+    public function testMergesEnvironment()
     {
-        $this->expectException(ArtifactNotFound::class);
-        $artifacts = Artifacts::create([
-            'foo' => 'bar'
+        $environment1 = Environment::create([
+            'vars' => Vars::fromArray([
+                'foo' => 'bar'
+            ]),
         ]);
-        $artifacts->get('car');
-    }
-
-    public function testMergesArtifacts()
-    {
-        $artifacts1 = Artifacts::create([
-            'foo' => 'bar'
+        $environment2 = Environment::create([
+            'vars' => Vars::fromArray([
+                'foo' => 'doo',
+                'bar' => 'foo'
+            ]),
         ]);
-        $artifacts2 = Artifacts::create([
-            'foo' => 'doo',
-            'bar' => 'foo'
-        ]);
-        $expected = Artifacts::create([
-            'foo' => 'doo',
-            'bar' => 'foo'
+        $expected = Environment::create([
+            'vars' => Vars::fromArray([
+                'foo' => 'doo',
+                'bar' => 'foo'
+            ]),
         ]);
 
-        $this->assertEquals($expected, $artifacts1->merge($artifacts2));
+        $this->assertEquals($expected, $environment1->merge($environment2));
     }
 }

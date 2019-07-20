@@ -5,6 +5,7 @@ namespace Maestro\Node;
 use Amp\Success;
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
 use Maestro\Node\Task\NullTask;
 
 /**
@@ -12,8 +13,8 @@ use Maestro\Node\Task\NullTask;
  *
  * It is responsible for:
  *
- * - Running the task and managing it's state.
- * - Aggregating task artifacts.
+ * - Running the task according to a given environment
+ * - Storing the environment returned by a task
  */
 final class Node
 {
@@ -23,9 +24,9 @@ final class Node
     private $id;
 
     /**
-     * @var Artifacts
+     * @var Environment
      */
-    private $artifacts;
+    private $environment;
 
     /**
      * @var string
@@ -39,7 +40,7 @@ final class Node
 
     public function __construct(string $id, string $label = null, ?Task $task = null)
     {
-        $this->artifacts = Artifacts::empty();
+        $this->environment = Environment::empty();
         $this->id = $id;
         $this->label = $label ?: $id;
         $this->state = State::WAITING();
@@ -63,25 +64,31 @@ final class Node
         $this->changeState($stateMachine, State::CANCELLED());
     }
 
-    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Artifacts $artifacts): void
+    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Environment $environment): void
     {
-        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $artifacts) {
+        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $environment) {
             $this->changeState($stateMachine, State::BUSY());
 
             try {
-                $artifacts = yield $taskRunner->run(
+                $environment = yield $taskRunner->run(
                     $this->task,
-                    $artifacts
+                    $environment
                 );
-                $this->artifacts = $artifacts ?: Artifacts::empty();
+                if (!$environment instanceof Environment) {
+                    throw new TaskHandlerDidNotReturnEnvironment(sprintf(
+                        'Promise from task handler for tas "%s" did not return an environment, ' .
+                        'all task handlers must return a modified/unmodified environment',
+                        get_class($this->task)
+                    ));
+                }
+                $this->environment = $environment;
                 $this->changeState($stateMachine, State::DONE());
             } catch (TaskFailed $failed) {
-                $this->artifacts = $failed->artifacts();
                 $this->changeState($stateMachine, State::FAILED());
             }
 
 
-            return new Success($artifacts);
+            return new Success($environment);
         });
     }
 
@@ -100,9 +107,9 @@ final class Node
         return $this->task;
     }
 
-    public function artifacts(): Artifacts
+    public function environment(): Environment
     {
-        return $this->artifacts;
+        return $this->environment;
     }
 
     private function changeState(NodeStateMachine $stateMachine, State $state): void

@@ -3,7 +3,7 @@
 namespace Maestro\Node\Test;
 
 use Maestro\Loader\Instantiator;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\TaskHandler;
 use RuntimeException;
 
@@ -24,13 +24,16 @@ final class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $parameters, array $artifacts): ?Artifacts
+    public function handle(string $taskFqn, array $args, array $environment): Environment
     {
-        $task = Instantiator::create()->instantiate($taskFqn, $parameters);
+        $task = Instantiator::create()->instantiate($taskFqn, $args);
 
-        if (!is_callable($this->handler)) {
-            throw new RuntimeException(sprintf('Handler "%s" must be callable', get_class($this->handler)));
+        $environment = \Amp\Promise\wait($this->handler->execute($task, Environment::create($environment)));
+
+        if (!$environment) {
+            throw new RuntimeException(sprintf('Promise from handler %s did not resolve to an Environment', get_class($this->handler)));
         }
-        return \Amp\Promise\wait(call_user_func($this->handler, $task, Artifacts::create($artifacts)));
+
+        return $environment;
     }
 }

@@ -5,10 +5,8 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Amp\Success;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
-use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Artifacts;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Test\HandlerTester;
 use Maestro\Workspace\Workspace;
@@ -43,7 +41,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(0, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
@@ -52,10 +50,7 @@ class GitHandlerTest extends TestCase
             'url' => self::EXAMPLE_URL,
         ], [
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
         ]);
-
-        $this->assertEquals(Artifacts::create([]), $artifacts, 'Returns no artifacts');
     }
 
     public function testFailsOnNonZeroExitCode()
@@ -71,7 +66,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
@@ -80,11 +75,15 @@ class GitHandlerTest extends TestCase
             'url' => self::EXAMPLE_URL,
         ], [
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
         ]);
     }
 
-    public function testPurgeExistingProjectWorkspace()
+    public function testReturnsEarlyIfRepositoryExists()
+    {
+        $this->markTestSkipped('This test should either be an integration test, or the filesystem should be abstracted');
+    }
+
+    public function testFailsIfUrlDoesNotExist()
     {
         $this->expectException(TaskFailed::class);
         $this->scriptRunner->run(
@@ -97,7 +96,7 @@ class GitHandlerTest extends TestCase
             []
         )->willReturn(new Success(new ScriptResult(1, '', '')))->shouldBeCalled();
 
-        $artifacts = HandlerTester::create(
+        $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
                 self::EXAMPLE_WORKSPACE_ROOT,
@@ -106,7 +105,6 @@ class GitHandlerTest extends TestCase
             'url' => self::EXAMPLE_URL,
         ], [
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
-            'env' => EnvVars::create([]),
         ]);
     }
 }

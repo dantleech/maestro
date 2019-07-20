@@ -5,16 +5,20 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Node\Test\HandlerTester;
+use Maestro\Script\EnvVars;
 use PHPUnit\Framework\TestCase;
 
 class ManifestHandlerTest extends TestCase
 {
-    public function testAddsArtifacts()
+    public function testAddsVarsAndEnv()
     {
-        $artifacts = HandlerTester::create(new ManifestHandler())->handle(ManifestTask::class, [
+        $environment = HandlerTester::create(new ManifestHandler())->handle(ManifestTask::class, [
             'path' => 'foobar',
-            'artifacts' => [
+            'vars' => [
                 'hello' => 'goodbye',
+            ],
+            'env' => [
+                'HELLO' => 'goodbye',
             ],
         ], []);
 
@@ -22,6 +26,8 @@ class ManifestHandlerTest extends TestCase
             'manifest.path' => 'foobar',
             'manifest.dir' => '',
             'hello' => 'goodbye',
-        ], $artifacts->toArray());
+        ], $environment->vars()->toArray());
+
+        $this->assertEquals(EnvVars::create(['HELLO' => 'goodbye']), $environment->env());
     }
 }

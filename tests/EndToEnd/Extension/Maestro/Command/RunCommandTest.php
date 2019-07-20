@@ -74,7 +74,7 @@ class RunCommandTest extends EndToEndTestCase
                     'tasks' => [
                         'say hello' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'echo "Foobar" > foobar',
                             ]
                         ]
@@ -98,7 +98,7 @@ class RunCommandTest extends EndToEndTestCase
                     'tasks' => [
                         'hello' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'echo "Hello World"',
                             ]
                         ]
@@ -127,7 +127,7 @@ class RunCommandTest extends EndToEndTestCase
                     'tasks' => [
                         'hello' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'echo "Hello World"',
                             ]
                         ]
@@ -148,13 +148,13 @@ class RunCommandTest extends EndToEndTestCase
                     'tasks' => [
                         'hello' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'echo "Hello World"',
                             ]
                         ],
                         'goodbye' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'echo "Goodbye World"',
                             ]
                         ]
@@ -187,19 +187,19 @@ class RunCommandTest extends EndToEndTestCase
                     'tasks' => [
                         'hello' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'exit 1',
                             ]
                         ],
                         'goodbye' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'exit 1',
                             ]
                         ],
                         'foobar' => [
                             'type' => 'script',
-                            'parameters' => [
+                            'args' => [
                                 'script' => 'exit 0',
                             ]
                         ]
@@ -287,7 +287,7 @@ class RunCommandTest extends EndToEndTestCase
                 ],
             ],
         ]);
-        $process = $this->command('run plan.json --report=artifacts');
+        $process = $this->command('run plan.json --report=environment');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('manifest.path', $process->getOutput());
     }

@@ -2,25 +2,13 @@
 
 namespace Maestro\Node\Exception;
 
-use Maestro\Node\Artifacts;
 use RuntimeException;
 
 class TaskFailed extends RuntimeException
 {
-    /**
-     * @var Artifacts
-     */
-    private $artifacts;
-
-    public function __construct(string $message, Artifacts $artifacts = null)
+    public function __construct(string $message, $code = 1)
     {
-        $this->artifacts = $artifacts ?: Artifacts::create([]);
-        parent::__construct($message);
+        parent::__construct($message, $code);
         $this->message = $message;
-    }
-
-    public function artifacts(): Artifacts
-    {
-        return $this->artifacts;
     }
 }

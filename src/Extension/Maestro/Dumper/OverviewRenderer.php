@@ -32,7 +32,7 @@ class OverviewRenderer implements Dumper
                 $this->stateColor($node->state()),
                 $node->state()->toString(),
                 $node->task()->description(),
-                json_encode($node->artifacts()->toArray())
+                json_encode($node->environment()->debugInfo())
             );
         }
 

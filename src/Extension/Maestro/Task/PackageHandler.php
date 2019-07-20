@@ -4,8 +4,8 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Script\EnvVars;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Task;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
@@ -23,8 +23,9 @@ class PackageHandler implements TaskHandler
         $this->factory = $factory;
     }
 
-    public function __invoke(PackageTask $package): Promise
+    public function execute(Task $package, Environment $environment): Promise
     {
+        assert($package instanceof PackageTask);
         $workspace = $this->factory->createNamedWorkspace($package->name());
 
         if ($package->purgeWorkspace()) {
@@ -32,15 +33,17 @@ class PackageHandler implements TaskHandler
         }
 
         $this->createWorkspaceFolderIfNotExists($workspace);
-
-        return new Success(Artifacts::create(array_merge($package->artifacts(), [
+        $builder = $environment->builder();
+        $builder->withWorkspace($workspace);
+        $builder->mergeEnv(array_merge($package->env(), [
+            'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
+            'PACKAGE_NAME' => $package->name()
+        ]));
+        $builder->withVars(array_merge([
             'package' => $package,
-            'workspace' => $workspace,
-            'env' => EnvVars::create([
-                'PACKAGE_WORKSPACE_PATH' => $workspace->absolutePath(),
-                'PACKAGE_NAME' => $package->name()
-            ])
-        ])));
+        ], $package->vars()));
+
+        return new Success($builder->build());
     }
 
     private function createWorkspaceFolderIfNotExists(Workspace $workspace): void

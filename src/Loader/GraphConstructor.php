@@ -9,7 +9,7 @@ use Maestro\Node\Graph;
 use Maestro\Node\GraphBuilder;
 use Maestro\Node\Node;
 
-class GraphLoader
+class GraphConstructor
 {
     const NODE_ROOT = 'root';
 
@@ -23,13 +23,13 @@ class GraphLoader
         $this->purge = $purge;
     }
 
-    public function build(
+    public function construct(
         Manifest $manifest
     ): Graph {
         $builder = GraphBuilder::create();
         $builder->addNode(
             Node::create(self::NODE_ROOT, [
-                'task' => new ManifestTask($manifest->path(), $manifest->artifacts())
+                'task' => new ManifestTask($manifest->path(), $manifest->vars(), $manifest->env())
             ])
         );
         $this->walkPackages($manifest, $builder);
@@ -49,7 +49,8 @@ class GraphLoader
                         [
                             'name' => $package->name(),
                             'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
-                            'artifacts' => $package->artifacts()
+                            'vars' => $package->vars(),
+                            'env' => $package->env()
                         ]
                     ),
                 ]
@@ -72,7 +73,7 @@ class GraphLoader
                     'label' => $taskName,
                     'task' => Instantiator::create()->instantiate(
                         $task->type(),
-                        $task->parameters()
+                        $task->args()
                     )
                 ]
             ));

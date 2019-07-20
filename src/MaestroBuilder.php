@@ -2,13 +2,13 @@
 
 namespace Maestro;
 
-use Maestro\Loader\GraphLoader;
+use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Loader\TaskMap;
-use Maestro\Node\ArtifactsResolver;
-use Maestro\Node\ArtifactsResolver\AggregatingArtifactsResolver;
+use Maestro\Node\EnvironmentResolver;
+use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
 use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
 use Maestro\Node\GraphWalker;
 use Maestro\Node\NodeStateMachine;
@@ -57,7 +57,7 @@ final class MaestroBuilder
     {
         return new Maestro(
             $this->buildLoader(),
-            new GraphLoader(
+            new GraphConstructor(
                 $this->purge
             ),
             $this->buildGraphWalker()
@@ -114,9 +114,9 @@ final class MaestroBuilder
         );
     }
 
-    private function buildArtifactsResolver(): ArtifactsResolver
+    private function buildArtifactsResolver(): EnvironmentResolver
     {
-        return new AggregatingArtifactsResolver();
+        return new AggregatingEnvironmentResolver();
     }
 
     private function buildNodeStateMachine(): NodeStateMachine

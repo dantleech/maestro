@@ -5,8 +5,9 @@ namespace Maestro\Extension\Twig\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Extension\Twig\EnvironmentFactory;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
+use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
@@ -24,25 +25,23 @@ class TemplateHandler implements TaskHandler
         $this->factory = $factory;
     }
 
-    public function __invoke(TemplateTask $task, Artifacts $artifacts): Promise
+    public function execute(Task $task, Environment $environment): Promise
     {
-        $manifestDir = $artifacts->get('manifest.dir');
-        $workspace = $artifacts->get('workspace');
-        assert($workspace instanceof Workspace);
+        assert($task instanceof TemplateTask);
+        $manifestDir = $environment->vars()->get('manifest.dir');
+        $workspace = $environment->workspace();
 
-        $environment = $this->factory->get($manifestDir);
+        $twigEnvironment = $this->factory->get($manifestDir);
 
         try {
-            $rendered = $environment->render($task->path(), $artifacts->toArray());
+            $rendered = $twigEnvironment->render($task->path(), $environment->vars()->toArray());
         } catch (Error $error) {
-            throw new TaskFailed($error->getMessage(), Artifacts::create([
-                'error' => $error->getMessage(),
-            ]));
+            throw new TaskFailed($error->getMessage());
         }
 
         $this->writeContents($workspace, $task, $rendered);
 
-        return new Success(Artifacts::empty());
+        return new Success($environment);
     }
 
     private function writeContents(Workspace $workspace, TemplateTask $task, string $rendered): void

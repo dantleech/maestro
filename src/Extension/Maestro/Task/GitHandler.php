@@ -4,12 +4,11 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Script\EnvVars;
+use Maestro\Node\Task;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Artifacts;
+use Maestro\Node\Environment;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\TaskHandler;
-use Maestro\Workspace\Workspace;
 
 class GitHandler implements TaskHandler
 {
@@ -29,16 +28,15 @@ class GitHandler implements TaskHandler
         $this->rootWorkspacePath = $rootWorkspacePath;
     }
 
-    public function __invoke(GitTask $task, Artifacts $artifacts): Promise
+    public function execute(Task $task, Environment $environment): Promise
     {
-        return \Amp\call(function () use ($task, $artifacts) {
-            $workspace = $artifacts->get('workspace');
-            $env = $artifacts->get('env');
-            assert($env instanceof EnvVars);
-            assert($workspace instanceof Workspace);
+        assert($task instanceof GitTask);
+        return \Amp\call(function () use ($task, $environment) {
+            $workspace = $environment->workspace();
+            $env = $environment->env();
 
             if ($this->isGitRepository($workspace->absolutePath())) {
-                return new Success();
+                return new Success($environment);
             }
 
             $result = yield $this->runner->run(
@@ -52,14 +50,10 @@ class GitHandler implements TaskHandler
                     'Git clone failed with exit code "%s": %s',
                     $result->exitCode(),
                     $result->lastStderr()
-                ), Artifacts::create([
-                    'exitCode' => $result->exitCode(),
-                    'stderr' => $result->lastStderr(),
-                    'stdout' => $result->lastStdout(),
-                ]));
+                ), $result->exitCode());
             }
 
-            return Artifacts::create([]);
+            return $environment;
         });
     }
 

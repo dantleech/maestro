@@ -7,7 +7,6 @@ use Amp\Success;
 use Maestro\Node\Environment;
 use Maestro\Node\Task;
 use Maestro\Node\TaskHandler;
-use Maestro\Script\EnvVars;
 use Webmozart\PathUtil\Path;
 
 class ManifestHandler implements TaskHandler

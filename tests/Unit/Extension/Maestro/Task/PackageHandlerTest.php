@@ -46,13 +46,13 @@ class PackageHandlerTest extends IntegrationTestCase
         ], $environment->vars());
     }
 
-    public function testProvidesConfiguredEnvironment()
+    public function testProvidesConfiguredVars()
     {
         $environment = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
             PackageTask::class,
             [
                 'name' => 'foobar',
-                'environment' => [
+                'vars' => [
                     'bonjour' => 'aurevoir'
                 ],
             ],
@@ -62,6 +62,22 @@ class PackageHandlerTest extends IntegrationTestCase
         $this->assertInstanceOf(Environment::class, $environment);
 
         $this->assertEquals('aurevoir', $environment->get('bonjour'));
+    }
+
+    public function testProvidesConfiguredEnvVars()
+    {
+        $environment = HandlerTester::create(new PackageHandler($this->workspaceFactory))->handle(
+            PackageTask::class,
+            [
+                'name' => 'foobar',
+                'env' => [
+                    'BONJOUR' => 'aurevoir'
+                ],
+            ],
+            []
+        );
+
+        $this->assertEquals('aurevoir', $environment->envVars()->get('BONJOUR'));
     }
 
     public function testPurgeWorkspace()

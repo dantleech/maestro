@@ -19,13 +19,23 @@ class PackageTask implements Task
     /**
      * @var array
      */
-    private $environment;
+    private $vars;
 
-    public function __construct(string $name, bool $purgeWorkspace = false, array $environment = [])
-    {
+    /**
+     * @var array
+     */
+    private $env;
+
+    public function __construct(
+        string $name,
+        bool $purgeWorkspace = false,
+        array $vars = [],
+        array $env = []
+    ) {
         $this->name = $name;
         $this->purgeWorkspace = $purgeWorkspace;
-        $this->environment = $environment;
+        $this->vars = $vars;
+        $this->env = $env;
     }
 
     public function name(): string
@@ -43,8 +53,13 @@ class PackageTask implements Task
         return $this->purgeWorkspace;
     }
 
-    public function environment(): array
+    public function vars(): array
     {
-        return $this->environment;
+        return $this->vars;
+    }
+
+    public function env(): array
+    {
+        return $this->env;
     }
 }

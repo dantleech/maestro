@@ -4,6 +4,7 @@ namespace Maestro\Tests\Unit\Loader;
 
 use Closure;
 use Maestro\Extension\Maestro\Task\ManifestTask;
+use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\Manifest;
 use Maestro\Node\Graph;
@@ -82,6 +83,33 @@ class GraphConstructorTest extends TestCase
                 $tasks = $graph->dependentsFor('phpactor/phpactor');
                 $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
+            }
+        ];
+
+        yield 'package with vars and env' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'vars' => [
+                            'foo' => 'bar',
+                        ],
+                        'env' => [
+                            'BAR' => 'FOO'
+                        ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $nodes = $graph->dependentsFor('root');
+                $this->assertCount(1, $nodes);
+                $task = $nodes->get('phpactor/phpactor')->task();
+                assert($task instanceof PackageTask);
+                $this->assertEquals([
+                    'foo' => 'bar',
+                ], $task->vars());
+                $this->assertEquals([
+                    'BAR' => 'FOO',
+                ], $task->env());
             }
         ];
     }

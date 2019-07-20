@@ -49,7 +49,8 @@ class GraphConstructor
                         [
                             'name' => $package->name(),
                             'purgeWorkspace' => $this->purge ?? $package->purgeWorkspace(),
-                            'environment' => $package->environment()
+                            'vars' => $package->vars(),
+                            'env' => $package->env()
                         ]
                     ),
                 ]

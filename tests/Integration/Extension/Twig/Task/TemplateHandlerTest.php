@@ -47,7 +47,7 @@ EOT
             'path' => 'template.twig',
             'targetPath' => 'GREETINGS',
         ], [
-            'parameters' => [
+            'vars' => [
                 'manifest.dir' => $this->workspace()->path('/'),
             ],
             'workspace' => $this->packageWorkspace,
@@ -71,7 +71,7 @@ EOT
                 'path' => 'template_2.twig',
                 'targetPath' => 'GREETINGS',
             ], [
-                'parameters' => [
+                'vars' => [
                     'manifest.dir' => $this->workspace()->path('/'),
                 ],
                 'workspace' => $this->packageWorkspace,
@@ -94,7 +94,7 @@ EOT
             'path' => 'template_3.twig',
             'targetPath' => 'foobar/GREETINGS',
         ], [
-            'parameters' => [
+            'vars' => [
                 'manifest.dir' => $this->workspace()->path('/'),
             ],
             'workspace' => $this->packageWorkspace,

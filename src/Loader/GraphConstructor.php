@@ -72,7 +72,7 @@ class GraphConstructor
                     'label' => $taskName,
                     'task' => Instantiator::create()->instantiate(
                         $task->type(),
-                        $task->parameters()
+                        $task->args()
                     )
                 ]
             ));

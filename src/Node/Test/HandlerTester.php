@@ -24,9 +24,9 @@ final class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $parameters, array $environment): Environment
+    public function handle(string $taskFqn, array $args, array $environment): Environment
     {
-        $task = Instantiator::create()->instantiate($taskFqn, $parameters);
+        $task = Instantiator::create()->instantiate($taskFqn, $args);
 
         $environment = \Amp\Promise\wait($this->handler->execute($task, Environment::create($environment)));
 

@@ -10,14 +10,14 @@ class ManifestTest extends TestCase
     public function testLoadsWithParameters()
     {
         $manifest = Manifest::loadFromArray([
-            'parameters' => [
+            'vars' => [
                 'one' => 'two',
             ],
         ]);
 
         $this->assertEquals([
             'one' => 'two',
-        ], $manifest->parameters());
+        ], $manifest->vars());
     }
 
     public function testLoadsWithPackages()
@@ -28,7 +28,7 @@ class ManifestTest extends TestCase
                     'tasks' => [
                         [
                             'type' => 'command',
-                            'parameters' => [
+                            'args' => [
                                 'command' => 'composer install',
                             ],
                         ],

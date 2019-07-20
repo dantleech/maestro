@@ -45,7 +45,7 @@ class ScriptHandlerTest extends IntegrationTestCase
         ]);
 
         $this->assertEquals(Environment::create([
-            'parameters' => [
+            'vars' => [
                 'exitCode' => 0,
                 'stdout' => 'Yes',
                 'stderr' => 'No'

@@ -7,7 +7,7 @@ final class Manifest
     /**
      * @var array
      */
-    private $parameters;
+    private $vars;
 
     /**
      * @var Package[]
@@ -24,9 +24,9 @@ final class Manifest
      */
     private $environment;
 
-    public function __construct(array $parameters = [], array $packages = [], string $path = null, array $environment = [])
+    public function __construct(array $vars = [], array $packages = [], string $path = null, array $environment = [])
     {
-        $this->parameters = $parameters;
+        $this->vars = $vars;
         $this->path = $path;
 
         foreach ($packages as $name => $package) {
@@ -41,9 +41,9 @@ final class Manifest
         return Instantiator::create()->instantiate(self::class, $manifest);
     }
 
-    public function parameters(): array
+    public function vars(): array
     {
-        return $this->parameters;
+        return $this->vars;
     }
 
     /**

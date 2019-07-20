@@ -11,7 +11,7 @@ class ArtifactsTest extends TestCase
     public function testReturnsArtifact()
     {
         $environment = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'bar'
             ],
         ]);
@@ -21,7 +21,7 @@ class ArtifactsTest extends TestCase
     public function testHasMethodToDetermineIfArtifactExists()
     {
         $environment = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'bar'
             ],
         ]);
@@ -33,7 +33,7 @@ class ArtifactsTest extends TestCase
     {
         $this->expectException(ParameterNotFound::class);
         $environment = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'bar'
             ],
         ]);
@@ -43,18 +43,18 @@ class ArtifactsTest extends TestCase
     public function testMergesEnvironment()
     {
         $environment1 = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'bar'
             ],
         ]);
         $environment2 = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'doo',
                 'bar' => 'foo'
             ],
         ]);
         $expected = Environment::create([
-            'parameters' => [
+            'vars' => [
                 'foo' => 'doo',
                 'bar' => 'foo'
             ],

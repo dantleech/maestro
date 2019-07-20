@@ -11,23 +11,23 @@ class Task
     /**
      * @var array
      */
-    private $parameters;
+    private $args;
 
     /**
      * @var array
      */
     private $depends;
 
-    public function __construct(string $type, array $parameters = [], array $depends = [])
+    public function __construct(string $type, array $args = [], array $depends = [])
     {
         $this->type = $type;
-        $this->parameters = $parameters;
+        $this->args = $args;
         $this->depends = $depends;
     }
 
-    public function parameters(): array
+    public function args(): array
     {
-        return $this->parameters;
+        return $this->args;
     }
 
     public function type(): string

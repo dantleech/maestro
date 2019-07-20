@@ -19,7 +19,7 @@ final class Environment
     /**
      * @var array
      */
-    private $parameters;
+    private $vars;
 
     /**
      * @var Workspace|null
@@ -31,16 +31,16 @@ final class Environment
      */
     private $envVars;
 
-    public function __construct(array $parameters = [], Workspace $workspace = null, EnvVars $envVars = null)
+    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $envVars = null)
     {
-        $this->parameters = $parameters;
+        $this->vars = $vars;
         $this->workspace = $workspace;
         $this->envVars = $envVars ?: EnvVars::create([]);
     }
 
-    public static function create(array $parameters = []): self
+    public static function create(array $vars = []): self
     {
-        return Instantiator::create()->instantiate(self::class, $parameters);
+        return Instantiator::create()->instantiate(self::class, $vars);
     }
 
     public static function empty(): self
@@ -50,21 +50,21 @@ final class Environment
 
     public function get(string $key)
     {
-        if (!isset($this->parameters[$key])) {
+        if (!isset($this->vars[$key])) {
             throw new ParameterNotFound(sprintf(
                 'Parameter "%s" not known, probably caused by a missing dependency. Known keys: "%s"',
                 $key,
-                implode('", "', array_keys($this->parameters))
+                implode('", "', array_keys($this->vars))
             ));
         }
 
-        return $this->parameters[$key];
+        return $this->vars[$key];
     }
 
     public function merge(Environment $environment): self
     {
         return new self(
-            array_merge($this->parameters, $environment->parameters),
+            array_merge($this->vars, $environment->vars),
             $environment->hasWorkspace() ? $environment->workspace() : $this->workspace,
             $this->envVars->merge($environment->envVars())
         );
@@ -72,17 +72,17 @@ final class Environment
 
     public function toArray(): array
     {
-        return $this->parameters;
+        return $this->vars;
     }
 
     public function has(string $string): bool
     {
-        return isset($this->parameters[$string]);
+        return isset($this->vars[$string]);
     }
 
     public function builder(): EnvironmentBuilder
     {
-        return new EnvironmentBuilder($this->parameters);
+        return new EnvironmentBuilder($this->vars);
     }
 
     public function hasWorkspace(): bool

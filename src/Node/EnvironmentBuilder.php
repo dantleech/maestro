@@ -10,7 +10,7 @@ final class EnvironmentBuilder
     /**
      * @var array
      */
-    private $parameters;
+    private $vars;
 
     /**
      * @var Workspace|null
@@ -22,16 +22,16 @@ final class EnvironmentBuilder
      */
     private $envVars;
 
-    public function __construct(array $parameters = [], Workspace $workspace = null, EnvVars $envVars = null)
+    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $envVars = null)
     {
-        $this->parameters = $parameters;
+        $this->vars = $vars;
         $this->workspace = $workspace;
         $this->envVars = $envVars ?: EnvVars::create([]);
     }
 
-    public function withParameters(array $parameters): self
+    public function withParameters(array $vars): self
     {
-        $this->parameters = $parameters;
+        $this->vars = $vars;
         return $this;
     }
 
@@ -50,7 +50,7 @@ final class EnvironmentBuilder
     public function build(): Environment
     {
         return Environment::create([
-            'parameters' => $this->parameters,
+            'vars' => $this->vars,
             'workspace' => $this->workspace,
             'envVars' => $this->envVars,
         ]);

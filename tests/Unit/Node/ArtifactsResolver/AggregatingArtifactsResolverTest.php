@@ -40,7 +40,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('root'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'foo' => 'bar'
                             ],
                         ]
@@ -60,7 +60,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'foo' => 'bar'
                             ],
                         ]
@@ -68,7 +68,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'bar' => 'foo'
                             ],
                         ]
@@ -92,7 +92,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'foo' => 'bar'
                             ],
                         ]
@@ -100,7 +100,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'bar' => 'foo'
                             ],
                         ]
@@ -108,7 +108,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n3'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'bar' => 'baz'
                             ],
                         ]
@@ -130,7 +130,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'foo' => 'bar'
                             ],
                         ]
@@ -138,7 +138,7 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'parameters' => [
+                            'vars' => [
                                 'bar' => 'foo'
                             ],
                         ]

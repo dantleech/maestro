@@ -66,7 +66,7 @@ class GraphConstructorTest extends TestCase
                             ],
                             'task2' => [
                                 'type' => ExampleTask::class,
-                                'parameters' => [
+                                'args' => [
                                     'param1' => 'foobar',
                                 ],
                             ]

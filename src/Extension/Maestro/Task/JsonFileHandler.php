@@ -17,7 +17,7 @@ class JsonFileHandler implements TaskHandler
     public function execute(Task $task, Environment $environment): Promise
     {
         assert($task instanceof JsonFileTask);
-        $manifestDir = $environment->get('manifest.dir');
+        $manifestDir = $environment->vars()->get('manifest.dir');
         assert(is_string($manifestDir));
         $workspace = $environment->workspace();
         $existingData = [];

@@ -2,7 +2,6 @@
 
 namespace Maestro\Node\Exception;
 
-use Maestro\Node\Environment;
 use RuntimeException;
 
 class TaskFailed extends RuntimeException

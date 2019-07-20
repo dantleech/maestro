@@ -26,7 +26,7 @@ class ManifestHandlerTest extends TestCase
             'manifest.path' => 'foobar',
             'manifest.dir' => '',
             'hello' => 'goodbye',
-        ], $environment->vars());
+        ], $environment->vars()->toArray());
 
         $this->assertEquals(EnvVars::create(['HELLO' => 'goodbye']), $environment->env());
     }

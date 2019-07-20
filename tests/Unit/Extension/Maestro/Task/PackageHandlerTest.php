@@ -43,7 +43,7 @@ class PackageHandlerTest extends IntegrationTestCase
 
         $this->assertEquals([
             'package' => $package,
-        ], $environment->vars());
+        ], $environment->vars()->toArray());
     }
 
     public function testProvidesConfiguredVars()
@@ -61,7 +61,7 @@ class PackageHandlerTest extends IntegrationTestCase
 
         $this->assertInstanceOf(Environment::class, $environment);
 
-        $this->assertEquals('aurevoir', $environment->get('bonjour'));
+        $this->assertEquals('aurevoir', $environment->vars()->get('bonjour'));
     }
 
     public function testProvidesConfiguredEnvVars()

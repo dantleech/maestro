@@ -8,7 +8,7 @@ use Maestro\Workspace\Workspace;
 final class EnvironmentBuilder
 {
     /**
-     * @var array
+     * @var Vars
      */
     private $vars;
 
@@ -22,16 +22,16 @@ final class EnvironmentBuilder
      */
     private $env;
 
-    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $env = null)
+    public function __construct(Vars $vars = null, Workspace $workspace = null, EnvVars $env = null)
     {
-        $this->vars = $vars;
+        $this->vars = $vars ?: Vars::create([]);
         $this->workspace = $workspace;
         $this->env = $env ?: EnvVars::create([]);
     }
 
     public function withVars(array $vars): self
     {
-        $this->vars = $vars;
+        $this->vars = Vars::create($vars);
         return $this;
     }
 

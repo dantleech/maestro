@@ -7,6 +7,7 @@ use Maestro\Extension\Twig\Task\TemplateHandler;
 use Maestro\Extension\Twig\Task\TemplateTask;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Test\HandlerTester;
+use Maestro\Node\Vars;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 
@@ -47,9 +48,9 @@ EOT
             'path' => 'template.twig',
             'targetPath' => 'GREETINGS',
         ], [
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'manifest.dir' => $this->workspace()->path('/'),
-            ],
+            ]),
             'workspace' => $this->packageWorkspace,
         ]);
 
@@ -71,9 +72,9 @@ EOT
                 'path' => 'template_2.twig',
                 'targetPath' => 'GREETINGS',
             ], [
-                'vars' => [
+                'vars' => Vars::fromArray([
                     'manifest.dir' => $this->workspace()->path('/'),
-                ],
+                ]),
                 'workspace' => $this->packageWorkspace,
             ]);
             $this->fail('No exception thrown');
@@ -94,9 +95,9 @@ EOT
             'path' => 'template_3.twig',
             'targetPath' => 'foobar/GREETINGS',
         ], [
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'manifest.dir' => $this->workspace()->path('/'),
-            ],
+            ]),
             'workspace' => $this->packageWorkspace,
         ]);
         $this->assertFileExists($this->workspace()->path('foobar/GREETINGS'));

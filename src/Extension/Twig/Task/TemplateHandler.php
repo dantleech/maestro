@@ -28,13 +28,13 @@ class TemplateHandler implements TaskHandler
     public function execute(Task $task, Environment $environment): Promise
     {
         assert($task instanceof TemplateTask);
-        $manifestDir = $environment->get('manifest.dir');
+        $manifestDir = $environment->vars()->get('manifest.dir');
         $workspace = $environment->workspace();
 
         $twigEnvironment = $this->factory->get($manifestDir);
 
         try {
-            $rendered = $twigEnvironment->render($task->path(), $environment->vars());
+            $rendered = $twigEnvironment->render($task->path(), $environment->vars()->toArray());
         } catch (Error $error) {
             throw new TaskFailed($error->getMessage());
         }

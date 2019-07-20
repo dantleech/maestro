@@ -5,7 +5,6 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Amp\Success;
 use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
-use Maestro\Script\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Exception\TaskFailed;
@@ -50,9 +49,6 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'vars' => [
-                'env' => EnvVars::create([]),
-            ],
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
         ]);
     }
@@ -78,9 +74,6 @@ class GitHandlerTest extends TestCase
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
         ], [
-            'env' => EnvVars::create([]),
-            'vars' => [
-            ],
             'workspace' => new Workspace(self::EXAMPLE_WORKSPACE, self::EXAMPLE_WORKSPACE_NAME),
         ]);
     }

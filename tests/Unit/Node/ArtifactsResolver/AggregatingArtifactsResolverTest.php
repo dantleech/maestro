@@ -8,6 +8,7 @@ use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
 use Maestro\Node\Edge;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
+use Maestro\Node\Vars;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -48,9 +49,9 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('root'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'foo' => 'bar'
-                            ],
+                            ]),
                         ]
                     ),
                     $node,
@@ -59,7 +60,9 @@ class AggregatingEnvironmentResolverTest extends TestCase
                 ]);
             },
             Node::create('target'),
-            ['vars' => ['foo' => 'bar']]
+            [
+                'vars' => ['foo' => 'bar']
+            ]
         ];
 
         yield 'merges ancestor environment' => [
@@ -68,17 +71,17 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'foo' => 'bar'
-                            ],
+                            ]),
                         ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'bar' => 'foo'
-                            ],
+                            ]),
                         ]
                     ),
                     $node,
@@ -102,25 +105,25 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'foo' => 'bar'
-                            ],
+                            ]),
                         ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'bar' => 'foo'
-                            ],
+                            ]),
                         ]
                     ),
                     $this->setEnvironment(
                         Node::create('n3'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'bar' => 'baz'
-                            ],
+                            ]),
                         ]
                     ),
                     $node,
@@ -145,17 +148,17 @@ class AggregatingEnvironmentResolverTest extends TestCase
                     $this->setEnvironment(
                         Node::create('n1'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'foo' => 'bar'
-                            ],
+                            ]),
                         ]
                     ),
                     $this->setEnvironment(
                         Node::create('n2'),
                         [
-                            'vars' => [
+                            'vars' => Vars::fromArray([
                                 'bar' => 'foo'
-                            ],
+                            ]),
                         ]
                     ),
                     $node,

@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Unit\Node;
 
 use Maestro\Node\Environment;
-use Maestro\Node\Exception\ParameterNotFound;
+use Maestro\Node\Vars;
 use PHPUnit\Framework\TestCase;
 
 class ArtifactsTest extends TestCase
@@ -11,53 +11,42 @@ class ArtifactsTest extends TestCase
     public function testReturnsArtifact()
     {
         $environment = Environment::create([
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'foo' => 'bar'
-            ],
+            ]),
         ]);
-        $this->assertEquals('bar', $environment->get('foo'));
+        $this->assertEquals('bar', $environment->vars()->get('foo'));
     }
 
     public function testHasMethodToDetermineIfArtifactExists()
     {
         $environment = Environment::create([
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'foo' => 'bar'
-            ],
+            ]),
         ]);
-        $this->assertTrue($environment->has('foo'));
-        $this->assertFalse($environment->has('bar'));
-    }
-
-    public function testThrowsExceptionUnknownArtifact()
-    {
-        $this->expectException(ParameterNotFound::class);
-        $environment = Environment::create([
-            'vars' => [
-                'foo' => 'bar'
-            ],
-        ]);
-        $environment->get('car');
+        $this->assertTrue($environment->vars()->has('foo'));
+        $this->assertFalse($environment->vars()->has('bar'));
     }
 
     public function testMergesEnvironment()
     {
         $environment1 = Environment::create([
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'foo' => 'bar'
-            ],
+            ]),
         ]);
         $environment2 = Environment::create([
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'foo' => 'doo',
                 'bar' => 'foo'
-            ],
+            ]),
         ]);
         $expected = Environment::create([
-            'vars' => [
+            'vars' => Vars::fromArray([
                 'foo' => 'doo',
                 'bar' => 'foo'
-            ],
+            ]),
         ]);
 
         $this->assertEquals($expected, $environment1->merge($environment2));

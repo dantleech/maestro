@@ -3,7 +3,6 @@
 namespace Maestro\Node;
 
 use Maestro\Loader\Instantiator;
-use Maestro\Node\Exception\ParameterNotFound;
 use Maestro\Script\EnvVars;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
@@ -17,7 +16,7 @@ use RuntimeException;
 final class Environment
 {
     /**
-     * @var array
+     * @var Vars
      */
     private $vars;
 
@@ -31,53 +30,38 @@ final class Environment
      */
     private $env;
 
-    public function __construct(array $vars = [], Workspace $workspace = null, EnvVars $env = null)
-    {
-        $this->vars = $vars;
+    public function __construct(
+        Vars $vars = null,
+        Workspace $workspace = null,
+        EnvVars $env = null
+    ) {
+        $this->vars = $vars ?: Vars::create([]);
         $this->workspace = $workspace;
         $this->env = $env ?: EnvVars::create([]);
     }
 
-    public static function create(array $vars = []): self
+    public static function create(array $data = []): self
     {
-        return Instantiator::create()->instantiate(self::class, $vars);
+        return Instantiator::create()->instantiate(self::class, $data);
     }
 
     public static function empty(): self
     {
-        return new self([]);
-    }
-
-    public function get(string $key)
-    {
-        if (!isset($this->vars[$key])) {
-            throw new ParameterNotFound(sprintf(
-                'Parameter "%s" not known, probably caused by a missing dependency. Known keys: "%s"',
-                $key,
-                implode('", "', array_keys($this->vars))
-            ));
-        }
-
-        return $this->vars[$key];
+        return new self();
     }
 
     public function merge(Environment $environment): self
     {
         return new self(
-            array_merge($this->vars, $environment->vars),
+            $this->vars->merge($environment->vars),
             $environment->hasWorkspace() ? $environment->workspace() : $this->workspace,
             $this->env->merge($environment->env())
         );
     }
 
-    public function vars(): array
+    public function vars(): Vars
     {
         return $this->vars;
-    }
-
-    public function has(string $string): bool
-    {
-        return isset($this->vars[$string]);
     }
 
     public function builder(): EnvironmentBuilder
@@ -110,7 +94,7 @@ final class Environment
     {
         return [
             'env' => $this->env->toArray(),
-            'vars' => $this->vars,
+            'vars' => $this->vars->toArray(),
             'workspace' => $this->workspace ? $this->workspace->absolutePath() : null,
         ];
     }

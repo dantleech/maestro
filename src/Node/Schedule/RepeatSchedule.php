@@ -4,33 +4,44 @@ namespace Maestro\Node\Schedule;
 
 use Maestro\Node\Node;
 use Maestro\Node\Schedule;
+use Maestro\Node\Timer;
+use Maestro\Node\Timer\ClockTimer;
 
 class RepeatSchedule implements Schedule
 {
     /**
      * @var int
      */
-    private $time;
+    private $delaySeconds;
 
     /**
-     * @var int
+     * @var Timer
      */
-    private $startTime;
+    private $timer;
 
-    public function __construct(int $time)
+    private $hasRun = false;
+
+    public function __construct(int $time, ?Timer $timer = null)
     {
-        $this->time = $time;
-        $this->startTime = time();
+        $this->delaySeconds = $time;
+        $this->timer = $timer ?: new ClockTimer();
     }
 
     public function shouldRun(Node $node): bool
     {
-        if (time() - $this->startTime > $this->time) {
-            $this->startTime = time();
+        if (false === $this->hasRun) {
+            $this->timer->reset();
+            $this->hasRun = true;
             return true;
         }
 
-        return false;
+        $shouldRun = $this->timer->elapsed() >= $this->delaySeconds;
+
+        if ($shouldRun) {
+            $this->timer->reset();
+        }
+
+        return $shouldRun;
     }
 
     public function shouldReschedule(Node $node): bool

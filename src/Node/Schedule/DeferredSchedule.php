@@ -4,32 +4,24 @@ namespace Maestro\Node\Schedule;
 
 use Maestro\Node\Node;
 use Maestro\Node\Schedule;
+use Maestro\Node\Timer;
+use Maestro\Node\Timer\ClockTimer;
 
 class DeferredSchedule implements Schedule
 {
-    /**
-     * @var int
-     */
-    private $time;
+    private $timer;
 
-    /**
-     * @var int
-     */
-    private $startTime;
+    private $delaySeconds;
 
-
-    public function __construct(int $time)
+    public function __construct(int $delaySeconds, ?Timer $timer = null)
     {
-        $this->time = $time;
-        $this->startTime = time();
+        $this->timer = $timer ?: new ClockTimer();
+        $this->delaySeconds = $delaySeconds;
     }
 
     public function shouldRun(Node $node): bool
     {
-        if (time() - $this->startTime > $this->time) {
-            return true;
-        }
-        return false;
+        return $this->timer->elapsed() >= $this->delaySeconds;
     }
 
     public function shouldReschedule(Node $node): bool

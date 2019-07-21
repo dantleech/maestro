@@ -32,7 +32,7 @@ class TaskRunningDecider implements NodeVisitor
     public function decide(NodeStateMachine $stateMachine, Graph $graph, Node $node): NodeDeciderDecision
     {
         if ($node->state()->isCancelled()) {
-            return NodeDeciderDecision::CONTINUE();
+            return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
         }
 
         if ($node->state()->isDone()) {
@@ -47,11 +47,15 @@ class TaskRunningDecider implements NodeVisitor
             );
         }
 
+        if ($node->state()->isBusy()) {
+            return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
+        }
+
         if ($node->taskResult()->is(TaskResult::FAILURE())) {
             return NodeDeciderDecision::CANCEL_DESCENDANTS();
         }
 
-        return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
+        return NodeDeciderDecision::CONTINUE();
     }
 
     private function areDependenciesSatisfied(Graph $graph, Node $node)

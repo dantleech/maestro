@@ -40,21 +40,6 @@ class TaskRunningDeciderTest extends TestCase
         $this->stateMachine = new NodeStateMachine();
     }
 
-    public function testDoesNotWalkChildrenIfNodeIsBusy()
-    {
-        $node = Node::create('n1');
-        $this->assertEquals(
-            NodeDeciderDecision::DO_NOT_WALK_CHILDREN(),
-            $this->visit(
-                Graph::create([$node], []),
-                NodeHelper::setState(
-                    $node,
-                    State::BUSY()
-                )
-            )
-        );
-    }
-
     public function testRunsTask()
     {
         $task = new NullTask();
@@ -68,15 +53,15 @@ class TaskRunningDeciderTest extends TestCase
 
         $this->environmentResolver->resolveFor($graph, $node)->willReturn($environment);
 
-        $this->assertTrue(
+        $this->assertEquals(
             $this->visit(
                 $graph,
                 NodeHelper::setState(
                     $node,
                     State::WAITING()
                 )
-            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN()),
-            'does not walk children when running node'
+            ),
+            NodeDeciderDecision::DO_NOT_WALK_CHILDREN()
         );
 
         $this->assertTrue(

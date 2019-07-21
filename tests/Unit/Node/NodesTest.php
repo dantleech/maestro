@@ -38,7 +38,7 @@ class NodesTest extends TestCase
         $nodes = Nodes::fromNodes($nodes);
         $this->assertEquals(
             $expectedNodes,
-            $nodes->query($query)->names()
+            $nodes->query($query)->ids()
         );
     }
 
@@ -81,6 +81,6 @@ class NodesTest extends TestCase
             Node::create('two'),
             Node::create('three'),
         ]);
-        $this->assertEquals(['three', 'two', 'one'], $nodes->reverse()->names());
+        $this->assertEquals(['three', 'two', 'one'], $nodes->reverse()->ids());
     }
 }

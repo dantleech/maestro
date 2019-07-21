@@ -3,10 +3,11 @@
 namespace Maestro\Node;
 
 use ArrayIterator;
+use Countable;
 use Iterator;
 use IteratorAggregate;
 
-final class Edges implements IteratorAggregate
+final class Edges implements IteratorAggregate, Countable
 {
     /**
      * @var Edge[]
@@ -78,5 +79,31 @@ final class Edges implements IteratorAggregate
     public function append(Edges $edges): Edges
     {
         return new self(array_merge($this->edges, $edges->edges));
+    }
+
+    public function to(string $nodeId): Edges
+    {
+        return new self(array_filter($this->edges, function (Edge $edge) use ($nodeId) {
+            return $edge->to() === $nodeId;
+        }));
+    }
+
+    public function from(string $nodeId): Edges
+    {
+        return new self(array_filter($this->edges, function (Edge $edge) use ($nodeId) {
+            return $edge->from() === $nodeId;
+        }));
+    }
+
+    public function count(): int
+    {
+        return count($this->edges);
+    }
+
+    public function toString(): string
+    {
+        return implode(', ', array_map(function (Edge $edge) {
+            return sprintf('%s => %s', $edge->from(), $edge->to());
+        }, $this->edges));
     }
 }

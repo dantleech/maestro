@@ -55,7 +55,7 @@ class Maestro
                 ));
             }
 
-            $graph = $graph->pruneFor($targets->names());
+            $graph = $graph->pruneFor($targets->ids());
         }
 
         if (null !== $depth) {

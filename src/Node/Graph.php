@@ -48,7 +48,7 @@ class Graph
         }
 
         // validate and detect circular dependencies
-        $this->roots();
+        $this->validate();
     }
 
     public static function create(array $nodes, array $edges): self
@@ -59,19 +59,13 @@ class Graph
     public function roots(): Nodes
     {
         $nodesWithNoOutboundEdges = array_diff(
-            $this->nodes->names(),
+            $this->nodes->ids(),
             array_keys($this->fromToMap)
         );
 
         $nodes = [];
         foreach ($nodesWithNoOutboundEdges as $nodeName) {
             $nodes[] = $this->nodes->get($nodeName);
-        }
-
-        if (empty($nodes)) {
-            throw new GraphContainsCircularDependencies(sprintf(
-                'Graph contains circular dependencies'
-            ));
         }
 
         return Nodes::fromNodes($nodes);
@@ -118,7 +112,7 @@ class Graph
         }, $this->fromToMap[$nodeName]));
     }
 
-    public function ancestryFor(string $nodeName): Nodes
+    public function ancestryFor(string $nodeName, array $seen = []): Nodes
     {
         $this->validateNodeName($nodeName);
 
@@ -245,5 +239,40 @@ class Graph
 
         $this->toFromMap[$edge->to()][] = $edge->from();
         $this->fromToMap[$edge->from()][] = $edge->to();
+    }
+
+    /**
+     * Validate the graph using a reverse version of Kahn's algorithm
+     *
+     *    https://en.wikipedia.org/wiki/Topological_sorting#Kahn
+     *
+     * Note that we reverse it as the graph is built as a dependency tree (so
+     * children have edges _from_ themselves _to_ the parent.
+     */
+    private function validate()
+    {
+        $nodes = iterator_to_array($this->roots());
+        $sortedElements = [];
+        $edges = clone $this->edges;
+
+        while ($nodes) {
+            $node = array_pop($nodes);
+            $sortedElements[] = $node;
+
+            foreach ($edges->to($node->id()) as $edge) {
+                $destNode = $this->nodes->get($edge->from());
+                $edges = $edges->remove($edge);
+
+                if ($edges->from($destNode->id())->count() === 0) {
+                    $nodes[] = $destNode;
+                }
+            }
+        }
+        if ($edges->count()) {
+            throw new GraphContainsCircularDependencies(sprintf(
+                'Graph contains circular references (sorry): %s',
+                $edges->toString()
+            ));
+        }
     }
 }

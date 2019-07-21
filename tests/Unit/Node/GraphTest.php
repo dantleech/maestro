@@ -30,7 +30,7 @@ class GraphTest extends TestCase
 
         $this->assertEquals([
             'n2', 'n3',
-        ], $graph->dependentsFor('n1')->names());
+        ], $graph->dependentsFor('n1')->ids());
     }
 
     public function testReturnsRootNodes()
@@ -57,7 +57,7 @@ class GraphTest extends TestCase
      */
     public function testReturnsAncestryForNode(Closure $graphFactory, array $expectedOrder, string $targetNode)
     {
-        $this->assertEquals($expectedOrder, $graphFactory()->ancestryFor($targetNode)->names());
+        $this->assertEquals($expectedOrder, $graphFactory()->ancestryFor($targetNode)->ids());
     }
 
     public function provideReturnsAllAncestorsForGivenNode()
@@ -189,7 +189,7 @@ class GraphTest extends TestCase
 
         $this->assertEquals([
             'p1', 'init', 'p2'
-        ], $graph->descendantsFor('r')->names());
+        ], $graph->descendantsFor('r')->ids());
     }
 
     /**
@@ -247,6 +247,23 @@ class GraphTest extends TestCase
                 );
             }
         ];
+
+        yield [
+            function () {
+                return Graph::create(
+                    [
+                        Node::create('n1'),
+                        Node::create('n2'),
+                        Node::create('n3'),
+                    ],
+                    [
+                        Edge::create('n1', 'n2'),
+                        Edge::create('n1', 'n3'),
+                        Edge::create('n3', 'n3'),
+                    ]
+                );
+            }
+        ];
     }
 
     public function testThrowsExceptionIfEdgeFromNodeDoesNotExist()
@@ -298,7 +315,7 @@ class GraphTest extends TestCase
         );
 
         $graph = $graph->pruneFor(['n5']);
-        $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->names());
+        $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->ids());
         $this->assertCount(3, $graph->edges());
     }
 
@@ -309,7 +326,7 @@ class GraphTest extends TestCase
     {
         $this->assertEquals(
             $expectedNodeNames,
-            $graphFactory()->pruneToDepth($depth)->nodes()->names()
+            $graphFactory()->pruneToDepth($depth)->nodes()->ids()
         );
     }
 
@@ -413,6 +430,6 @@ class GraphTest extends TestCase
         );
 
         $nodes = $graph->leafs();
-        $this->assertEquals(['n4','n5','n6'], $nodes->names());
+        $this->assertEquals(['n4','n5','n6'], $nodes->ids());
     }
 }

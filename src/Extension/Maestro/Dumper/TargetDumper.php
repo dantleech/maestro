@@ -16,7 +16,7 @@ class TargetDumper implements Dumper
                     '<info>%s</> (<comment>%s</>) -> %s',
                     $node->id(),
                     $node->task() ? $node->task()->description() : '',
-                    implode(', ', $graph->dependenciesFor($node->id())->names())
+                    implode(', ', $graph->dependenciesFor($node->id())->ids())
                 );
             }
         }

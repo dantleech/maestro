@@ -55,7 +55,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
             throw new RuntimeException(sprintf(
                 'No node exists at offset "%s" in set "%s"',
                 $key,
-                implode('", "', $this->names())
+                implode('", "', $this->ids())
             ));
         }
 
@@ -65,7 +65,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     /**
      * @return string[]
      */
-    public function names(): array
+    public function ids(): array
     {
         return array_values(array_map(function (Node $node) {
             return $node->id();

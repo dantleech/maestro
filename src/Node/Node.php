@@ -111,15 +111,16 @@ final class Node
                 }
                 $this->environment = $environment;
                 $this->taskResult = TaskResult::SUCCESS();
+                $this->changeState($stateMachine, State::DONE());
 
                 if ($this->schedule->shouldReschedule($this)) {
                     $this->changeState($stateMachine, State::SCHEDULED());
                 }
             } catch (TaskFailed $failed) {
                 $this->taskResult = TaskResult::FAILURE();
+                $this->changeState($stateMachine, State::DONE());
             }
 
-            $this->changeState($stateMachine, State::DONE());
 
             return new Success($environment);
         });

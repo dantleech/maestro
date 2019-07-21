@@ -124,7 +124,7 @@ class GraphWalkerTest extends TestCase
                 'root' => NodeDeciderDecision::CANCEL_DESCENDANTS(),
             ],
             [
-                'root' => State::WAITING(),
+                'root' => State::SCHEDULED(),
                 'n1' => State::CANCELLED(),
                 'n2' => State::CANCELLED(),
                 'n3' => State::CANCELLED(),

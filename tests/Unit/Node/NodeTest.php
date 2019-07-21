@@ -40,10 +40,10 @@ class NodeTest extends TestCase
         $this->assertEquals('Foobar', $rootNode->label());
     }
 
-    public function testDefaultStateIsWaiting()
+    public function testDefaultStateIsScheduled()
     {
         $rootNode = Node::create('root');
-        $this->assertTrue($rootNode->state()->isWaiting());
+        $this->assertTrue($rootNode->state()->isScheduled());
     }
 
     public function testThrowsExceptionIfResolvedPromiseValueFromTaskHandlerIsNotAnEnvironment()
@@ -67,7 +67,6 @@ class NodeTest extends TestCase
     {
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
-        $this->assertEquals(State::WAITING(), $rootNode->state());
         $rootNode->run($this->stateMachine->reveal(), $taskRunner, Environment::empty());
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
@@ -79,7 +78,6 @@ class NodeTest extends TestCase
         $taskRunner->run(Argument::type(NullTask::class), Environment::empty())->willThrow(new TaskFailed('No'));
 
         $rootNode = Node::create('root');
-        $this->assertEquals(State::WAITING(), $rootNode->state());
         $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Environment::empty());
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());

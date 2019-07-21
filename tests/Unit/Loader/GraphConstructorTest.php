@@ -79,7 +79,7 @@ class GraphConstructorTest extends TestCase
                 $nodes = $graph->dependentsFor('root');
                 $this->assertCount(1, $nodes);
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
-                $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
+                $this->assertEquals(State::SCHEDULED(), $nodes->get('phpactor/phpactor')->state());
                 $tasks = $graph->dependentsFor('phpactor/phpactor');
                 $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());

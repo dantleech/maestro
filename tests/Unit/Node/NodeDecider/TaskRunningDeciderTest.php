@@ -43,14 +43,15 @@ class TaskRunningDeciderTest extends TestCase
     public function testDoesNotWalkChildrenIfNodeIsBusy()
     {
         $node = Node::create('n1');
-        $this->assertTrue(
+        $this->assertEquals(
+            NodeDeciderDecision::DO_NOT_WALK_CHILDREN(),
             $this->visit(
                 Graph::create([$node], []),
                 NodeHelper::setState(
                     $node,
                     State::BUSY()
                 )
-            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN())
+            )
         );
     }
 

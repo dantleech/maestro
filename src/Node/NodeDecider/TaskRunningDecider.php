@@ -51,7 +51,7 @@ class TaskRunningDecider implements NodeVisitor
             return NodeDeciderDecision::CANCEL_DESCENDANTS();
         }
 
-        return NodeDeciderDecision::CONTINUE();
+        return NodeDeciderDecision::DO_NOT_WALK_CHILDREN();
     }
 
     private function areDependenciesSatisfied(Graph $graph, Node $node)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Node\Schedule;
+namespace Maestro\Node\Scheduler;
 
 use Maestro\Node\Node;
 use Maestro\Node\Schedule;

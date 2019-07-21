@@ -26,7 +26,7 @@ class AliasToClassMap
         if (!isset($this->map[$alias])) {
             throw new UnknownAlias(sprintf(
                 '%s "%s" is not known, known %s aliases: "%s"',
-                $this->context,
+                ucfirst($this->context),
                 $alias,
                 $this->context,
                 implode('", "', array_keys($this->map))

@@ -2,7 +2,7 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Node\Schedule\AsapSchedule;
+use Maestro\Node\Scheduler\AsapSchedule;
 
 class Task
 {

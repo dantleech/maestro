@@ -16,7 +16,9 @@ use Maestro\Node\NodeDecider\ScheduleDecider;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
-use Maestro\Node\Schedule;
+use Maestro\Node\Scheduler;
+use Maestro\Node\SchedulerRegistry;
+use Maestro\Node\SchedulerRegistry\EagerSchedulerRegistry;
 use Maestro\Node\StateObserver;
 use Maestro\Node\StateObservers;
 use Maestro\Node\TaskHandler;
@@ -28,8 +30,9 @@ use Maestro\Util\Cast;
 final class MaestroBuilder
 {
     private $taskMap = [];
-    private $scheduleMap = [];
     private $handlers = [];
+    private $scheduleMap = [];
+    private $schedulers = [];
     private $maxConcurrency = 10;
 
     /**
@@ -46,6 +49,7 @@ final class MaestroBuilder
      * @var string
      */
     private $workingDirectory;
+
 
     public function __construct(?string $workingDirectory = null)
     {
@@ -75,9 +79,10 @@ final class MaestroBuilder
         return $this;
     }
 
-    public function addSchedule(string $alias, Schedule $schedule): self
+    public function addSchedule(string $alias, string $scheduleClass, Scheduler $scheduler): self
     {
-        $this->scheduleMap[$alias] = get_class($schedule);
+        $this->scheduleMap[$alias] = $scheduleClass;
+        $this->schedulers[$scheduleClass] = $scheduler;
         return $this;
     }
 
@@ -112,12 +117,21 @@ final class MaestroBuilder
         return new EagerHandlerRegistry($this->handlers);
     }
 
+    private function buildSchedulerRegistry(): SchedulerRegistry
+    {
+        return new EagerSchedulerRegistry($this->schedulers);
+    }
+
     private function buildGraphWalker(): GraphWalker
     {
         $visitors = [
             new ConcurrencyLimitingDecider($this->maxConcurrency),
-            new ScheduleDecider(),
-            new TaskRunningDecider($this->buildTaskRunner(), $this->buildArtifactsResolver()),
+            new ScheduleDecider($this->buildSchedulerRegistry()),
+            new TaskRunningDecider(
+                $this->buildTaskRunner(),
+                $this->buildSchedulerRegistry(),
+                $this->buildArtifactsResolver()
+            ),
         ];
         return new GraphWalker(
             $this->buildNodeStateMachine(),

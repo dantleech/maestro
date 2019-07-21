@@ -1,19 +1,15 @@
 <?php
 
-namespace Maestro\Node\Schedule;
+namespace Maestro\Node\Scheduler;
 
 use Maestro\Node\Node;
 use Maestro\Node\Schedule;
+use Maestro\Node\Scheduler;
 use Maestro\Node\Timer;
 use Maestro\Node\Timer\ClockTimer;
 
-class RepeatSchedule implements Schedule
+class RepeatScheduler implements Scheduler
 {
-    /**
-     * @var int
-     */
-    private $delaySeconds;
-
     /**
      * @var Timer
      */
@@ -21,21 +17,22 @@ class RepeatSchedule implements Schedule
 
     private $hasRun = false;
 
-    public function __construct(int $time, ?Timer $timer = null)
+    public function __construct(?Timer $timer = null)
     {
-        $this->delaySeconds = $time;
         $this->timer = $timer ?: new ClockTimer();
     }
 
-    public function shouldRun(Node $node): bool
+    public function shouldRun(Schedule $schedule, Node $node): bool
     {
+        assert($schedule instanceof RepeatSchedule);
+
         if (false === $this->hasRun) {
             $this->timer->reset();
             $this->hasRun = true;
             return true;
         }
 
-        $shouldRun = $this->timer->elapsed() >= $this->delaySeconds;
+        $shouldRun = $this->timer->elapsed() >= $schedule->delay();
 
         if ($shouldRun) {
             $this->timer->reset();
@@ -44,7 +41,7 @@ class RepeatSchedule implements Schedule
         return $shouldRun;
     }
 
-    public function shouldReschedule(Node $node): bool
+    public function shouldReschedule(Schedule $scheduler, Node $node): bool
     {
         return true;
     }

@@ -9,6 +9,9 @@ use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
+use Maestro\Node\SchedulerRegistry;
+use Maestro\Node\Scheduler\AsapSchedule;
+use Maestro\Node\Scheduler\AsapScheduler;
 use Maestro\Node\State;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\TaskRunner\NullTaskRunner;
@@ -24,12 +27,20 @@ class NodeTest extends TestCase
      */
     private $stateMachine;
 
+    /**
+     * @var ObjectProphecy
+     */
+    private $schedulerRegistry;
+
+
     protected function setUp(): void
     {
         $this->stateMachine = $this->prophesize(NodeStateMachine::class);
         $this->stateMachine->transition(Argument::type(Node::class), Argument::type(State::class))->will(function ($args) {
             return $args[1];
         });
+        $this->schedulerRegistry = $this->prophesize(SchedulerRegistry::class);
+        $this->schedulerRegistry->getFor(new AsapSchedule())->willReturn(new AsapScheduler());
     }
 
     public function testReturnsLabelIfGiven()
@@ -56,6 +67,7 @@ class NodeTest extends TestCase
         $rootNode = Node::create('root');
         $rootNode->run(
             $this->stateMachine->reveal(),
+            $this->schedulerRegistry->reveal(),
             $taskRunner->reveal(),
             Environment::empty()
         );
@@ -67,7 +79,12 @@ class NodeTest extends TestCase
     {
         $taskRunner = new NullTaskRunner();
         $rootNode = Node::create('root');
-        $rootNode->run($this->stateMachine->reveal(), $taskRunner, Environment::empty());
+        $rootNode->run(
+            $this->stateMachine->reveal(),
+            $this->schedulerRegistry->reveal(),
+            $taskRunner,
+            Environment::empty()
+        );
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
     }
@@ -78,7 +95,12 @@ class NodeTest extends TestCase
         $taskRunner->run(Argument::type(NullTask::class), Environment::empty())->willThrow(new TaskFailed('No'));
 
         $rootNode = Node::create('root');
-        $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Environment::empty());
+        $rootNode->run(
+            $this->stateMachine->reveal(),
+            $this->schedulerRegistry->reveal(),
+            $taskRunner->reveal(),
+            Environment::empty()
+        );
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
     }

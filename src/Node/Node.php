@@ -6,7 +6,7 @@ use Amp\Success;
 use Maestro\Loader\Instantiator;
 use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Exception\TaskHandlerDidNotReturnEnvironment;
-use Maestro\Node\Schedule\AsapSchedule;
+use Maestro\Node\Scheduler\AsapSchedule;
 use Maestro\Node\Task\NullTask;
 
 /**
@@ -60,6 +60,10 @@ final class Node
         $this->schedule = $schedule ?: new AsapSchedule();
     }
 
+    /**
+     * Create a new node, the options relate directly to the constructor
+     * parameters.
+     */
     public static function create(string $id, array $options = []): self
     {
         return Instantiator::create()->instantiate(self::class, array_merge($options, [
@@ -67,9 +71,19 @@ final class Node
         ]));
     }
 
-    public function checkSchedule(NodeStateMachine $stateMachine): bool
+    /**
+     * Check to see if the node is scheduled, and if so check to see if it is
+     * ready to be executed, if so change the state to WAITING. The node will
+     * be executed on the next tick.
+     *
+     * Returns true if the node was changed to WAITING, false otherwise.
+     */
+    public function performScheduling(NodeStateMachine $stateMachine, SchedulerRegistry $registry): bool
     {
-        if ($this->state->isScheduled() && $this->schedule->shouldRun($this)) {
+        if (
+            $this->state->isScheduled() &&
+            $registry->getFor($this->schedule)->shouldRun($this->schedule, $this)
+        ) {
             $this->changeState($stateMachine, State::WAITING());
             return true;
         }
@@ -77,24 +91,48 @@ final class Node
         return false;
     }
 
+    /**
+     * Change the state back to scheduled.
+     *
+     * WARNING: this may throw an exception if the current state does not allow
+     *          this state transition.
+     */
     public function reschedule(NodeStateMachine $stateMachine):void
     {
         $this->changeState($stateMachine, State::SCHEDULED());
     }
 
+    /**
+     * Return the state of the node
+     */
     public function state(): State
     {
         return $this->state;
     }
 
+    /**
+     * Cancel the node. If a task is running it will be unaffected by this
+     * operation (but the node state will change to CANCELLED immediately).
+     */
     public function cancel(NodeStateMachine $stateMachine): void
     {
         $this->changeState($stateMachine, State::CANCELLED());
     }
 
-    public function run(NodeStateMachine $stateMachine, TaskRunner $taskRunner, Environment $environment): void
-    {
-        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $environment) {
+    /**
+     * Run the task.
+     *
+     * This atomic operation will set the node to BUSY, run the task then set
+     * the state to DONE when the task finishes (in either a success or failure
+     * state).
+     */
+    public function run(
+        NodeStateMachine $stateMachine,
+        SchedulerRegistry $schedulerRegistry,
+        TaskRunner $taskRunner,
+        Environment $environment
+    ): void {
+        \Amp\asyncCall(function () use ($stateMachine, $taskRunner, $environment, $schedulerRegistry) {
             $this->changeState($stateMachine, State::BUSY());
 
             try {
@@ -113,7 +151,7 @@ final class Node
                 $this->taskResult = TaskResult::SUCCESS();
                 $this->changeState($stateMachine, State::DONE());
 
-                if ($this->schedule->shouldReschedule($this)) {
+                if ($schedulerRegistry->getFor($this->schedule)->shouldReschedule($this->schedule, $this)) {
                     $this->changeState($stateMachine, State::SCHEDULED());
                 }
             } catch (TaskFailed $failed) {
@@ -121,38 +159,53 @@ final class Node
                 $this->changeState($stateMachine, State::DONE());
             }
 
-
             return new Success($environment);
         });
     }
 
+    /**
+     * Return the node ID
+     */
     public function id(): string
     {
         return $this->id;
     }
 
+    /**
+     * Return the human readable label for the node
+     */
     public function label(): string
     {
         return $this->label;
     }
 
+    /**
+     * Return the node's task
+     */
     public function task(): Task
     {
         return $this->task;
     }
 
+    /**
+     * Return the environment that has been collected by an EXECUTED TASK,
+     * otherwise the environment will be empty.
+     */
     public function environment(): Environment
     {
         return $this->environment;
     }
 
-    private function changeState(NodeStateMachine $stateMachine, State $state): void
-    {
-        $this->state = $stateMachine->transition($this, $state);
-    }
-
+    /**
+     * Return the result state of the task.
+     */
     public function taskResult(): TaskResult
     {
         return $this->taskResult;
+    }
+
+    private function changeState(NodeStateMachine $stateMachine, State $state): void
+    {
+        $this->state = $stateMachine->transition($this, $state);
     }
 }

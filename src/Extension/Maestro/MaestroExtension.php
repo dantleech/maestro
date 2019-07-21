@@ -18,6 +18,10 @@ use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\MaestroBuilder;
+use Maestro\Node\Scheduler\AsapSchedule;
+use Maestro\Node\Scheduler\AsapScheduler;
+use Maestro\Node\Scheduler\RepeatSchedule;
+use Maestro\Node\Scheduler\RepeatScheduler;
 use Maestro\Node\StateObserver\LoggingStateObserver;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Task\NullHandler;
@@ -49,6 +53,7 @@ class MaestroExtension implements Extension
     const TAG_DUMPER = 'dumper';
     const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
     const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
+    const TAG_SCHEDULER = 'scheduler';
 
     public function configure(Resolver $schema)
     {
@@ -112,10 +117,32 @@ class MaestroExtension implements Extension
                 $builder->addJobHandler($attrs['alias'], $attrs['job_class'], $container->get($serviceId));
             }
 
+            foreach ($container->getServiceIdsForTag(self::TAG_SCHEDULER) as $serviceId => $attrs) {
+                if (!isset($attrs['alias'])) {
+                    throw new RuntimeException(sprintf(
+                        'Scheduler "%s" must specify an alias',
+                        $serviceId
+                    ));
+                }
+                if (!isset($attrs['schedule_class'])) {
+                    throw new RuntimeException(sprintf(
+                        'Scheduler "%s" must specify a schedule class',
+                        $serviceId
+                    ));
+                }
+
+                $builder->addSchedule(
+                    $attrs['alias'],
+                    $attrs['schedule_class'],
+                    $container->get($serviceId)
+                );
+            }
+
             return $builder;
         });
 
         $this->loadJobHandlers($container);
+        $this->loadSchedulers($container);
     }
 
     private function loadScript(ContainerBuilder $container)
@@ -234,6 +261,23 @@ class MaestroExtension implements Extension
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'json_file',
             'job_class' => JsonFileTask::class,
+        ]]);
+    }
+
+    private function loadSchedulers(ContainerBuilder $container)
+    {
+        $container->register('scheduler.asap', function (Container $container) {
+            return new AsapScheduler();
+        }, [ MaestroExtension::TAG_SCHEDULER => [
+            'alias' => 'asap',
+            'schedule_class' => AsapSchedule::class,
+        ]]);
+
+        $container->register('scheduler.repeat', function (Container $container) {
+            return new RepeatScheduler();
+        }, [ MaestroExtension::TAG_SCHEDULER => [
+            'alias' => 'repeat',
+            'schedule_class' => RepeatSchedule::class,
         ]]);
     }
 }

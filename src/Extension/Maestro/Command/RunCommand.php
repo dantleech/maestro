@@ -104,11 +104,10 @@ class RunCommand extends Command
         }, (array) $input->getOption(self::OPT_REPORT));
 
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($maestro, $graph) {
-            $maestro->dispatch($graph);
-
             if ($graph->nodes()->allDone()) {
                 Loop::stop();
             }
+            $maestro->dispatch($graph);
         });
 
         if ($input->getOption(self::OPT_PROGRESS)) {
@@ -116,6 +115,7 @@ class RunCommand extends Command
                 $section->overwrite((new OverviewRenderer())->dump($graph));
             });
         }
+
 
         Loop::run();
 

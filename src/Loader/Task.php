@@ -2,6 +2,8 @@
 
 namespace Maestro\Loader;
 
+use Maestro\Node\Scheduler\AsapSchedule;
+
 class Task
 {
     /**
@@ -18,11 +20,20 @@ class Task
      */
     private $depends;
 
-    public function __construct(string $type, array $args = [], array $depends = [])
+    /**
+     * @var Schedule
+     */
+    private $schedule;
+
+    public function __construct(string $type, array $args = [], array $depends = [], array $schedule = [])
     {
         $this->type = $type;
         $this->args = $args;
         $this->depends = $depends;
+        $this->schedule = $schedule ? Instantiator::create()->instantiate(
+            Schedule::class,
+            $schedule
+        ) : new Schedule(AsapSchedule::class);
     }
 
     public function args(): array
@@ -38,5 +49,10 @@ class Task
     public function depends(): array
     {
         return $this->depends;
+    }
+
+    public function schedule(): Schedule
+    {
+        return $this->schedule;
     }
 }

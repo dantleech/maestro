@@ -2,25 +2,33 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Loader\Exception\UnknownTask;
+use Maestro\Loader\Exception\UnknownAlias;
 
-class TaskMap
+class AliasToClassMap
 {
     private $map = [];
 
-    public function __construct(array $map)
+    /**
+     * @var string
+     */
+    private $context;
+
+    public function __construct(string $context, array $map)
     {
         foreach ($map as $alias => $className) {
             $this->add($alias, $className);
         }
+        $this->context = $context;
     }
 
     public function classNameFor(string $alias): string
     {
         if (!isset($this->map[$alias])) {
-            throw new UnknownTask(sprintf(
-                'Task "%s" is not known, known tasks: "%s"',
+            throw new UnknownAlias(sprintf(
+                '%s "%s" is not known, known %s aliases: "%s"',
+                ucfirst($this->context),
                 $alias,
+                $this->context,
                 implode('", "', array_keys($this->map))
             ));
         }

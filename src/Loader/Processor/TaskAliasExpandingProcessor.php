@@ -3,16 +3,16 @@
 namespace Maestro\Loader\Processor;
 
 use Maestro\Loader\Processor;
-use Maestro\Loader\TaskMap;
+use Maestro\Loader\AliasToClassMap;
 
 class TaskAliasExpandingProcessor implements Processor
 {
     /**
-     * @var TaskMap
+     * @var AliasToClassMap
      */
     private $taskMap;
 
-    public function __construct(TaskMap $taskMap)
+    public function __construct(AliasToClassMap $taskMap)
     {
         $this->taskMap = $taskMap;
     }

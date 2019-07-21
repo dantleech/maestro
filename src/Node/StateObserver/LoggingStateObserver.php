@@ -34,12 +34,13 @@ class LoggingStateObserver implements StateObserver
         }
 
         $this->logger->info(sprintf(
-            "%-9s%-50s %7s => %s %s",
+            "%-9s%-50s %7s => %s [%s] %s",
             number_format(microtime(true) - $this->startTime, 6),
             '['.$stateChangeEvent->node()->id().']',
             strtoupper($stateChangeEvent->from()->toString()),
             strtoupper($stateChangeEvent->to()->toString()),
-            $stateChangeEvent->node()->task()->description()
+            $stateChangeEvent->node()->taskResult()->toString(),
+            $stateChangeEvent->node()->task()->description(),
         ), $stateChangeEvent->node()->environment()->debugInfo());
     }
 }

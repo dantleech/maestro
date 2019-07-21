@@ -10,6 +10,7 @@ use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDeciderDecision;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
+use Maestro\Node\SchedulerRegistry;
 use Maestro\Node\State;
 use Maestro\Node\TaskRunner;
 use Maestro\Node\Task\NullTask;
@@ -33,25 +34,17 @@ class TaskRunningDeciderTest extends TestCase
      */
     private $stateMachine;
 
+    /**
+     * @var ObjectProphecy
+     */
+    private $schedulerRegistry;
+
     protected function setUp(): void
     {
         $this->taskRunner = $this->prophesize(TaskRunner::class);
         $this->environmentResolver = $this->prophesize(EnvironmentResolver::class);
         $this->stateMachine = new NodeStateMachine();
-    }
-
-    public function testDoesNotWalkChildrenIfNodeIsBusy()
-    {
-        $node = Node::create('n1');
-        $this->assertTrue(
-            $this->visit(
-                Graph::create([$node], []),
-                NodeHelper::setState(
-                    $node,
-                    State::BUSY()
-                )
-            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN())
-        );
+        $this->schedulerRegistry = $this->prophesize(SchedulerRegistry::class);
     }
 
     public function testRunsTask()
@@ -67,15 +60,15 @@ class TaskRunningDeciderTest extends TestCase
 
         $this->environmentResolver->resolveFor($graph, $node)->willReturn($environment);
 
-        $this->assertTrue(
+        $this->assertEquals(
+            NodeDeciderDecision::CONTINUE(),
             $this->visit(
                 $graph,
                 NodeHelper::setState(
                     $node,
                     State::WAITING()
                 )
-            )->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN()),
-            'does not walk children when running node'
+            )
         );
 
         $this->assertTrue(
@@ -111,6 +104,7 @@ class TaskRunningDeciderTest extends TestCase
     {
         return (new TaskRunningDecider(
             $this->taskRunner->reveal(),
+            $this->schedulerRegistry->reveal(),
             $this->environmentResolver->reveal()
         ))->decide($this->stateMachine, $graph, $node);
     }

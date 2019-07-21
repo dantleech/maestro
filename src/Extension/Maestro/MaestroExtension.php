@@ -18,6 +18,10 @@ use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\MaestroBuilder;
+use Maestro\Node\Scheduler\AsapSchedule;
+use Maestro\Node\Scheduler\AsapScheduler;
+use Maestro\Node\Scheduler\RepeatSchedule;
+use Maestro\Node\Scheduler\RepeatScheduler;
 use Maestro\Node\StateObserver\LoggingStateObserver;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Task\NullHandler;
@@ -49,6 +53,7 @@ class MaestroExtension implements Extension
     const TAG_DUMPER = 'dumper';
     const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
     const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
+    const TAG_SCHEDULER = 'scheduler';
 
     public function configure(Resolver $schema)
     {
@@ -112,53 +117,32 @@ class MaestroExtension implements Extension
                 $builder->addJobHandler($attrs['alias'], $attrs['job_class'], $container->get($serviceId));
             }
 
+            foreach ($container->getServiceIdsForTag(self::TAG_SCHEDULER) as $serviceId => $attrs) {
+                if (!isset($attrs['alias'])) {
+                    throw new RuntimeException(sprintf(
+                        'Scheduler "%s" must specify an alias',
+                        $serviceId
+                    ));
+                }
+                if (!isset($attrs['schedule_class'])) {
+                    throw new RuntimeException(sprintf(
+                        'Scheduler "%s" must specify a schedule class',
+                        $serviceId
+                    ));
+                }
+
+                $builder->addSchedule(
+                    $attrs['alias'],
+                    $attrs['schedule_class'],
+                    $container->get($serviceId)
+                );
+            }
+
             return $builder;
         });
 
-        $container->register('task.job_handler.null', function () {
-            return new NullHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'null',
-            'job_class' => NullTask::class,
-        ]]);
-
-        $container->register('task.job_handler.manifest', function () {
-            return new ManifestHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'manifest',
-            'job_class' => ManifestTask::class,
-        ]]);
-
-        $container->register('task.job_handler.package', function (Container $container) {
-            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'package',
-            'job_class' => PackageTask::class,
-        ]]);
-
-        $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler($container->get('script.runner'));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'script',
-            'job_class' => ScriptTask::class,
-        ]]);
-
-        $container->register('task.job_handler.git', function (Container $container) {
-            return new GitHandler(
-                $container->get('script.runner'),
-                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'git',
-            'job_class' => GitTask::class,
-        ]]);
-
-        $container->register('task.job_handler.json_file', function (Container $container) {
-            return new JsonFileHandler();
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
-            'alias' => 'json_file',
-            'job_class' => JsonFileTask::class,
-        ]]);
+        $this->loadJobHandlers($container);
+        $this->loadSchedulers($container);
     }
 
     private function loadScript(ContainerBuilder $container)
@@ -230,5 +214,70 @@ class MaestroExtension implements Extension
         $container->register('dumper.targets', function (Container $container) {
             return new TargetDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
+    }
+
+    private function loadJobHandlers(ContainerBuilder $container)
+    {
+        $container->register('task.job_handler.null', function () {
+            return new NullHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'null',
+            'job_class' => NullTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.manifest', function () {
+            return new ManifestHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'manifest',
+            'job_class' => ManifestTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.package', function (Container $container) {
+            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'package',
+            'job_class' => PackageTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.script', function (Container $container) {
+            return new ScriptHandler($container->get('script.runner'));
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'script',
+            'job_class' => ScriptTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.git', function (Container $container) {
+            return new GitHandler(
+                $container->get('script.runner'),
+                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
+            );
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'git',
+            'job_class' => GitTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.json_file', function (Container $container) {
+            return new JsonFileHandler();
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'json_file',
+            'job_class' => JsonFileTask::class,
+        ]]);
+    }
+
+    private function loadSchedulers(ContainerBuilder $container)
+    {
+        $container->register('scheduler.asap', function (Container $container) {
+            return new AsapScheduler();
+        }, [ MaestroExtension::TAG_SCHEDULER => [
+            'alias' => 'asap',
+            'schedule_class' => AsapSchedule::class,
+        ]]);
+
+        $container->register('scheduler.repeat', function (Container $container) {
+            return new RepeatScheduler();
+        }, [ MaestroExtension::TAG_SCHEDULER => [
+            'alias' => 'repeat',
+            'schedule_class' => RepeatSchedule::class,
+        ]]);
     }
 }

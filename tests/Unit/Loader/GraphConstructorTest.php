@@ -10,6 +10,7 @@ use Maestro\Loader\Manifest;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\Nodes;
+use Maestro\Node\Scheduler\AsapSchedule;
 use Maestro\Node\State;
 use Maestro\Node\Task;
 use Maestro\Node\Task\NullTask;
@@ -79,7 +80,7 @@ class GraphConstructorTest extends TestCase
                 $nodes = $graph->dependentsFor('root');
                 $this->assertCount(1, $nodes);
                 $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->task()->name());
-                $this->assertEquals(State::WAITING(), $nodes->get('phpactor/phpactor')->state());
+                $this->assertEquals(State::SCHEDULED(), $nodes->get('phpactor/phpactor')->state());
                 $tasks = $graph->dependentsFor('phpactor/phpactor');
                 $this->assertEquals('foobar', $tasks->get('phpactor/phpactor/task2')->task()->param1());
                 $this->assertEquals('no', $tasks->get('phpactor/phpactor/task2')->task()->param2());
@@ -110,6 +111,28 @@ class GraphConstructorTest extends TestCase
                 $this->assertEquals([
                     'BAR' => 'FOO',
                 ], $task->env());
+            }
+        ];
+
+        yield 'task with schedule' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'tasks' => [
+                            'task1' => [
+                                'type' => NullTask::class,
+                                'schedule' => [
+                                    'type' => AsapSchedule::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $node = $graph->descendantsFor('phpactor/phpactor')->get('phpactor/phpactor/task1');
+                // schedule is private
+                $this->assertNotNull($node);
             }
         ];
     }

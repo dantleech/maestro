@@ -102,6 +102,9 @@ class Graph
         }, $this->toFromMap[$nodeName]));
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function dependenciesFor(string $nodeName): Nodes
     {
         $this->validateNodeName($nodeName);

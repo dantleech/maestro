@@ -4,6 +4,8 @@ namespace Maestro\Node;
 
 class GraphWalker
 {
+    private const ACTION_CANCEL = 'cancel';
+    private const ACTION_RESCHEDULE = 'reschedule';
     /**
      * @var NodeVisitor[]
      */
@@ -29,13 +31,17 @@ class GraphWalker
         }
     }
 
-    private function walkNode(Graph $graph, Node $node, bool $cancel = false): void
+    private function walkNode(Graph $graph, Node $node, string $action = null): void
     {
         foreach ($this->deciders as $visitor) {
             $descision = $visitor->decide($this->stateMachine, $graph, $node);
 
             if (true === $descision->is(NodeDeciderDecision::CANCEL_DESCENDANTS())) {
-                $cancel = true;
+                $action = self::ACTION_CANCEL;
+            }
+
+            if (true === $descision->is(NodeDeciderDecision::RESCHEDULE_DESCENDANTS())) {
+                $action = self::ACTION_RESCHEDULE;
             }
 
             if (true === $descision->is(NodeDeciderDecision::DO_NOT_WALK_CHILDREN())) {
@@ -44,10 +50,15 @@ class GraphWalker
         }
 
         foreach ($graph->dependentsFor($node->id()) as $dependentNode) {
-            if ($cancel) {
+            if ($action === self::ACTION_CANCEL) {
                 $dependentNode->cancel($this->stateMachine);
             }
-            $this->walkNode($graph, $dependentNode, $cancel);
+
+            if ($action === self::ACTION_RESCHEDULE) {
+                $dependentNode->reschedule($this->stateMachine);
+            }
+
+            $this->walkNode($graph, $dependentNode, $action);
         }
     }
 

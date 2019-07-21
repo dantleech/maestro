@@ -82,6 +82,6 @@ class NodeTest extends TestCase
         $this->assertEquals(State::WAITING(), $rootNode->state());
         $rootNode->run($this->stateMachine->reveal(), $taskRunner->reveal(), Environment::empty());
         Loop::run();
-        $this->assertEquals(State::FAILED(), $rootNode->state());
+        $this->assertEquals(State::DONE(), $rootNode->state());
     }
 }

@@ -10,7 +10,6 @@ class NodeStateMachine extends StateMachine
             State::transition(State::WAITING(), State::BUSY()),
             State::transition(State::WAITING(), State::CANCELLED()),
             State::transition(State::BUSY(), State::DONE()),
-            State::transition(State::BUSY(), State::FAILED()),
         ], $stateObservers);
     }
 }

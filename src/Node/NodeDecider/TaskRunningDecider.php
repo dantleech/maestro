@@ -8,6 +8,7 @@ use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeVisitor;
 use Maestro\Node\NodeDeciderDecision;
+use Maestro\Node\TaskResult;
 use Maestro\Node\TaskRunner;
 
 class TaskRunningDecider implements NodeVisitor
@@ -34,7 +35,7 @@ class TaskRunningDecider implements NodeVisitor
             return NodeDeciderDecision::CONTINUE();
         }
 
-        if ($node->state()->isIdle()) {
+        if ($node->state()->isDone()) {
             return NodeDeciderDecision::CONTINUE();
         }
 
@@ -46,7 +47,7 @@ class TaskRunningDecider implements NodeVisitor
             );
         }
 
-        if ($node->state()->isFailed()) {
+        if ($node->taskResult()->is(TaskResult::FAILURE())) {
             return NodeDeciderDecision::CANCEL_DESCENDANTS();
         }
 
@@ -56,7 +57,7 @@ class TaskRunningDecider implements NodeVisitor
     private function areDependenciesSatisfied(Graph $graph, Node $node)
     {
         foreach ($graph->dependenciesFor($node->id()) as $node) {
-            if (!$node->state()->isIdle()) {
+            if (!$node->state()->isDone()) {
                 return false;
             }
         }

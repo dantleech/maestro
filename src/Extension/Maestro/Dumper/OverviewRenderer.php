@@ -7,6 +7,7 @@ use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\Nodes;
 use Maestro\Node\State;
+use Maestro\Node\TaskResult;
 
 class OverviewRenderer implements Dumper
 {
@@ -25,12 +26,15 @@ class OverviewRenderer implements Dumper
     {
         $busyTasks= [];
         $nodes = $graph->descendantsFor($packageNode->id());
-        foreach ($nodes->byState(State::BUSY(), State::FAILED()) as $node) {
+        foreach ($nodes->byState(State::BUSY(), State::DONE()) as $node) {
+            if ($node->taskResult()->is(TaskResult::SUCCESS())) {
+                continue;
+            }
             $busyTasks[] = sprintf(
                 "\n           [\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s %s",
                 $node->label(),
-                $this->stateColor($node->state()),
-                $node->state()->toString(),
+                $this->stateColor($node->taskResult()),
+                $node->taskResult()->toString(),
                 $node->task()->description(),
                 json_encode($node->environment()->debugInfo())
             );
@@ -48,13 +52,13 @@ class OverviewRenderer implements Dumper
         return $out;
     }
 
-    private function stateColor(State $state): int
+    private function stateColor(TaskResult $taskResult): int
     {
-        if ($state->isFailed()) {
+        if ($taskResult->is(TaskResult::FAILURE())) {
             return 31;
         }
 
-        if ($state->isBusy()) {
+        if ($taskResult->is(TaskResult::PENDING())) {
             return 33;
         }
 
@@ -63,11 +67,11 @@ class OverviewRenderer implements Dumper
 
     private function successMark(Nodes $nodes)
     {
-        if ($nodes->byState(State::DONE())->count() === $nodes->count()) {
+        if ($nodes->byTaskResult(TaskResult::SUCCESS())->count() === $nodes->count()) {
             return  "\033[32m✔\033[0m";
         }
 
-        if ($nodes->byState(State::FAILED())->count()) {
+        if ($nodes->byTaskResult(TaskResult::FAILURE())->count()) {
             return  "\033[31m✘\033[0m";
         }
 

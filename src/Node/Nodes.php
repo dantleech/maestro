@@ -13,7 +13,7 @@ use RuntimeException;
 final class Nodes implements IteratorAggregate, Countable, ArrayAccess
 {
     /**
-     * @var array
+     * @var Node[]
      */
     private $nodes = [];
 
@@ -127,6 +127,13 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         }));
     }
 
+    public function byTaskResult(TaskResult $taskResult): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($taskResult) {
+            return $node->taskResult()->is($taskResult);
+        }));
+    }
+
     private function addNode(Node $node): void
     {
         $this->nodes[$node->id()] = $node;
@@ -178,7 +185,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function allDone(): bool
     {
         foreach ($this->nodes as $node) {
-            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
+            if (!$node->state()->isDone() && !$node->state()->isCancelled()) {
                 return false;
             }
         }

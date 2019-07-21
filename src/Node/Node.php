@@ -38,6 +38,11 @@ final class Node
      */
     private $state;
 
+    /**
+     * @var TaskResult
+     */
+    private $taskResult;
+
     public function __construct(string $id, string $label = null, ?Task $task = null)
     {
         $this->environment = Environment::empty();
@@ -45,6 +50,7 @@ final class Node
         $this->label = $label ?: $id;
         $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
+        $this->taskResult = TaskResult::PENDING();
     }
 
     public static function create(string $id, array $options = []): self
@@ -82,11 +88,12 @@ final class Node
                     ));
                 }
                 $this->environment = $environment;
-                $this->changeState($stateMachine, State::DONE());
+                $this->taskResult = TaskResult::SUCCESS();
             } catch (TaskFailed $failed) {
-                $this->changeState($stateMachine, State::FAILED());
+                $this->taskResult = TaskResult::FAILURE();
             }
 
+            $this->changeState($stateMachine, State::DONE());
 
             return new Success($environment);
         });
@@ -115,5 +122,10 @@ final class Node
     private function changeState(NodeStateMachine $stateMachine, State $state): void
     {
         $this->state = $stateMachine->transition($this, $state);
+    }
+
+    public function taskResult(): TaskResult
+    {
+        return $this->taskResult;
     }
 }

@@ -7,7 +7,6 @@ final class State
     private const WAITING = 'waiting';
     private const DONE = 'done';
     private const BUSY = 'busy';
-    private const FAILED = 'failed';
     private const CANCELLED = 'cancelled';
 
     private $state;
@@ -37,17 +36,12 @@ final class State
         return new self(self::WAITING);
     }
 
-    public static function FAILED(): self
-    {
-        return new self(self::FAILED);
-    }
-
     public static function CANCELLED(): self
     {
         return new self(self::CANCELLED);
     }
 
-    public function isIdle(): bool
+    public function isDone(): bool
     {
         return $this->state === self::DONE;
     }
@@ -55,11 +49,6 @@ final class State
     public function isWaiting(): bool
     {
         return $this->state === self::WAITING;
-    }
-
-    public function isFailed(): bool
-    {
-        return $this->state === self::FAILED;
     }
 
     public function isBusy()

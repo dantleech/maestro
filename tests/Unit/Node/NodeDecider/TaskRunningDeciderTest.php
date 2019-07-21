@@ -4,6 +4,7 @@ namespace Maestro\Tests\Unit\Node\NodeDecider;
 
 use Maestro\Node\Environment;
 use Maestro\Node\EnvironmentResolver;
+use Maestro\Node\Exception\TaskFailed;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\NodeStateMachine;
@@ -80,6 +81,29 @@ class TaskRunningDeciderTest extends TestCase
         $this->assertTrue(
             $node->state()->is(State::BUSY()),
             'node is busy'
+        );
+    }
+
+    public function testCancelsDescendantsIfTaskFailed()
+    {
+        $task = new NullTask();
+        $environment = Environment::empty();
+
+        $this->taskRunner->run($task, $environment)->willThrow(new TaskFailed('Sorry!!'));
+        $node = Node::create('n1', ['task'=> $task]);
+        $graph = Graph::create([
+            $node
+        ], []);
+        $this->environmentResolver->resolveFor($graph, $node)->willReturn($environment);
+
+        $this->assertTrue(
+            $this->visit(
+                $graph,
+                NodeHelper::setState(
+                    $node,
+                    State::WAITING()
+                )
+            )->is(NodeDeciderDecision::CANCEL_DESCENDANTS())
         );
     }
 

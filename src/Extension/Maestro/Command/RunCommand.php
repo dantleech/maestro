@@ -9,7 +9,7 @@ use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
-use Maestro\Node\State;
+use Maestro\Node\TaskResult;
 use Maestro\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -124,7 +124,7 @@ class RunCommand extends Command
             $output->writeln($reportDumper->dump($graph));
         }
 
-        return $graph->nodes()->byState(State::FAILED())->count();
+        return $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count();
     }
 
     private function buildRunner(InputInterface $input): Maestro

@@ -10,6 +10,7 @@ use Maestro\Loader\Manifest;
 use Maestro\Node\Graph;
 use Maestro\Node\Node;
 use Maestro\Node\Nodes;
+use Maestro\Node\Scheduler\AsapSchedule;
 use Maestro\Node\State;
 use Maestro\Node\Task;
 use Maestro\Node\Task\NullTask;
@@ -110,6 +111,28 @@ class GraphConstructorTest extends TestCase
                 $this->assertEquals([
                     'BAR' => 'FOO',
                 ], $task->env());
+            }
+        ];
+
+        yield 'task with schedule' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'tasks' => [
+                            'task1' => [
+                                'type' => NullTask::class,
+                                'schedule' => [
+                                    'type' => AsapSchedule::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $node = $graph->descendantsFor('phpactor/phpactor')->get('phpactor/phpactor/task1');
+                // schedule is private
+                $this->assertNotNull($node);
             }
         ];
     }

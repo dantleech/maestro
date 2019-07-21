@@ -144,7 +144,9 @@ which are detailed below.
 The process extension uses Amphp to execute external processes, including git
 operations.
 
-#### `script`
+#### Tasks
+
+##### `script`
 
 Execute an arbitrary script.
 
@@ -159,7 +161,7 @@ e.g.
 }
 ```
 
-#### `json_file`
+###### `json_file`
 
 Create or manipulate a JSON file
 
@@ -184,7 +186,7 @@ e.g.
 }
 ```
 
-#### `git`
+##### `git`
 
 Use this to clone a GIT repository for the package.
 
@@ -193,6 +195,53 @@ Use this to clone a GIT repository for the package.
     "type": "git",
     "args": {
         "url": "git@github.com:$PACKAGE_NAME"
+    }
+}
+```
+
+### Schedules
+
+Schedules determine how often and/or when a task will be executed. They are
+defined at the task level as follows:
+
+```javascript
+{
+    "type": "git",
+    "args": {
+        "url": "git@github.com:$PACKAGE_NAME"
+    },
+    "schedule": {
+        "type": "repeat",
+        "args": {
+            "delay": 10
+        }
+    }
+}
+```
+
+If omitted the default is the `asap` schedule.
+
+#### `asap`
+
+The ASAP schedule will execute the task once as soon as possible.  This is the
+default schedule.
+
+```javascript
+"schedule": {
+    "type": "asap"
+}
+```
+
+#### `repeat`
+
+The ASAP schedule will execute the task once as soon as possible.  This is the
+default schedule.
+
+```javascript
+"schedule": {
+    "type": "repeat",
+    "args": {
+        "delay": 10
     }
 }
 ```

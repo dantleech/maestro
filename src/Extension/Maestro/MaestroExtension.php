@@ -115,50 +115,7 @@ class MaestroExtension implements Extension
             return $builder;
         });
 
-        $container->register('task.job_handler.null', function () {
-            return new NullHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'null',
-            'job_class' => NullTask::class,
-        ]]);
-
-        $container->register('task.job_handler.manifest', function () {
-            return new ManifestHandler();
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'manifest',
-            'job_class' => ManifestTask::class,
-        ]]);
-
-        $container->register('task.job_handler.package', function (Container $container) {
-            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'package',
-            'job_class' => PackageTask::class,
-        ]]);
-
-        $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler($container->get('script.runner'));
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'script',
-            'job_class' => ScriptTask::class,
-        ]]);
-
-        $container->register('task.job_handler.git', function (Container $container) {
-            return new GitHandler(
-                $container->get('script.runner'),
-                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'git',
-            'job_class' => GitTask::class,
-        ]]);
-
-        $container->register('task.job_handler.json_file', function (Container $container) {
-            return new JsonFileHandler();
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
-            'alias' => 'json_file',
-            'job_class' => JsonFileTask::class,
-        ]]);
+        $this->loadJobHandlers($container);
     }
 
     private function loadScript(ContainerBuilder $container)
@@ -230,5 +187,53 @@ class MaestroExtension implements Extension
         $container->register('dumper.targets', function (Container $container) {
             return new TargetDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
+    }
+
+    private function loadJobHandlers(ContainerBuilder $container)
+    {
+        $container->register('task.job_handler.null', function () {
+            return new NullHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'null',
+            'job_class' => NullTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.manifest', function () {
+            return new ManifestHandler();
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'manifest',
+            'job_class' => ManifestTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.package', function (Container $container) {
+            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'package',
+            'job_class' => PackageTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.script', function (Container $container) {
+            return new ScriptHandler($container->get('script.runner'));
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'script',
+            'job_class' => ScriptTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.git', function (Container $container) {
+            return new GitHandler(
+                $container->get('script.runner'),
+                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
+            );
+        }, [ self::TAG_JOB_HANDLER => [
+            'alias' => 'git',
+            'job_class' => GitTask::class,
+        ]]);
+        
+        $container->register('task.job_handler.json_file', function (Container $container) {
+            return new JsonFileHandler();
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'json_file',
+            'job_class' => JsonFileTask::class,
+        ]]);
     }
 }

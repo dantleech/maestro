@@ -5,8 +5,9 @@ namespace Maestro;
 use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\ManifestLoader;
 use Maestro\Loader\Processor\PrototypeExpandingProcessor;
+use Maestro\Loader\Processor\ScheduleAliasExpandingProcessor;
 use Maestro\Loader\Processor\TaskAliasExpandingProcessor;
-use Maestro\Loader\TaskMap;
+use Maestro\Loader\AliasToClassMap;
 use Maestro\Node\EnvironmentResolver;
 use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
 use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
@@ -15,6 +16,7 @@ use Maestro\Node\NodeDecider\ScheduleDecider;
 use Maestro\Node\NodeStateMachine;
 use Maestro\Node\NodeDecider\ConcurrencyLimitingDecider;
 use Maestro\Node\NodeDecider\TaskRunningDecider;
+use Maestro\Node\Schedule;
 use Maestro\Node\StateObserver;
 use Maestro\Node\StateObservers;
 use Maestro\Node\TaskHandler;
@@ -26,6 +28,7 @@ use Maestro\Util\Cast;
 final class MaestroBuilder
 {
     private $taskMap = [];
+    private $scheduleMap = [];
     private $handlers = [];
     private $maxConcurrency = 10;
 
@@ -69,6 +72,12 @@ final class MaestroBuilder
     {
         $this->taskMap[$alias] = $jobClass;
         $this->handlers[$jobClass] = $handler;
+        return $this;
+    }
+
+    public function addSchedule(string $alias, Schedule $schedule): self
+    {
+        $this->scheduleMap[$alias] = get_class($schedule);
         return $this;
     }
 
@@ -135,7 +144,8 @@ final class MaestroBuilder
     {
         return new ManifestLoader($this->workingDirectory, [
             new PrototypeExpandingProcessor(),
-            new TaskAliasExpandingProcessor(new TaskMap($this->taskMap))
+            new TaskAliasExpandingProcessor(new AliasToClassMap('task', $this->taskMap)),
+            new ScheduleAliasExpandingProcessor(new AliasToClassMap('schedule', $this->scheduleMap))
         ]);
     }
 }

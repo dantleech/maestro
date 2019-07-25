@@ -3,9 +3,9 @@
 namespace Maestro\Extension\Maestro\Graph;
 
 use Maestro\Extension\Maestro\Task\ScriptTask;
-use Maestro\Node\Edge;
-use Maestro\Node\Graph;
-use Maestro\Node\Node;
+use Maestro\Graph\Edge;
+use Maestro\Graph\Graph;
+use Maestro\Graph\Node;
 
 final class ExecScriptOnLeafNodesModifier
 {

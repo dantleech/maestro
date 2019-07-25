@@ -7,13 +7,13 @@ use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\Manifest;
-use Maestro\Node\Graph;
-use Maestro\Node\Node;
-use Maestro\Node\Nodes;
-use Maestro\Node\Scheduler\AsapSchedule;
-use Maestro\Node\State;
-use Maestro\Node\Task;
-use Maestro\Node\Task\NullTask;
+use Maestro\Graph\Graph;
+use Maestro\Graph\Node;
+use Maestro\Graph\Nodes;
+use Maestro\Graph\Scheduler\AsapSchedule;
+use Maestro\Graph\State;
+use Maestro\Graph\Task;
+use Maestro\Graph\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 
 class GraphConstructorTest extends TestCase

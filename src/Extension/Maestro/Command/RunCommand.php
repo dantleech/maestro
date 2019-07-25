@@ -9,7 +9,7 @@ use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
-use Maestro\Node\TaskResult;
+use Maestro\Graph\TaskResult;
 use Maestro\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

@@ -4,9 +4,9 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Node\Environment;
-use Maestro\Node\Task;
-use Maestro\Node\TaskHandler;
+use Maestro\Graph\Environment;
+use Maestro\Graph\Task;
+use Maestro\Graph\TaskHandler;
 use Webmozart\PathUtil\Path;
 
 class ManifestHandler implements TaskHandler

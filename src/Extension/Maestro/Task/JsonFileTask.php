@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Maestro\Task;
 
-use Maestro\Node\Task;
+use Maestro\Graph\Task;
 
 class JsonFileTask implements Task
 {

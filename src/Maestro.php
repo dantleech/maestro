@@ -4,8 +4,8 @@ namespace Maestro;
 
 use Maestro\Loader\GraphConstructor;
 use Maestro\Loader\ManifestLoader;
-use Maestro\Node\Graph;
-use Maestro\Node\GraphWalker;
+use Maestro\Graph\Graph;
+use Maestro\Graph\GraphWalker;
 use Maestro\Loader\Manifest;
 use RuntimeException;
 

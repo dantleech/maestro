@@ -7,8 +7,8 @@ use Maestro\Extension\Maestro\Task\GitHandler;
 use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Graph\Exception\TaskFailed;
+use Maestro\Graph\Test\HandlerTester;
 use Maestro\Workspace\Workspace;
 use PHPUnit\Framework\TestCase;
 

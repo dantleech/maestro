@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Twig\Task;
 
-use Maestro\Node\Task;
+use Maestro\Graph\Task;
 
 class TemplateTask implements Task
 {

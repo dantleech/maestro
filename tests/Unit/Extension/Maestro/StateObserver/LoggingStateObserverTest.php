@@ -2,9 +2,9 @@
 
 namespace Maestro\Tests\Unit\Extension\Maestro\StateObserver;
 
-use Maestro\Node\Node;
-use Maestro\Node\State;
-use Maestro\Node\StateChangeEvent;
+use Maestro\Graph\Node;
+use Maestro\Graph\State;
+use Maestro\Graph\StateChangeEvent;
 use Maestro\Extension\Maestro\StateObserver\LoggingStateObserver;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;

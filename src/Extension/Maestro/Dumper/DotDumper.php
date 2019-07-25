@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Maestro\Dumper;
 
 use Maestro\Console\Dumper;
-use Maestro\Node\Graph;
+use Maestro\Graph\Graph;
 
 class DotDumper implements Dumper
 {

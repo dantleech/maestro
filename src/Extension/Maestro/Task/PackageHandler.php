@@ -4,10 +4,10 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Node\Task;
-use Maestro\Node\Environment;
-use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\TaskHandler;
+use Maestro\Graph\Task;
+use Maestro\Graph\Environment;
+use Maestro\Graph\Exception\TaskFailed;
+use Maestro\Graph\TaskHandler;
 use Maestro\Workspace\Workspace;
 use Maestro\Workspace\WorkspaceFactory;
 

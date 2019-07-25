@@ -2,8 +2,8 @@
 
 namespace Maestro\Extension\Maestro\StateObserver;
 
-use Maestro\Node\StateChangeEvent;
-use Maestro\Node\StateObserver;
+use Maestro\Graph\StateChangeEvent;
+use Maestro\Graph\StateObserver;
 use Psr\Log\LoggerInterface;
 
 class LoggingStateObserver implements StateObserver

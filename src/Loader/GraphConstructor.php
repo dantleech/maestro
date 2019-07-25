@@ -4,10 +4,10 @@ namespace Maestro\Loader;
 
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
-use Maestro\Node\Edge;
-use Maestro\Node\Graph;
-use Maestro\Node\GraphBuilder;
-use Maestro\Node\Node;
+use Maestro\Graph\Edge;
+use Maestro\Graph\Graph;
+use Maestro\Graph\GraphBuilder;
+use Maestro\Graph\Node;
 
 class GraphConstructor
 {

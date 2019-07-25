@@ -5,12 +5,12 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Amp\Success;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\Extension\Maestro\Task\ScriptTask;
-use Maestro\Node\EnvVars;
+use Maestro\Graph\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Environment;
-use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Graph\Environment;
+use Maestro\Graph\Exception\TaskFailed;
+use Maestro\Graph\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 

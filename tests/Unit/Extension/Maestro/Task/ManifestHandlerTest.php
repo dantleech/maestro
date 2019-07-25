@@ -4,8 +4,8 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
-use Maestro\Node\Test\HandlerTester;
-use Maestro\Node\EnvVars;
+use Maestro\Graph\Test\HandlerTester;
+use Maestro\Graph\EnvVars;
 use PHPUnit\Framework\TestCase;
 
 class ManifestHandlerTest extends TestCase

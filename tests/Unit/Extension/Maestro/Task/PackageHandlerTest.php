@@ -4,9 +4,9 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Loader\Instantiator;
-use Maestro\Node\Environment;
+use Maestro\Graph\Environment;
 use Maestro\Extension\Maestro\Task\PackageTask;
-use Maestro\Node\Test\HandlerTester;
+use Maestro\Graph\Test\HandlerTester;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;

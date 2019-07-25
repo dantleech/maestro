@@ -5,9 +5,9 @@ namespace Maestro\Tests\Integration\Extension\Twig\Task;
 use Maestro\Extension\Twig\EnvironmentFactory;
 use Maestro\Extension\Twig\Task\TemplateHandler;
 use Maestro\Extension\Twig\Task\TemplateTask;
-use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\Test\HandlerTester;
-use Maestro\Node\Vars;
+use Maestro\Graph\Exception\TaskFailed;
+use Maestro\Graph\Test\HandlerTester;
+use Maestro\Graph\Vars;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 

@@ -3,11 +3,11 @@
 namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
-use Maestro\Node\Task;
+use Maestro\Graph\Task;
 use Maestro\Script\ScriptRunner;
-use Maestro\Node\Environment;
-use Maestro\Node\Exception\TaskFailed;
-use Maestro\Node\TaskHandler;
+use Maestro\Graph\Environment;
+use Maestro\Graph\Exception\TaskFailed;
+use Maestro\Graph\TaskHandler;
 
 class ScriptHandler implements TaskHandler
 {

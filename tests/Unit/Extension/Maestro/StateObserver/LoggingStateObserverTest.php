@@ -1,11 +1,11 @@
 <?php
 
-namespace Maestro\Tests\Unit\Node\StateObserver;
+namespace Maestro\Tests\Unit\Extension\Maestro\StateObserver;
 
 use Maestro\Node\Node;
 use Maestro\Node\State;
 use Maestro\Node\StateChangeEvent;
-use Maestro\Node\StateObserver\LoggingStateObserver;
+use Maestro\Extension\Maestro\StateObserver\LoggingStateObserver;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;

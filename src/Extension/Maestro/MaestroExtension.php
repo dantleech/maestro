@@ -22,7 +22,7 @@ use Maestro\Node\Scheduler\AsapSchedule;
 use Maestro\Node\Scheduler\AsapScheduler;
 use Maestro\Node\Scheduler\RepeatSchedule;
 use Maestro\Node\Scheduler\RepeatScheduler;
-use Maestro\Node\StateObserver\LoggingStateObserver;
+use Maestro\Extension\Maestro\StateObserver\LoggingStateObserver;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Task\NullHandler;
 use Maestro\Node\Task\NullTask;

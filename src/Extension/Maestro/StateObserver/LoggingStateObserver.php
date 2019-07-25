@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Node\StateObserver;
+namespace Maestro\Extension\Maestro\StateObserver;
 
 use Maestro\Node\StateChangeEvent;
 use Maestro\Node\StateObserver;

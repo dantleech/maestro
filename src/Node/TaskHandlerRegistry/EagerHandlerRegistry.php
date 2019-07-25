@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Node\HandlerRegistry;
+namespace Maestro\Node\TaskHandlerRegistry;
 
 use Maestro\Node\Exception\HandlerNotFound;
 use Maestro\Node\Task;

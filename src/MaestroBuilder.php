@@ -10,7 +10,7 @@ use Maestro\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Loader\AliasToClassMap;
 use Maestro\Node\EnvironmentResolver;
 use Maestro\Node\EnvironmentResolver\AggregatingEnvironmentResolver;
-use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
+use Maestro\Node\TaskHandlerRegistry\EagerHandlerRegistry;
 use Maestro\Node\GraphWalker;
 use Maestro\Node\NodeDecider\ScheduleDecider;
 use Maestro\Node\NodeStateMachine;

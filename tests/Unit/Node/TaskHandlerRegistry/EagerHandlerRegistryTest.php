@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Tests\Unit\Node\HandlerRegistry;
+namespace Maestro\Tests\Unit\Node\TaskHandlerRegistry;
 
 use Maestro\Node\Exception\HandlerNotFound;
-use Maestro\Node\HandlerRegistry\EagerHandlerRegistry;
+use Maestro\Node\TaskHandlerRegistry\EagerHandlerRegistry;
 use Maestro\Node\Task;
 use Maestro\Node\Task\NullHandler;
 use Maestro\Node\Task\NullTask;

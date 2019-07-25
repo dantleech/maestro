@@ -5,7 +5,7 @@ namespace Maestro\Tests\Unit\Extension\Maestro\Task;
 use Amp\Success;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
 use Maestro\Extension\Maestro\Task\ScriptTask;
-use Maestro\Script\EnvVars;
+use Maestro\Node\EnvVars;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Node\Environment;

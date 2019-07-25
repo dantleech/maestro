@@ -2,7 +2,6 @@
 
 namespace Maestro\Node;
 
-use Maestro\Script\EnvVars;
 use Maestro\Workspace\Workspace;
 
 final class EnvironmentBuilder

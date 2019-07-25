@@ -3,7 +3,6 @@
 namespace Maestro\Node;
 
 use Maestro\Loader\Instantiator;
-use Maestro\Script\EnvVars;
 use Maestro\Workspace\Workspace;
 use RuntimeException;
 

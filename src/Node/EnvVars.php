@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Script;
+namespace Maestro\Node;
 
 use JsonSerializable;
 use RuntimeException;

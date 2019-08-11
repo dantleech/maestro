@@ -146,10 +146,22 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         });
     }
 
-    public function byIds(array $ids): Nodes
+    public function byIds(string ...$ids): Nodes
     {
         return $this->filter(function (Node $node) use ($ids) {
             return in_array($node->id(), $ids, true);
+        });
+    }
+
+    public function byTags(string ...$tags): Nodes
+    {
+        return $this->filter(function (Node $node) use ($tags) {
+            foreach ($node->tags() as $tag) {
+                if (in_array($tag, $tags)) {
+                    return true;
+                }
+            }
+            return false;
         });
     }
 

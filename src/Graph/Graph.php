@@ -14,12 +14,12 @@ class Graph
     private $nodes;
 
     /**
-     * @var array<string,Edge[]>
+     * @var array<string,string[]>
      */
     private $toFromMap = [];
 
     /**
-     * @var array<string,Edge[]>
+     * @var array<string,string[]>
      */
     private $fromToMap = [];
 
@@ -123,7 +123,7 @@ class Graph
         }
 
         $parents = $this->nodes->byIds(
-            $this->fromToMap[$nodeName]
+            ...$this->fromToMap[$nodeName]
         );
 
         $ancestry = $ancestry->merge($parents);

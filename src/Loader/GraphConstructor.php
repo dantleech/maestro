@@ -9,6 +9,7 @@ use Maestro\Graph\Edge;
 use Maestro\Graph\Graph;
 use Maestro\Graph\GraphBuilder;
 use Maestro\Graph\Node;
+use Maestro\Graph\SystemTags;
 
 class GraphConstructor
 {
@@ -54,6 +55,7 @@ class GraphConstructor
                             'env' => $package->env()
                         ]
                     ),
+                    'tags' => [ SystemTags::TAG_INITIALIZE ],
                 ]
             ));
 
@@ -85,7 +87,7 @@ class GraphConstructor
                     'schedule' => Instantiator::create()->instantiate(
                         $task->schedule()->type(),
                         $task->schedule()->args()
-                    )
+                    ),
                 ]
             ));
 
@@ -123,7 +125,8 @@ class GraphConstructor
                     [
                         'url' => $package->url(),
                     ]
-                )
+                ),
+                'tags' => [ SystemTags::TAG_INITIALIZE ]
             ]
         );
         $builder->addNode($vcsNode);

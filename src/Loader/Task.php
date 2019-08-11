@@ -25,8 +25,12 @@ class Task
      */
     private $schedule;
 
-    public function __construct(string $type, array $args = [], array $depends = [], array $schedule = [])
-    {
+    public function __construct(
+        string $type,
+        array $args = [],
+        array $depends = [],
+        array $schedule = []
+    ) {
         $this->type = $type;
         $this->args = $args;
         $this->depends = $depends;

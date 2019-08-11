@@ -49,8 +49,18 @@ final class Node
      */
     private $schedule;
 
-    public function __construct(string $id, string $label = null, ?Task $task = null, ?Schedule $schedule = null)
-    {
+    /**
+     * @var array
+     */
+    private $tags;
+
+    public function __construct(
+        string $id,
+        string $label = null,
+        ?Task $task = null,
+        ?Schedule $schedule = null,
+        array $tags = []
+    ) {
         $this->environment = Environment::empty();
         $this->id = $id;
         $this->label = $label ?: $id;
@@ -58,6 +68,7 @@ final class Node
         $this->task = $task ?: new NullTask();
         $this->taskResult = TaskResult::PENDING();
         $this->schedule = $schedule ?: new AsapSchedule();
+        $this->tags = $tags;
     }
 
     /**
@@ -202,6 +213,14 @@ final class Node
     public function taskResult(): TaskResult
     {
         return $this->taskResult;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function tags(): array
+    {
+        return $this->tags;
     }
 
     private function changeState(NodeStateMachine $stateMachine, State $state): void

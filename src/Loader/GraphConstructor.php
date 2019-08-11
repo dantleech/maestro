@@ -9,6 +9,7 @@ use Maestro\Graph\Edge;
 use Maestro\Graph\Graph;
 use Maestro\Graph\GraphBuilder;
 use Maestro\Graph\Node;
+use Maestro\Graph\SystemTags;
 
 class GraphConstructor
 {
@@ -54,6 +55,7 @@ class GraphConstructor
                             'env' => $package->env()
                         ]
                     ),
+                    'tags' => [ SystemTags::TAG_INITIALIZE ],
                 ]
             ));
 
@@ -61,21 +63,7 @@ class GraphConstructor
             $parentId = $package->name();
 
             if ($package->url()) {
-                $vcsNode = Node::create(
-                    $package->name() . '/vcs',
-                    [
-                        'label' => sprintf('%s VCS checkout', $package->name()),
-                        'task' => Instantiator::create()->instantiate(
-                            GitTask::class,
-                            [
-                                'url' => $package->url(),
-                            ]
-                        )
-                    ]
-                );
-                $builder->addNode($vcsNode);
-                $builder->addEdge(Edge::create($vcsNode->id(), $parentId));
-                $parentId = $vcsNode->id();
+                $parentId = $this->addVcsNode($package, $builder, $parentId);
             }
 
             $this->walkPackage($parentId, $package, $builder);
@@ -99,7 +87,7 @@ class GraphConstructor
                     'schedule' => Instantiator::create()->instantiate(
                         $task->schedule()->type(),
                         $task->schedule()->args()
-                    )
+                    ),
                 ]
             ));
 
@@ -124,5 +112,26 @@ class GraphConstructor
             Node::NAMEPSPACE_SEPARATOR,
             $taskName
         );
+    }
+
+    private function addVcsNode(Package $package, GraphBuilder $builder, string $parentId): string
+    {
+        $vcsNode = Node::create(
+            $package->name() . '/vcs',
+            [
+                'label' => sprintf('%s VCS checkout', $package->name()),
+                'task' => Instantiator::create()->instantiate(
+                    GitTask::class,
+                    [
+                        'url' => $package->url(),
+                    ]
+                ),
+                'tags' => [ SystemTags::TAG_INITIALIZE ]
+            ]
+        );
+        $builder->addNode($vcsNode);
+        $builder->addEdge(Edge::create($vcsNode->id(), $parentId));
+        $parentId = $vcsNode->id();
+        return $parentId;
     }
 }

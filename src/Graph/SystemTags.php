@@ -4,5 +4,5 @@ namespace Maestro\Graph;
 
 class SystemTags
 {
-    const TAG_INITIALIZE = 'initializer';
+    const TAG_INITIALIZE = 'init';
 }

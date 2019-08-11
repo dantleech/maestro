@@ -2,6 +2,7 @@
 
 namespace Maestro\Loader;
 
+use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Graph\Edge;
@@ -57,11 +58,31 @@ class GraphConstructor
             ));
 
             $builder->addEdge(Edge::create($package->name(), self::NODE_ROOT));
-            $this->walkPackage($packageNode, $package, $builder);
+            $parentId = $package->name();
+
+            if ($package->url()) {
+                $vcsNode = Node::create(
+                    $package->name() . '/vcs',
+                    [
+                        'label' => sprintf('%s VCS checkout', $package->name()),
+                        'task' => Instantiator::create()->instantiate(
+                            GitTask::class,
+                            [
+                                'url' => $package->url(),
+                            ]
+                        )
+                    ]
+                );
+                $builder->addNode($vcsNode);
+                $builder->addEdge(Edge::create($vcsNode->id(), $parentId));
+                $parentId = $vcsNode->id();
+            }
+
+            $this->walkPackage($parentId, $package, $builder);
         }
     }
 
-    private function walkPackage(Node $packageNode, Package $package, GraphBuilder $builder)
+    private function walkPackage(string $parentId, Package $package, GraphBuilder $builder)
     {
         /** @var Task $task */
         foreach ($package->tasks() as $taskName => $task) {
@@ -83,7 +104,7 @@ class GraphConstructor
             ));
 
             if (empty($task->depends())) {
-                $builder->addEdge(Edge::create($nodeId, $package->name()));
+                $builder->addEdge(Edge::create($nodeId, $parentId));
             }
 
             foreach ($task->depends() as $dependency) {

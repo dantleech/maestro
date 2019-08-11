@@ -28,12 +28,18 @@ class Package
      */
     private $env;
 
+    /**
+     * @var string|null
+     */
+    private $url;
+
     public function __construct(
         string $name,
         array $tasks = [],
         bool $purgeWorkspace = false,
         array $vars = [],
-        array $env = []
+        array $env = [],
+        ?string $url = null
     ) {
         $this->name = $name;
 
@@ -44,6 +50,7 @@ class Package
         $this->purgeWorkspace = $purgeWorkspace;
         $this->vars = $vars;
         $this->env = $env;
+        $this->url = $url;
     }
 
     /**
@@ -72,5 +79,10 @@ class Package
     public function env()
     {
         return $this->env;
+    }
+
+    public function url(): ?string
+    {
+        return $this->url;
     }
 }

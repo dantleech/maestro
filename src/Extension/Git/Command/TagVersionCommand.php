@@ -81,33 +81,45 @@ class TagVersionCommand extends Command
         $table = new Table($output);
         $table->setHeaders([
             'package',
-            'Δ',
-            '✈',
             'configured',
             'tagged',
             'tagged-sh',
             'head-sh',
         ]);
         
-        $legend = [
-            '<info>[✈]</> <comment>Package will be tagged - configured and actual versions have diverged</>',
-            '<info>[Δ]</> <comment>Number of commits between latest tag and HEAD</>',
-        ];
-
         foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('version_info') as $node) {
             $versionReport = $node->environment()->vars()->get('versions');
             assert($versionReport instanceof VersionReport);
             $table->addRow([
                 $versionReport->packageName(),
-                $versionReport->divergence(),
-                $versionReport->willBeTagged() ? '<fg=green>✈</>' : '',
-                $versionReport->configuredVersion(),
+                $this->formatConfiguredVersion($versionReport),
                 $versionReport->taggedVersion(),
                 substr($versionReport->taggedCommit(), 0, 10),
-                substr($versionReport->headCommit(), 0, 10),
+                $this->formatHeadCommit($versionReport),
             ]);
         }
         $table->render();
-        $output->writeln(implode(PHP_EOL, $legend));
+    }
+
+    private function formatConfiguredVersion(VersionReport $versionReport)
+    {
+        if ($versionReport->willBeTagged()) {
+            return sprintf('<bg=black;fg=yellow>%s</>', $versionReport->configuredVersion());
+        }
+
+        return $versionReport->configuredVersion();
+    }
+
+    private function formatHeadCommit(VersionReport $versionReport)
+    {
+        if ($versionReport->divergence() > 0) {
+            return sprintf(
+                '%s <fg=yellow;bg=black>+%s</>',
+                substr($versionReport->headCommit(), 0, 10),
+                $versionReport->divergence()
+            );
+        }
+
+        return substr($versionReport->headCommit(), 0, 10);
     }
 }

@@ -3,6 +3,8 @@
 namespace Maestro\Extension\Git;
 
 use Maestro\Extension\Git\Command\GitTagCommand;
+use Maestro\Extension\Git\Task\GitTagHandler;
+use Maestro\Extension\Git\Task\GitTagTask;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Git\Task\GitHandler;
 use Maestro\Extension\Git\Task\GitTask;
@@ -35,6 +37,15 @@ class GitExtension implements Extension
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'git',
             'job_class' => GitTask::class,
+        ]]);
+
+        $container->register('task.job_handler.git_tag', function (Container $container) {
+            return new GitTagHandler(
+                $container->get('git.git')
+            );
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'git_tag',
+            'job_class' => GitTagTask::class,
         ]]);
     }
 

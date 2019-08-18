@@ -5,7 +5,6 @@ namespace Maestro\Extension\Maestro\Command\Behavior;
 use Amp\Loop;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Graph\Graph;
-use Maestro\Graph\GraphWalker;
 use Maestro\Maestro;
 use Maestro\MaestroBuilder;
 use Maestro\Util\Cast;

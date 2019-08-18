@@ -2,6 +2,7 @@
 
 namespace Maestro\Console;
 
+use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Tmux\TmuxExtension;
 use Maestro\Extension\Twig\TwigExtension;
@@ -76,6 +77,7 @@ final class ApplicationBuilder
             LoggingExtension::class,
             TmuxExtension::class,
             TwigExtension::class,
+            GitExtension::class,
         ], $this->buildConfiguration($definition));
     }
 

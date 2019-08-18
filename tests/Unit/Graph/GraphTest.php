@@ -319,6 +319,35 @@ class GraphTest extends TestCase
         $this->assertCount(3, $graph->edges());
     }
 
+    public function testPrunesGraphToTags()
+    {
+        $graph = Graph::create(
+            [
+                Node::create('n1', [
+                    'tags' => ['tag1'],
+                ]),
+                Node::create('n2', [
+                    ['tag1','tag2'],
+                ]),
+                Node::create('n3'),
+                Node::create('n4'),
+                Node::create('n5'),
+                Node::create('n6'),
+            ],
+            [
+                Edge::create('n4', 'n3'),
+                Edge::create('n5', 'n3'),
+                Edge::create('n3', 'n2'),
+                Edge::create('n2', 'n1'),
+                Edge::create('n6', 'n1'),
+            ]
+        );
+
+        $graph = $graph->pruneForTags(['tag1']);
+        $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->ids());
+        $this->assertCount(3, $graph->edges());
+    }
+
     /**
      * @dataProvider providePrunesGraphToGivenDepth
      */

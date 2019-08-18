@@ -4,7 +4,7 @@ namespace Maestro\Extension\Git\Task;
 
 use Maestro\Graph\Task;
 
-class GitTagTask implements Task
+class TagVersionTask implements Task
 {
     public function description(): string
     {

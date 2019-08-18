@@ -10,7 +10,7 @@ use Maestro\Graph\Task;
 use Maestro\Graph\TaskHandler;
 use Psr\Log\LoggerInterface;
 
-class GitTagHandler implements TaskHandler
+class TagVersionHandler implements TaskHandler
 {
     /**
      * @var Git

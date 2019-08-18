@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Git\Command;
 
-use Maestro\Extension\Git\Task\GitTagTask;
+use Maestro\Extension\Git\Task\TagVersionTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Graph\Edge;
 use Maestro\Graph\Graph;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GitTagCommand extends Command
+class TagVersionCommand extends Command
 {
     /**
      * @var GraphBehavior
@@ -40,7 +40,7 @@ class GitTagCommand extends Command
             $scriptNodeId = sprintf($leaf->id() . '/git tag');
             $nodes = $graph->nodes()->add(Node::create($scriptNodeId, [
                 'label' => 'git tag',
-                'task' => new GitTagTask()
+                'task' => new TagVersionTask()
             ]));
             $edges = $graph->edges()->add(Edge::create($scriptNodeId, $leaf->id()));
             $graph = new Graph($nodes, $edges);

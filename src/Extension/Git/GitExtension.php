@@ -2,10 +2,10 @@
 
 namespace Maestro\Extension\Git;
 
-use Maestro\Extension\Git\Command\GitTagCommand;
+use Maestro\Extension\Git\Command\TagVersionCommand;
 use Maestro\Extension\Git\Model\Git;
-use Maestro\Extension\Git\Task\GitTagHandler;
-use Maestro\Extension\Git\Task\GitTagTask;
+use Maestro\Extension\Git\Task\TagVersionHandler;
+use Maestro\Extension\Git\Task\TagVersionTask;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Git\Task\GitHandler;
 use Maestro\Extension\Git\Task\GitTask;
@@ -24,7 +24,7 @@ class GitExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register('git.command.tag', function (Container $container) {
-            return new GitTagCommand(
+            return new TagVersionCommand(
                 $container->get(MaestroExtension::SERVICE_CONSOLE_BEHAVIOR_GRAPH)
             );
         }, [ ConsoleExtension::TAG_COMMAND => [
@@ -49,13 +49,13 @@ class GitExtension implements Extension
         ]]);
 
         $container->register('task.job_handler.git_tag', function (Container $container) {
-            return new GitTagHandler(
+            return new TagVersionHandler(
                 $container->get('git.git'),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
             );
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'git_tag',
-            'job_class' => GitTagTask::class,
+            'job_class' => TagVersionTask::class,
         ]]);
     }
 

@@ -4,7 +4,7 @@ namespace Maestro\Tests\EndToEnd\Extension\Git\Command;
 
 use Maestro\Tests\EndToEnd\EndToEndTestCase;
 
-class GitTagCommandTest extends EndToEndTestCase
+class TagVersionCommandTest extends EndToEndTestCase
 {
     protected function setUp(): void
     {

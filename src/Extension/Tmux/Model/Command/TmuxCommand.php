@@ -35,6 +35,7 @@ class TmuxCommand extends Command
 
     protected function configure()
     {
+        $this->setDescription('Start a new Tmux session for the given workspace name');
         $this->addArgument(self::ARG_WORKSPACE, InputArgument::REQUIRED);
     }
 

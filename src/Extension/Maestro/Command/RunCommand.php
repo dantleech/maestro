@@ -49,6 +49,7 @@ class RunCommand extends Command
 
     protected function configure()
     {
+        $this->setDescription('Run the plan');
         $this->graphBehavior->configure($this);
 
         $this->addOption(self::OPT_DUMP, null, InputOption::VALUE_REQUIRED, 'Dump a representation of the task graph to a file');

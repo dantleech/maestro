@@ -6,6 +6,8 @@ use Maestro\Extension\Git\Command\TagVersionCommand;
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Extension\Git\Task\TagVersionHandler;
 use Maestro\Extension\Git\Task\TagVersionTask;
+use Maestro\Extension\Git\Task\VersionInfoHandler;
+use Maestro\Extension\Git\Task\VersionInfoTask;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Git\Task\GitHandler;
 use Maestro\Extension\Git\Task\GitTask;
@@ -56,6 +58,15 @@ class GitExtension implements Extension
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'git_tag',
             'job_class' => TagVersionTask::class,
+        ]]);
+
+        $container->register('task.job_handler.git_version_info', function (Container $container) {
+            return new VersionInfoHandler(
+                $container->get('git.git')
+            );
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'git_version_info',
+            'job_class' => VersionInfoTask::class,
         ]]);
     }
 

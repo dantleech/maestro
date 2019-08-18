@@ -4,6 +4,7 @@ namespace Maestro\Extension\Git\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Task;
@@ -40,8 +41,13 @@ class TagVersionHandler implements TaskHandler
             $path = $environment->workspace()->absolutePath();
             $env = $environment->env()->toArray();
             $existingTags = yield $this->git->listTags($environment->workspace()->absolutePath());
-            if (in_array($tagName, $existingTags)) {
-                $this->logger->info(sprintf('Git tag "%s" already exists (%s)', $tagName, implode(', ', $existingTags)));
+            assert($existingTags instanceof ExistingTags);
+            if ($existingTags->has($tagName)) {
+                $this->logger->info(sprintf(
+                    'Git tag "%s" already exists (%s)',
+                    $tagName,
+                    implode(', ', $existingTags->names())
+                ));
                 return $environment;
             }
 

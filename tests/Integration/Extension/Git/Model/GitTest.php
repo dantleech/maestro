@@ -2,12 +2,14 @@
 
 namespace Maestro\Tests\Integration\Extension\Git\Model;
 
+use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Script\ScriptRunner;
 use Maestro\Tests\IntegrationTestCase;
 use Psr\Log\NullLogger;
 use RuntimeException;
 use Symfony\Component\Process\Process;
+use function Amp\Promise\wait;
 
 class GitTest extends IntegrationTestCase
 {
@@ -41,7 +43,7 @@ class GitTest extends IntegrationTestCase
 
         $this->assertEquals(
             $expectedTags,
-            \Amp\Promise\wait($this->git->listTags($this->workspace()->path('/')))
+            $this->listTagNames()
         );
     }
 
@@ -59,27 +61,71 @@ class GitTest extends IntegrationTestCase
             [ '1.0.0', '1.0.1' ],
         ];
 
-        yield 'sorts tags' => [
+        yield 'sorts tags 1' => [
             [ '1', '3', '2' ],
             [ '1', '2', '3' ],
+        ];
+
+        yield 'sorts tags 2' => [
+            [ '0.1.2', '0.1.0', '1.1.1', '100' ],
+            [ '0.1.0', '0.1.2', '1.1.1' , '100'],
         ];
     }
 
     public function testTagsNewTag()
     {
-        \Amp\Promise\wait($this->git->tag($this->workspace()->path('/'), '1.0.0'));
-        $this->assertEquals(['1.0.0'], \Amp\Promise\wait($this->git->listTags($this->workspace()->path('/'))));
+        wait($this->git->tag($this->workspace()->path('/'), '1.0.0'));
+        $this->assertEquals([
+            '1.0.0'
+        ], $this->listTagNames());
     }
 
     public function testIgnoresExistingTag()
     {
         $this->exec('git tag 1.0.0');
 
-        \Amp\Promise\wait(
+        wait(
             $this->git->tag($this->workspace()->path('/'), '1.0.0')
         );
 
-        $this->assertEquals(['1.0.0'], \Amp\Promise\wait($this->git->listTags($this->workspace()->path('/'))));
+        $this->assertEquals(['1.0.0'], $this->listTagNames());
+    }
+
+    public function testGetsHeadId()
+    {
+        $headId = wait($this->git->headId($this->workspace()->path('/')));
+        $this->assertNotNull($headId);
+    }
+
+    public function testExistingTagsIncludeCommitId()
+    {
+        $this->exec('git tag 1.0.0');
+        $tags = wait($this->git->listTags($this->workspace()->path('/')));
+        $this->assertCount(1, $tags);
+        assert($tags instanceof ExistingTags);
+        $tag = $tags->mostRecent();
+        $this->assertEquals(
+            wait($this->git->headId($this->workspace()->path('/'))),
+            $tag->commitId()
+        );
+    }
+
+    public function testCommitsBetween()
+    {
+        $this->exec('git tag 1.0.0');
+        $this->workspace()->put('foobar1', '');
+        $this->exec('git add foobar1');
+        $this->exec('git commit -m "foobar1"');
+        $this->workspace()->put('foobar2', '');
+        $this->exec('git add foobar2');
+        $this->exec('git commit -m "foobar2"');
+
+        $commitIds = wait($this->git->commitsBetween(
+            $this->workspace()->path('/'),
+            '1.0.0',
+            wait($this->git->headId($this->workspace()->path('/')))
+        ));
+        $this->assertCount(2, $commitIds);
     }
 
     private function exec(string $string): Process
@@ -99,5 +145,10 @@ class GitTest extends IntegrationTestCase
         }
 
         return $process;
+    }
+
+    private function listTagNames(): array
+    {
+        return wait($this->git->listTags($this->workspace()->path('/')))->names();
     }
 }

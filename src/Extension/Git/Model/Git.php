@@ -30,8 +30,9 @@ class Git
     public function listTags(string $path): Promise
     {
         return \Amp\call(function () use ($path) {
-            $result = yield $this->runner->run('git tag', $path, []);
+            $result = yield $this->runner->run('git tag --format="%(refname:strip=2) %(objectname)"', $path, []);
             assert($result instanceof ScriptResult);
+
             if ($result->exitCode() !== 0) {
                 throw new GitException(sprintf(
                     'Could not list tags in "%s"',
@@ -39,7 +40,22 @@ class Git
                 ));
             }
 
-            return array_filter(array_map('trim', explode("\n", $result->stdout())));
+            return new ExistingTags(array_map(function ($tag) {
+                return new ExistingTag($tag[0], $tag[1]);
+            }, array_filter(
+                array_map(
+                    function (string $line) {
+                        return array_filter(array_map(
+                            'trim',
+                            explode(' ', $line)
+                        ));
+                    },
+                    explode(
+                        "\n",
+                        $result->stdout()
+                    )
+                )
+            )));
         });
     }
 
@@ -64,6 +80,51 @@ class Git
             $this->logger->info(sprintf('Tagged "%s"', $version));
 
             return $result;
+        });
+    }
+
+    public function headId(string $path): Promise
+    {
+        return \Amp\call(function () use ($path) {
+            $result = yield $this->runner->run('git rev-parse HEAD', $path, []);
+            assert($result instanceof ScriptResult);
+
+            if ($result->exitCode() !== 0) {
+                throw new GitException(sprintf(
+                    'Could not parse current revision in "%s"',
+                    $path
+                ));
+            }
+
+            return trim($result->stdout());
+        });
+    }
+
+    public function commitsBetween(string $path, string $start, string $end): Promise
+    {
+        return \Amp\call(function () use ($path, $start, $end) {
+            $result = yield $this->runner->run(
+                sprintf(
+                    'git rev-list %s...%s',
+                    $start,
+                    $end
+                ),
+                $path,
+                []
+            );
+
+            assert($result instanceof ScriptResult);
+
+            if ($result->exitCode() !== 0) {
+                throw new GitException(sprintf(
+                    'Could not list commit Ids between "%s" and "%s" in "%s"',
+                    $start,
+                    $end,
+                    $path
+                ));
+            }
+
+            return array_filter(array_map('trim', explode("\n", $result->stdout())));
         });
     }
 }

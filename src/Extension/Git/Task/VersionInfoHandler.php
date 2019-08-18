@@ -43,12 +43,13 @@ class VersionInfoHandler implements TaskHandler
             } catch (GitException $e) {
                 throw new TaskFailed($e->getMessage());
             }
-            $actualCommitId = yield $this->git->headId($repoPath);
+            $headId = yield $this->git->headId($repoPath);
+            $headComment = yield $this->git->message($repoPath, $headId);
 
             $diff = yield $this->git->commitsBetween(
                 $repoPath,
                 $mostRecentTag->commitId(),
-                $actualCommitId
+                $headId
             );
 
             return $environment->builder()
@@ -58,7 +59,8 @@ class VersionInfoHandler implements TaskHandler
                        $package->version(),
                        $mostRecentTag->name(),
                        $mostRecentTag->commitId(),
-                       $actualCommitId,
+                       $headId,
+                       $headComment,
                        $diff
                    )
                ])->build();

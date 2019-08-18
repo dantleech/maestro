@@ -127,4 +127,22 @@ class Git
             return array_filter(array_map('trim', explode("\n", $result->stdout())));
         });
     }
+
+    public function message(string $path, string $commitId): Promise
+    {
+        return \Amp\call(function () use ($path, $commitId) {
+            $result = yield $this->runner->run(sprintf('git log %s -1 --pretty=%%B', $commitId), $path, []);
+            assert($result instanceof ScriptResult);
+
+            if ($result->exitCode() !== 0) {
+                throw new GitException(sprintf(
+                    'Could not read commit message for "%s" in "%s"',
+                    $commitId,
+                    $path
+                ));
+            }
+
+            return trim($result->stdout());
+        });
+    }
 }

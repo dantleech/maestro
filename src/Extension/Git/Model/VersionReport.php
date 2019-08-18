@@ -31,12 +31,18 @@ class VersionReport
      */
     private $commitsBetween;
 
+    /**
+     * @var string
+     */
+    private $headMessage;
+
     public function __construct(
         string $packageName,
         ?string $configuredVersion,
         string $taggedVersion,
         string $taggedCommit,
         string $headCommit,
+        string $headMessage,
         array $commitsBetween
     ) {
         $this->configuredVersion = $configuredVersion;
@@ -45,6 +51,7 @@ class VersionReport
         $this->headCommit = $headCommit;
         $this->packageName = $packageName;
         $this->commitsBetween = $commitsBetween;
+        $this->headMessage = $headMessage;
     }
 
     public function configuredVersion(): ?string
@@ -90,5 +97,10 @@ class VersionReport
     public function divergence(): int
     {
         return count($this->commitsBetween);
+    }
+
+    public function headMessage(): string
+    {
+        return $this->headMessage;
     }
 }

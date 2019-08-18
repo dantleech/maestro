@@ -12,6 +12,7 @@ use Maestro\Graph\Node;
 use Maestro\Graph\SystemTags;
 use Maestro\Graph\TaskResult;
 use Maestro\Util\Cast;
+use Maestro\Util\StringUtil;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -81,10 +82,11 @@ class TagVersionCommand extends Command
         $table = new Table($output);
         $table->setHeaders([
             'package',
-            'configured',
-            'tagged',
-            'tagged-sh',
-            'head-sh',
+            'conf',
+            'tag',
+            'tag-id',
+            'head-id',
+            'message',
         ]);
         
         foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('version_info') as $node) {
@@ -96,6 +98,7 @@ class TagVersionCommand extends Command
                 $versionReport->taggedVersion(),
                 substr($versionReport->taggedCommit(), 0, 10),
                 $this->formatHeadCommit($versionReport),
+                StringUtil::firstLine($versionReport->headMessage()),
             ]);
         }
         $table->render();

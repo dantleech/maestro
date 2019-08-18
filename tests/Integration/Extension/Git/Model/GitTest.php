@@ -128,6 +128,20 @@ class GitTest extends IntegrationTestCase
         $this->assertCount(2, $commitIds);
     }
 
+    public function testComment()
+    {
+        $this->exec('git tag 1.0.0');
+        $this->workspace()->put('foobar1', '');
+        $this->exec('git add foobar1');
+        $this->exec('git commit -m "Hello World"');
+
+        $message = wait($this->git->message(
+            $this->workspace()->path('/'),
+            wait($this->git->headId($this->workspace()->path('/')))
+        ));
+        $this->assertEquals('Hello World', $message);
+    }
+
     private function exec(string $string): Process
     {
         $process = new Process($string, $this->workspace()->path('/'));

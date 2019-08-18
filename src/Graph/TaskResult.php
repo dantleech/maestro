@@ -4,7 +4,7 @@ namespace Maestro\Graph;
 
 class TaskResult
 {
-    private const STATE_PENDING = 'pending';
+    private const STATE_PENDING = 'busy';
     private const STATE_SUCCESS = 'succeeded';
     private const STATE_FAIL = 'failed';
 

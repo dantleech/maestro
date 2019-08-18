@@ -11,27 +11,27 @@ class ScriptResult
     /**
      * @var string
      */
-    private $lastStdout;
+    private $stdout;
     /**
      * @var string
      */
-    private $lastStderr;
+    private $stderr;
 
-    public function __construct(int $exitCode, string $lastStdout, string $lastStderr)
+    public function __construct(int $exitCode, string $stdout, string $stderr)
     {
         $this->exitCode = $exitCode;
-        $this->lastStdout = $lastStdout;
-        $this->lastStderr = $lastStderr;
+        $this->stdout = $stdout;
+        $this->stderr = $stderr;
     }
 
-    public function lastStderr(): string
+    public function stderr(): string
     {
-        return $this->lastStderr;
+        return $this->stderr;
     }
 
-    public function lastStdout(): string
+    public function stdout(): string
     {
-        return $this->lastStdout;
+        return $this->stdout;
     }
 
     public function exitCode(): int

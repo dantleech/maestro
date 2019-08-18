@@ -39,7 +39,7 @@ class Git
                 ));
             }
 
-            return array_filter(array_map('trim', explode("\n", $result->lastStdout())));
+            return array_filter(array_map('trim', explode("\n", $result->stdout())));
         });
     }
 
@@ -50,7 +50,7 @@ class Git
             assert($result instanceof ScriptResult);
 
             if ($result->exitCode() !== 0) {
-                if (strpos($result->lastStderr(), 'already exists')) {
+                if (strpos($result->stderr(), 'already exists')) {
                     $this->logger->info('Ignoring already existing tag');
                     return $result;
                 }

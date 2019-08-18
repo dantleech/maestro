@@ -33,7 +33,7 @@ class ScriptRunnerTest extends IntegrationTestCase
         $result = \Amp\Promise\wait($this->runner->run('echo Hello', $this->workspace()->path('/'), []));
         $this->assertInstanceOf(ScriptResult::class, $result);
         $this->assertEquals(0, $result->exitCode());
-        $this->assertStringContainsString('Hello', $result->lastStdout());
+        $this->assertStringContainsString('Hello', $result->stdout());
     }
 
     public function testRunsACommandThatFails()

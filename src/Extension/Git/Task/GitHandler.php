@@ -49,7 +49,7 @@ class GitHandler implements TaskHandler
                 throw new TaskFailed(sprintf(
                     'Git clone failed with exit code "%s": %s',
                     $result->exitCode(),
-                    $result->lastStderr()
+                    $result->stderr()
                 ), $result->exitCode());
             }
 

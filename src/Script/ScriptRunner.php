@@ -43,8 +43,8 @@ class ScriptRunner
 
             return Instantiator::create()->instantiate(ScriptResult::class, [
                 'exitCode' => $exitCode,
-                'lastStdout' => $outs[0],
-                'lastStderr' => $outs[1],
+                'stdout' => $outs[0],
+                'stderr' => $outs[1],
             ]);
         });
     }

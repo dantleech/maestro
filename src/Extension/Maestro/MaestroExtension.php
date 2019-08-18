@@ -54,6 +54,7 @@ class MaestroExtension implements Extension
     const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
     const TAG_SCHEDULER = 'scheduler';
     const SERVICE_CONSOLE_BEHAVIOR_GRAPH = 'console.behavior.graph';
+    const SERVICE_SCRIPT_RUNNER = 'script.runner';
 
     public function configure(Resolver $schema)
     {
@@ -151,7 +152,7 @@ class MaestroExtension implements Extension
 
     private function loadScript(ContainerBuilder $container)
     {
-        $container->register('script.runner', function (Container $container) {
+        $container->register(self::SERVICE_SCRIPT_RUNNER, function (Container $container) {
             return new ScriptRunner($container->get(LoggingExtension::SERVICE_LOGGER));
         });
     }
@@ -244,7 +245,7 @@ class MaestroExtension implements Extension
         ]]);
         
         $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler($container->get('script.runner'));
+            return new ScriptHandler($container->get(self::SERVICE_SCRIPT_RUNNER));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'script',
             'job_class' => ScriptTask::class,

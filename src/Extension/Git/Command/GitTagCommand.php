@@ -2,7 +2,11 @@
 
 namespace Maestro\Extension\Git\Command;
 
+use Maestro\Extension\Git\Task\GitTagTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
+use Maestro\Graph\Edge;
+use Maestro\Graph\Graph;
+use Maestro\Graph\Node;
 use Maestro\Graph\SystemTags;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,6 +34,17 @@ class GitTagCommand extends Command
     {
         $graph = $this->graphBehavior->buildGraph($input);
         $graph = $graph->pruneForTags(SystemTags::TAG_INITIALIZE);
+
+        foreach ($graph->leafs() as $leaf) {
+            $scriptNodeId = sprintf($leaf->id() . '/git tag');
+            $nodes = $graph->nodes()->add(Node::create($scriptNodeId, [
+                'label' => 'git tag',
+                'task' => new GitTagTask($leaf->environment()->vars()->get('package')->version())
+            ]));
+            $edges = $graph->edges()->add(Edge::create($scriptNodeId, $leaf->id()));
+            $graph = new Graph($nodes, $edges);
+        }
+
         $this->graphBehavior->run($input, $output, $graph);
     }
 }

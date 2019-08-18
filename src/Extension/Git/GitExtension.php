@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Git;
 
 use Maestro\Extension\Git\Command\GitTagCommand;
+use Maestro\Extension\Git\Model\Git;
 use Maestro\Extension\Git\Task\GitTagHandler;
 use Maestro\Extension\Git\Task\GitTagTask;
 use Maestro\Extension\Maestro\MaestroExtension;
@@ -12,6 +13,7 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
+use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 
 class GitExtension implements Extension
@@ -28,6 +30,13 @@ class GitExtension implements Extension
         }, [ ConsoleExtension::TAG_COMMAND => [
             'name' => 'git:tag',
         ]]);
+
+        $container->register('git.git', function (Container $container) {
+            return new Git(
+                $container->get(MaestroExtension::SERVICE_SCRIPT_RUNNER),
+                $container->get(LoggingExtension::SERVICE_LOGGER)
+            );
+        });
 
         $container->register('task.job_handler.git', function (Container $container) {
             return new GitHandler(

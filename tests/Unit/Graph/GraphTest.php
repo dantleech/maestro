@@ -327,7 +327,7 @@ class GraphTest extends TestCase
                     'tags' => ['tag1'],
                 ]),
                 Node::create('n2', [
-                    ['tag1','tag2'],
+                    'tags' => ['tag1','tag2'],
                 ]),
                 Node::create('n3'),
                 Node::create('n4'),
@@ -343,9 +343,9 @@ class GraphTest extends TestCase
             ]
         );
 
-        $graph = $graph->pruneForTags(['tag1']);
-        $this->assertEquals(['n3','n2','n1','n5'], $graph->nodes()->ids());
-        $this->assertCount(3, $graph->edges());
+        $graph = $graph->pruneForTags('tag1');
+        $this->assertEquals(['n1','n2'], $graph->nodes()->ids());
+        $this->assertCount(1, $graph->edges());
     }
 
     /**

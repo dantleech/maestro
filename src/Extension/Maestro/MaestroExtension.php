@@ -9,8 +9,6 @@ use Maestro\Extension\Maestro\Dumper\DotDumper;
 use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
-use Maestro\Extension\Maestro\Task\GitHandler;
-use Maestro\Extension\Maestro\Task\GitTask;
 use Maestro\Extension\Maestro\Task\JsonFileHandler;
 use Maestro\Extension\Maestro\Task\JsonFileTask;
 use Maestro\Extension\Maestro\Task\ManifestHandler;
@@ -244,16 +242,6 @@ class MaestroExtension implements Extension
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'script',
             'job_class' => ScriptTask::class,
-        ]]);
-        
-        $container->register('task.job_handler.git', function (Container $container) {
-            return new GitHandler(
-                $container->get('script.runner'),
-                $container->getParameter(self::PARAM_WORKSPACE_DIRECTORY)
-            );
-        }, [ self::TAG_JOB_HANDLER => [
-            'alias' => 'git',
-            'job_class' => GitTask::class,
         ]]);
         
         $container->register('task.job_handler.json_file', function (Container $container) {

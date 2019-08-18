@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Maestro\Task;
+namespace Maestro\Extension\Git\Task;
 
 use Amp\Promise;
 use Amp\Success;

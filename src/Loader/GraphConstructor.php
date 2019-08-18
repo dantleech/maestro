@@ -2,7 +2,7 @@
 
 namespace Maestro\Loader;
 
-use Maestro\Extension\Maestro\Task\GitTask;
+use Maestro\Extension\Git\Task\GitTask;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Graph\Edge;

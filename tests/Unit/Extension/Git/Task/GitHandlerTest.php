@@ -1,10 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Unit\Extension\Maestro\Task;
+namespace Maestro\Tests\Unit\Extension\Git\Task;
 
 use Amp\Success;
-use Maestro\Extension\Maestro\Task\GitHandler;
-use Maestro\Extension\Maestro\Task\GitTask;
+use Maestro\Extension\Git\Task\GitHandler;
+use Maestro\Extension\Git\Task\GitTask;
 use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Graph\Exception\TaskFailed;
@@ -44,7 +44,7 @@ class GitHandlerTest extends TestCase
         $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
-                self::EXAMPLE_WORKSPACE_ROOT,
+                self::EXAMPLE_WORKSPACE_ROOT
                 )
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
@@ -69,7 +69,7 @@ class GitHandlerTest extends TestCase
         $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
-                self::EXAMPLE_WORKSPACE_ROOT,
+                self::EXAMPLE_WORKSPACE_ROOT
                 )
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,
@@ -99,7 +99,7 @@ class GitHandlerTest extends TestCase
         $environment = HandlerTester::create(
             new GitHandler(
                 $this->scriptRunner->reveal(),
-                self::EXAMPLE_WORKSPACE_ROOT,
+                self::EXAMPLE_WORKSPACE_ROOT
                 )
         )->handle(GitTask::class, [
             'url' => self::EXAMPLE_URL,

@@ -4,6 +4,7 @@ namespace Maestro\Extension\Maestro\Command;
 
 use Amp\Loop;
 use Maestro\Console\DumperRegistry;
+use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
@@ -20,20 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RunCommand extends Command
 {
-    private const POLL_TIME_DISPATCH = 10;
-    private const POLL_TIME_RENDER = 100;
-
-    private const ARG_PLAN = 'plan';
-    private const ARG_QUERY = 'target';
-
     private const OPT_DUMP = 'dump';
-    private const OPT_CONCURRENCY = 'concurrency';
-    private const OPT_PROGRESS = 'progress';
     private const OPT_LIST_TARGETS = 'targets';
-    private const OPT_DEPTH = 'depth';
     private const OPT_EXEC_SCRIPT = 'exec';
     private const OPT_ENVIRONMENT = 'environment';
-    private const OPT_PURGE = 'purge';
     private const OPT_REPORT = 'report';
 
     /**
@@ -46,26 +37,28 @@ class RunCommand extends Command
      */
     private $dumper;
 
-    public function __construct(MaestroBuilder $builder, DumperRegistry $dumper)
+    /**
+     * @var GraphBehavior
+     */
+    private $graphBehavior;
+
+    public function __construct(GraphBehavior $graphBehavior, DumperRegistry $dumper)
     {
-        parent::__construct();
-        $this->builder = $builder;
         $this->dumper = $dumper;
+        $this->graphBehavior = $graphBehavior;
+
+        parent::__construct();
     }
 
     protected function configure()
     {
-        $this->addArgument(self::ARG_PLAN, InputArgument::REQUIRED, 'Path to the plan to execute');
-        $this->addArgument(self::ARG_QUERY, InputArgument::OPTIONAL, 'Limit execution to dependencies of matching targets');
+        $this->graphBehavior->configure($this);
+
         $this->addOption(self::OPT_DUMP, null, InputOption::VALUE_REQUIRED, 'Dump a representation of the task graph to a file');
-        $this->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
-        $this->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
         $this->addOption(self::OPT_REPORT, 'r', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show report when finished');
         $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
-        $this->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
         $this->addOption(self::OPT_EXEC_SCRIPT, null, InputOption::VALUE_REQUIRED, 'Execute command on targets');
         $this->addOption(self::OPT_ENVIRONMENT, null, InputOption::VALUE_NONE, 'Report environment for leaf nodes after execution');
-        $this->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge package workspaces before build');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -73,17 +66,7 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $maestro = $this->buildRunner($input);
-
-        $graph = $maestro->buildGraph(
-            $maestro->loadManifest(
-                Cast::toString(
-                    $input->getArgument(self::ARG_PLAN)
-                )
-            ),
-            Cast::toStringOrNull($input->getArgument(self::ARG_QUERY)),
-            Cast::toIntOrNull($input->getOption(self::OPT_DEPTH))
-        );
+        $graph = $this->graphBehavior->buildGraph($input);
 
         if ($script = $input->getOption(self::OPT_EXEC_SCRIPT)) {
             $graph = (new ExecScriptOnLeafNodesModifier(Cast::toString($script)))($graph);
@@ -103,38 +86,12 @@ class RunCommand extends Command
             return $this->dumper->get($dumperName);
         }, (array) $input->getOption(self::OPT_REPORT));
 
-        Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($maestro, $graph) {
-            if ($graph->nodes()->allDone()) {
-                Loop::stop();
-            }
-            $maestro->dispatch($graph);
-        });
+        $this->graphBehavior->run($input, $output, $graph);
 
-        if ($input->getOption(self::OPT_PROGRESS)) {
-            Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
-                $section->overwrite((new OverviewRenderer())->dump($graph));
-            });
-        }
-
-
-        Loop::run();
-
-        $section->clear();
         foreach ($reportDumpers as $reportDumper) {
             $output->writeln($reportDumper->dump($graph));
         }
 
         return $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count();
-    }
-
-    private function buildRunner(InputInterface $input): Maestro
-    {
-        $builder = $this->builder;
-        $builder->withMaxConcurrency(Cast::toInt(
-            $input->getOption(self::OPT_CONCURRENCY)
-        ));
-        $builder->withPurge(Cast::toBool($input->getOption(self::OPT_PURGE)));
-        $maestro = $builder->build();
-        return $maestro;
     }
 }

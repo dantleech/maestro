@@ -4,6 +4,7 @@ namespace Maestro\Extension\Maestro;
 
 use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
+use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Dumper\DotDumper;
 use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
@@ -52,6 +53,7 @@ class MaestroExtension implements Extension
     const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
     const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
     const TAG_SCHEDULER = 'scheduler';
+    const SERVICE_CONSOLE_BEHAVIOR_GRAPH = 'console.behavior.graph';
 
     public function configure(Resolver $schema)
     {
@@ -87,10 +89,14 @@ class MaestroExtension implements Extension
     {
         $container->register('console.command.run', function (Container $container) {
             return new RunCommand(
-                $container->get(self::SERVICE_RUNNER_BUILDER),
+                $container->get(self::SERVICE_CONSOLE_BEHAVIOR_GRAPH),
                 $container->get(self::SERVICE_DUMPER_REGISTRY)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
+
+        $container->register(self::SERVICE_CONSOLE_BEHAVIOR_GRAPH, function (Container $container) {
+            return new GraphBehavior($container->get(self::SERVICE_RUNNER_BUILDER));
+        });
     }
 
     private function loadMaestro(ContainerBuilder $container)

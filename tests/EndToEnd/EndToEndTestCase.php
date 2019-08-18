@@ -2,11 +2,9 @@
 
 namespace Maestro\Tests\EndToEnd;
 
-use Maestro\Extension\NamespaceResolver;
 use Maestro\Tests\IntegrationTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
 
 class EndToEndTestCase extends IntegrationTestCase
 {
@@ -35,10 +33,10 @@ class EndToEndTestCase extends IntegrationTestCase
         foreach ([
             'git init',
             'git add *',
-            'git commit -m "test'
+            'git commit -m "test"'
         ] as $command) {
             $process = new Process(sprintf(
-                'git init'
+                $command,
                 ), $this->packageUrl($name));
             $process->mustRun();
         }
@@ -71,15 +69,5 @@ class EndToEndTestCase extends IntegrationTestCase
             $process->getOutput(),
             $process->getErrorOutput()
         ));
-    }
-
-    protected function packageWorkspacePath(string $subPath = ''): string
-    {
-        $paths = ['maestro-workspace'];
-        if ($subPath) {
-            $paths[] = (new NamespaceResolver(realpath($this->workspace()->path(''))))->resolve();
-            $paths[] = $subPath;
-        }
-        return $this->workspace()->path(Path::join($paths));
     }
 }

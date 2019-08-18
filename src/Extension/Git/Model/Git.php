@@ -61,6 +61,8 @@ class Git
                 ));
             }
 
+            $this->logger->info(sprintf('Tagged "%s"', $version));
+
             return $result;
         });
     }

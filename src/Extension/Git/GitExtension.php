@@ -50,7 +50,8 @@ class GitExtension implements Extension
 
         $container->register('task.job_handler.git_tag', function (Container $container) {
             return new GitTagHandler(
-                $container->get('git.git')
+                $container->get('git.git'),
+                $container->get(LoggingExtension::SERVICE_LOGGER)
             );
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'git_tag',

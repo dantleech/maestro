@@ -44,7 +44,7 @@ final class State
 
     public function isDone(): bool
     {
-        return $this->state === self::DONE || $this->state === self::SCHEDULED;
+        return $this->state === self::DONE;
     }
 
     public static function SCHEDULED(): self

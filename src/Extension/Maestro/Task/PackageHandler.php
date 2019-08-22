@@ -8,6 +8,7 @@ use Maestro\Graph\Task;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Exception\TaskFailed;
 use Maestro\Graph\TaskHandler;
+use Maestro\Package\Package;
 use Maestro\Workspace\Workspace;
 use Maestro\Workspace\WorkspaceFactory;
 
@@ -40,7 +41,10 @@ class PackageHandler implements TaskHandler
             'PACKAGE_NAME' => $package->name()
         ]));
         $builder->withVars(array_merge([
-            'package' => $package,
+            'package' => new Package(
+                $package->name(),
+                $package->version()
+            )
         ], $package->vars()));
 
         return new Success($builder->build());

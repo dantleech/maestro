@@ -186,19 +186,6 @@ e.g.
 }
 ```
 
-##### `git`
-
-Use this to clone a GIT repository for the package.
-
-```javascript
-{
-    "type": "git",
-    "args": {
-        "url": "git@github.com:$PACKAGE_NAME"
-    }
-}
-```
-
 ### Schedules
 
 Schedules determine how often and/or when a task will be executed. They are
@@ -287,6 +274,20 @@ This is very useful to quicly create an environment where you can
 manipulate the package after maestro has executed.
 
 Note that this only works if you are already inside a Tmux session.
+
+### `git`
+
+This extension provides some functionality around GIT.
+
+#### Commands
+
+##### `git:versions`
+
+Generate a report for all the versions of your packages.
+
+##### `git:tag`
+
+Tag the packages _configured_ version.
 
 Documentation
 -------------

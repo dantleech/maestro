@@ -9,7 +9,6 @@ class OverviewRendererTest extends DumperTestCase
     public function testDumpsOverview()
     {
         $output = (new OverviewRenderer())->dump($this->createGraph());
-        $this->assertStringContainsString('n2', $output);
-        $this->assertStringContainsString('n3', $output);
+        $this->assertStringContainsString('0 done, 2 hidden', $output);
     }
 }

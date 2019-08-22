@@ -7,6 +7,7 @@ use Maestro\Loader\Instantiator;
 use Maestro\Graph\Environment;
 use Maestro\Extension\Maestro\Task\PackageTask;
 use Maestro\Graph\Test\HandlerTester;
+use Maestro\Package\Package;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Workspace\WorkspaceFactory;
@@ -42,7 +43,7 @@ class PackageHandlerTest extends IntegrationTestCase
         ], $environment->env()->toArray());
 
         $this->assertEquals([
-            'package' => $package,
+            'package' => new Package($package->name(), $package->version()),
         ], $environment->vars()->toArray());
     }
 

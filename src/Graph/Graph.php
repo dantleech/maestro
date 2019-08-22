@@ -161,6 +161,11 @@ class Graph
         return new self($nodes, $edges);
     }
 
+    public function pruneForTags(string ...$tags): Graph
+    {
+        return $this->pruneFor($this->nodes->byTags(...$tags)->ids());
+    }
+
     public function descendantsFor(string $nodeName, array $seen = [], $level = 0): Nodes
     {
         if (isset($seen[$nodeName])) {

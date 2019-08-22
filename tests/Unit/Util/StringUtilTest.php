@@ -69,4 +69,25 @@ EOT
           , 'ocramius/package-versions: ...done generating version class'
           ];
     }
+
+    /**
+     * @dataProvider provideFirstLine
+     */
+    public function testFirstLine(string $input, string $output)
+    {
+        self::assertEquals($output, StringUtil::firstLine($input));
+    }
+
+    public function provideFirstLine()
+    {
+        yield 'no new line' => [
+            'foobar',
+            'foobar'
+        ];
+
+        yield 'new line' => [
+            "Foobar\nbarfoo",
+            'barfoo'
+        ];
+    }
 }

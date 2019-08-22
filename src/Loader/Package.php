@@ -33,13 +33,19 @@ class Package
      */
     private $url;
 
+    /**
+     * @var string|null
+     */
+    private $version;
+
     public function __construct(
         string $name,
         array $tasks = [],
         bool $purgeWorkspace = false,
         array $vars = [],
         array $env = [],
-        ?string $url = null
+        ?string $url = null,
+        ?string $version = null
     ) {
         $this->name = $name;
 
@@ -51,6 +57,7 @@ class Package
         $this->vars = $vars;
         $this->env = $env;
         $this->url = $url;
+        $this->version = $version;
     }
 
     /**
@@ -84,5 +91,10 @@ class Package
     public function url(): ?string
     {
         return $this->url;
+    }
+
+    public function version(): ?string
+    {
+        return $this->version;
     }
 }

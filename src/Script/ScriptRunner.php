@@ -6,7 +6,6 @@ use Amp\Process\Process;
 use Amp\Promise;
 use Generator;
 use Maestro\Loader\Instantiator;
-use Maestro\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
@@ -44,8 +43,8 @@ class ScriptRunner
 
             return Instantiator::create()->instantiate(ScriptResult::class, [
                 'exitCode' => $exitCode,
-                'lastStdout' => $outs[0],
-                'lastStderr' => $outs[1],
+                'stdout' => $outs[0],
+                'stderr' => $outs[1],
             ]);
         });
     }
@@ -68,7 +67,7 @@ class ScriptRunner
                     $this->logger->debug(sprintf('%s: %s', $name, $buffer));
                 }
 
-                return StringUtil::lastLine($buffer);
+                return $buffer;
             });
         }
         

@@ -9,11 +9,11 @@ class VersionReport
      */
     private $configuredVersion;
     /**
-     * @var string
+     * @var string|null
      */
     private $taggedVersion;
     /**
-     * @var string
+     * @var string|null
      */
     private $taggedCommit;
     /**
@@ -39,8 +39,8 @@ class VersionReport
     public function __construct(
         string $packageName,
         ?string $configuredVersion,
-        string $taggedVersion,
-        string $taggedCommit,
+        ?string $taggedVersion,
+        ?string $taggedCommit,
         string $headCommit,
         string $headMessage,
         array $commitsBetween
@@ -64,12 +64,12 @@ class VersionReport
         return $this->headCommit;
     }
 
-    public function taggedCommit(): string
+    public function taggedCommit(): ?string
     {
         return $this->taggedCommit;
     }
 
-    public function taggedVersion(): string
+    public function taggedVersion(): ?string
     {
         return $this->taggedVersion;
     }

@@ -17,7 +17,7 @@ class TagVersionCommandTest extends EndToEndTestCase
         $this->createPlan('plan.json', [
             'packages' => [
                 'foobar' => [
-                    'url' => $this->packageUrl('foobar'),
+                    'url' => $this->packagePath('foobar'),
                     'version' => '123.123',
                 ],
             ],

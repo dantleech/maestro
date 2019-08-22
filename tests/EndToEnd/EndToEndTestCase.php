@@ -3,7 +3,6 @@
 namespace Maestro\Tests\EndToEnd;
 
 use Maestro\Tests\IntegrationTestCase;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class EndToEndTestCase extends IntegrationTestCase
@@ -18,28 +17,6 @@ class EndToEndTestCase extends IntegrationTestCase
         $process->run();
 
         return $process;
-    }
-
-    protected function packageUrl(string $name)
-    {
-        return $this->workspace()->path('/'.$name);
-    }
-
-    protected function initPackage(string $name)
-    {
-        $filesystem = new Filesystem();
-        $filesystem->mirror(__DIR__ . '/../Project/one', $this->packageUrl($name));
-
-        foreach ([
-            'git init',
-            'git add *',
-            'git commit -m "test"'
-        ] as $command) {
-            $process = new Process(sprintf(
-                $command,
-                ), $this->packageUrl($name));
-            $process->mustRun();
-        }
     }
 
     protected function assertProcessSuccess(Process $process)

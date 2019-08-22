@@ -96,7 +96,7 @@ class TagVersionCommand extends Command
                 $versionReport->packageName(),
                 $this->formatConfiguredVersion($versionReport),
                 $versionReport->taggedVersion(),
-                substr($versionReport->taggedCommit(), 0, 10),
+                substr($versionReport->taggedCommit() ?? '', 0, 10),
                 $this->formatHeadCommit($versionReport),
                 StringUtil::firstLine($versionReport->headMessage()),
             ]);

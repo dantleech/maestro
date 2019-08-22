@@ -3,11 +3,12 @@
 namespace Maestro\Extension\Git\Model;
 
 use ArrayIterator;
+use Countable;
 use Iterator;
 use IteratorAggregate;
 use Maestro\Extension\Git\Model\Exception\GitException;
 
-class ExistingTags implements IteratorAggregate
+class ExistingTags implements IteratorAggregate, Countable
 {
     /**
      * @var ExistingTag[]
@@ -58,5 +59,13 @@ class ExistingTags implements IteratorAggregate
         }
 
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->tags);
     }
 }

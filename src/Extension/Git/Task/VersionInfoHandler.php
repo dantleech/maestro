@@ -4,6 +4,7 @@ namespace Maestro\Extension\Git\Task;
 
 use Amp\Promise;
 use Maestro\Extension\Git\Model\Exception\GitException;
+use Maestro\Extension\Git\Model\ExistingTag;
 use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Extension\Git\Model\VersionReport;
@@ -39,7 +40,7 @@ class VersionInfoHandler implements TaskHandler
             try {
                 $tags = yield $this->git->listTags($repoPath);
                 assert($tags instanceof ExistingTags);
-                $mostRecentTag = $tags->mostRecent();
+                $mostRecentTag = $this->resolveMostRecentTag($tags);
             } catch (GitException $e) {
                 throw new TaskFailed($e->getMessage());
             }
@@ -48,7 +49,7 @@ class VersionInfoHandler implements TaskHandler
 
             $diff = yield $this->git->commitsBetween(
                 $repoPath,
-                $mostRecentTag->commitId(),
+                $mostRecentTag ? $mostRecentTag->commitId() : $headId,
                 $headId
             );
 
@@ -57,13 +58,22 @@ class VersionInfoHandler implements TaskHandler
                    'versions' => new VersionReport(
                        $package->name(),
                        $package->version(),
-                       $mostRecentTag->name(),
-                       $mostRecentTag->commitId(),
+                       $mostRecentTag ? $mostRecentTag->name() : null,
+                       $mostRecentTag ? $mostRecentTag->commitId() : null,
                        $headId,
                        $headComment,
                        $diff
                    )
                ])->build();
         });
+    }
+
+    private function resolveMostRecentTag(ExistingTags $tags): ?ExistingTag
+    {
+        if ($tags->count()) {
+            return $tags->mostRecent();
+        }
+
+        return null;
     }
 }

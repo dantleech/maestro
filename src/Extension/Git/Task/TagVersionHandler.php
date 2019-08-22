@@ -40,8 +40,11 @@ class TagVersionHandler implements TaskHandler
         return \Amp\call(function () use ($tagName, $environment) {
             $path = $environment->workspace()->absolutePath();
             $env = $environment->env()->toArray();
-            $existingTags = yield $this->git->listTags($environment->workspace()->absolutePath());
+            $existingTags = yield $this->git->listTags(
+                $environment->workspace()->absolutePath()
+            );
             assert($existingTags instanceof ExistingTags);
+
             if ($existingTags->has($tagName)) {
                 $this->logger->info(sprintf(
                     'Git tag "%s" already exists (%s)',

@@ -66,7 +66,7 @@ class TaskRunningDecider implements NodeDecider
     private function areDependenciesSatisfied(Graph $graph, Node $node)
     {
         foreach ($graph->dependenciesFor($node->id()) as $node) {
-            if (!$node->state()->isDone()) {
+            if (!$node->taskResult()->is(TaskResult::SUCCESS())) {
                 return false;
             }
         }

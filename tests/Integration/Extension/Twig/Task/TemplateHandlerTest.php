@@ -2,7 +2,6 @@
 
 namespace Maestro\Tests\Integration\Extension\Twig\Task;
 
-use Maestro\Extension\Twig\EnvironmentFactory;
 use Maestro\Extension\Twig\Task\TemplateHandler;
 use Maestro\Extension\Twig\Task\TemplateTask;
 use Maestro\Graph\Exception\TaskFailed;
@@ -26,13 +25,7 @@ class TemplateHandlerTest extends IntegrationTestCase
     {
         $this->workspace()->reset();
         $this->packageWorkspace = new Workspace($this->workspace()->path('/'), 'test');
-        $this->handler = new TemplateHandler(
-            new EnvironmentFactory([
-                'strict_variables' => true,
-                'auto_reload' => false,
-                'cache' => false,
-            ])
-        );
+        $this->handler = $this->container()->get(TemplateHandler::class);
     }
 
     public function testRendersTemplate()

@@ -43,7 +43,7 @@ final class ApplicationBuilder
         $this->setWorkingDirectory();
         $application = new Application();
         $definition = $this->defineGlobalOptions($application);
-        $container = $this->buildContainer($definition);
+        $container = $this->buildContainer($this->buildConfiguration($definition));
         $application->setCommandLoader(
             $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
         );
@@ -52,6 +52,18 @@ final class ApplicationBuilder
         );
 
         return $application;
+    }
+
+    public function buildContainer(array $config): Container
+    {
+        return PhpactorContainer::fromExtensions([
+            ConsoleExtension::class,
+            MaestroExtension::class,
+            LoggingExtension::class,
+            TmuxExtension::class,
+            TwigExtension::class,
+            GitExtension::class,
+        ], $config);
     }
 
     private function defineGlobalOptions(Application $application): InputDefinition
@@ -67,18 +79,6 @@ final class ApplicationBuilder
             new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
         ]);
         return $definition;
-    }
-
-    private function buildContainer($definition): Container
-    {
-        return PhpactorContainer::fromExtensions([
-            ConsoleExtension::class,
-            MaestroExtension::class,
-            LoggingExtension::class,
-            TmuxExtension::class,
-            TwigExtension::class,
-            GitExtension::class,
-        ], $this->buildConfiguration($definition));
     }
 
     private function buildConfiguration(InputDefinition $definition): array

@@ -2,7 +2,9 @@
 
 namespace Maestro\Tests;
 
+use Maestro\Console\ApplicationBuilder;
 use PHPUnit\Framework\TestCase;
+use Phpactor\Container\Container;
 use Phpactor\TestUtils\Workspace;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
@@ -12,6 +14,11 @@ class IntegrationTestCase extends TestCase
     const GIT_INITIAL_MESSAGE = 'test';
 
     private $workspace;
+
+    public function container(array $config = []): Container
+    {
+        return (new ApplicationBuilder)->buildContainer($config);
+    }
 
     public function workspace(): Workspace
     {

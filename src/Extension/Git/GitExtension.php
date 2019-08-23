@@ -25,7 +25,7 @@ class GitExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register('git.command.tag', function (Container $container) {
+        $container->register(TagVersionCommand::class, function (Container $container) {
             return new TagVersionCommand(
                 $container->get(MaestroExtension::SERVICE_CONSOLE_BEHAVIOR_GRAPH)
             );
@@ -33,14 +33,14 @@ class GitExtension implements Extension
             'name' => 'git:tag',
         ]]);
 
-        $container->register('git.git', function (Container $container) {
+        $container->register(Git::class, function (Container $container) {
             return new Git(
                 $container->get(MaestroExtension::SERVICE_SCRIPT_RUNNER),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
             );
         });
 
-        $container->register('task.job_handler.git', function (Container $container) {
+        $container->register(GitHandler::class, function (Container $container) {
             return new GitHandler(
                 $container->get('script.runner'),
                 $container->getParameter(MaestroExtension::PARAM_WORKSPACE_DIRECTORY)
@@ -50,9 +50,9 @@ class GitExtension implements Extension
             'job_class' => GitTask::class,
         ]]);
 
-        $container->register('task.job_handler.git_tag', function (Container $container) {
+        $container->register(TagVersionHandler::class, function (Container $container) {
             return new TagVersionHandler(
-                $container->get('git.git'),
+                $container->get(Git::class),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
             );
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
@@ -60,9 +60,9 @@ class GitExtension implements Extension
             'job_class' => TagVersionTask::class,
         ]]);
 
-        $container->register('task.job_handler.git_version_info', function (Container $container) {
+        $container->register(VersionInfoHandler::class, function (Container $container) {
             return new VersionInfoHandler(
-                $container->get('git.git')
+                $container->get(Git::class)
             );
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'git_version_info',

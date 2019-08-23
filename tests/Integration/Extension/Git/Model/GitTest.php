@@ -4,9 +4,7 @@ namespace Maestro\Tests\Integration\Extension\Git\Model;
 
 use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
-use Maestro\Script\ScriptRunner;
 use Maestro\Tests\IntegrationTestCase;
-use Psr\Log\NullLogger;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 use function Amp\Promise\wait;
@@ -22,10 +20,12 @@ class GitTest extends IntegrationTestCase
     {
         $this->workspace()->reset();
         $this->workspace()->put('README.md', 'Hello');
+
         $this->exec('git init');
         $this->exec('git add README.md');
         $this->exec('git commit -m "Initial"');
-        $this->git = new Git(new ScriptRunner(new NullLogger()), new NullLogger());
+
+        $this->git = $this->container()->get(Git::class);
     }
 
     /**

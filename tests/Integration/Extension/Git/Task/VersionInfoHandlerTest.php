@@ -9,10 +9,8 @@ use Maestro\Extension\Git\Task\VersionInfoTask;
 use Maestro\Graph\Test\HandlerTester;
 use Maestro\Graph\Vars;
 use Maestro\Package\Package;
-use Maestro\Script\ScriptRunner;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
-use Psr\Log\NullLogger;
 
 class VersionInfoHandlerTest extends IntegrationTestCase
 {
@@ -27,10 +25,7 @@ class VersionInfoHandlerTest extends IntegrationTestCase
     {
         $this->workspace()->reset();
         $this->initPackage(self::PACKAGE_NAME);
-        $this->git = new Git(
-            new ScriptRunner(new NullLogger()),
-            new NullLogger()
-        );
+        $this->git = $this->container()->get(Git::class);
     }
 
     public function testGathersInfoWithNoTags()

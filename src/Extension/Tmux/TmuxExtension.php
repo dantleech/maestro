@@ -13,21 +13,19 @@ use Phpactor\MapResolver\Resolver;
 
 class TmuxExtension implements Extension
 {
-    const SERVICE_TMUX_CLIENT = 'tmux.client';
-
     /**
      * {@inheritDoc}
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register('tmux.command.tmux', function (Container $container) {
+        $container->register(TmuxCommand::class, function (Container $container) {
             return new TmuxCommand(
                 $container->get(MaestroExtension::SERVICE_WORKSPACE_FACTORY),
-                $container->get(self::SERVICE_TMUX_CLIENT)
+                $container->get(TmuxClient::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'tmux']]);
 
-        $container->register('tmux.client', function (Container $container) {
+        $container->register(TmuxClient::class, function (Container $container) {
             return new TmuxClient();
         });
     }

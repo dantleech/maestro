@@ -2,9 +2,9 @@
 
 namespace Maestro\Extension\Tmux;
 
-use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Tmux\Model\Command\TmuxCommand;
 use Maestro\Extension\Tmux\Model\TmuxClient;
+use Maestro\Workspace\WorkspaceFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -20,7 +20,7 @@ class TmuxExtension implements Extension
     {
         $container->register(TmuxCommand::class, function (Container $container) {
             return new TmuxCommand(
-                $container->get(MaestroExtension::SERVICE_WORKSPACE_FACTORY),
+                $container->get(WorkspaceFactory::class),
                 $container->get(TmuxClient::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'tmux']]);

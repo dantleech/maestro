@@ -42,19 +42,13 @@ use XdgBaseDir\Xdg;
 
 class MaestroExtension implements Extension
 {
-    const SERVICE_RUNNER_BUILDER = 'runner_builder';
     const TAG_JOB_HANDLER = 'job_handler';
 
     const PARAM_WORKING_DIRECTORY = 'working_directory';
     const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
     const PARAM_NAMESPACE = 'namespace';
-    const SERVICE_MANIFEST_LOADER = 'config.loader';
     const TAG_DUMPER = 'dumper';
-    const SERVICE_DUMPER_REGISTRY = 'dumper.registry';
-    const SERVICE_WORKSPACE_FACTORY = 'workspace_factory';
     const TAG_SCHEDULER = 'scheduler';
-    const SERVICE_CONSOLE_BEHAVIOR_GRAPH = 'console.behavior.graph';
-    const SERVICE_SCRIPT_RUNNER = 'script.runner';
 
     public function configure(Resolver $schema)
     {
@@ -77,7 +71,7 @@ class MaestroExtension implements Extension
 
     private function loadWorkspace(ContainerBuilder $container)
     {
-        $container->register(self::SERVICE_WORKSPACE_FACTORY, function (Container $container) {
+        $container->register(WorkspaceFactory::class, function (Container $container) {
             return new WorkspaceFactory(
                 new NestedDirectoryStrategy(),
                 $container->getParameter('namespace'),
@@ -88,21 +82,21 @@ class MaestroExtension implements Extension
 
     private function loadConsole(ContainerBuilder $container)
     {
-        $container->register('console.command.run', function (Container $container) {
+        $container->register(RunCommand::class, function (Container $container) {
             return new RunCommand(
-                $container->get(self::SERVICE_CONSOLE_BEHAVIOR_GRAPH),
-                $container->get(self::SERVICE_DUMPER_REGISTRY)
+                $container->get(GraphBehavior::class),
+                $container->get(DumperRegistry::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
 
-        $container->register(self::SERVICE_CONSOLE_BEHAVIOR_GRAPH, function (Container $container) {
-            return new GraphBehavior($container->get(self::SERVICE_RUNNER_BUILDER));
+        $container->register(GraphBehavior::class, function (Container $container) {
+            return new GraphBehavior($container->get(MaestroBuilder::class));
         });
     }
 
     private function loadMaestro(ContainerBuilder $container)
     {
-        $container->register(self::SERVICE_RUNNER_BUILDER, function (Container $container) {
+        $container->register(MaestroBuilder::class, function (Container $container) {
             $builder = MaestroBuilder::create();
             $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
             foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
@@ -152,7 +146,7 @@ class MaestroExtension implements Extension
 
     private function loadScript(ContainerBuilder $container)
     {
-        $container->register(self::SERVICE_SCRIPT_RUNNER, function (Container $container) {
+        $container->register(ScriptRunner::class, function (Container $container) {
             return new ScriptRunner($container->get(LoggingExtension::SERVICE_LOGGER));
         });
     }
@@ -177,18 +171,18 @@ class MaestroExtension implements Extension
 
     private function loadLogging(ContainerBuilder $container): void
     {
-        $container->register('logging.json', function (Container $container) {
+        $container->register(JsonFormatter::class, function (Container $container) {
             return new JsonFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'json']]);
 
-        $container->register('logging.ansi', function (Container $container) {
+        $container->register(AnsiFormatter::class, function (Container $container) {
             return new AnsiFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'ansi']]);
     }
 
     private function loadDumpers(ContainerBuilder $container): void
     {
-        $container->register(self::SERVICE_DUMPER_REGISTRY, function (Container $container) {
+        $container->register(DumperRegistry::class, function (Container $container) {
             $dumpers = [];
             foreach ($container->getServiceIdsForTag(self::TAG_DUMPER) as $serviceId => $attrs) {
                 if (!isset($attrs['name'])) {
@@ -204,54 +198,54 @@ class MaestroExtension implements Extension
             return new DumperRegistry($dumpers);
         });
 
-        $container->register('dumper.dot', function (Container $container) {
+        $container->register(DotDumper::class, function (Container $container) {
             return new DotDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'dot' ] ]);
 
-        $container->register('dumper.overview', function (Container $container) {
+        $container->register(OverviewRenderer::class, function (Container $container) {
             return new OverviewRenderer();
         }, [ self::TAG_DUMPER => [ 'name' => 'overview' ] ]);
 
-        $container->register('dumper.environment', function (Container $container) {
+        $container->register(LeafArtifactsDumper::class, function (Container $container) {
             return new LeafArtifactsDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'environment' ] ]);
 
-        $container->register('dumper.targets', function (Container $container) {
+        $container->register(TargetDumper::class, function (Container $container) {
             return new TargetDumper();
         }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
     }
 
     private function loadJobHandlers(ContainerBuilder $container)
     {
-        $container->register('task.job_handler.null', function () {
+        $container->register(NullHandler::class, function () {
             return new NullHandler();
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'null',
             'job_class' => NullTask::class,
         ]]);
         
-        $container->register('task.job_handler.manifest', function () {
+        $container->register(ManifestHandler::class, function () {
             return new ManifestHandler();
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'manifest',
             'job_class' => ManifestTask::class,
         ]]);
         
-        $container->register('task.job_handler.package', function (Container $container) {
-            return new PackageHandler($container->get(self::SERVICE_WORKSPACE_FACTORY));
+        $container->register(PackageHandler::class, function (Container $container) {
+            return new PackageHandler($container->get(WorkspaceFactory::class));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'package',
             'job_class' => PackageTask::class,
         ]]);
         
-        $container->register('task.job_handler.script', function (Container $container) {
-            return new ScriptHandler($container->get(self::SERVICE_SCRIPT_RUNNER));
+        $container->register(ScriptHandler::class, function (Container $container) {
+            return new ScriptHandler($container->get(ScriptRunner::class));
         }, [ self::TAG_JOB_HANDLER => [
             'alias' => 'script',
             'job_class' => ScriptTask::class,
         ]]);
         
-        $container->register('task.job_handler.json_file', function (Container $container) {
+        $container->register(JsonFileHandler::class, function (Container $container) {
             return new JsonFileHandler();
         }, [ MaestroExtension::TAG_JOB_HANDLER => [
             'alias' => 'json_file',
@@ -261,14 +255,14 @@ class MaestroExtension implements Extension
 
     private function loadSchedulers(ContainerBuilder $container)
     {
-        $container->register('scheduler.asap', function (Container $container) {
+        $container->register(AsapScheduler::class, function (Container $container) {
             return new AsapScheduler();
         }, [ MaestroExtension::TAG_SCHEDULER => [
             'alias' => 'asap',
             'schedule_class' => AsapSchedule::class,
         ]]);
 
-        $container->register('scheduler.repeat', function (Container $container) {
+        $container->register(RepeatScheduler::class, function (Container $container) {
             return new RepeatScheduler();
         }, [ MaestroExtension::TAG_SCHEDULER => [
             'alias' => 'repeat',

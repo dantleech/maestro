@@ -14,16 +14,6 @@ class Graph
     private $nodes;
 
     /**
-     * @var array<string,string[]>
-     */
-    private $toFromMap = [];
-
-    /**
-     * @var array<string,string[]>
-     */
-    private $fromToMap = [];
-
-    /**
      * @var Edges<Edge>
      */
     private $edges;
@@ -39,16 +29,8 @@ class Graph
             );
         }
 
-        foreach ($nodes as $node) {
-            $this->addNode($node);
-        }
-
-        foreach ($edges as $edge) {
-            $this->addEdge($edge);
-        }
-
-        // validate and detect circular dependencies
-        $this->validate();
+        $this->validateEdges();
+        $this->validateCircularDependencies();
     }
 
     public static function create(array $nodes, array $edges): self
@@ -60,7 +42,7 @@ class Graph
     {
         $nodesWithNoOutboundEdges = array_diff(
             $this->nodes->ids(),
-            array_keys($this->fromToMap)
+            $this->edges->fromIds()
         );
 
         $nodes = [];
@@ -89,11 +71,9 @@ class Graph
 
     public function dependentsFor(string $nodeName): Nodes
     {
-        $this->validateNodeName($nodeName);
-
         return Nodes::fromNodes(array_map(function (string $nodeName) {
             return $this->nodes[$nodeName];
-        }, $this->toFromMap[$nodeName]));
+        }, $this->edges->to($nodeName)->fromIds()));
     }
 
     /**
@@ -101,29 +81,17 @@ class Graph
      */
     public function dependenciesFor(string $nodeName): Nodes
     {
-        $this->validateNodeName($nodeName);
-
-        if (!isset($this->fromToMap[$nodeName])) {
-            return Nodes::empty();
-        }
-
         return Nodes::fromNodes(array_map(function (string $nodeName) {
             return $this->nodes[$nodeName];
-        }, $this->fromToMap[$nodeName]));
+        }, $this->edges->from($nodeName)->toIds()));
     }
 
     public function ancestryFor(string $nodeName, array $seen = []): Nodes
     {
-        $this->validateNodeName($nodeName);
-
         $ancestry = Nodes::empty();
 
-        if (!isset($this->fromToMap[$nodeName])) {
-            return $ancestry;
-        }
-
         $parents = $this->nodes->byIds(
-            ...$this->fromToMap[$nodeName]
+            ...$this->edges->from($nodeName)->toIds()
         );
 
         $ancestry = $ancestry->merge($parents);
@@ -172,7 +140,6 @@ class Graph
             return Nodes::empty();
         }
 
-        $this->validateNodeName($nodeName);
 
         $nodes = Nodes::empty();
 
@@ -216,34 +183,8 @@ class Graph
     public function leafs(): Nodes
     {
         return $this->nodes->filter(function (Node $node) {
-            return empty($this->toFromMap[$node->id()]);
+            return $this->edges->to($node->id())->count() === 0;
         });
-    }
-
-    private function addNode(Node $node): void
-    {
-        $this->toFromMap[$node->id()] = [];
-    }
-
-    private function validateNodeName(string $nodeName): void
-    {
-        if (isset($this->nodes[$nodeName])) {
-            return;
-        }
-
-        throw new NodeDoesNotExist(sprintf(
-            'Node "%s" does not exist',
-            $nodeName
-        ));
-    }
-
-    private function addEdge(Edge $edge): void
-    {
-        $this->validateNodeName($edge->to());
-        $this->validateNodeName($edge->from());
-
-        $this->toFromMap[$edge->to()][] = $edge->from();
-        $this->fromToMap[$edge->from()][] = $edge->to();
     }
 
     /**
@@ -254,7 +195,7 @@ class Graph
      * Note that we reverse it as the graph is built as a dependency tree (so
      * children have edges _from_ themselves _to_ the parent.
      */
-    private function validate()
+    private function validateCircularDependencies()
     {
         $nodes = iterator_to_array($this->roots());
         $sortedElements = [];
@@ -279,5 +220,17 @@ class Graph
                 $edges->toString()
             ));
         }
+    }
+
+    private function validateEdges(): void
+    {
+        if (!$diff = array_diff($this->edges->allIds(), $this->nodes->ids())) {
+            return;
+        }
+
+        throw new NodeDoesNotExist(sprintf(
+            'Node(s) do not exist "%s"',
+            implode('", "', $diff)
+        ));
     }
 }

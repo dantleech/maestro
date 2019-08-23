@@ -106,4 +106,32 @@ final class Edges implements IteratorAggregate, Countable
             return sprintf('%s => %s', $edge->from(), $edge->to());
         }, $this->edges));
     }
+
+    /**
+     * @return string[]
+     */
+    public function fromIds(): array
+    {
+        return array_map(function (Edge $edge) {
+            return $edge->from();
+        }, $this->edges);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function toIds(): array
+    {
+        return array_map(function (Edge $edge) {
+            return $edge->to();
+        }, $this->edges);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function allIds(): array
+    {
+        return array_unique(array_merge($this->toIds(), $this->fromIds()));
+    }
 }

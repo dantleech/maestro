@@ -7,7 +7,7 @@ use Maestro\Extension\Git\Model\Exception\GitException;
 use Maestro\Extension\Git\Model\ExistingTag;
 use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
-use Maestro\Extension\Git\Model\VersionReport;
+use Maestro\Extension\Version\Survey\VcsResult;
 use Maestro\Extension\Survey\Model\Surveyor;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Exception\TaskFailed;
@@ -55,7 +55,7 @@ class VersionSurveyor implements Surveyor
                 $headId
             );
 
-            return new VersionReport(
+            return new VcsResult(
                 $package->name(),
                 $package->version(),
                 $mostRecentTag ? $mostRecentTag->name() : null,

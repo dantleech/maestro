@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Integration\Extension\Git\Survey;
 
 use Maestro\Extension\Git\Model\Git;
-use Maestro\Extension\Git\Model\VersionReport;
+use Maestro\Extension\Version\Survey\VcsResult;
 use Maestro\Extension\Git\Survey\VersionSurveyor;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Vars;
@@ -37,7 +37,7 @@ class VersionSurveryorTest extends IntegrationTestCase
     {
         $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnv()));
 
-        $this->assertInstanceOf(VersionReport::class, $versionReport);
+        $this->assertInstanceOf(VcsResult::class, $versionReport);
         $this->assertNull($versionReport->taggedVersion());
         $this->assertNull($versionReport->taggedCommit());
     }
@@ -48,7 +48,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $configuredTag = '1.0.0';
         $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $this->assertInstanceOf(VersionReport::class, $versionReport);
+        $this->assertInstanceOf(VcsResult::class, $versionReport);
         $this->assertCount(0, $versionReport->commitsBetween());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
         $this->assertEquals(0, $versionReport->divergence());
@@ -71,7 +71,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $configuredTag = '1.0.0';
         $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $this->assertInstanceOf(VersionReport::class, $versionReport);
+        $this->assertInstanceOf(VcsResult::class, $versionReport);
         $this->assertCount(1, $versionReport->commitsBetween());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
         $this->assertEquals(1, $versionReport->divergence());
@@ -93,7 +93,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $configuredTag = '1.0.1';
         $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $this->assertInstanceOf(VersionReport::class, $versionReport);
+        $this->assertInstanceOf(VcsResult::class, $versionReport);
         $this->assertTrue($versionReport->willBeTagged());
     }
 

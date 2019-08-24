@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Survey;
 
 use Maestro\Extension\Maestro\MaestroExtension;
+use Maestro\Extension\Survey\Console\VersionReport;
 use Maestro\Extension\Survey\Model\Surveyors;
 use Maestro\Extension\Survey\Task\SurveyHandler;
 use Maestro\Extension\Survey\Task\SurveyTask;
@@ -34,6 +35,10 @@ class SurveyExtension implements Extension
             'alias' => 'survey',
             'job_class' => SurveyTask::class,
         ]]);
+
+        $container->register(VersionReport::class, function (Container $container) {
+            return new VersionReport();
+        });
     }
 
     /**

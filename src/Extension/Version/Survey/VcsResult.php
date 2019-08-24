@@ -1,8 +1,8 @@
 <?php
 
-namespace Maestro\Extension\Git\Model;
+namespace Maestro\Extension\Version\Survey;
 
-class VersionReport
+class VcsResult
 {
     /**
      * @var string|null

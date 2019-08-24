@@ -1,18 +1,17 @@
 <?php
 
-namespace Maestro\Tests\Integration\Extension\Git\Task;
+namespace Maestro\Tests\Integration\Extension\Git\Survey;
 
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Extension\Git\Model\VersionReport;
-use Maestro\Extension\Git\Task\VersionInfoHandler;
-use Maestro\Extension\Git\Task\VersionInfoTask;
-use Maestro\Graph\Test\HandlerTester;
+use Maestro\Extension\Git\Survey\VersionSurveyor;
+use Maestro\Graph\Environment;
 use Maestro\Graph\Vars;
 use Maestro\Package\Package;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Workspace\Workspace;
 
-class VersionInfoHandlerTest extends IntegrationTestCase
+class VersionSurveryorTest extends IntegrationTestCase
 {
     const PACKAGE_NAME = 'foobar';
 
@@ -21,22 +20,23 @@ class VersionInfoHandlerTest extends IntegrationTestCase
      */
     private $git;
 
+    /**
+     * @var VersionSurveyor
+     */
+    private $surveyor;
+
     protected function setUp(): void
     {
         $this->workspace()->reset();
         $this->initPackage(self::PACKAGE_NAME);
         $this->git = $this->container()->get(Git::class);
+        $this->surveyor = new VersionSurveyor($this->git);
     }
 
     public function testGathersInfoWithNoTags()
     {
-        $response = HandlerTester::create(
-            new VersionInfoHandler(
-                $this->git
-            )
-        )->handle(VersionInfoTask::class, [], $this->createEnv());
+        $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnv()));
 
-        $versionReport = $response->vars()->get('versions');
         $this->assertInstanceOf(VersionReport::class, $versionReport);
         $this->assertNull($versionReport->taggedVersion());
         $this->assertNull($versionReport->taggedCommit());
@@ -46,13 +46,8 @@ class VersionInfoHandlerTest extends IntegrationTestCase
     {
         $this->execPackageCommand(self::PACKAGE_NAME, 'git tag 1.0.0');
         $configuredTag = '1.0.0';
-        $response = HandlerTester::create(
-            new VersionInfoHandler(
-                $this->git
-            )
-        )->handle(VersionInfoTask::class, [], $this->createEnvWithPackageVersion($configuredTag));
+        $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $versionReport = $response->vars()->get('versions');
         $this->assertInstanceOf(VersionReport::class, $versionReport);
         $this->assertCount(0, $versionReport->commitsBetween());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
@@ -74,13 +69,8 @@ class VersionInfoHandlerTest extends IntegrationTestCase
         $this->execPackageCommand(self::PACKAGE_NAME, 'git commit -m "another commit"');
 
         $configuredTag = '1.0.0';
-        $response = HandlerTester::create(
-            new VersionInfoHandler(
-                $this->git
-            )
-        )->handle(VersionInfoTask::class, [], $this->createEnvWithPackageVersion($configuredTag));
+        $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $versionReport = $response->vars()->get('versions');
         $this->assertInstanceOf(VersionReport::class, $versionReport);
         $this->assertCount(1, $versionReport->commitsBetween());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
@@ -101,28 +91,23 @@ class VersionInfoHandlerTest extends IntegrationTestCase
         $this->execPackageCommand(self::PACKAGE_NAME, 'git commit -m "another commit"');
 
         $configuredTag = '1.0.1';
-        $response = HandlerTester::create(
-            new VersionInfoHandler(
-                $this->git
-            )
-        )->handle(VersionInfoTask::class, [], $this->createEnvWithPackageVersion($configuredTag));
+        $versionReport = \Amp\Promise\wait($this->surveyor->survey($this->createEnvWithPackageVersion($configuredTag)));
 
-        $versionReport = $response->vars()->get('versions');
         $this->assertInstanceOf(VersionReport::class, $versionReport);
         $this->assertTrue($versionReport->willBeTagged());
     }
 
-    private function createEnv($version = null): array
+    private function createEnv($version = null): Environment
     {
-        return [
+        return Environment::create([
             'vars' => Vars::fromArray([
                 'package' => new Package(self::PACKAGE_NAME, $version)
             ]),
             'workspace' => new Workspace($this->packagePath(self::PACKAGE_NAME), 'one'),
-        ];
+        ]);
     }
 
-    private function createEnvWithPackageVersion(string $version): array
+    private function createEnvWithPackageVersion(string $version): Environment
     {
         return $this->createEnv($version);
     }

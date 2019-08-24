@@ -5,6 +5,8 @@ namespace Maestro\Extension\Git;
 use Maestro\Extension\Git\Command\TagVersionCommand;
 use Maestro\Extension\Git\Model\Git;
 use Maestro\Extension\Git\Survey\VersionSurveyor;
+use Maestro\Extension\Git\Task\TagVersionHandler;
+use Maestro\Extension\Git\Task\TagVersionTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Git\Task\GitHandler;
@@ -55,6 +57,16 @@ class GitExtension implements Extension
                 $container->get(Git::class)
             );
         }, [ SurveyExtension::TAG_SURVERYOR => []]);
+
+        $container->register(TagVersionHandler::class, function (Container $container) {
+            return new TagVersionHandler(
+                $container->get(Git::class),
+                $container->get(LoggingExtension::SERVICE_LOGGER)
+            );
+        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+            'alias' => 'git_tag',
+            'job_class' => TagVersionTask::class,
+        ]]);
     }
 
     /**

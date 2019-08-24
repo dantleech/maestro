@@ -3,19 +3,15 @@
 namespace Maestro\Extension\Git\Command;
 
 use Maestro\Extension\Survey\Console\VersionReport;
-use Maestro\Extension\Version\Survey\VcsResult;
 use Maestro\Extension\Git\Task\TagVersionTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Graph\Edge;
-use Maestro\Graph\Graph;
 use Maestro\Graph\Node;
 use Maestro\Graph\SystemTags;
 use Maestro\Graph\TaskResult;
 use Maestro\Util\Cast;
-use Maestro\Util\StringUtil;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,7 +66,7 @@ class TagVersionCommand extends Command
             $builder->addNode(Node::create($parentId. '/info', [
                 'label' => 'git version info',
                 'task' => new SurveyTask(),
-                'tags' => ['version_info'],
+                'tags' => ['survey'],
             ]));
             $builder->addEdge(Edge::create($parentId. '/info', $parentId));
         }

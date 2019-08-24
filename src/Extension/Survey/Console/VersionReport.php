@@ -23,7 +23,7 @@ class VersionReport
             'message',
         ]);
 
-        foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('version_info') as $node) {
+        foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('survey') as $node) {
             $versionReport = $node->environment()->vars()->get('survey')->get(VcsResult::class);
             assert($versionReport instanceof VcsResult);
             $table->addRow([

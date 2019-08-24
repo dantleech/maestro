@@ -20,6 +20,7 @@ class ExistingTags implements IteratorAggregate, Countable
         foreach ($tags as $element) {
             $this->add($element);
         }
+        sort($this->tags);
     }
 
     private function add(ExistingTag $element): void

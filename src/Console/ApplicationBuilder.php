@@ -2,10 +2,13 @@
 
 namespace Maestro\Console;
 
+use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Maestro\MaestroExtension;
+use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Tmux\TmuxExtension;
 use Maestro\Extension\Twig\TwigExtension;
+use Maestro\Extension\Version\VersionExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -63,6 +66,9 @@ final class ApplicationBuilder
             TmuxExtension::class,
             TwigExtension::class,
             GitExtension::class,
+            SurveyExtension::class,
+            VersionExtension::class,
+            ComposerExtension::class,
         ], $config);
     }
 

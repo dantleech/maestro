@@ -1,20 +1,19 @@
 <?php
 
-namespace Maestro\Extension\Git\Task;
+namespace Maestro\Extension\Git\Survey;
 
 use Amp\Promise;
 use Maestro\Extension\Git\Model\Exception\GitException;
 use Maestro\Extension\Git\Model\ExistingTag;
 use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Extension\Git\Model\Git;
-use Maestro\Extension\Git\Model\VersionReport;
+use Maestro\Extension\Version\Survey\VcsResult;
+use Maestro\Extension\Survey\Model\Surveyor;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Exception\TaskFailed;
-use Maestro\Graph\Task;
-use Maestro\Graph\TaskHandler;
 use Maestro\Package\Package;
 
-class VersionInfoHandler implements TaskHandler
+class VersionSurveyor implements Surveyor
 {
     /**
      * @var Git
@@ -26,7 +25,10 @@ class VersionInfoHandler implements TaskHandler
         $this->git = $git;
     }
 
-    public function execute(Task $task, Environment $environment): Promise
+    /**
+     * {@inheritDoc}
+     */
+    public function survey(Environment $environment): Promise
     {
         $package = $environment->vars()->get('package');
         assert($package instanceof Package);
@@ -53,18 +55,15 @@ class VersionInfoHandler implements TaskHandler
                 $headId
             );
 
-            return $environment->builder()
-               ->withVars([
-                   'versions' => new VersionReport(
-                       $package->name(),
-                       $package->version(),
-                       $mostRecentTag ? $mostRecentTag->name() : null,
-                       $mostRecentTag ? $mostRecentTag->commitId() : null,
-                       $headId,
-                       $headComment,
-                       $diff
-                   )
-               ])->build();
+            return new VcsResult(
+                $package->name(),
+                $package->version(),
+                $mostRecentTag ? $mostRecentTag->name() : null,
+                $mostRecentTag ? $mostRecentTag->commitId() : null,
+                $headId,
+                $headComment,
+                $diff
+            );
         });
     }
 

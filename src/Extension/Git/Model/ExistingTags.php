@@ -17,6 +17,7 @@ class ExistingTags implements IteratorAggregate, Countable
 
     public function __construct(array $tags)
     {
+        $tags = $this->sortTags($tags);
         foreach ($tags as $element) {
             $this->add($element);
         }
@@ -67,5 +68,13 @@ class ExistingTags implements IteratorAggregate, Countable
     public function count(): int
     {
         return count($this->tags);
+    }
+
+    private function sortTags(array $tags): array
+    {
+        usort($tags, function (ExistingTag $tag1, ExistingTag $tag2) {
+            return version_compare($tag1->name(), $tag2->name());
+        });
+        return $tags;
     }
 }

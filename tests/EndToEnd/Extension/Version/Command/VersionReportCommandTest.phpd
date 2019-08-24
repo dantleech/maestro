@@ -1,0 +1,7 @@
+<?php
+
+namespace Maestro\Tests\EndToEnd\Extension\Version\Command;
+
+class VersionReportCommandTest
+{
+}

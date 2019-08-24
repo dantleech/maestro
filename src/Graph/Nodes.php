@@ -127,6 +127,9 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         }));
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function byTaskResult(TaskResult $taskResult): Nodes
     {
         return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($taskResult) {

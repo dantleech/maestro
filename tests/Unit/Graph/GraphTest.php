@@ -461,4 +461,21 @@ class GraphTest extends TestCase
         $nodes = $graph->leafs();
         $this->assertEquals(['n4','n5','n6'], $nodes->ids());
     }
+
+    public function testCreatesBuilder()
+    {
+        $graph = Graph::create(
+            [
+                Node::create('n1'),
+                Node::create('n2'),
+            ],
+            [
+                Edge::create('n2', 'n1'),
+            ]
+        );
+
+        $builder = $graph->builder();
+        $this->assertEquals(['n1','n2'], $builder->build()->nodes()->ids());
+        $this->assertCount(1, $builder->build()->edges());
+    }
 }

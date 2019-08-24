@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Maestro\Dumper;
 
+use DateTimeImmutable;
 use Maestro\Console\Dumper;
 use Maestro\Graph\Graph;
 use Maestro\Graph\Node;
@@ -11,6 +12,18 @@ use Maestro\Graph\TaskResult;
 
 class OverviewRenderer implements Dumper
 {
+    /**
+     * @var DateTimeImmutable
+     */
+    private static $startTime;
+
+    public function __construct()
+    {
+        if (static::$startTime === null) {
+            self::$startTime = new DateTimeImmutable();
+        }
+    }
+
     public function dump(Graph $graph): string
     {
         $out = "\n";
@@ -26,7 +39,7 @@ class OverviewRenderer implements Dumper
                     continue;
                 }
 
-                if ($nodes->byState(State::BUSY())->count() === 0) {
+                if ($nodes->byTaskResult(TaskResult::FAILURE())->count() === 0 && $nodes->byState(State::BUSY())->count() === 0) {
                     $hidden++;
                     continue;
                 }
@@ -36,9 +49,21 @@ class OverviewRenderer implements Dumper
                     $packageNode
                 );
             }
+            $out .= "\n" . sprintf(
+                '%s ... %s done, %s hidden. %s failed, %s successful tasks ',
+                self::$startTime->diff(new DateTimeImmutable())->format('%hh %im %Ss'),
+                $done,
+                $hidden,
+                $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count(),
+                $graph->nodes()->byTaskResult(TaskResult::SUCCESS())->count()
+            );
+
+
+            foreach ($graph->nodes()->byTaskResult(TaskResult::FAILURE()) as $failedNode) {
+                $out .= sprintf("  %s: %s\n", $failedNode->id(), $failedNode->task()->description());
+            }
         }
 
-        $out .= "\n" . sprintf('... and %s done, %s hidden', $done, $hidden);
 
         return $out;
     }

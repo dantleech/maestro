@@ -24,7 +24,6 @@ class VersionReportCommand extends Command
      */
     private $report;
 
-
     public function __construct(GraphBehavior $graphBehavior, VersionReport $report)
     {
         $this->graphBehavior = $graphBehavior;

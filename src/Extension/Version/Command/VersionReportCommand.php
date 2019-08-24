@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Version\Command;
 
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
-use Maestro\Extension\Survey\Console\VersionReport;
+use Maestro\Extension\Version\Console\VersionReport;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Graph\Edge;
 use Maestro\Graph\Node;

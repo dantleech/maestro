@@ -27,7 +27,12 @@ class SurveyHandler implements TaskHandler
         return \Amp\call(function () use ($environment) {
             $surveyBuilder = new SurveyBuilder();
             foreach ($this->surveyors as $surveyor) {
-                $surveyBuilder->addResult(yield $surveyor->survey($environment));
+                $result = yield $surveyor->survey($environment);
+                if ($result === null) {
+                    continue;
+                }
+
+                $surveyBuilder->addResult($result);
             }
 
             return $environment->builder()

@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Version;
 
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
-use Maestro\Extension\Survey\Console\VersionReport;
+use Maestro\Extension\Version\Console\VersionReport;
 use Maestro\Extension\Version\Command\VersionReportCommand;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;

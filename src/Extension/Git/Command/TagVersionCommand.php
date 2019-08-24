@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Git\Command;
 
-use Maestro\Extension\Survey\Console\VersionReport;
+use Maestro\Extension\Version\Console\VersionReport;
 use Maestro\Extension\Git\Task\TagVersionTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Survey\Task\SurveyTask;

@@ -39,7 +39,7 @@ class OverviewRenderer implements Dumper
                     continue;
                 }
 
-                if ($nodes->byState(State::BUSY())->count() === 0) {
+                if ($nodes->byTaskResult(TaskResult::FAILURE())->count() === 0 && $nodes->byState(State::BUSY())->count() === 0) {
                     $hidden++;
                     continue;
                 }
@@ -50,11 +50,18 @@ class OverviewRenderer implements Dumper
                 );
             }
             $out .= "\n" . sprintf(
-                '%s ... %s done, %s hidden',
+                '%s ... %s done, %s hidden. %s failed, %s successful tasks ',
                 self::$startTime->diff(new DateTimeImmutable())->format('%hh %im %Ss'),
                 $done,
-                $hidden
+                $hidden,
+                $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count(),
+                $graph->nodes()->byTaskResult(TaskResult::SUCCESS())->count()
             );
+
+
+            foreach ($graph->nodes()->byTaskResult(TaskResult::FAILURE()) as $failedNode) {
+                $out .= sprintf("  %s: %s\n", $failedNode->id(), $failedNode->task()->description());
+            }
         }
 
 
@@ -65,7 +72,7 @@ class OverviewRenderer implements Dumper
     {
         $busyTasks= [];
 
-        foreach ($nodes->byState(State::BUSY()) as $node) {
+        foreach ($nodes->byState(State::BUSY(), State::DONE()) as $node) {
             $busyTasks[] = sprintf(
                 "\n           [\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s",
                 $node->label(),

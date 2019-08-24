@@ -2,6 +2,7 @@
 
 namespace Maestro\Console;
 
+use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Survey\SurveyExtension;
@@ -67,6 +68,7 @@ final class ApplicationBuilder
             GitExtension::class,
             SurveyExtension::class,
             VersionExtension::class,
+            ComposerExtension::class,
         ], $config);
     }
 

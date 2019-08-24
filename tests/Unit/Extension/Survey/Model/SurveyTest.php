@@ -6,6 +6,7 @@ use Maestro\Extension\Survey\Model\Exception\ResultNotRegistered;
 use Maestro\Extension\Survey\Model\Survey;
 use Maestro\Extension\Survey\Model\SurveyResult;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 
 class SurveyTest extends TestCase
 {
@@ -19,6 +20,14 @@ class SurveyTest extends TestCase
         ]);
 
         $this->assertSame($result, $survey->get(get_class($result)));
+    }
+
+    public function testThrowsExceptionIfResultIsNotAnObject()
+    {
+        $this->expectException(RuntimeException::class);
+        $survey = new Survey([
+            'hello'
+        ]);
     }
 
     public function testThrowsExceptionIfResultNotSet()

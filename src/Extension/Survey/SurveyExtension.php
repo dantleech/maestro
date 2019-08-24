@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Survey;
 
 use Maestro\Extension\Maestro\MaestroExtension;
-use Maestro\Extension\Survey\Console\VersionReport;
+use Maestro\Extension\Version\Console\VersionReport;
 use Maestro\Extension\Survey\Model\Surveyors;
 use Maestro\Extension\Survey\Task\SurveyHandler;
 use Maestro\Extension\Survey\Task\SurveyTask;

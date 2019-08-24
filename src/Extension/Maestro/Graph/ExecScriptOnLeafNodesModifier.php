@@ -21,16 +21,16 @@ final class ExecScriptOnLeafNodesModifier
 
     public function __invoke(Graph $graph): Graph
     {
+        $builder = $graph->builder();
         foreach ($graph->leafs() as $leaf) {
             $scriptNodeId = sprintf($leaf->id() . '/script');
-            $nodes = $graph->nodes()->add(Node::create($scriptNodeId, [
+            $builder->addNode(Node::create($scriptNodeId, [
                 'label' => 'script',
                 'task' => new ScriptTask($this->script)
             ]));
-            $edges = $graph->edges()->add(Edge::create($scriptNodeId, $leaf->id()));
-            $graph = new Graph($nodes, $edges);
+            $builder->addEdge(Edge::create($scriptNodeId, $leaf->id()));
         }
 
-        return $graph;
+        return $builder->build();
     }
 }

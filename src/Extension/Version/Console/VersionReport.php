@@ -1,7 +1,9 @@
 <?php
 
-namespace Maestro\Extension\Survey\Console;
+namespace Maestro\Extension\Version\Console;
 
+use Maestro\Extension\Survey\Model\Survey;
+use Maestro\Extension\Version\Survey\PackageResult;
 use Maestro\Extension\Version\Survey\VcsResult;
 use Maestro\Graph\Graph;
 use Maestro\Graph\TaskResult;
@@ -18,18 +20,23 @@ class VersionReport
             'package',
             'conf',
             'tag',
+            'dev',
             'tag-id',
             'head-id',
             'message',
         ]);
 
         foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('survey') as $node) {
-            $versionReport = $node->environment()->vars()->get('survey')->get(VcsResult::class);
+            $survey = $node->environment()->vars()->get('survey');
+            assert($survey instanceof Survey);
+            $versionReport = $survey->get(VcsResult::class);
+            $packageReport = $survey->get(PackageResult::class, new PackageResult());
             assert($versionReport instanceof VcsResult);
             $table->addRow([
                 $versionReport->packageName(),
                 $this->formatConfiguredVersion($versionReport),
                 $versionReport->taggedVersion(),
+                $packageReport->branchAlias(),
                 substr($versionReport->taggedCommit() ?? '', 0, 10),
                 $this->formatHeadCommit($versionReport),
                 StringUtil::firstLine($versionReport->headMessage()),

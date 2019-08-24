@@ -11,7 +11,7 @@ use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Git\Task\GitHandler;
 use Maestro\Extension\Git\Task\GitTask;
-use Maestro\Extension\Survey\Console\VersionReport;
+use Maestro\Extension\Version\Console\VersionReport;
 use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Script\ScriptRunner;
 use Phpactor\Container\Container;

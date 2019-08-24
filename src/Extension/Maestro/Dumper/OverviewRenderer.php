@@ -47,7 +47,7 @@ class OverviewRenderer implements Dumper
     {
         $busyTasks= [];
 
-        foreach ($nodes->byState(State::BUSY(), State::DONE()) as $node) {
+        foreach ($nodes->byState(State::BUSY()) as $node) {
             $busyTasks[] = sprintf(
                 "\n           [\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s",
                 $node->label(),

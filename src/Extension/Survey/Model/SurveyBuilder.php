@@ -6,7 +6,7 @@ class SurveyBuilder
 {
     private $results = [];
 
-    public function addResult(SurveyResult $result)
+    public function addResult($result)
     {
         $this->results[] = $result;
     }

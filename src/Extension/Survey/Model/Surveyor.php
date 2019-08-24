@@ -4,7 +4,6 @@ namespace Maestro\Extension\Survey\Model;
 
 use Amp\Promise;
 use Maestro\Graph\Environment;
-use Maestro\Package\Package;
 
 interface Surveyor
 {

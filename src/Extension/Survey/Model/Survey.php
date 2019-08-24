@@ -20,7 +20,7 @@ final class Survey implements IteratorAggregate
         }
     }
 
-    private function add(SurveyResult $result)
+    private function add($result)
     {
         $this->results[get_class($result)] = $result;
     }
@@ -30,7 +30,8 @@ final class Survey implements IteratorAggregate
         if (!isset($this->results[$resultFqn])) {
             throw new ResultNotRegistered(sprintf(
                 'Result "%s" has not been registered, known results: "%s"',
-                $resultFqn, implode('", "', array_keys($this->results))
+                $resultFqn,
+                implode('", "', array_keys($this->results))
             ));
         }
         return $this->results[$resultFqn];

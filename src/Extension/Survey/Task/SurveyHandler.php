@@ -9,7 +9,6 @@ use Maestro\Extension\Survey\Model\Surveyor;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Task;
 use Maestro\Graph\TaskHandler;
-use Maestro\Package\Package;
 
 class SurveyHandler implements TaskHandler
 {

@@ -11,7 +11,8 @@ class SurveyTest extends TestCase
 {
     public function testReturnsResultByFqn()
     {
-        $result = new class implements SurveyResult {};
+        $result = new class implements SurveyResult {
+        };
 
         $survey = new Survey([
             $result

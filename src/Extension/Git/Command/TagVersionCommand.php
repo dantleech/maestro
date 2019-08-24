@@ -4,8 +4,8 @@ namespace Maestro\Extension\Git\Command;
 
 use Maestro\Extension\Git\Model\VersionReport;
 use Maestro\Extension\Git\Task\TagVersionTask;
-use Maestro\Extension\Git\Task\VersionInfoTask;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
+use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Graph\Edge;
 use Maestro\Graph\Graph;
 use Maestro\Graph\Node;
@@ -63,7 +63,7 @@ class TagVersionCommand extends Command
 
             $nodes = $nodes->add(Node::create($parentId. '/info', [
                 'label' => 'git version info',
-                'task' => new VersionInfoTask(),
+                'task' => new SurveyTask(),
                 'tags' => ['version_info'],
             ]));
             $edges = $edges->add(Edge::create($parentId. '/info', $parentId));
@@ -90,7 +90,7 @@ class TagVersionCommand extends Command
         ]);
         
         foreach ($graph->nodes()->byTaskResult(TaskResult::SUCCESS())->byTags('version_info') as $node) {
-            $versionReport = $node->environment()->vars()->get('versions');
+            $versionReport = $node->environment()->vars()->get('survey')->get(VersionReport::class);
             assert($versionReport instanceof VersionReport);
             $table->addRow([
                 $versionReport->packageName(),

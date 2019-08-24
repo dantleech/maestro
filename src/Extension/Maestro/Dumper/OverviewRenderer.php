@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Maestro\Dumper;
 
+use DateTimeImmutable;
 use Maestro\Console\Dumper;
 use Maestro\Graph\Graph;
 use Maestro\Graph\Node;
@@ -11,6 +12,18 @@ use Maestro\Graph\TaskResult;
 
 class OverviewRenderer implements Dumper
 {
+    /**
+     * @var DateTimeImmutable
+     */
+    private static $startTime;
+
+    public function __construct()
+    {
+        if (static::$startTime === null) {
+            self::$startTime = new DateTimeImmutable();
+        }
+    }
+
     public function dump(Graph $graph): string
     {
         $out = "\n";
@@ -36,9 +49,14 @@ class OverviewRenderer implements Dumper
                     $packageNode
                 );
             }
+            $out .= "\n" . sprintf(
+                '%s ... %s done, %s hidden',
+                self::$startTime->diff(new DateTimeImmutable())->format('%hh %im %Ss'),
+                $done,
+                $hidden
+            );
         }
 
-        $out .= "\n" . sprintf('... and %s done, %s hidden', $done, $hidden);
 
         return $out;
     }

@@ -77,7 +77,7 @@ class GraphBehavior
             $maestro->dispatch($graph);
         });
 
-        if ($input->getOption(self::OPT_PROGRESS)) {
+        if (!$output->isVerbose()) {
             Loop::repeat(self::POLL_TIME_RENDER, function () use ($graph, $section) {
                 $section->overwrite((new OverviewRenderer())->dump($graph));
             });

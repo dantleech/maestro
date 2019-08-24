@@ -13,5 +13,5 @@ interface Surveyor
      *
      * @return Promise
      */
-    public function survey(Environment $environment, Package $package): Promise;
+    public function survey(Environment $environment): Promise;
 }

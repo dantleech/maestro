@@ -11,7 +11,7 @@ use Maestro\Graph\Task;
 use Maestro\Graph\TaskHandler;
 use Maestro\Package\Package;
 
-class PackageSurveyHandler implements TaskHandler
+class SurveyHandler implements TaskHandler
 {
     /**
      * @var Surveyors<Surveyor>
@@ -25,19 +25,15 @@ class PackageSurveyHandler implements TaskHandler
 
     public function execute(Task $task, Environment $environment): Promise
     {
-        $package = $environment->vars()->get('package');
-        assert($package instanceof Package);
-
-        return \Amp\call(function () use ($package, $environment) {
-            $repoPath = $environment->workspace()->absolutePath();
-
+        return \Amp\call(function () use ($environment) {
             $surveyBuilder = new SurveyBuilder();
             foreach ($this->surveyors as $surveyor) {
-                $surveyBuilder->addResult(yield $surveyor->survey($environment, $package));
+                $surveyBuilder->addResult(yield $surveyor->survey($environment));
             }
 
             return $environment->builder()
                ->withVars([
+                   'survey' => $surveyBuilder->build(),
                ])->build();
         });
     }

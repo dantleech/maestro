@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Survey\Graph;
 
-use Maestro\Extension\Survey\Task\PackageSurveyTask;
+use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Graph\Edge;
 use Maestro\Graph\Graph;
 use Maestro\Graph\Node;
@@ -17,7 +17,7 @@ class SurveyModifier
             $parentId = $leaf->id();
             $builder->addNode(Node::create($parentId. '/survey', [
                 'label' => 'package survey',
-                'task' => new PackageSurveyTask(),
+                'task' => new SurveyTask(),
                 'tags' => ['version_info'],
             ]));
             $builder->addEdge(Edge::create($parentId. '/survey', $parentId));

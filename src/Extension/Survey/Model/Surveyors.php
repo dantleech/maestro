@@ -8,7 +8,7 @@ use IteratorAggregate;
 
 class Surveyors implements IteratorAggregate
 {
-    private $surveyors;
+    private $surveyors = [];
 
     public function __construct(array $surveyors)
     {

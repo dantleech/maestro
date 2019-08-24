@@ -187,6 +187,11 @@ class Graph
         });
     }
 
+    public function builder(): GraphBuilder
+    {
+        return GraphBuilder::fromGraph($this);
+    }
+
     /**
      * Validate the graph using a reverse version of Kahn's algorithm
      *

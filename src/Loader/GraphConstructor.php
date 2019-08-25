@@ -31,6 +31,7 @@ class GraphConstructor
         $builder = GraphBuilder::create();
         $builder->addNode(
             Node::create(self::NODE_ROOT, [
+                'label' => 'root',
                 'task' => new ManifestTask($manifest->path(), $manifest->vars(), $manifest->env())
             ])
         );
@@ -120,7 +121,7 @@ class GraphConstructor
         $vcsNode = Node::create(
             $package->name() . '/vcs',
             [
-                'label' => sprintf('%s VCS checkout', $package->name()),
+                'label' => 'VCS checkout',
                 'task' => Instantiator::create()->instantiate(
                     GitTask::class,
                     [

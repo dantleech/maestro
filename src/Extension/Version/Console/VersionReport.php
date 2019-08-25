@@ -47,6 +47,8 @@ class VersionReport
                 StringUtil::firstLine($versionReport->headMessage()),
             ]);
         }
+
+        $this->renderLegend($output);
         $table->render();
     }
 
@@ -79,5 +81,12 @@ class VersionReport
         }
 
         return substr($versionReport->headCommit(), 0, 10);
+    }
+
+    private function renderLegend(OutputInterface $output): void
+    {
+        $output->writeln('<info>conf</>: configured version, <info>tag</>: latest tagged version');
+        $output->writeln('<info>dev</>: development version (branch alias), <info>reg</>: package registry version');
+        $output->writeln('<info>tag-id</>: commit-id of lastest tag, <info>head-id</info>: commit-id of latest commit + number of commits ahead of latest tag');
     }
 }

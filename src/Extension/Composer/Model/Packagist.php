@@ -4,12 +4,15 @@ namespace Maestro\Extension\Composer\Model;
 
 use Amp\Artax\Client;
 use Amp\Artax\DefaultClient;
+use Amp\Artax\DnsException;
 use Amp\Artax\Response;
 use Amp\Promise;
 use Composer\Semver\Semver;
 use Composer\Semver\VersionParser;
+use Maestro\Extension\Composer\Model\Exception\PackagistDnsError;
 use Maestro\Extension\Composer\Model\Exception\PackagistError;
 use function Safe\json_decode;
+use Throwable;
 
 class Packagist
 {
@@ -32,7 +35,11 @@ class Packagist
                 return new PackagistPackageInfo($name);
             }
 
-            $response = yield $this->client->request(sprintf(self::URL_INFO, $name));
+            try {
+                $response = yield $this->client->request(sprintf(self::URL_INFO, $name));
+            } catch (DnsException $e) {
+                throw new PackagistDnsError($name, 0, $e);
+            }
 
             assert($response instanceof Response);
 
@@ -43,12 +50,15 @@ class Packagist
                 ));
             }
 
-            $body = yield $response->getBody()->read();
+            $buffer = '';
+            while ($chunk = yield $response->getBody()->read()) {
+                $buffer .= $chunk;
+            }
             $info = array_merge([
                 'package' => [
                     'versions' => [],
                 ],
-            ], json_decode($body, true));
+            ], $this->decodeJson($buffer));
 
             return new PackagistPackageInfo(
                 $name,
@@ -68,5 +78,17 @@ class Packagist
         }
 
         return $stableVersions[array_key_last($stableVersions)];
+    }
+
+    private function decodeJson(string $buffer): array
+    {
+        try {
+            return json_decode($buffer, true);
+        } catch (Throwable $error) {
+            throw new PackagistError(sprintf(
+                'Could not decode JSON response from packagist: "%s"',
+                $error->getMessage()
+            ), 0, $error);
+        }
     }
 }

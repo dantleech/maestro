@@ -7,6 +7,7 @@ use Amp\Artax\Request;
 use Amp\Artax\Response;
 use Amp\CancellationToken;
 use Amp\Promise;
+use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
@@ -38,8 +39,18 @@ class LoggingClient implements Client
 
         $this->logger->debug(sprintf('>> %s', $uri));
         return \Amp\call(function () use ($uri, $uriOrRequest, $options, $cancellation) {
-            $response = yield $this->innerClient->request($uriOrRequest, $options, $cancellation);
-            assert($response instanceof Response);
+            try {
+                $response = yield $this->innerClient->request($uriOrRequest, $options, $cancellation);
+                assert($response instanceof Response);
+            } catch (Exception $e) {
+                $this->logger->error(sprintf(
+                    '%s (%s)',
+                    $e->getMessage(),
+                    $uri
+                ));
+                throw $e;
+            }
+
             $this->logger->debug(sprintf('<< %s %s', $uri, $response->getStatus()));
             return $response;
         });

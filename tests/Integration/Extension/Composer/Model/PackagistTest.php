@@ -10,7 +10,7 @@ use Maestro\Tests\IntegrationTestCase;
 
 class PackagistTest extends IntegrationTestCase
 {
-    public function testReturnsInfo(): void
+    public function testWithRealHttpRequest(): void
     {
         $defaultClient = new DefaultClient();
         $packagist = new Packagist(

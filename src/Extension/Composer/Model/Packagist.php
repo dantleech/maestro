@@ -32,7 +32,10 @@ class Packagist
     {
         return \Amp\call(function () use ($name) {
             if (substr_count($name, '/') !== 1) {
-                return new PackagistPackageInfo($name);
+                throw new PackagistError(sprintf(
+                    '%s is not a valid package name (must have vendor/name format)',
+                    $name
+                ));
             }
 
             try {

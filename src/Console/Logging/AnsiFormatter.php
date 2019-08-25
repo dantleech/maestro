@@ -36,6 +36,9 @@ class AnsiFormatter implements FormatterInterface
             case 'DEBUG':
                 $color = 35;
                 break;
+            case 'WARNING':
+                $color = 33;
+                break;
             case 'ERROR':
                 $color = 31;
                 break;

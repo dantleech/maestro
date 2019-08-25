@@ -64,6 +64,7 @@ class OverviewRenderer implements Dumper
             }
         }
 
+        $out .= "\n" . sprintf('... and %s packages done, %s hidden', $done, $hidden);
 
         return $out;
     }
@@ -73,6 +74,10 @@ class OverviewRenderer implements Dumper
         $busyTasks= [];
 
         foreach ($nodes->byState(State::BUSY(), State::DONE()) as $node) {
+            if ($node->taskResult()->is(TaskResult::SUCCESS())) {
+                continue;
+            }
+
             $busyTasks[] = sprintf(
                 "\n           [\033[32m%s\033[0m] [\033[%sm%s\033[0m] %s",
                 $node->label(),

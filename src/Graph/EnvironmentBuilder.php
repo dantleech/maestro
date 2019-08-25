@@ -54,4 +54,9 @@ final class EnvironmentBuilder
             'env' => $this->env,
         ]);
     }
+
+    public static function create(): self
+    {
+        return new self();
+    }
 }

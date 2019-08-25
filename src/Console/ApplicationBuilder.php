@@ -4,6 +4,7 @@ namespace Maestro\Console;
 
 use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\Git\GitExtension;
+use Maestro\Extension\HttpClient\HttpClientExtension;
 use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Tmux\TmuxExtension;
@@ -69,6 +70,7 @@ final class ApplicationBuilder
             SurveyExtension::class,
             VersionExtension::class,
             ComposerExtension::class,
+            HttpClientExtension::class,
         ], $config);
     }
 

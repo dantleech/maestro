@@ -28,7 +28,7 @@ class Packagist
     public function packageInfo(string $name): Promise
     {
         return \Amp\call(function () use ($name) {
-            if (!substr_count($name, '/') !== 1) {
+            if (substr_count($name, '/') !== 1) {
                 return new PackagistPackageInfo($name);
             }
 

@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Composer;
 
+use Amp\Artax\Client;
 use Maestro\Extension\Composer\Model\Packagist;
 use Maestro\Extension\Composer\Survery\ComposerSurveryor;
 use Maestro\Extension\Composer\Survery\PackagistSurveyor;
@@ -27,7 +28,7 @@ class ComposerExtension implements Extension
         }, [ SurveyExtension::TAG_SURVERYOR => []]);
 
         $container->register(Packagist::class, function (Container $container) {
-            return new Packagist();
+            return new Packagist($container->get(Client::class));
         });
     }
 

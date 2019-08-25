@@ -36,11 +36,11 @@ class LoggingClient implements Client
     {
         $uri = $this->resolveUri($uriOrRequest);
 
-        $this->logger->debug(sprintf('HTTP REQUEST: %s', $uri));
+        $this->logger->debug(sprintf('>> %s', $uri));
         return \Amp\call(function () use ($uri, $uriOrRequest, $options, $cancellation) {
             $response = yield $this->innerClient->request($uriOrRequest, $options, $cancellation);
             assert($response instanceof Response);
-            $this->logger->debug(sprintf('HTTP RESPONSE: %s %s', $uri, $response->getStatus()));
+            $this->logger->debug(sprintf('<< %s %s', $uri, $response->getStatus()));
             return $response;
         });
     }

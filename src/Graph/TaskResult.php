@@ -47,4 +47,15 @@ class TaskResult
     {
         return $this->state === self::STATE_SUCCESS;
     }
+
+    public function in(array $taskResults): bool
+    {
+        foreach ($taskResults as $taskResult) {
+            if ($taskResult->state === $this->state) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

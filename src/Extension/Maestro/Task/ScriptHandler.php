@@ -4,10 +4,12 @@ namespace Maestro\Extension\Maestro\Task;
 
 use Amp\Promise;
 use Maestro\Graph\Task;
+use Maestro\Script\ScriptResult;
 use Maestro\Script\ScriptRunner;
 use Maestro\Graph\Environment;
 use Maestro\Graph\Exception\TaskFailed;
 use Maestro\Graph\TaskHandler;
+use Maestro\Util\StringUtil;
 
 class ScriptHandler implements TaskHandler
 {
@@ -29,11 +31,13 @@ class ScriptHandler implements TaskHandler
             $env = $environment->env()->toArray();
 
             $result = yield $this->scriptRunner->run($script->script(), $path, $env);
+            assert($result instanceof ScriptResult);
 
             if ($result->exitCode() !== 0) {
                 throw new TaskFailed(sprintf(
-                    'Exited with code "%s"',
-                    $result->exitCode()
+                    'Exited with code "%s": %s',
+                    $result->exitCode(),
+                    StringUtil::firstLine($result->stderr())
                 ), $result->exitCode());
             }
 

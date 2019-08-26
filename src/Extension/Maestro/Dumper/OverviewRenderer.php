@@ -59,8 +59,6 @@ class OverviewRenderer implements Dumper
             );
         }
 
-        $out .= "\n" . sprintf('... and %s packages done, %s hidden', $done, $hidden);
-
         return $out;
     }
 

@@ -8,14 +8,14 @@ class StringUtil
 {
     public static function lastLine(string $input): string
     {
-        $lines = array_filter(array_reverse(self::splitString($input)));
-        return (string) $lines[array_key_first($lines)];
+        $lines = array_filter(self::splitString($input));
+        return (string) $lines[array_key_last($lines)];
     }
 
     public static function firstLine(string $input): string
     {
-        $splitted = self::splitString($input);
-        return (string) $splitted[array_key_last($splitted)];
+        $splitted = array_filter(self::splitString($input));
+        return (string) $splitted[array_key_first($splitted)];
     }
 
     private static function splitString(string $input): array

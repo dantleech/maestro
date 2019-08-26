@@ -87,7 +87,12 @@ EOT
 
         yield 'new line' => [
             "Foobar\nbarfoo",
-            'barfoo'
+            'Foobar'
+        ];
+
+        yield 'new lines before first line' => [
+            "\n\nFoobar\nbarfoo",
+            'Foobar'
         ];
     }
 }

@@ -48,8 +48,7 @@ class RunCommand extends Command
         GraphBehavior $graphBehavior,
         DumperRegistry $dumper,
         RunReport $report
-    )
-    {
+    ) {
         $this->dumper = $dumper;
         $this->graphBehavior = $graphBehavior;
         $this->report = $report;

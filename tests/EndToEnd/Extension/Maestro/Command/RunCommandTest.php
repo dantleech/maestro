@@ -277,21 +277,6 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('Hello foobar', $process->getErrorOutput());
     }
 
-    public function testShowsReportAfterTheRunWhenAReportIsSpecified()
-    {
-        $this->createPlan('plan.json', [
-            'packages' => [
-                'mypackage' => [
-                ],
-                'foobar' => [
-                ],
-            ],
-        ]);
-        $process = $this->command('run plan.json --report=environment');
-        $this->assertProcessSuccess($process);
-        $this->assertStringContainsString('manifest.path', $process->getOutput());
-    }
-
     public function testPurgesWorkspaces()
     {
         $this->createPlan('plan.json', [

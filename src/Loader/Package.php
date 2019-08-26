@@ -38,6 +38,11 @@ class Package
      */
     private $version;
 
+    /**
+     * @var string[]
+     */
+    private $tags = [];
+
     public function __construct(
         string $name,
         array $tasks = [],
@@ -45,7 +50,8 @@ class Package
         array $vars = [],
         array $env = [],
         ?string $url = null,
-        ?string $version = null
+        ?string $version = null,
+        array $tags = []
     ) {
         $this->name = $name;
 
@@ -58,6 +64,7 @@ class Package
         $this->env = $env;
         $this->url = $url;
         $this->version = $version;
+        $this->tags = $tags;
     }
 
     /**
@@ -96,5 +103,10 @@ class Package
     public function version(): ?string
     {
         return $this->version;
+    }
+
+    public function tags(): array
+    {
+        return $this->tags;
     }
 }

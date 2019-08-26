@@ -57,7 +57,7 @@ class GraphConstructor
                             'env' => $package->env()
                         ]
                     ),
-                    'tags' => [ SystemTags::TAG_INITIALIZE ],
+                    'tags' => array_merge([ SystemTags::TAG_INITIALIZE ], $package->tags())
                 ]
             ));
 
@@ -88,8 +88,9 @@ class GraphConstructor
                     ),
                     'schedule' => Instantiator::create()->instantiate(
                         $task->schedule()->type(),
-                        $task->schedule()->args()
+                        $task->schedule()->args(),
                     ),
+                    'tags' => $task->tags(),
                 ]
             ));
 

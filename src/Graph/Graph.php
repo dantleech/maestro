@@ -38,6 +38,9 @@ class Graph
         return new self(Nodes::fromNodes($nodes), Edges::fromEdges($edges));
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function roots(): Nodes
     {
         $nodesWithNoOutboundEdges = array_diff(
@@ -134,6 +137,9 @@ class Graph
         return $this->pruneFor($this->nodes->byTags(...$tags)->ids());
     }
 
+    /**
+     * @return Nodes<Node>
+     */
     public function descendantsFor(string $nodeName, array $seen = [], $level = 0): Nodes
     {
         if (isset($seen[$nodeName])) {

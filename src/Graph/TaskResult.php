@@ -42,4 +42,9 @@ class TaskResult
     {
         return $this->state;
     }
+
+    public function isSuccess(): bool
+    {
+        return $this->state === self::STATE_SUCCESS;
+    }
 }

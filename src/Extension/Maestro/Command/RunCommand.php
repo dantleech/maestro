@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Maestro\Command;
 
 use Maestro\Console\DumperRegistry;
+use Maestro\Console\Report\RunReport;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\Dumper\TargetDumper;
 use Maestro\Extension\Maestro\Graph\ExecScriptOnLeafNodesModifier;
@@ -22,7 +23,6 @@ class RunCommand extends Command
     private const OPT_LIST_TARGETS = 'targets';
     private const OPT_EXEC_SCRIPT = 'exec';
     private const OPT_ENVIRONMENT = 'environment';
-    private const OPT_REPORT = 'report';
 
     /**
      * @var MaestroBuilder
@@ -39,10 +39,20 @@ class RunCommand extends Command
      */
     private $graphBehavior;
 
-    public function __construct(GraphBehavior $graphBehavior, DumperRegistry $dumper)
+    /**
+     * @var RunReport
+     */
+    private $report;
+
+    public function __construct(
+        GraphBehavior $graphBehavior,
+        DumperRegistry $dumper,
+        RunReport $report
+    )
     {
         $this->dumper = $dumper;
         $this->graphBehavior = $graphBehavior;
+        $this->report = $report;
 
         parent::__construct();
     }
@@ -53,7 +63,6 @@ class RunCommand extends Command
         $this->graphBehavior->configure($this);
 
         $this->addOption(self::OPT_DUMP, null, InputOption::VALUE_REQUIRED, 'Dump a representation of the task graph to a file');
-        $this->addOption(self::OPT_REPORT, 'r', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Show report when finished');
         $this->addOption(self::OPT_LIST_TARGETS, null, InputOption::VALUE_NONE, 'Display targets');
         $this->addOption(self::OPT_EXEC_SCRIPT, null, InputOption::VALUE_REQUIRED, 'Execute command on targets');
         $this->addOption(self::OPT_ENVIRONMENT, null, InputOption::VALUE_NONE, 'Report environment for leaf nodes after execution');
@@ -80,15 +89,8 @@ class RunCommand extends Command
             return 0;
         }
 
-        $reportDumpers = array_map(function (string $dumperName) {
-            return $this->dumper->get($dumperName);
-        }, (array) $input->getOption(self::OPT_REPORT));
-
         $this->graphBehavior->run($input, $output, $graph);
-
-        foreach ($reportDumpers as $reportDumper) {
-            $output->writeln($reportDumper->dump($graph));
-        }
+        $this->report->render($output, $graph);
 
         return $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count();
     }

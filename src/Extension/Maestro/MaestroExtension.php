@@ -4,6 +4,7 @@ namespace Maestro\Extension\Maestro;
 
 use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
+use Maestro\Console\Report\RunReport;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Dumper\DotDumper;
@@ -85,12 +86,17 @@ class MaestroExtension implements Extension
         $container->register(RunCommand::class, function (Container $container) {
             return new RunCommand(
                 $container->get(GraphBehavior::class),
-                $container->get(DumperRegistry::class)
+                $container->get(DumperRegistry::class),
+                $container->get(RunReport::class),
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
 
         $container->register(GraphBehavior::class, function (Container $container) {
             return new GraphBehavior($container->get(MaestroBuilder::class));
+        });
+
+        $container->register(RunReport::class, function (Container $container) {
+            return new RunReport();
         });
     }
 

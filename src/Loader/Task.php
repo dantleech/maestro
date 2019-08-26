@@ -25,11 +25,17 @@ class Task
      */
     private $schedule;
 
+    /**
+     * @var string[]
+     */
+    private $tags;
+
     public function __construct(
         string $type,
         array $args = [],
         array $depends = [],
-        array $schedule = []
+        array $schedule = [],
+        array $tags = []
     ) {
         $this->type = $type;
         $this->args = $args;
@@ -38,6 +44,7 @@ class Task
             Schedule::class,
             $schedule
         ) : new Schedule(AsapSchedule::class);
+        $this->tags = $tags;
     }
 
     public function args(): array
@@ -58,5 +65,10 @@ class Task
     public function schedule(): Schedule
     {
         return $this->schedule;
+    }
+
+    public function tags(): array
+    {
+        return $this->tags;
     }
 }

@@ -54,6 +54,11 @@ final class Node
      */
     private $tags;
 
+    /**
+     * @var TaskFailed|null
+     */
+    private $taskFailure = null;
+
     public function __construct(
         string $id,
         string $label = null,
@@ -167,6 +172,7 @@ final class Node
                 }
             } catch (TaskFailed $failed) {
                 $this->taskResult = TaskResult::FAILURE();
+                $this->taskFailure = $failed;
                 $this->changeState($stateMachine, State::DONE());
             }
 
@@ -226,5 +232,10 @@ final class Node
     private function changeState(NodeStateMachine $stateMachine, State $state): void
     {
         $this->state = $stateMachine->transition($this, $state);
+    }
+
+    public function taskFailure(): ?TaskFailed
+    {
+        return $this->taskFailure;
     }
 }

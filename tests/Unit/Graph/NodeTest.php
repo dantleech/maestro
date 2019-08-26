@@ -13,6 +13,7 @@ use Maestro\Graph\SchedulerRegistry;
 use Maestro\Graph\Scheduler\AsapSchedule;
 use Maestro\Graph\Scheduler\AsapScheduler;
 use Maestro\Graph\State;
+use Maestro\Graph\TaskResult;
 use Maestro\Graph\TaskRunner;
 use Maestro\Graph\TaskRunner\NullTaskRunner;
 use Maestro\Graph\Task\NullTask;
@@ -103,5 +104,22 @@ class NodeTest extends TestCase
         );
         Loop::run();
         $this->assertEquals(State::DONE(), $rootNode->state());
+    }
+
+    public function testSetsTaskResultToFailedWhenTaskFailsAndRecordsErrorMessage()
+    {
+        $taskRunner = $this->prophesize(TaskRunner::class);
+        $taskRunner->run(Argument::type(NullTask::class), Environment::empty())->willThrow(new TaskFailed('No'));
+
+        $rootNode = Node::create('root');
+        $rootNode->run(
+            $this->stateMachine->reveal(),
+            $this->schedulerRegistry->reveal(),
+            $taskRunner->reveal(),
+            Environment::empty()
+        );
+        Loop::run();
+        $this->assertEquals(TaskResult::FAILURE(), $rootNode->taskResult());
+        $this->assertEquals('No', $rootNode->taskFailure()->getMessage());
     }
 }

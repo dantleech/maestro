@@ -57,14 +57,7 @@ class OverviewRenderer implements Dumper
                 $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count(),
                 $graph->nodes()->byTaskResult(TaskResult::SUCCESS())->count()
             );
-
-
-            foreach ($graph->nodes()->byTaskResult(TaskResult::FAILURE()) as $failedNode) {
-                $out .= sprintf("  %s: %s\n", $failedNode->id(), $failedNode->task()->description());
-            }
         }
-
-        $out .= "\n" . sprintf('... and %s packages done, %s hidden', $done, $hidden);
 
         return $out;
     }

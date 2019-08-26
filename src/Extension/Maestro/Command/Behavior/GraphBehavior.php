@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Maestro\Command\Behavior;
 
 use Amp\Loop;
+use Maestro\Extension\Maestro\Console\TagParser;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
 use Maestro\Graph\Graph;
 use Maestro\Maestro;
@@ -23,7 +24,7 @@ class GraphBehavior
     private const OPT_DEPTH = 'depth';
     private const OPT_CONCURRENCY = 'concurrency';
     private const OPT_PURGE = 'purge';
-    private const OPT_PROGRESS = 'progress';
+    private const OPT_TAGS = 'tags';
 
     private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
@@ -33,9 +34,15 @@ class GraphBehavior
      */
     private $builder;
 
-    public function __construct(MaestroBuilder $builder)
+    /**
+     * @var TagParser
+     */
+    private $tagParser;
+
+    public function __construct(MaestroBuilder $builder, TagParser $tagParser)
     {
         $this->builder = $builder;
+        $this->tagParser = $tagParser;
     }
 
     public function configure(Command $command): void
@@ -45,14 +52,14 @@ class GraphBehavior
         $command->addOption(self::OPT_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Limit the number of concurrent tasks', 10);
         $command->addOption(self::OPT_DEPTH, null, InputOption::VALUE_REQUIRED, 'Limit depth of graph');
         $command->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge package workspaces before build');
-        $command->addOption(self::OPT_PROGRESS, 'p', InputOption::VALUE_NONE, 'Show progress');
+        $command->addOption(self::OPT_TAGS, 't', InputOption::VALUE_REQUIRED, 'Crop graph to given comma-separated tags');
     }
 
     public function buildGraph(InputInterface $input): Graph
     {
         $maestro = $this->buildRunner($input);
 
-        return $maestro->buildGraph(
+        $graph = $maestro->buildGraph(
             $maestro->loadManifest(
                 Cast::toString(
                     $input->getArgument(self::ARG_PLAN)
@@ -61,6 +68,12 @@ class GraphBehavior
             Cast::toStringOrNull($input->getArgument(self::ARG_QUERY)),
             Cast::toIntOrNull($input->getOption(self::OPT_DEPTH))
         );
+
+        if ($tags = Cast::toStringOrNull($input->getOption(self::OPT_TAGS))) {
+            $graph = $graph->pruneForTags(...$this->tagParser->parse($tags));
+        }
+
+        return $graph;
     }
 
     public function run(InputInterface $input, OutputInterface $output, Graph $graph)

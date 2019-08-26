@@ -114,6 +114,39 @@ class GraphConstructorTest extends TestCase
             }
         ];
 
+        yield 'package with tags' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'tags' => [ 'one' ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $package = $graph->nodes()->get('phpactor/phpactor');
+                $this->assertContains('one', $package->tags());
+            }
+        ];
+
+        yield 'task with tags' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'tasks' => [
+                            'task1' => [
+                                'type' => NullTask::class,
+                                'tags' => ['one'],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $node = $graph->nodes()->get('phpactor/phpactor/task1');
+                $this->assertContains('one', $node->tags());
+            }
+        ];
+
         yield 'task with schedule' => [
             [
                 'packages' => [

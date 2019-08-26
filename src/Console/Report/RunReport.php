@@ -33,8 +33,7 @@ class RunReport
         $table->setColumnMaxWidth(0, 30);
         $table->setColumnMaxWidth(1, 30);
         $table->setColumnMaxWidth(2, 30);
-        $table->setColumnMaxWidth(3, 30);
-        $table->setColumnMaxWidth(4, 30);
+        $table->setColumnMaxWidth(3, 60);
 
         foreach ($graph->roots() as $root) {
             foreach ($graph->dependentsFor($root->id()) as $packageNode) {

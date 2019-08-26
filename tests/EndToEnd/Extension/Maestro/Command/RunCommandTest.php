@@ -292,4 +292,50 @@ class RunCommandTest extends EndToEndTestCase
         $this->command('run plan.json  --namespace="" --purge');
         $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
     }
+
+    public function testRunTags()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage1' => [
+                    'tags' => ['one'],
+                ],
+                'mypackage2' => [
+                    'tags' => ['one', 'two'],
+                ],
+                'foobar' => [
+                    'tags' => [],
+                ],
+            ],
+        ]);
+
+        $process = $this->command('run plan.json  --tags=one --purge --dump=targets');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('mypackage1', $process->getOutput());
+        $this->assertStringContainsString('mypackage2', $process->getOutput());
+        $this->assertStringNotContainsString('foobar', $process->getOutput());
+    }
+
+    public function testRunMultipleTags()
+    {
+        $this->createPlan('plan.json', [
+            'packages' => [
+                'mypackage1' => [
+                    'tags' => ['one'],
+                ],
+                'mypackage2' => [
+                    'tags' => ['two'],
+                ],
+                'foobar' => [
+                    'tags' => [],
+                ],
+            ],
+        ]);
+
+        $process = $this->command('run plan.json  --tags=one,two --purge --dump=targets');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('mypackage1', $process->getOutput());
+        $this->assertStringContainsString('mypackage2', $process->getOutput());
+        $this->assertStringNotContainsString('foobar', $process->getOutput());
+    }
 }

@@ -24,7 +24,7 @@ class TwigExtension implements Extension
             return new TemplateHandler($container->get(EnvironmentFactory::class));
         }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'template',
-            'task_class' => TemplateTask::class,
+            'taskClass' => TemplateTask::class,
         ]]);
 
         $container->register(EnvironmentFactory::class, function (Container $container) {

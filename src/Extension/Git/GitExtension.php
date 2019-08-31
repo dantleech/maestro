@@ -51,7 +51,7 @@ class GitExtension implements Extension
             );
         }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'git',
-            'task_class' => GitTask::class,
+            'taskClass' => GitTask::class,
         ]]);
 
         $container->register(VersionSurveyor::class, function (Container $container) {
@@ -67,7 +67,7 @@ class GitExtension implements Extension
             );
         }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'git_tag',
-            'task_class' => TagVersionTask::class,
+            'taskClass' => TagVersionTask::class,
         ]]);
     }
 

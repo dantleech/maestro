@@ -18,6 +18,7 @@ use Maestro\Extension\Maestro\Task\ManifestHandler;
 use Maestro\Extension\Maestro\Task\ManifestTask;
 use Maestro\Extension\Maestro\Task\PackageHandler;
 use Maestro\Extension\Maestro\Task\ScriptHandler;
+use Maestro\Loader\Instantiator;
 use Maestro\MaestroBuilder;
 use Maestro\Graph\Scheduler\AsapSchedule;
 use Maestro\Graph\Scheduler\AsapScheduler;
@@ -110,24 +111,25 @@ class MaestroExtension implements Extension
 
     private function loadMaestro(ContainerBuilder $container)
     {
+        $container->register('maestro.task_handler_map', function (Container $container) {
+            $map = [];
+            foreach ($container->getServiceIdsForTag('task_handler') as $serviceId => $attrs) {
+                $map[$serviceId] = Instantiator::create()->instantiate(TaskHandlerDefinition::class, array_merge([
+                    'serviceId' => $serviceId,
+                ], $attrs));
+            }
+
+            return $map;
+        });
+
         $container->register(MaestroBuilder::class, function (Container $container) {
             $builder = MaestroBuilder::create();
             $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
-            foreach ($container->getServiceIdsForTag('task_handler') as $serviceId => $attrs) {
-                if (!isset($attrs['alias'])) {
-                    throw new RuntimeException(sprintf(
-                        'Task handler "%s" must specify an alias',
-                        $serviceId
-                    ));
-                }
-                if (!isset($attrs['task_class'])) {
-                    throw new RuntimeException(sprintf(
-                        'Task handler "%s" must specify a task class',
-                        $serviceId
-                    ));
-                }
 
-                $builder->addTaskHandler($attrs['alias'], $attrs['task_class'], $container->get($serviceId));
+
+            foreach ($container->get('maestro.task_handler_map') as $serviceId => $definition) {
+                assert($definition instanceof TaskHandlerDefinition);
+                $builder->addTaskHandler($definition->alias(), $definition->taskClass(), $container->get($definition->serviceId()));
             }
 
             foreach ($container->getServiceIdsForTag(self::TAG_SCHEDULER) as $serviceId => $attrs) {
@@ -235,35 +237,35 @@ class MaestroExtension implements Extension
             return new NullHandler();
         }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'null',
-            'task_class' => NullTask::class,
+            'taskClass' => NullTask::class,
         ]]);
         
         $container->register(ManifestHandler::class, function () {
             return new ManifestHandler();
         }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'manifest',
-            'task_class' => ManifestTask::class,
+            'taskClass' => ManifestTask::class,
         ]]);
         
         $container->register(PackageHandler::class, function (Container $container) {
             return new PackageHandler($container->get(WorkspaceFactory::class));
         }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'package',
-            'task_class' => PackageTask::class,
+            'taskClass' => PackageTask::class,
         ]]);
         
         $container->register(ScriptHandler::class, function (Container $container) {
             return new ScriptHandler($container->get(ScriptRunner::class));
         }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'script',
-            'task_class' => ScriptTask::class,
+            'taskClass' => ScriptTask::class,
         ]]);
         
         $container->register(JsonFileHandler::class, function (Container $container) {
             return new JsonFileHandler();
         }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'json_file',
-            'task_class' => JsonFileTask::class,
+            'taskClass' => JsonFileTask::class,
         ]]);
     }
 

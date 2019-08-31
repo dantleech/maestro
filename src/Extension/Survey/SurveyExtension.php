@@ -33,7 +33,7 @@ class SurveyExtension implements Extension
             );
         }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'survey',
-            'task_class' => SurveyTask::class,
+            'taskClass' => SurveyTask::class,
         ]]);
 
         $container->register(VersionReport::class, function (Container $container) {

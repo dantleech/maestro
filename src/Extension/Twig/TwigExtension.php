@@ -22,9 +22,9 @@ class TwigExtension implements Extension
     {
         $container->register(TemplateHandler::class, function (Container $container) {
             return new TemplateHandler($container->get(EnvironmentFactory::class));
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'template',
-            'job_class' => TemplateTask::class,
+            'task_class' => TemplateTask::class,
         ]]);
 
         $container->register(EnvironmentFactory::class, function (Container $container) {

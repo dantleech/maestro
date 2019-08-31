@@ -49,9 +49,9 @@ class GitExtension implements Extension
                 $container->get(ScriptRunner::class),
                 $container->getParameter(MaestroExtension::PARAM_WORKSPACE_DIRECTORY)
             );
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'git',
-            'job_class' => GitTask::class,
+            'task_class' => GitTask::class,
         ]]);
 
         $container->register(VersionSurveyor::class, function (Container $container) {
@@ -65,9 +65,9 @@ class GitExtension implements Extension
                 $container->get(Git::class),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
             );
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'git_tag',
-            'job_class' => TagVersionTask::class,
+            'task_class' => TagVersionTask::class,
         ]]);
     }
 

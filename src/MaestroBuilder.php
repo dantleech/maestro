@@ -72,10 +72,10 @@ final class MaestroBuilder
         );
     }
 
-    public function addJobHandler(string $alias, string $jobClass, TaskHandler $handler): self
+    public function addTaskHandler(string $alias, string $taskClass, TaskHandler $handler): self
     {
-        $this->taskMap[$alias] = $jobClass;
-        $this->handlers[$jobClass] = $handler;
+        $this->taskMap[$alias] = $taskClass;
+        $this->handlers[$taskClass] = $handler;
         return $this;
     }
 

@@ -44,7 +44,7 @@ use XdgBaseDir\Xdg;
 
 class MaestroExtension implements Extension
 {
-    const TAG_JOB_HANDLER = 'job_handler';
+    const TAG_TASK_HANDLER = 'task_handler';
 
     const PARAM_WORKING_DIRECTORY = 'working_directory';
     const PARAM_WORKSPACE_DIRECTORY = 'workspace_directory';
@@ -113,21 +113,21 @@ class MaestroExtension implements Extension
         $container->register(MaestroBuilder::class, function (Container $container) {
             $builder = MaestroBuilder::create();
             $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
-            foreach ($container->getServiceIdsForTag('job_handler') as $serviceId => $attrs) {
+            foreach ($container->getServiceIdsForTag('task_handler') as $serviceId => $attrs) {
                 if (!isset($attrs['alias'])) {
                     throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify an alias',
+                        'Task handler "%s" must specify an alias',
                         $serviceId
                     ));
                 }
-                if (!isset($attrs['job_class'])) {
+                if (!isset($attrs['task_class'])) {
                     throw new RuntimeException(sprintf(
-                        'Job handler "%s" must specify a job class',
+                        'Task handler "%s" must specify a task class',
                         $serviceId
                     ));
                 }
 
-                $builder->addJobHandler($attrs['alias'], $attrs['job_class'], $container->get($serviceId));
+                $builder->addTaskHandler($attrs['alias'], $attrs['task_class'], $container->get($serviceId));
             }
 
             foreach ($container->getServiceIdsForTag(self::TAG_SCHEDULER) as $serviceId => $attrs) {
@@ -154,7 +154,7 @@ class MaestroExtension implements Extension
             return $builder;
         });
 
-        $this->loadJobHandlers($container);
+        $this->loadTaskHandlers($container);
         $this->loadSchedulers($container);
     }
 
@@ -229,41 +229,41 @@ class MaestroExtension implements Extension
         }, [ self::TAG_DUMPER => [ 'name' => 'targets' ] ]);
     }
 
-    private function loadJobHandlers(ContainerBuilder $container)
+    private function loadTaskHandlers(ContainerBuilder $container)
     {
         $container->register(NullHandler::class, function () {
             return new NullHandler();
-        }, [ self::TAG_JOB_HANDLER => [
+        }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'null',
-            'job_class' => NullTask::class,
+            'task_class' => NullTask::class,
         ]]);
         
         $container->register(ManifestHandler::class, function () {
             return new ManifestHandler();
-        }, [ self::TAG_JOB_HANDLER => [
+        }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'manifest',
-            'job_class' => ManifestTask::class,
+            'task_class' => ManifestTask::class,
         ]]);
         
         $container->register(PackageHandler::class, function (Container $container) {
             return new PackageHandler($container->get(WorkspaceFactory::class));
-        }, [ self::TAG_JOB_HANDLER => [
+        }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'package',
-            'job_class' => PackageTask::class,
+            'task_class' => PackageTask::class,
         ]]);
         
         $container->register(ScriptHandler::class, function (Container $container) {
             return new ScriptHandler($container->get(ScriptRunner::class));
-        }, [ self::TAG_JOB_HANDLER => [
+        }, [ self::TAG_TASK_HANDLER => [
             'alias' => 'script',
-            'job_class' => ScriptTask::class,
+            'task_class' => ScriptTask::class,
         ]]);
         
         $container->register(JsonFileHandler::class, function (Container $container) {
             return new JsonFileHandler();
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'json_file',
-            'job_class' => JsonFileTask::class,
+            'task_class' => JsonFileTask::class,
         ]]);
     }
 

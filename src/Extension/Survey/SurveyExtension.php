@@ -31,9 +31,9 @@ class SurveyExtension implements Extension
             return new SurveyHandler(
                 new Surveyors($surveyors)
             );
-        }, [ MaestroExtension::TAG_JOB_HANDLER => [
+        }, [ MaestroExtension::TAG_TASK_HANDLER => [
             'alias' => 'survey',
-            'job_class' => SurveyTask::class,
+            'task_class' => SurveyTask::class,
         ]]);
 
         $container->register(VersionReport::class, function (Container $container) {

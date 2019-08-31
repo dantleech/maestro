@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Maestro;
+namespace Maestro\Extension\Maestro\Container;
 
 class TaskHandlerDefinition
 {

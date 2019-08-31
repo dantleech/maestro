@@ -6,8 +6,10 @@ use Maestro\Console\DumperRegistry;
 use Maestro\Console\Logging\AnsiFormatter;
 use Maestro\Console\Report\RunReport;
 use Maestro\Extension\Maestro\Command\Behavior\GraphBehavior;
+use Maestro\Extension\Maestro\Command\DebugTaskCommand;
 use Maestro\Extension\Maestro\Command\RunCommand;
 use Maestro\Extension\Maestro\Console\TagParser;
+use Maestro\Extension\Maestro\Container\TaskHandlerDefinitionMap;
 use Maestro\Extension\Maestro\Dumper\DotDumper;
 use Maestro\Extension\Maestro\Dumper\LeafArtifactsDumper;
 use Maestro\Extension\Maestro\Dumper\OverviewRenderer;
@@ -42,6 +44,7 @@ use Phpactor\MapResolver\Resolver;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
 use XdgBaseDir\Xdg;
+use Maestro\Extension\Maestro\Container\TaskHandlerDefinition;
 
 class MaestroExtension implements Extension
 {
@@ -111,7 +114,7 @@ class MaestroExtension implements Extension
 
     private function loadMaestro(ContainerBuilder $container)
     {
-        $container->register('maestro.task_handler_map', function (Container $container) {
+        $container->register(TaskHandlerDefinitionMap::class, function (Container $container) {
             $map = [];
             foreach ($container->getServiceIdsForTag('task_handler') as $serviceId => $attrs) {
                 $map[$serviceId] = Instantiator::create()->instantiate(TaskHandlerDefinition::class, array_merge([
@@ -127,7 +130,7 @@ class MaestroExtension implements Extension
             $builder->addStateObserver(new LoggingStateObserver($container->get(LoggingExtension::SERVICE_LOGGER)));
 
 
-            foreach ($container->get('maestro.task_handler_map') as $serviceId => $definition) {
+            foreach ($container->get(TaskHandlerDefinitionMap::class) as $serviceId => $definition) {
                 assert($definition instanceof TaskHandlerDefinition);
                 $builder->addTaskHandler($definition->alias(), $definition->taskClass(), $container->get($definition->serviceId()));
             }

@@ -96,6 +96,10 @@ class MaestroExtension implements Extension
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
 
+        $container->register(DebugTaskCommand::class, function (Container $container) {
+            return new DebugTaskCommand($container->get(TaskHandlerDefinitionMap::class));
+        }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'debug:task']]);
+
         $container->register(GraphBehavior::class, function (Container $container) {
             return new GraphBehavior(
                 $container->get(MaestroBuilder::class),
@@ -116,13 +120,13 @@ class MaestroExtension implements Extension
     {
         $container->register(TaskHandlerDefinitionMap::class, function (Container $container) {
             $map = [];
-            foreach ($container->getServiceIdsForTag('task_handler') as $serviceId => $attrs) {
+            foreach ($container->getServiceIdsForTag(self::TAG_TASK_HANDLER) as $serviceId => $attrs) {
                 $map[$serviceId] = Instantiator::create()->instantiate(TaskHandlerDefinition::class, array_merge([
                     'serviceId' => $serviceId,
                 ], $attrs));
             }
 
-            return $map;
+            return new TaskHandlerDefinitionMap($map);
         });
 
         $container->register(MaestroBuilder::class, function (Container $container) {

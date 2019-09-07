@@ -16,8 +16,8 @@ class NodesTest extends TestCase
         ]);
 
         $this->assertCount(0, $nodes->byStates(State::BUSY()));
-        $this->assertCount(1, $nodes->byStates(State::SCHEDULED()));
-        $this->assertCount(1, $nodes->byStates(State::BUSY(), State::SCHEDULED()));
+        $this->assertCount(1, $nodes->byStates(State::WAITING()));
+        $this->assertCount(1, $nodes->byStates(State::BUSY(), State::WAITING()));
     }
 
     public function testContainsId()

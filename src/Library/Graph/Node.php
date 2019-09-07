@@ -45,7 +45,7 @@ final class Node
     ) {
         $this->id = $id;
         $this->label = $label ?: $id;
-        $this->state = State::SCHEDULED();
+        $this->state = State::WAITING();
         $this->task = $task ?: new NullTask();
         $this->tags = $tags;
     }

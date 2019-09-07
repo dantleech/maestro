@@ -8,7 +8,6 @@ final class State
     private const DONE = 'done';
     private const BUSY = 'busy';
     private const CANCELLED = 'cancelled';
-    private const SCHEDULED = 'scheduled';
 
     private $state;
 
@@ -47,11 +46,6 @@ final class State
         return $this->state === self::DONE;
     }
 
-    public static function SCHEDULED(): self
-    {
-        return new self(self::SCHEDULED);
-    }
-
     public function isWaiting(): bool
     {
         return $this->state === self::WAITING;
@@ -65,11 +59,6 @@ final class State
     public function isCancelled(): bool
     {
         return $this->state === self::CANCELLED;
-    }
-
-    public function isScheduled(): bool
-    {
-        return $this->state === self::SCHEDULED;
     }
 
     public function toString(): string

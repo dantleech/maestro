@@ -36,10 +36,4 @@ class NodeTest extends TestCase
         ]);
         $this->assertEquals('Foobar', $rootNode->label());
     }
-
-    public function testDefaultStateIsScheduled()
-    {
-        $rootNode = Node::create('root');
-        $this->assertTrue($rootNode->state()->isScheduled());
-    }
 }

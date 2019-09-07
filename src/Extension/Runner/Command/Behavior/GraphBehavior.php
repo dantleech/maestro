@@ -6,6 +6,7 @@ use Amp\Loop;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Library\Graph\Graph;
+use Maestro\Library\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,7 +45,7 @@ class GraphBehavior
     {
         return $this->constructor->construct(
             $this->loader->load(
-                $input->getArgument(self::ARG_MANIFEST)
+                Cast::toString($input->getArgument(self::ARG_MANIFEST))
             )
         );
     }

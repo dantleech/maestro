@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Runner\Report;
 
 use Generator;
-use Maestro\Graph\Graph;
-use Maestro\Graph\TaskResult;
+use Maestro\Library\Graph\Graph;
+use Maestro\Library\Graph\State;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,10 +54,10 @@ class RunReport
         $table->render();
         $output->writeln(sprintf(
             '<options=bold;bg=%s;fg=white> %s tasks, %s failed, %s succeeded </>',
-            $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count() ? 'red' : 'green',
-            $graph->nodes()->byTaskResult(TaskResult::FAILURE(), TaskResult::SUCCESS())->count(),
-            $graph->nodes()->byTaskResult(TaskResult::FAILURE())->count(),
-            $graph->nodes()->byTaskResult(TaskResult::SUCCESS())->count(),
+            $graph->nodes()->byState(State::FAILED())->count() ? 'red' : 'green',
+            $graph->nodes()->byState(State::FAILED(), State::DONE())->count(),
+            $graph->nodes()->byState(State::FAILED())->count(),
+            $graph->nodes()->byState(State::DONE())->count(),
         ));
     }
 
@@ -71,14 +71,13 @@ class RunReport
     private function taskRows(Graph $graph, string $packageId): Generator
     {
         foreach ($graph->descendantsFor($packageId) as $taskNode) {
-            $taskFailure = $taskNode->taskFailure();
             yield [
                 $taskNode->label(),
                 $taskNode->task()->description(),
                 sprintf(
                     '%s %s',
-                    $taskNode->taskResult()->isSuccess() ? '<info>✔</>' : '<fg=red>✘</>',
-                    $taskFailure ? $taskFailure->getMessage() : ''
+                    $taskNode->state()->isDone() ? '<info>✔</>' : '<fg=red>✘</>',
+                    ''
                 )
             ];
         }

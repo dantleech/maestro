@@ -2,7 +2,6 @@
 
 namespace Maestro;
 
-use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
@@ -89,10 +88,7 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_LEVEL => self::OPTION_LOG_LEVEL,
             LoggingExtension::PARAM_PATH => self::OPTION_LOG_PATH,
             LoggingExtension::PARAM_FORMATTER => self::OPTION_LOG_FORMAT,
-            MaestroExtension::PARAM_WORKING_DIRECTORY => self::OPTION_WORKING_DIRECTORY,
-            MaestroExtension::PARAM_WORKSPACE_DIRECTORY => self::OPTION_WORKSPACE_DIRECTORY,
-            MaestroExtension::PARAM_NAMESPACE => self::OPTION_NAMESPACE
-            ,
+            RunnerExtension::PARAM_WORKING_DIRECTORY => self::OPTION_WORKING_DIRECTORY,
         ] as $configKey => $optionName) {
             $option = $definition->getOption($optionName);
             $optionName = '--' . $optionName;

@@ -190,7 +190,7 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     public function allDone(): bool
     {
         foreach ($this->nodes as $node) {
-            if ($node->state()->isScheduled() || $node->state()->isBusy() || $node->state()->isWaiting()) {
+            if ($node->state()->isBusy() || $node->state()->isWaiting()) {
                 return false;
             }
         }

@@ -8,6 +8,7 @@ final class State
     private const DONE = 'done';
     private const BUSY = 'busy';
     private const CANCELLED = 'cancelled';
+    private const FAILED = 'failed';
 
     private $state;
 
@@ -24,6 +25,11 @@ final class State
     public static function DONE(): self
     {
         return new self(self::DONE);
+    }
+
+    public static function FAILED(): self
+    {
+        return new self(self::FAILED);
     }
 
     public static function transition(State $from, State $to)

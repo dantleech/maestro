@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Application\Loader;
+namespace Maestro\Extension\Runner\Loader;
 
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;

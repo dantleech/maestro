@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Application\Loader\Processor;
+namespace Maestro\Extension\Runner\Loader\Processor;
 
-use Maestro\Application\Loader\Exception\PrototypeNotFound;
-use Maestro\Application\Loader\Processor;
+use Maestro\Extension\Runner\Loader\Exception\PrototypeNotFound;
+use Maestro\Extension\Runner\Loader\Processor;
 
 class PrototypeExpandingProcessor implements Processor
 {

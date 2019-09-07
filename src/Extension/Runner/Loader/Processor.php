@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Application\Loader;
+namespace Maestro\Extension\Runner\Loader;
 
 interface Processor
 {

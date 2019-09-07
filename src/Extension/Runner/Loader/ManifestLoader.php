@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Application\Loader;
+namespace Maestro\Extension\Runner\Loader;
 
 use Maestro\Library\Util\Cast;
 use RuntimeException;
@@ -24,7 +24,7 @@ class ManifestLoader
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function load(string $path)
+    public function load(string $path): Manifest
     {
         $path = $this->resolvePath($path);
         $data = $this->loadManifestArray($path);

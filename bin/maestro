@@ -2,20 +2,8 @@
 <?php
 
 use Amp\Loop;
-use Maestro\Console\ApplicationBuilder;
-use Maestro\Dumper\GraphRenderer;
-use Maestro\Extension\Maestro\MaestroExtension;
-use Maestro\Loader\Manifest;
-use Maestro\RunnerBuilder;
-use Maestro\Task\Task\NullHandler;
-use Maestro\Task\Task\NullTask;
-use Maestro\Task\Task\PackageTask;
-use Phpactor\Container\PhpactorContainer;
-use Phpactor\Extension\Console\ConsoleExtension;
-use Phpactor\Extension\Logger\LoggingExtension;
+use Maestro\ApplicationBuilder;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputOption;
 
 require __DIR__ . '/../vendor/autoload.php';
 

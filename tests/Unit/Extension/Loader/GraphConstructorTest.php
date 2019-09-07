@@ -1,10 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Unit\Application\Loader;
+namespace Maestro\Tests\Unit\Extension\Loader;
 
 use Closure;
-use Maestro\Application\Loader\GraphConstructor;
-use Maestro\Application\Loader\Manifest;
+use Maestro\Extension\Runner\Loader\GraphConstructor;
+use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\Nodes;

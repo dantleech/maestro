@@ -56,7 +56,7 @@ final class Node
      */
     public static function create(string $id, array $options = []): self
     {
-        return Instantiator::instantiate(self::class, array_merge($options, [
+        return Instantiator::create(self::class, array_merge($options, [
             'id' => $id,
         ]));
     }

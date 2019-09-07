@@ -11,7 +11,7 @@ use ReflectionParameter;
 
 class Instantiator
 {
-    public static function instantiate(string $className, array $data)
+    public static function create(string $className, array $data)
     {
         return (new self())->doInstantiate($className, $data);
     }

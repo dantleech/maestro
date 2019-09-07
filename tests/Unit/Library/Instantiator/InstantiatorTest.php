@@ -12,14 +12,14 @@ class InstantiatorTest extends TestCase
 {
     public function testWithNoConstructor()
     {
-        $this->assertEquals(new TestClass1(), Instantiator::instantiate(TestClass1::class, []));
+        $this->assertEquals(new TestClass1(), Instantiator::create(TestClass1::class, []));
     }
 
     public function testWithConstructorWithArgument()
     {
         $this->assertEquals(
             new TestClass2('foobar'),
-            Instantiator::instantiate(TestClass2::class, [
+            Instantiator::create(TestClass2::class, [
                 'one' => 'foobar'
             ])
         );
@@ -30,7 +30,7 @@ class InstantiatorTest extends TestCase
         $this->expectException(UnknownKeys::class);
         $this->assertEquals(
             new TestClass2('foobar'),
-            Instantiator::instantiate(TestClass2::class, [
+            Instantiator::create(TestClass2::class, [
                 'two' => 'foobar'
             ])
         );
@@ -41,7 +41,7 @@ class InstantiatorTest extends TestCase
         $this->expectException(RequiredKeysMissing::class);
         $this->assertEquals(
             new TestClass2('foobar'),
-            Instantiator::instantiate(TestClass2::class, [])
+            Instantiator::create(TestClass2::class, [])
         );
     }
 
@@ -49,7 +49,7 @@ class InstantiatorTest extends TestCase
     {
         $this->assertEquals(
             new TestClass3('foobar', 'barfoo'),
-            Instantiator::instantiate(TestClass3::class, [
+            Instantiator::create(TestClass3::class, [
                 'one' => 'foobar',
             ])
         );
@@ -65,7 +65,7 @@ class InstantiatorTest extends TestCase
             $this->expectExceptionMessageRegExp('/' . $expectedExceptionMessage . '/');
         }
 
-        $object = Instantiator::instantiate(TestClass4::class, $params);
+        $object = Instantiator::create(TestClass4::class, $params);
         $this->assertInstanceOf(TestClass4::class, $object);
     }
 

@@ -4,10 +4,9 @@ namespace Maestro\Library\Graph;
 
 final class State
 {
-    private const WAITING = 'waiting';
+    private const IDLE = 'idle';
     private const DONE = 'done';
-    private const BUSY = 'busy';
-    private const CANCELLED = 'cancelled';
+    private const DISPATCHED = 'dispatched';
     private const FAILED = 'failed';
 
     private $state;
@@ -17,9 +16,9 @@ final class State
         $this->state = $state;
     }
 
-    public static function BUSY(): self
+    public static function DISPATCHED(): self
     {
-        return new self(self::BUSY);
+        return new self(self::DISPATCHED);
     }
 
     public static function DONE(): self
@@ -27,24 +26,14 @@ final class State
         return new self(self::DONE);
     }
 
+    public static function IDLE(): self
+    {
+        return new self(self::IDLE);
+    }
+
     public static function FAILED(): self
     {
         return new self(self::FAILED);
-    }
-
-    public static function transition(State $from, State $to)
-    {
-        return new StateTransition($from, $to);
-    }
-
-    public static function WAITING(): self
-    {
-        return new self(self::WAITING);
-    }
-
-    public static function CANCELLED(): self
-    {
-        return new self(self::CANCELLED);
     }
 
     public function isDone(): bool
@@ -52,19 +41,14 @@ final class State
         return $this->state === self::DONE;
     }
 
-    public function isWaiting(): bool
+    public function isIdle(): bool
     {
-        return $this->state === self::WAITING;
+        return $this->state === self::IDLE;
     }
 
-    public function isBusy()
+    public function isDispatched()
     {
-        return $this->state === self::BUSY;
-    }
-
-    public function isCancelled(): bool
-    {
-        return $this->state === self::CANCELLED;
+        return $this->state === self::DISPATCHED;
     }
 
     public function toString(): string

@@ -23,16 +23,22 @@ class Job
      */
     private $state;
 
-    private function __construct(Task $task)
+    /**
+     * @var array
+     */
+    private $artifacts;
+
+    private function __construct(Task $task, array $artifacts = [])
     {
         $this->task = $task;
         $this->deferred = new Deferred();
         $this->state = JobState::WAITING();
+        $this->artifacts = $artifacts;
     }
 
-    public static function create(Task $task): self
+    public static function create(Task $task, array $artifacts = []): Job
     {
-        return new self($task);
+        return new self($task, $artifacts);
     }
 
     public static function createNull(): self
@@ -49,7 +55,7 @@ class Job
         $this->state = JobState::PROCESSING();
 
         \Amp\asyncCall(function () use ($runner) {
-            $result = yield $runner->run($this->task);
+            $result = yield $runner->run($this->task, $this->artifacts);
             $this->state = JobState::DONE();
             $this->deferred->resolve($result);
         });
@@ -68,5 +74,10 @@ class Job
     public function state(): JobState
     {
         return $this->state;
+    }
+
+    public function artifacts(): array
+    {
+        return $this->artifacts;
     }
 }

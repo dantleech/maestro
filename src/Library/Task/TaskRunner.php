@@ -16,7 +16,7 @@ class TaskRunner
         $this->registry = $registry;
     }
 
-    public function run(Task $task): Promise
+    public function run(Task $task, array $artifacts): Promise
     {
         return $this->registry->getHandlerFor($task)->handle($task);
     }

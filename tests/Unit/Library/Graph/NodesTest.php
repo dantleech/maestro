@@ -15,9 +15,9 @@ class NodesTest extends TestCase
             Node::create('foo')
         ]);
 
-        $this->assertCount(0, $nodes->byStates(State::BUSY()));
-        $this->assertCount(1, $nodes->byStates(State::WAITING()));
-        $this->assertCount(1, $nodes->byStates(State::BUSY(), State::WAITING()));
+        $this->assertCount(0, $nodes->byStates(State::DISPATCHED()));
+        $this->assertCount(1, $nodes->byStates(State::IDLE()));
+        $this->assertCount(1, $nodes->byStates(State::DISPATCHED(), State::IDLE()));
     }
 
     public function testContainsId()

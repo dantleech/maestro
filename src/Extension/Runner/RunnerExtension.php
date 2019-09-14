@@ -77,7 +77,12 @@ class RunnerExtension implements Extension
             );
         });
 
-        $container->register(self::SERVICE_TASK_ALIAS_TO_CLASS_MAP, function () {
+        $container->register(self::SERVICE_TASK_ALIAS_TO_CLASS_MAP, function (Container $container) {
+            $tasks = [];
+
+            foreach ($container->get('runner.tag.task_handler') as $serviceId => $attrs) {
+            }
+
             return new AliasToClassMap('task', []);
         });
 

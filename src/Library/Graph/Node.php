@@ -3,6 +3,8 @@
 namespace Maestro\Library\Graph;
 
 use Maestro\Library\Instantiator\Instantiator;
+use Maestro\Library\Task\Job;
+use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;
 
@@ -19,6 +21,11 @@ final class Node
     const NAMEPSPACE_SEPARATOR = '/';
 
     private $task;
+
+    /**
+     * @var object[]
+     */
+    private $artifacts = [];
 
     private $id;
 
@@ -45,7 +52,7 @@ final class Node
     ) {
         $this->id = $id;
         $this->label = $label ?: $id;
-        $this->state = State::WAITING();
+        $this->state = State::IDLE();
         $this->task = $task ?: new NullTask();
         $this->tags = $tags;
     }
@@ -101,8 +108,19 @@ final class Node
         return $this->tags;
     }
 
-    private function changeState(NodeStateMachine $stateMachine, State $state): void
+    public function run(Queue $queue, array $artifacts): void
     {
-        $this->state = $stateMachine->transition($this, $state);
+        \Amp\asyncCall(function () use ($queue, $artifacts) {
+            $this->state = State::DISPATCHED();
+            $job = Job::create($this->task, $artifacts);
+            $queue->enqueue($job);
+            $this->artifacts = yield $job->result();
+            $this->state = State::DONE();
+        });
+    }
+
+    public function artifacts(): array
+    {
+        return $this->artifacts;
     }
 }

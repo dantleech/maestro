@@ -32,7 +32,7 @@ class JobTest extends TestCase
     public function testJobStateIsProcessingAfterCallingRun()
     {
         $task = new NullTask();
-        $this->taskRunner->run($task)->willReturn(new Delayed(5));
+        $this->taskRunner->run($task, [])->willReturn(new Delayed(5));
         $job = Job::create($task);
         $job->run($this->taskRunner->reveal());
 
@@ -42,7 +42,7 @@ class JobTest extends TestCase
     public function testJobStateIsDoneAfterRunning()
     {
         $task = new NullTask();
-        $this->taskRunner->run($task)->willReturn(new Success());
+        $this->taskRunner->run($task, [])->willReturn(new Success());
         $job = Job::create($task);
         Loop::run(function () use ($job) {
             $job->run($this->taskRunner->reveal());
@@ -54,7 +54,7 @@ class JobTest extends TestCase
     public function testJobCannotBeRunTwiceOrMore()
     {
         $task = new NullTask();
-        $this->taskRunner->run($task)->willReturn(
+        $this->taskRunner->run($task, [])->willReturn(
             new Success()
         )->shouldBeCalledTimes(1);
 

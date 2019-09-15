@@ -41,8 +41,8 @@ class WorkerTest extends TestCase
         $this->queue->enqueue($job1);
         $this->queue->enqueue($job2);
 
-        $this->taskRunner->run($job1->task())->willReturn(new Success());
-        $this->taskRunner->run($job2->task())->willReturn(new Success());
+        $this->taskRunner->run($job1->task(), [])->willReturn(new Success());
+        $this->taskRunner->run($job2->task(), [])->willReturn(new Success());
 
         Loop::run(function () use ($worker) {
             $worker->start();
@@ -62,10 +62,12 @@ class WorkerTest extends TestCase
         $this->queue->enqueue($job2);
 
         $this->taskRunner->run(
-            $job1->task()
+            $job1->task(),
+            []
         )->willReturn(new Delayed(10));
         $this->taskRunner->run(
-            $job2->task()
+            $job2->task(),
+            []
         )->willReturn(new Delayed(10));
 
         Loop::delay(5, function () use ($job1, $job2) {

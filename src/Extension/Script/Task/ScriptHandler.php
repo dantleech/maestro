@@ -5,7 +5,6 @@ namespace Maestro\Extension\Script\Task;
 use Amp\Promise;
 use Maestro\Extension\Script\Model\ScriptResult;
 use Maestro\Extension\Script\Model\ScriptRunner;
-use Maestro\Library\Graph\Task\NodeTaskHandler;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Task\ProvidingTaskHandler;
 use Maestro\Library\Util\StringUtil;

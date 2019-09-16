@@ -89,7 +89,7 @@ class RunnerExtension implements Extension
                 $attrs = array_merge([
                     'serviceId' => $serviceId
                 ], $attrs);
-                $definitions[] = Instantiator::create(TaskHandlerDefinition::class, $attrs);
+                $definitions[] = Instantiator::instantiate(TaskHandlerDefinition::class, $attrs);
             }
 
             return new TaskHandlerDefinitionMap($definitions);

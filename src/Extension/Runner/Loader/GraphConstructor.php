@@ -70,7 +70,7 @@ class GraphConstructor
                 $nodeId,
                 [
                     'label' => $taskName,
-                    'task' => Instantiator::create(
+                    'task' => Instantiator::instantiate(
                         $task->type(),
                         $task->args()
                     ),

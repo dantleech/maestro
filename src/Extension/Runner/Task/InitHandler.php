@@ -20,8 +20,8 @@ class InitHandler implements ProvidingTaskHandler
     public function __invoke(InitTask $task)
     {
         return [
-            Instantiator::create(Environment::class, $task->environment()),
-            Instantiator::create(Variables::class, $task->variables()),
+            Instantiator::instantiate(Environment::class, $task->environment()),
+            Instantiator::instantiate(Variables::class, $task->variables()),
         ];
     }
 }

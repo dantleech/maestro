@@ -33,14 +33,14 @@ final class Manifest
 
         foreach ($packages as $name => $package) {
             $package['name'] = $name;
-            $this->packages[] = Instantiator::create(Package::class, $package);
+            $this->packages[] = Instantiator::instantiate(Package::class, $package);
         }
         $this->env = $env;
     }
 
     public static function loadFromArray(array $manifest): self
     {
-        return Instantiator::create(self::class, $manifest);
+        return Instantiator::instantiate(self::class, $manifest);
     }
 
     public function vars(): array

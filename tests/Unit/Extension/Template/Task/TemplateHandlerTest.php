@@ -4,7 +4,6 @@ namespace Maestro\Tests\Unit\Extension\Template\Task;
 
 use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
-use Maestro\Graph\Vars;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailed;
 use Maestro\Library\Task\Test\HandlerTester;

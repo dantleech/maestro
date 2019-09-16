@@ -26,7 +26,7 @@ class Prototype
         $this->name = $name;
 
         foreach ($tasks as $name => $task) {
-            $this->tasks[$name] = Instantiator::create(Task::class, $task);
+            $this->tasks[$name] = Instantiator::instantiate(Task::class, $task);
         }
         $this->purgeWorkspace = $purgeWorkspace;
     }

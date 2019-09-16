@@ -5,7 +5,6 @@ namespace Maestro\Extension\Template\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Extension\Template\EnvironmentFactory;
-use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailed;
 use Maestro\Library\Workspace\Workspace;

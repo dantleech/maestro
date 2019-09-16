@@ -41,7 +41,7 @@ class ScriptRunner
                 $this->logger->error(sprintf('process %s in "%s" "%s" exited with %s: %s', $pid, basename($workingDirectory), $script, $exitCode, $outs[1]));
             }
 
-            return Instantiator::create(ScriptResult::class, [
+            return Instantiator::instantiate(ScriptResult::class, [
                 'exitCode' => $exitCode,
                 'stdout' => $outs[0],
                 'stderr' => $outs[1],

@@ -11,16 +11,17 @@ use ReflectionParameter;
 
 class Instantiator
 {
+    public const MODE_TYPE = 1;
+    public const MODE_NAME = 2;
+
+    private const METHOD_CONSTRUCT = '__construct';
+
     /**
      * @var int
      */
     private $mode;
-    const METHOD_CONSTRUCT = '__construct';
 
-    const MODE_TYPE = 1;
-    const MODE_NAME = 2;
-
-    public static function instantiate(string $className, array $data, $mode = self::MODE_NAME): object
+    public static function instantiate(string $className, array $data, $mode = self::MODE_NAME)
     {
         return (new self($mode))->doInstantiate($className, $data);
     }
@@ -215,16 +216,22 @@ class Instantiator
 
         foreach ($givenArgs as $givenArg) {
             foreach ($parameters as $parameter) {
+                $type = $parameter->getType();
+
+                if (null === $type) {
+                    continue;
+                }
+
                 if (
                     gettype($givenArg) !== 'object' &&
-                    $parameter->getType()->isBuiltin() &&
+                    $type->isBuiltin() &&
                     (string)$parameter->getType() === $this->resolveInternalTypeName($givenArg)
                 ) {
                     $resolved[$parameter->getName()] = $givenArg;
                 }
 
                 if (gettype($givenArg) === 'object') {
-                    if (is_a($givenArg, $parameter->getType()->__toString())) {
+                    if (is_a($givenArg, $type->__toString())) {
                         $resolved[$parameter->getName()] = $givenArg;
                     }
                 }

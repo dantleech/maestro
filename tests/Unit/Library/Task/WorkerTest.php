@@ -25,7 +25,6 @@ class WorkerTest extends TestCase
      */
     private $queue;
 
-
     protected function setUp(): void
     {
         $this->taskRunner = $this->prophesize(TaskRunner::class);

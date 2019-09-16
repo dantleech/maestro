@@ -4,6 +4,7 @@ namespace Maestro;
 
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
+use Maestro\Extension\Template\TemplateExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -59,6 +60,7 @@ final class ApplicationBuilder
             LoggingExtension::class,
             RunnerExtension::class,
             ScriptExtension::class,
+            TemplateExtension::class,
         ], $config);
     }
 

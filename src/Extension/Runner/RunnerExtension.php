@@ -4,12 +4,14 @@ namespace Maestro\Extension\Runner;
 
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
-use Maestro\Extension\Runner\Loader\AliasToClassMap;
+use Maestro\Extension\Runner\Extension\TaskHandlerDefinition;
+use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Extension\Runner\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
+use Maestro\Library\Instantiator\Instantiator;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -20,7 +22,7 @@ class RunnerExtension implements Extension
 {
     const PARAM_WORKING_DIRECTORY = 'runner.working-directory';
     const PARAM_PURGE = 'runner.purge';
-    const SERVICE_TASK_ALIAS_TO_CLASS_MAP = 'runner.alias_to_class_map';
+    const SERVICE_TASK_DEFINITIONS = 'runner.alias_to_class_map';
 
     /**
      * {@inheritDoc}
@@ -71,19 +73,20 @@ class RunnerExtension implements Extension
                 [
                     new PrototypeExpandingProcessor(),
                     new TaskAliasExpandingProcessor(
-                        $container->get(self::SERVICE_TASK_ALIAS_TO_CLASS_MAP),
+                        $container->get(TaskHandlerDefinitionMap::class),
                     )
                 ]
             );
         });
 
-        $container->register(self::SERVICE_TASK_ALIAS_TO_CLASS_MAP, function (Container $container) {
-            $tasks = [];
+        $container->register(TaskHandlerDefinitionMap::class, function (Container $container) {
+            $definitions = [];
 
-            foreach ($container->get('runner.tag.task_handler') as $serviceId => $attrs) {
+            foreach ($container->getServiceIdsForTag('runner.tag.task_handler') as $serviceId => $attrs) {
+                $definitions[] = Instantiator::create(TaskHandlerDefinition::class, $attrs);
             }
 
-            return new AliasToClassMap('task', []);
+            return new TaskHandlerDefinitionMap($definitions);
         });
 
         $container->register(GraphConstructor::class, function (Container $container) {

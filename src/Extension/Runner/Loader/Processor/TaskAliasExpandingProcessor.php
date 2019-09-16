@@ -2,26 +2,26 @@
 
 namespace Maestro\Extension\Runner\Loader\Processor;
 
+use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Runner\Loader\Processor;
-use Maestro\Extension\Runner\Loader\AliasToClassMap;
 
 class TaskAliasExpandingProcessor implements Processor
 {
     /**
-     * @var AliasToClassMap
+     * @var TaskHandlerDefinitionMap
      */
-    private $taskMap;
+    private $map;
 
-    public function __construct(AliasToClassMap $taskMap)
+    public function __construct(TaskHandlerDefinitionMap $map)
     {
-        $this->taskMap = $taskMap;
+        $this->map = $map;
     }
 
     public function process(array $manifest): array
     {
         foreach ($manifest['packages'] ?? [] as $packageName => &$package) {
             foreach ($package['tasks'] ?? [] as $taskName => &$task) {
-                $manifest['packages'][$packageName]['tasks'][$taskName]['type'] = $this->taskMap->classNameFor($task['type']);
+                $manifest['packages'][$packageName]['tasks'][$taskName]['type'] = $this->map->getDefinitionByAlias($task['type'])->taskClass();
             }
         }
         return $manifest;

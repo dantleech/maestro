@@ -11,48 +11,55 @@ use ReflectionParameter;
 
 class Instantiator
 {
-    public static function create(string $className, array $data)
+    const METHOD_CONSTRUCT = '__construct';
+
+    public static function instantiate(string $className, array $data): object
     {
         return (new self())->doInstantiate($className, $data);
     }
 
-    private function doInstantiate(string $className, array $data)
+    public static function call(object $object, string $methodName, array $args)
+    {
+        return (new self())->doCall($object, $methodName, $args);
+    }
+
+    private function doCall(object $object, string $methodName, array $args)
+    {
+        $class = new ReflectionClass(get_class($object));
+        $arguments = $this->resolveArguments($class, $methodName, $args);
+        return $class->getMethod($methodName)->invoke($object, ...$arguments);
+    }
+
+    private function doInstantiate(string $className, array $args): object
     {
         $class = new ReflectionClass($className);
 
-        if (!$class->hasMethod('__construct')) {
-            if (empty($data)) {
+        if (!$class->hasMethod(self::METHOD_CONSTRUCT)) {
+
+            if (empty($args)) {
                 return $class->newInstance();
             }
 
             throw new ClassHasNoConstructor(sprintf(
                 'Class "%s" has no constructor, but was instantiated with keys "%s"',
-                $className,
-                implode('", "', array_keys($data))
+                $class->getName(),
+                implode('", "', array_keys($args))
             ));
         }
 
-        $parameters = $this->mapParameters($class);
-        $this->assertCorrectKeys($data, $parameters, $className);
-        $this->assertRequiredKeys($data, $parameters, $className);
-        $data = $this->mergeDefaults($parameters, $data);
-        $this->assertTypes($data, $parameters, $className);
 
-        $arguments = [];
-        foreach ($parameters as $name => $defaultValue) {
-            $arguments[] = $data[$name];
-        }
+        $arguments = $this->resolveArguments($class, self::METHOD_CONSTRUCT, $args);
 
         return $class->newInstanceArgs($arguments);
     }
 
-    private function mapParameters(ReflectionClass $class): array
+    private function mapParameters(ReflectionClass $class, string $methodName): array
     {
         $parameters = [];
-        foreach ($class->getMethod('__construct')->getParameters() as $reflectionParameter) {
+        foreach ($class->getMethod($methodName)->getParameters() as $reflectionParameter) {
             $parameters[$reflectionParameter->getName()] = $reflectionParameter;
         }
-        
+
         return $parameters;
     }
 
@@ -70,7 +77,7 @@ class Instantiator
         ));
     }
 
-    private function assertRequiredKeys(array $data, $parameters, string $className)
+    private function assertRequiredKeys(array $data, array $parameters, string $className)
     {
         $requiredParameters = array_filter($parameters, function (ReflectionParameter $parameter) {
             return (bool) !$parameter->isDefaultValueAvailable();
@@ -92,7 +99,7 @@ class Instantiator
         $defaults = array_map(function (ReflectionParameter $parameter) {
             return $parameter->isDefaultValueAvailable() ? $parameter->getDefaultValue() : null;
         }, $parameters);
-        
+
         $data = array_merge($defaults, $data);
         return $data;
     }
@@ -159,5 +166,21 @@ class Instantiator
         }
 
         return $type;
+    }
+
+    private function resolveArguments(ReflectionClass $class, string $methodName, array $args): array
+    {
+        $parameters = $this->mapParameters($class, $methodName);
+
+        $this->assertCorrectKeys($args, $parameters, $class->getName());
+        $this->assertRequiredKeys($args, $parameters, $class->getName());
+        $args = $this->mergeDefaults($parameters, $args);
+        $this->assertTypes($args, $parameters, $class->getName());
+
+        $arguments = [];
+        foreach ($parameters as $name => $defaultValue) {
+            $arguments[] = $args[$name];
+        }
+        return $arguments;
     }
 }

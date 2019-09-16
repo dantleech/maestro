@@ -21,7 +21,7 @@ class HandlerTester
 
     public function handle(string $taskFqn, array $args): ArtifactContainer
     {
-        $task = Instantiator::create($taskFqn, $args);
+        $task = Instantiator::instantiate($taskFqn, $args);
         $artifacts = \Amp\Promise\wait(call_user_func_array($this->taskHandler, [$task]));
         return new ArtifactContainer($args);
     }

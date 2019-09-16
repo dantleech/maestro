@@ -11,7 +11,9 @@ use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Extension\Runner\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
+use Maestro\Extension\Runner\Task\NullHandler;
 use Maestro\Library\Instantiator\Instantiator;
+use Maestro\Library\Task\Task\NullTask;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -96,5 +98,14 @@ class RunnerExtension implements Extension
         $container->register(GraphConstructor::class, function (Container $container) {
             return new GraphConstructor($container->getParameter(self::PARAM_PURGE));
         });
+
+        $container->register(NullHandler::class, function (Container $container) {
+            return new NullHandler();
+        }, [
+            self::TAG_TASK_HANDLER => [
+                'taskClass' => NullTask::class,
+                'alias' => 'null',
+            ]
+        ]);
     }
 }

@@ -4,7 +4,6 @@ namespace Maestro\Library\Instantiator;
 
 use Maestro\Library\Instantiator\Exception\ClassHasNoConstructor;
 use Maestro\Library\Instantiator\Exception\InvalidParameterType;
-use Maestro\Library\Instantiator\Exception\MethodHasDuplicateType;
 use Maestro\Library\Instantiator\Exception\RequiredKeysMissing;
 use Maestro\Library\Instantiator\Exception\UnknownKeys;
 use ReflectionClass;
@@ -12,6 +11,10 @@ use ReflectionParameter;
 
 class Instantiator
 {
+    /**
+     * @var int
+     */
+    private $mode;
     const METHOD_CONSTRUCT = '__construct';
 
     const MODE_TYPE = 1;
@@ -19,23 +22,28 @@ class Instantiator
 
     public static function instantiate(string $className, array $data, $mode = self::MODE_NAME): object
     {
-        return (new self())->doInstantiate($className, $data, $mode);
+        return (new self($mode))->doInstantiate($className, $data);
     }
 
     public static function call(object $object, string $methodName, array $args, int $mode = self::MODE_NAME)
     {
-        return (new self())->doCall($object, $methodName, $args, $mode);
+        return (new self($mode))->doCall($object, $methodName, $args);
     }
 
-    private function doCall(object $object, string $methodName, array $args, int $mode)
+    public function __construct(int $mode)
+    {
+        $this->mode = $mode;
+    }
+
+    private function doCall(object $object, string $methodName, array $args)
     {
         $class = new ReflectionClass(get_class($object));
-        $arguments = $this->resolveArguments($class, $methodName, $args, $mode);
+        $arguments = $this->resolveArguments($class, $methodName, $args);
 
         return $class->getMethod($methodName)->invoke($object, ...$arguments);
     }
 
-    private function doInstantiate(string $className, array $args, int $mode): object
+    private function doInstantiate(string $className, array $args): object
     {
         $class = new ReflectionClass($className);
 
@@ -52,7 +60,7 @@ class Instantiator
         }
 
 
-        $arguments = $this->resolveArguments($class, self::METHOD_CONSTRUCT, $args, $mode);
+        $arguments = $this->resolveArguments($class, self::METHOD_CONSTRUCT, $args);
 
         return $class->newInstanceArgs($arguments);
     }
@@ -175,9 +183,9 @@ class Instantiator
         return $type;
     }
 
-    private function resolveArguments(ReflectionClass $class, string $methodName, array $givenArgs, int $mode): array
+    private function resolveArguments(ReflectionClass $class, string $methodName, array $givenArgs): array
     {
-        if ($mode === self::MODE_TYPE) {
+        if ($this->mode === self::MODE_TYPE) {
             return $this->resolveArgumentsByType($class, $methodName, $givenArgs);
         }
 
@@ -220,7 +228,6 @@ class Instantiator
                         $resolved[$parameter->getName()] = $givenArg;
                     }
                 }
-
             }
         }
 

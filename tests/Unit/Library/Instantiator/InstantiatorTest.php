@@ -238,8 +238,7 @@ class TestClass6
         int $int,
         bool $bool,
         TestClass1 $class
-    )
-    {
+    ) {
         $this->string = $string;
         $this->array = $array;
         $this->int = $int;

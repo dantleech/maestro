@@ -23,6 +23,7 @@ class RunnerExtension implements Extension
     const PARAM_WORKING_DIRECTORY = 'runner.working-directory';
     const PARAM_PURGE = 'runner.purge';
     const SERVICE_TASK_DEFINITIONS = 'runner.alias_to_class_map';
+    const TAG_TASK_HANDLER = 'runner.tag.task_handler';
 
     /**
      * {@inheritDoc}
@@ -82,7 +83,10 @@ class RunnerExtension implements Extension
         $container->register(TaskHandlerDefinitionMap::class, function (Container $container) {
             $definitions = [];
 
-            foreach ($container->getServiceIdsForTag('runner.tag.task_handler') as $serviceId => $attrs) {
+            foreach ($container->getServiceIdsForTag(self::TAG_TASK_HANDLER) as $serviceId => $attrs) {
+                $attrs = array_merge([
+                    'serviceId' => $serviceId
+                ], $attrs);
                 $definitions[] = Instantiator::create(TaskHandlerDefinition::class, $attrs);
             }
 

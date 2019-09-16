@@ -19,10 +19,17 @@ class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $args): ArtifactContainer
+    public function handle(string $taskFqn, array $args, array $artifacts = []): ArtifactContainer
     {
         $task = Instantiator::instantiate($taskFqn, $args);
-        $artifacts = \Amp\Promise\wait(call_user_func_array($this->taskHandler, [$task]));
-        return new ArtifactContainer($args);
+        $artifacts = \Amp\Promise\wait(Instantiator::call(
+            $this->taskHandler,
+            '__invoke',
+            array_merge([
+                $task,
+            ], array_values($artifacts)),
+            Instantiator::MODE_TYPE
+        ));
+        return new ArtifactContainer($artifacts);
     }
 }

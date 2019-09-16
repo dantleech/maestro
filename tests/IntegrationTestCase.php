@@ -2,7 +2,7 @@
 
 namespace Maestro\Tests;
 
-use Maestro\Console\ApplicationBuilder;
+use Maestro\ApplicationBuilder;
 use PHPUnit\Framework\TestCase;
 use Phpactor\Container\Container;
 use Phpactor\TestUtils\Workspace;

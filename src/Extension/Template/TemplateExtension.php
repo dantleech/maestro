@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Template;
 
-use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
@@ -10,7 +9,6 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\MapResolver\Resolver;
-use Maestro\Extension\Template\EnvironmentFactory;
 
 class TemplateExtension implements Extension
 {

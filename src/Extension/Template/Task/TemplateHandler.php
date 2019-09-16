@@ -5,9 +5,10 @@ namespace Maestro\Extension\Template\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Extension\Template\EnvironmentFactory;
-use Maestro\Graph\Environment;
-use Maestro\Graph\Exception\TaskFailed;
-use Maestro\Workspace\Workspace;
+use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Support\Variables\Variables;
+use Maestro\Library\Task\Exception\TaskFailed;
+use Maestro\Library\Workspace\Workspace;
 use RuntimeException;
 use Twig\Error\Error;
 
@@ -23,23 +24,21 @@ class TemplateHandler
         $this->factory = $factory;
     }
 
-    public function execute(Task $task, Environment $environment): Promise
+    public function __invoke(TemplateTask $task, Variables $variables, Workspace $workspace): Promise
     {
-        assert($task instanceof TemplateTask);
-        $manifestDir = $environment->vars()->get('manifest.dir');
-        $workspace = $environment->workspace();
-
-        $twigEnvironment = $this->factory->get($manifestDir);
+        $twigEnvironment = $this->factory->get(
+            $variables->get('manifest.dir')
+        );
 
         try {
-            $rendered = $twigEnvironment->render($task->path(), $environment->vars()->toArray());
+            $rendered = $twigEnvironment->render($task->path(), $variables->toArray());
         } catch (Error $error) {
             throw new TaskFailed($error->getMessage());
         }
 
         $this->writeContents($workspace, $task, $rendered);
 
-        return new Success($environment);
+        return new Success([]);
     }
 
     private function writeContents(Workspace $workspace, TemplateTask $task, string $rendered): void

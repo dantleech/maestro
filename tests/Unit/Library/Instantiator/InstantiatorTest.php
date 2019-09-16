@@ -96,14 +96,42 @@ class InstantiatorTest extends TestCase
         ];
     }
 
-    public function testInvoke()
+    public function testInvokeWithNamedParameters()
     {
-
         $subject = new TestClass5();
         Instantiator::call($subject, 'callMe', [
             'string' => 'hello',
         ]);
         $this->assertEquals('hello', $subject->string);
+    }
+
+    public function testInvokeInvokeWithTypesOnly()
+    {
+        $subject = new TestClass6();
+        Instantiator::call($subject, 'callMe', [
+            true,
+            'hello',
+            ['goodbye'],
+            12,
+            new TestClass1(),
+        ], Instantiator::MODE_TYPE);
+
+        $this->assertEquals(true, $subject->bool);
+        $this->assertEquals('hello', $subject->string);
+        $this->assertEquals(['goodbye'], $subject->array);
+        $this->assertEquals(12, $subject->int);
+        $this->assertInstanceOf(TestClass1::class, $subject->class);
+    }
+
+    public function testInvokeExceptionOnMissingTypes()
+    {
+        $this->expectException(RequiredKeysMissing::class);
+        $subject = new TestClass6();
+        Instantiator::call($subject, 'callMe', [
+            'hello',
+        ], Instantiator::MODE_TYPE);
+
+        $this->assertEquals(true, $subject->bool);
     }
 }
 
@@ -180,6 +208,43 @@ class TestClass5
     public function callMe(string $string = '')
     {
         $this->string = $string;
+    }
+}
+
+class TestClass6
+{
+    /**
+     * @var string
+     */
+    public $string;
+    /**
+     * @var array
+     */
+    public $array;
+    /**
+     * @var int
+     */
+    public $int;
+    /**
+     * @var bool
+     */
+    public $bool;
+
+    public $class;
+
+    public function callMe(
+        string $string,
+        array $array,
+        int $int,
+        bool $bool,
+        TestClass1 $class
+    )
+    {
+        $this->string = $string;
+        $this->array = $array;
+        $this->int = $int;
+        $this->bool = $bool;
+        $this->class = $class;
     }
 }
 

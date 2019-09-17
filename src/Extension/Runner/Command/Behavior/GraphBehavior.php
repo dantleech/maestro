@@ -5,7 +5,9 @@ namespace Maestro\Extension\Runner\Command\Behavior;
 use Amp\Loop;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
+use Maestro\Library\GraphTask\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
+use Maestro\Library\Task\Worker;
 use Maestro\Library\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,10 +32,22 @@ class GraphBehavior
      */
     private $constructor;
 
-    public function __construct(ManifestLoader $loader, GraphConstructor $constructor)
+    /**
+     * @var GraphTaskScheduler
+     */
+    private $scheduler;
+
+    /**
+     * @var Worker
+     */
+    private $worker;
+
+    public function __construct(ManifestLoader $loader, GraphConstructor $constructor, GraphTaskScheduler $scheduler, Worker $worker)
     {
         $this->loader = $loader;
         $this->constructor = $constructor;
+        $this->scheduler = $scheduler;
+        $this->worker = $worker;
     }
 
     public function configure(Command $command): void
@@ -54,6 +68,14 @@ class GraphBehavior
     {
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
+
+        Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($graph) {
+            $this->scheduler->run($graph);
+        });
+
+        Loop::repeat(self::POLL_TIME_DISPATCH + 1, function () {
+            $this->worker->start();
+        });
 
         Loop::run();
     }

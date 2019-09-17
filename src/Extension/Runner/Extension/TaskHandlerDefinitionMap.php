@@ -6,6 +6,7 @@ use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
 use RuntimeException;
+use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 
 class TaskHandlerDefinitionMap implements IteratorAggregate
 {

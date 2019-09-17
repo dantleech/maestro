@@ -2,8 +2,8 @@
 
 namespace Maestro\Extension\Runner\Task;
 
+use Amp\Success;
 use Maestro\Library\Support\Environment\Environment;
-use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\ProvidingTaskHandler;
 
@@ -19,9 +19,9 @@ class InitHandler implements ProvidingTaskHandler
 
     public function __invoke(InitTask $task)
     {
-        return [
-            Instantiator::instantiate(Environment::class, $task->environment()),
-            Instantiator::instantiate(Variables::class, $task->variables()),
-        ];
+        return new Success([
+            new Environment($task->environment()),
+            new Variables($task->variables()),
+        ]);
     }
 }

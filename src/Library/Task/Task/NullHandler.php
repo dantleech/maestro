@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Task;
+namespace Maestro\Library\Task\Task;
 
 use Amp\Promise;
 use Amp\Success;

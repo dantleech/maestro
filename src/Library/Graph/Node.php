@@ -8,6 +8,7 @@ use Maestro\Library\Task\Job;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;
+use RuntimeException;
 
 /**
  * The node represents a task in the task graph.
@@ -117,7 +118,15 @@ final class Node
             $this->state = State::DISPATCHED();
             $job = Job::create($this->task, $artifacts);
             $queue->enqueue($job);
-            $this->artifacts = yield $job->result();
+            $artifacts = yield $job->result();
+            if (!is_array($artifacts)) {
+                throw new RuntimeException(sprintf(
+                    'Node Task handler for "%s" was expected to return an array of artifacts, got "%s"',
+                    get_class($this->task),
+                    gettype($artifacts)
+                ));
+            }
+            $this->artifacts = $artifacts;
             $this->state = State::DONE();
         });
     }

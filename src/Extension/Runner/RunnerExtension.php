@@ -4,16 +4,17 @@ namespace Maestro\Extension\Runner;
 
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
-use Maestro\Extension\Runner\Extension\TaskHandlerDefinition;
+use Maestro\Extension\Runner\Task\InitHandler;
+use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Extension\Runner\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
-use Maestro\Extension\Runner\Task\NullHandler;
-use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Task\Task\NullTask;
+use Maestro\Library\GraphTask\GraphTaskScheduler;
+use Maestro\Library\Task\Queue;
+use Maestro\Library\Task\Worker;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -34,6 +35,7 @@ class RunnerExtension implements Extension
     {
         $this->registerConsole($container);
         $this->registerLoader($container);
+        $this->registerTask($container);
     }
 
     /**
@@ -60,6 +62,8 @@ class RunnerExtension implements Extension
             return new GraphBehavior(
                 $container->get(ManifestLoader::class),
                 $container->get(GraphConstructor::class),
+                $container->get(GraphTaskScheduler::class),
+                $container->get(Worker::class)
             );
         });
 
@@ -82,29 +86,23 @@ class RunnerExtension implements Extension
             );
         });
 
-        $container->register(TaskHandlerDefinitionMap::class, function (Container $container) {
-            $definitions = [];
-
-            foreach ($container->getServiceIdsForTag(self::TAG_TASK_HANDLER) as $serviceId => $attrs) {
-                $attrs = array_merge([
-                    'serviceId' => $serviceId
-                ], $attrs);
-                $definitions[] = Instantiator::instantiate(TaskHandlerDefinition::class, $attrs);
-            }
-
-            return new TaskHandlerDefinitionMap($definitions);
-        });
-
         $container->register(GraphConstructor::class, function (Container $container) {
             return new GraphConstructor($container->getParameter(self::PARAM_PURGE));
         });
+    }
 
-        $container->register(NullHandler::class, function (Container $container) {
-            return new NullHandler();
+    private function registerTask(ContainerBuilder $container)
+    {
+        $container->register(GraphTaskScheduler::class, function (Container $container) {
+            return new GraphTaskScheduler($container->get(Queue::class));
+        });
+
+        $container->register(InitHandler::class, function (Container $container) {
+            return new InitHandler();
         }, [
             self::TAG_TASK_HANDLER => [
-                'taskClass' => NullTask::class,
-                'alias' => 'null',
+                'taskClass' => InitTask::class,
+                'alias' => 'init',
             ]
         ]);
     }

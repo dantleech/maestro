@@ -4,6 +4,7 @@ namespace Maestro;
 
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
+use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
@@ -61,6 +62,7 @@ final class ApplicationBuilder
             RunnerExtension::class,
             ScriptExtension::class,
             TemplateExtension::class,
+            TaskExtension::class,
         ], $config);
     }
 

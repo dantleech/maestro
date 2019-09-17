@@ -5,6 +5,7 @@ namespace Maestro\Tests\Unit\Extension\Loader;
 use Closure;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\Manifest;
+use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\Nodes;
@@ -32,11 +33,7 @@ class GraphConstructorTest extends TestCase
             [
             ],
             function (Graph $graph) {
-                $this->assertEquals(Nodes::fromNodes([
-                    Node::create('root', [
-                        'task' => new NullTask(null),
-                    ])
-                ]), $graph->roots());
+                $this->assertInstanceOf(InitTask::class, $graph->roots()->get('root')->task());
             }
         ];
 

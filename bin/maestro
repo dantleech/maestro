@@ -7,5 +7,10 @@ use Symfony\Component\Console\Application;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+if (class_exists(Symfony\Component\Debug\Debug::class)) {
+    Symfony\Component\Debug\Debug::enable();
+}
+
 $application = (new ApplicationBuilder())->build();
 $application->run();
+

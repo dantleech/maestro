@@ -21,4 +21,12 @@ class FifoQueue implements Queue
     {
         $this->jobs[] = $job;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->jobs);
+    }
 }

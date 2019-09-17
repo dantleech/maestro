@@ -57,7 +57,7 @@ class IntegrationTestCase extends TestCase
     {
         $process = new Process(sprintf(
             $command,
-            ), $this->packagePath($packageName));
+        ), $this->packagePath($packageName));
         $process->mustRun();
     }
 }

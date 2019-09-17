@@ -2,7 +2,7 @@
 
 namespace Maestro\Library\Task\Test;
 
-use Maestro\Library\GraphTaskRunner\ArtifactContainer;
+use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 
 class HandlerTester
@@ -19,7 +19,7 @@ class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $args, array $artifacts = []): ArtifactContainer
+    public function handle(string $taskFqn, array $args, array $artifacts = []): Artifacts
     {
         $task = Instantiator::instantiate($taskFqn, $args);
         $artifacts = \Amp\Promise\wait(Instantiator::call(
@@ -30,6 +30,6 @@ class HandlerTester
             ], array_values($artifacts)),
             Instantiator::MODE_TYPE
         ));
-        return new ArtifactContainer($artifacts);
+        return new Artifacts($artifacts);
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Maestro\Library\GraphTaskRunner;
+namespace Maestro\Library\GraphTask;
 
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\Nodes;
 use Maestro\Library\Task\Queue;
 
-class GraphTaskRunner
+class GraphTaskScheduler
 {
     /**
      * @var Queue
@@ -21,23 +21,23 @@ class GraphTaskRunner
 
     public function run(Graph $graph): void
     {
-        $context = new ArtifactContainer();
-        $this->runNodes($context, $graph, $graph->roots());
+        $artifacts = new Artifacts();
+        $this->runNodes($artifacts, $graph, $graph->roots());
     }
 
-    private function runNodes(ArtifactContainer $container, Graph $graph, Nodes $nodes): void
+    private function runNodes(Artifacts $artifacts, Graph $graph, Nodes $nodes): void
     {
         foreach ($nodes as $node) {
             assert($node instanceof Node);
 
             if ($node->state()->isIdle()) {
-                $node->run($this->queue, $container->toArray());
+                $node->run($this->queue, $artifacts);
                 continue;
             }
 
             if ($node->state()->isDone()) {
-                $container = $container->spawnMutated($node->artifacts());
-                $this->runNodes($container, $graph, $graph->dependentsFor($node->id()));
+                $artifacts = $artifacts->spawnMutated($node->artifacts());
+                $this->runNodes($artifacts, $graph, $graph->dependentsFor($node->id()));
                 continue;
             }
         }

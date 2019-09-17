@@ -1,18 +1,18 @@
 <?php
 
-namespace Maestro\Tests\Unit\Library\GraphTaskRunner;
+namespace Maestro\Tests\Unit\Library\GraphTask;
 
-use Maestro\Library\GraphTaskRunner\ArtifactContainer;
-use Maestro\Library\GraphTaskRunner\Exception\ArtifactNotFound;
+use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\GraphTask\Exception\ArtifactNotFound;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
-class ArtifactContainerTest extends TestCase
+class ArtifactsTest extends TestCase
 {
     public function testSetAndGetObject()
     {
         $object = new stdClass();
-        $container = new ArtifactContainer();
+        $container = new Artifacts();
         $container->set($object);
         $this->assertSame($object, $container->get(stdClass::class));
     }
@@ -20,7 +20,7 @@ class ArtifactContainerTest extends TestCase
     public function testCreateFromArrayOfObjects()
     {
         $object = new stdClass();
-        $container = new ArtifactContainer([
+        $container = new Artifacts([
             $object
         ]);
         $container->set($object);
@@ -31,7 +31,7 @@ class ArtifactContainerTest extends TestCase
     {
         $object1 = new stdClass();
         $object2 = new stdClass();
-        $container = new ArtifactContainer();
+        $container = new Artifacts();
         $container->set($object1);
         $container->set($object2);
         $this->assertNotSame($object1, $container->get(stdClass::class));
@@ -42,7 +42,7 @@ class ArtifactContainerTest extends TestCase
     {
         $this->expectException(ArtifactNotFound::class);
 
-        $container = new ArtifactContainer();
+        $container = new Artifacts();
         $container->get(stdClass::class);
     }
 
@@ -55,7 +55,7 @@ class ArtifactContainerTest extends TestCase
         $object3 = new class extends stdClass {
         };
 
-        $container1 = new ArtifactContainer([$object1]);
+        $container1 = new Artifacts([$object1]);
         $container2= $container1->spawnMutated([
             $object2,
             $object3

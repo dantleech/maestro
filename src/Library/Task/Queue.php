@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Task;
 
-interface Queue
+use Countable;
+
+interface Queue extends Countable
 {
     public function dequeue(): ?Job;
 

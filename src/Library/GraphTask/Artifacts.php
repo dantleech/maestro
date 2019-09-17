@@ -1,10 +1,11 @@
 <?php
 
-namespace Maestro\Library\GraphTaskRunner;
+namespace Maestro\Library\GraphTask;
 
-use Maestro\Library\GraphTaskRunner\Exception\ArtifactNotFound;
+use Countable;
+use Maestro\Library\GraphTask\Exception\ArtifactNotFound;
 
-class ArtifactContainer
+class Artifacts implements Countable
 {
     /**
      * @var array<string,object>
@@ -35,7 +36,7 @@ class ArtifactContainer
         $this->artifacts[get_class($artifact)] = $artifact;
     }
 
-    public function spawnMutated(array $artifacts): ArtifactContainer
+    public function spawnMutated(array $artifacts): Artifacts
     {
         return new self(array_merge($this->artifacts, $artifacts));
     }
@@ -43,5 +44,13 @@ class ArtifactContainer
     public function toArray(): array
     {
         return $this->artifacts;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return count($this->artifacts);
     }
 }

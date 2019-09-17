@@ -5,12 +5,14 @@ namespace Maestro\Tests\Unit\Library\Task;
 use Amp\Delayed;
 use Amp\Loop;
 use Amp\Success;
+use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Task\Worker;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class WorkerTest extends TestCase
@@ -40,8 +42,8 @@ class WorkerTest extends TestCase
         $this->queue->enqueue($job1);
         $this->queue->enqueue($job2);
 
-        $this->taskRunner->run($job1->task(), [])->willReturn(new Success());
-        $this->taskRunner->run($job2->task(), [])->willReturn(new Success());
+        $this->taskRunner->run($job1->task(), Argument::type(Artifacts::class))->willReturn(new Success());
+        $this->taskRunner->run($job2->task(), Argument::type(Artifacts::class))->willReturn(new Success());
 
         Loop::run(function () use ($worker) {
             $worker->start();
@@ -62,11 +64,11 @@ class WorkerTest extends TestCase
 
         $this->taskRunner->run(
             $job1->task(),
-            []
+            Argument::type(Artifacts::class)
         )->willReturn(new Delayed(10));
         $this->taskRunner->run(
             $job2->task(),
-            []
+            Argument::type(Artifacts::class)
         )->willReturn(new Delayed(10));
 
         Loop::delay(5, function () use ($job1, $job2) {

@@ -2,6 +2,7 @@
 
 namespace Maestro\Library\Graph;
 
+use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\Queue;
@@ -48,13 +49,15 @@ final class Node
         string $id,
         string $label = null,
         ?Task $task = null,
-        array $tags = []
+        array $tags = [],
+        array $artifacts = []
     ) {
         $this->id = $id;
         $this->label = $label ?: $id;
         $this->state = State::IDLE();
         $this->task = $task ?: new NullTask();
         $this->tags = $tags;
+        $this->artifacts = $artifacts;
     }
 
     /**
@@ -108,7 +111,7 @@ final class Node
         return $this->tags;
     }
 
-    public function run(Queue $queue, array $artifacts): void
+    public function run(Queue $queue, Artifacts $artifacts): void
     {
         \Amp\asyncCall(function () use ($queue, $artifacts) {
             $this->state = State::DISPATCHED();

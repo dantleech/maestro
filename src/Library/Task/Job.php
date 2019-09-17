@@ -4,6 +4,7 @@ namespace Maestro\Library\Task;
 
 use Amp\Deferred;
 use Amp\Promise;
+use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Task\Task\NullTask;
 
 class Job
@@ -24,11 +25,11 @@ class Job
     private $state;
 
     /**
-     * @var array
+     * @var Artifacts
      */
     private $artifacts;
 
-    private function __construct(Task $task, array $artifacts = [])
+    private function __construct(Task $task, Artifacts $artifacts)
     {
         $this->task = $task;
         $this->deferred = new Deferred();
@@ -36,14 +37,14 @@ class Job
         $this->artifacts = $artifacts;
     }
 
-    public static function create(Task $task, array $artifacts = []): Job
+    public static function create(Task $task, ?Artifacts $artifacts = null): Job
     {
-        return new self($task, $artifacts);
+        return new self($task, $artifacts ?: new Artifacts());
     }
 
     public static function createNull(): self
     {
-        return new self(new NullTask());
+        return self::create(new NullTask());
     }
 
     public function run(TaskRunner $runner): void
@@ -76,7 +77,7 @@ class Job
         return $this->state;
     }
 
-    public function artifacts(): array
+    public function artifacts(): Artifacts
     {
         return $this->artifacts;
     }

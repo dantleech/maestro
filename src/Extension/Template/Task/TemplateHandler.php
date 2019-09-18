@@ -4,7 +4,9 @@ namespace Maestro\Extension\Template\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Extension\Template\EnvironmentFactory;
+use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailed;
 use Maestro\Library\Workspace\Workspace;
@@ -23,14 +25,24 @@ class TemplateHandler
         $this->factory = $factory;
     }
 
-    public function __invoke(TemplateTask $task, Variables $variables, Workspace $workspace): Promise
-    {
+    public function __invoke(
+        TemplateTask $task,
+        Manifest $manifest,
+        Variables $variables,
+        Workspace $workspace,
+        Package $package
+    ): Promise {
         $twigEnvironment = $this->factory->get(
-            $variables->get('manifest.dir')
+            dirname($manifest->path())
         );
 
         try {
-            $rendered = $twigEnvironment->render($task->path(), $variables->toArray());
+            $rendered = $twigEnvironment->render(
+                $task->path(),
+                array_merge([
+                    'package' => $package
+                ], $variables->toArray())
+            );
         } catch (Error $error) {
             throw new TaskFailed($error->getMessage());
         }

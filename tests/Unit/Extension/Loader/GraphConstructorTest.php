@@ -7,8 +7,6 @@ use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Library\Graph\Graph;
-use Maestro\Library\Graph\Node;
-use Maestro\Library\Graph\Nodes;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;

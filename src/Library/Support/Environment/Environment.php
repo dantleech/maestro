@@ -7,15 +7,20 @@ class Environment
     /**
      * @var array
      */
-    private $vars;
+    private $env;
 
-    public function __construct(array $vars)
+    public function __construct(array $env)
     {
-        $this->vars = $vars;
+        $this->env = $env;
     }
 
     public function toArray(): array
     {
-        return $this->vars;
+        return $this->env;
+    }
+
+    public function spawnMerged(array $env): Environment
+    {
+        return new self(array_merge($this->env, $env));
     }
 }

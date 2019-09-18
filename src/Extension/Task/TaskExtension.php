@@ -19,7 +19,7 @@ use Phpactor\MapResolver\Resolver;
 
 class TaskExtension implements Extension
 {
-    const TAG_TASK_HANDLER = 'runner.tag.task_handler';
+    const TAG_TASK_HANDLER = 'runner.tag.taskHandler';
 
     const PARAM_MILLISLEEP = 'task.milliSleep';
     const PARAM_CONCURRENCY = 'task.concurrency';

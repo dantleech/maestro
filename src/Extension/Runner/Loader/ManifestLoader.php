@@ -16,17 +16,23 @@ class ManifestLoader
     /**
      * @var string
      */
+    private $manifestPath;
+
+    /**
+     * @var string
+     */
     private $workingDirectory;
 
-    public function __construct(string $workingDirectory, array $processors)
+    public function __construct(string $workingDirectory, string $manifestPath, array $processors)
     {
         $this->processors = $processors;
+        $this->manifestPath = $manifestPath;
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function load(string $path): Manifest
+    public function load(): Manifest
     {
-        $path = $this->resolvePath($path);
+        $path = $this->resolvePath();
         $data = $this->loadManifestArray($path);
 
         foreach ($this->processors as $processor) {
@@ -59,8 +65,9 @@ class ManifestLoader
         return $array;
     }
 
-    private function resolvePath(string $planPath)
+    private function resolvePath(): string
     {
+        $planPath = $this->manifestPath;
         if (Path::isAbsolute($planPath)) {
             return $planPath;
         }

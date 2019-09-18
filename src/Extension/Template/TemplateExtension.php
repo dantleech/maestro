@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Template;
 
-use Maestro\Extension\Runner\RunnerExtension;
+use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
 use Phpactor\Container\Container;
@@ -22,7 +22,7 @@ class TemplateExtension implements Extension
     {
         $container->register(TemplateHandler::class, function (Container $container) {
             return new TemplateHandler($container->get(EnvironmentFactory::class));
-        }, [ RunnerExtension::TAG_TASK_HANDLER => [
+        }, [ TaskExtension::TAG_TASK_HANDLER => [
             'alias' => 'template',
             'taskClass' => TemplateTask::class,
         ]]);

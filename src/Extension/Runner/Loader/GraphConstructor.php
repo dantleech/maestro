@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Loader;
 
 use Maestro\Extension\Runner\Task\InitTask;
+use Maestro\Extension\Runner\Task\PackageInitTask;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
@@ -32,8 +33,7 @@ class GraphConstructor
             Node::create(self::NODE_ROOT, [
                 'label' => 'root',
                 'task' => Instantiator::instantiate(InitTask::class, [
-                    'variables' => $manifest->vars(),
-                    'environment' => $manifest->env()
+                    'manifest' => $manifest
                 ]),
             ])
         );
@@ -49,7 +49,13 @@ class GraphConstructor
                 $package->name(),
                 [
                     'label' => $package->name(),
-                    'task' => new NullTask(),
+                    'task' => Instantiator::instantiate(PackageInitTask::class, [
+                        'name' => $package->name(),
+                        'purgeWorkspace' => $this->purge,
+                        'env' => $package->env(),
+                        'vars' => $package->vars(),
+                        'version' => $package->version()
+                    ]),
                     'tags' => $package->tags()
                 ]
             ));

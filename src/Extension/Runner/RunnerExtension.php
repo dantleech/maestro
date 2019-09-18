@@ -12,9 +12,13 @@ use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Extension\Runner\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
+use Maestro\Extension\Runner\Task\PackageInitHandler;
+use Maestro\Extension\Runner\Task\PackageInitTask;
+use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\GraphTask\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Worker;
+use Maestro\Library\Workspace\WorkspaceManager;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -23,10 +27,11 @@ use Phpactor\MapResolver\Resolver;
 
 class RunnerExtension implements Extension
 {
-    const PARAM_WORKING_DIRECTORY = 'runner.working-directory';
+    const PARAM_WORKING_DIRECTORY = 'runner.workingDirectory';
+    const PARAM_MANIFEST_PATH = 'runner.manifestPath';
     const PARAM_PURGE = 'runner.purge';
-    const SERVICE_TASK_DEFINITIONS = 'runner.alias_to_class_map';
-    const TAG_TASK_HANDLER = 'runner.tag.task_handler';
+
+    const SERVICE_TASK_DEFINITIONS = 'runner.aliasToClassMap';
 
     /**
      * {@inheritDoc}
@@ -46,6 +51,9 @@ class RunnerExtension implements Extension
         $schema->setDefaults([
             self::PARAM_WORKING_DIRECTORY => getcwd(),
             self::PARAM_PURGE => false
+        ]);
+        $schema->setRequired([
+            self::PARAM_MANIFEST_PATH
         ]);
     }
 
@@ -77,6 +85,7 @@ class RunnerExtension implements Extension
         $container->register(ManifestLoader::class, function (Container $container) {
             return new ManifestLoader(
                 $container->getParameter(self::PARAM_WORKING_DIRECTORY),
+                $container->getParameter(self::PARAM_MANIFEST_PATH),
                 [
                     new PrototypeExpandingProcessor(),
                     new TaskAliasExpandingProcessor(
@@ -100,9 +109,20 @@ class RunnerExtension implements Extension
         $container->register(InitHandler::class, function (Container $container) {
             return new InitHandler();
         }, [
-            self::TAG_TASK_HANDLER => [
+            TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => InitTask::class,
                 'alias' => 'init',
+            ]
+        ]);
+
+        $container->register(PackageInitHandler::class, function (Container $container) {
+            return new PackageInitHandler(
+                $container->get(WorkspaceManager::class)
+            );
+        }, [
+            TaskExtension::TAG_TASK_HANDLER => [
+                'taskClass' => PackageInitTask::class,
+                'alias' => 'package_init',
             ]
         ]);
     }

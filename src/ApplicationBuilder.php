@@ -6,6 +6,7 @@ use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -26,6 +27,8 @@ final class ApplicationBuilder
     private const OPTION_WORKSPACE_DIRECTORY = 'workspace-dir';
     private const OPTION_WORKING_DIRECTORY = 'working-dir';
     private const OPTION_NAMESPACE = 'namespace';
+    private const OPTION_MANIFEST_PATH = 'plan';
+    private const OPTION_PURGE = 'purge';
 
     /**
      * @var InputInterface
@@ -63,6 +66,7 @@ final class ApplicationBuilder
             ScriptExtension::class,
             TemplateExtension::class,
             TaskExtension::class,
+            WorkspaceExtension::class,
         ], $config);
     }
 
@@ -77,6 +81,8 @@ final class ApplicationBuilder
             new InputOption(self::OPTION_WORKSPACE_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Path to workspace'),
             new InputOption(self::OPTION_WORKING_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Working directory'),
             new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
+            new InputOption(self::OPTION_MANIFEST_PATH, null, InputOption::VALUE_REQUIRED, 'Path to manifest (plan) defaults to maestro.json'),
+            new InputOption(self::OPTION_PURGE, null, InputOption::VALUE_NONE, 'Purge workspace before starting'),
         ]);
         return $definition;
     }
@@ -87,6 +93,8 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_LEVEL => 'warning',
             LoggingExtension::PARAM_PATH => STDERR,
             LoggingExtension::PARAM_FORMATTER => null,
+            RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
+            RunnerExtension::PARAM_PURGE => false,
         ];
 
         foreach ([
@@ -95,6 +103,8 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_PATH => self::OPTION_LOG_PATH,
             LoggingExtension::PARAM_FORMATTER => self::OPTION_LOG_FORMAT,
             RunnerExtension::PARAM_WORKING_DIRECTORY => self::OPTION_WORKING_DIRECTORY,
+            RunnerExtension::PARAM_MANIFEST_PATH => self::OPTION_MANIFEST_PATH,
+            RunnerExtension::PARAM_PURGE => self::OPTION_PURGE,
         ] as $configKey => $optionName) {
             $option = $definition->getOption($optionName);
             $optionName = '--' . $optionName;

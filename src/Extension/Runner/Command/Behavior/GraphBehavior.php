@@ -8,9 +8,7 @@ use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Library\GraphTask\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Task\Worker;
-use Maestro\Library\Util\Cast;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,15 +50,12 @@ class GraphBehavior
 
     public function configure(Command $command): void
     {
-        $command->addArgument(self::ARG_MANIFEST, InputArgument::REQUIRED, 'Path to the plan to execute');
     }
 
     public function loadGraph(InputInterface $input): Graph
     {
         return $this->constructor->construct(
-            $this->loader->load(
-                Cast::toString($input->getArgument(self::ARG_MANIFEST))
-            )
+            $this->loader->load()
         );
     }
 

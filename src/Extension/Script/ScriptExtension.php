@@ -2,10 +2,10 @@
 
 namespace Maestro\Extension\Script;
 
-use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\Model\ScriptRunner;
 use Maestro\Extension\Script\Task\ScriptHandler;
 use Maestro\Extension\Script\Task\ScriptTask;
+use Maestro\Extension\Task\TaskExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -26,7 +26,7 @@ class ScriptExtension implements Extension
         $container->register(ScriptHandler::class, function (Container $container) {
             return new ScriptHandler($container->get(ScriptRunner::class));
         }, [
-            RunnerExtension::TAG_TASK_HANDLER => [
+            TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => ScriptTask::class,
                 'alias' => 'script',
             ]

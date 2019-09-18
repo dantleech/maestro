@@ -2,24 +2,19 @@
 
 namespace Maestro\Extension\Runner\Task;
 
+use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Library\Task\Task;
 
 class InitTask implements Task
 {
     /**
-     * @var array
+     * @var Manifest
      */
-    private $environment;
+    private $manifest;
 
-    /**
-     * @var array
-     */
-    private $variables;
-
-    public function __construct(array $environment, array $variables)
+    public function __construct(Manifest $manifest)
     {
-        $this->environment = $environment;
-        $this->variables = $variables;
+        $this->manifest = $manifest;
     }
 
     public function description(): string
@@ -27,13 +22,8 @@ class InitTask implements Task
         return 'initializing';
     }
 
-    public function variables(): array
+    public function manifest(): Manifest
     {
-        return $this->variables;
-    }
-
-    public function environment(): array
-    {
-        return $this->environment;
+        return $this->manifest;
     }
 }

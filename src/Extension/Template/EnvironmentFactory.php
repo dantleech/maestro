@@ -17,10 +17,8 @@ class EnvironmentFactory
         $this->options = $options;
     }
 
-    public function get(string $path): Environment
+    public function get(array $paths): Environment
     {
-        return new Environment(new FilesystemLoader([
-            $path
-        ]), $this->options);
+        return new Environment(new FilesystemLoader($paths), $this->options);
     }
 }

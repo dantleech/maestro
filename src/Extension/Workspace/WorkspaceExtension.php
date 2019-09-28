@@ -10,6 +10,7 @@ use Phpactor\Container\Extension;
 use Phpactor\MapResolver\Resolver;
 use Webmozart\PathUtil\Path;
 use XdgBaseDir\Xdg;
+use function Safe\getcwd;
 
 class WorkspaceExtension implements Extension
 {

@@ -32,9 +32,15 @@ class TemplateHandler
         Workspace $workspace,
         Package $package
     ): Promise {
-        $twigEnvironment = $this->factory->get(
-            dirname($manifest->path())
-        );
+        $paths = [];
+
+        $manifestPath = $manifest->path();
+
+        if ($manifestPath) {
+            $paths[] = dirname($manifestPath);
+        }
+
+        $twigEnvironment = $this->factory->get($paths);
 
         try {
             $rendered = $twigEnvironment->render(

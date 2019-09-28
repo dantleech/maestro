@@ -53,4 +53,9 @@ class Artifacts implements Countable
     {
         return count($this->artifacts);
     }
+
+    public function has(string $artifactFqn): bool
+    {
+        return isset($this->artifacts[$artifactFqn]);
+    }
 }

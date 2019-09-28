@@ -32,7 +32,7 @@ class ScriptRunner
 
             $process = new Process($script, $workingDirectory, $env);
             $pid  = yield $process->start();
-            $this->logger->debug(sprintf('running process "%s" in "%s": %s', $pid, basename($workingDirectory), $script));
+            $this->logger->debug(sprintf('process "%s" running in "%s": %s', $pid, basename($workingDirectory), $script));
 
             $outs = yield from $this->handleStreamOutput($process);
             $exitCode = yield $process->join();

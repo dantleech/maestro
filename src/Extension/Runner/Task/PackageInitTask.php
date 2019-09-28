@@ -42,7 +42,7 @@ class PackageInitTask implements Task
     }
     public function description(): string
     {
-        return sprintf('initializing package');
+        return sprintf('initializing package %s', $this->name);
     }
 
     public function env(): array

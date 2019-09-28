@@ -26,6 +26,8 @@ class Worker
      */
     private $concurrency;
 
+    private $jobs = [];
+
     public function __construct(
         TaskRunner $taskRunner,
         Queue $queue,
@@ -41,33 +43,41 @@ class Worker
     public function start(): void
     {
         \Amp\asyncCall(function () {
-            /** @var Job[] $jobs */
-            $jobs = $this->buildJobs([]);
+            $this->buildJobs();
 
-            while ($jobs) {
-                foreach ($jobs as $index => $job) {
+            while ($this->jobs) {
+                foreach ($this->jobs as $index => $job) {
                     if ($job->state()->is(JobState::WAITING())) {
                         $job->run($this->taskRunner);
                         continue;
                     }
 
                     if ($job->state()->is(JobState::DONE())) {
-                        unset($jobs[$index]);
+                        unset($this->jobs[$index]);
                     }
                 }
 
-                $jobs = $this->buildJobs($jobs);
                 yield new Delayed($this->milliSleep);
+                $this->buildJobs();
             }
         });
     }
 
-    private function buildJobs(array $jobs): array
+    public function processingJobCount(): int
     {
-        while (count($jobs) < $this->concurrency && $job = $this->queue->dequeue()) {
-            $jobs[] = $job;
-        }
+        return array_reduce($this->jobs, function ($inc, Job $job) {
+            if ($job->state()->is(JobState::PROCESSING())) {
+                $inc++;
+            }
 
-        return $jobs;
+            return $inc;
+        }, 0);
+    }
+
+    private function buildJobs(): void
+    {
+        while (count($this->jobs) < $this->concurrency && $job = $this->queue->dequeue()) {
+            $this->jobs[] = $job;
+        }
     }
 }

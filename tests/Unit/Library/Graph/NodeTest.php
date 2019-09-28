@@ -9,7 +9,7 @@ use Maestro\Library\Graph\State;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\Task;
-use Maestro\Library\Task\TaskRunner;
+use Maestro\Library\Task\TaskRunner\InvokingTaskRunner;
 use PHPUnit\Framework\TestCase;
 
 class NodeTest extends TestCase
@@ -40,7 +40,7 @@ class NodeTest extends TestCase
     public function testUpdatesStateToFailedIfJobFails()
     {
         $task = $this->prophesize(Task::class);
-        $taskRunner = $this->prophesize(TaskRunner::class);
+        $taskRunner = $this->prophesize(InvokingTaskRunner::class);
         $exception = new TaskFailure('Sorry');
         $taskRunner->run($task->reveal(), new Artifacts([]))->willThrow($exception);
         $node = Node::create('root', [

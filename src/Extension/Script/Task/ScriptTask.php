@@ -18,7 +18,7 @@ class ScriptTask implements Task
 
     public function description(): string
     {
-        return $this->script;
+        return sprintf('running %s', $this->script);
     }
 
     public function script(): string

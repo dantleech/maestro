@@ -4,6 +4,7 @@ namespace Maestro\Extension\Runner;
 
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
+use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
 use Maestro\Extension\Runner\Task\InitHandler;
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
@@ -75,7 +76,9 @@ class RunnerExtension implements Extension
                 $container->get(ManifestLoader::class),
                 $container->get(GraphConstructor::class),
                 $container->get(GraphTaskScheduler::class),
-                $container->get(Worker::class)
+                $container->get(Worker::class),
+                $container->get(LoggingExtension::SERVICE_LOGGER),
+                $container->get(Queue::class)
             );
         });
 
@@ -136,8 +139,9 @@ class RunnerExtension implements Extension
         $container->register(JsonFormatter::class, function (Container $container) {
             return new JsonFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'json']]);
+
         $container->register(CliFormatter::class, function (Container $container) {
-            return new CliFormatter();
+            return new MaestroColoredLineFormatter(null, "[%elapsed%] %message% %context% %extra%\n", 'U.u');
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'console']]);
     }
 }

@@ -9,7 +9,7 @@ use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;
-use Maestro\Library\Task\TaskRunner;
+use Maestro\Library\Task\TaskRunner\InvokingTaskRunner;
 use Maestro\Library\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -23,7 +23,7 @@ class JobTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->taskRunner = $this->prophesize(TaskRunner::class);
+        $this->taskRunner = $this->prophesize(InvokingTaskRunner::class);
     }
     public function testDefaultStateIsWaiting()
     {

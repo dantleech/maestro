@@ -33,7 +33,7 @@ class GraphTaskScheduler
                 continue;
             }
 
-            if ($node->state()->isIdle()) {
+            if ($node->state()->isIdle() && $this->isSatisfied($graph, $node)) {
                 $node->run($this->queue, $artifacts);
                 continue;
             }
@@ -51,5 +51,16 @@ class GraphTaskScheduler
         foreach ($graph->descendantsFor($node->id()) as $node) {
             $node->cancel();
         }
+    }
+
+    private function isSatisfied(Graph $graph, Node $node): bool
+    {
+        foreach ($graph->dependenciesFor($node->id()) as $dependency) {
+            if (!$dependency->state()->isDone()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

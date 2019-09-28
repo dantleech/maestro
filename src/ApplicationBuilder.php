@@ -26,6 +26,7 @@ final class ApplicationBuilder
     private const OPTION_LOG_PATH = 'log-path';
     private const OPTION_LOG_LEVEL = 'log-level';
     private const OPTION_LOG_FORMAT = 'log-format';
+    private const OPTION_CONCURRENCY = 'concurrency';
     private const OPTION_WORKSPACE_DIRECTORY = 'workspace-dir';
     private const OPTION_WORKING_DIRECTORY = 'working-dir';
     private const OPTION_NAMESPACE = 'namespace';
@@ -87,6 +88,7 @@ final class ApplicationBuilder
             new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
             new InputOption(self::OPTION_MANIFEST_PATH, null, InputOption::VALUE_REQUIRED, 'Path to manifest (plan) defaults to maestro.json'),
             new InputOption(self::OPTION_PURGE, null, InputOption::VALUE_NONE, 'Purge workspace before starting'),
+            new InputOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Set worker job concurrency'),
         ]);
         return $definition;
     }
@@ -99,6 +101,7 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_FORMATTER => 'console',
             RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
             RunnerExtension::PARAM_PURGE => false,
+            TaskExtension::PARAM_CONCURRENCY => 10
         ];
 
         foreach ([
@@ -109,6 +112,7 @@ final class ApplicationBuilder
             RunnerExtension::PARAM_WORKING_DIRECTORY => self::OPTION_WORKING_DIRECTORY,
             RunnerExtension::PARAM_MANIFEST_PATH => self::OPTION_MANIFEST_PATH,
             RunnerExtension::PARAM_PURGE => self::OPTION_PURGE,
+            TaskExtension::PARAM_CONCURRENCY => self::OPTION_CONCURRENCY,
         ] as $configKey => $optionName) {
             $option = $definition->getOption($optionName);
             $optionName = '--' . $optionName;

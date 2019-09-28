@@ -3,7 +3,6 @@
 namespace Maestro\Library\Task;
 
 use Amp\Promise;
-use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 
 class TaskRunner

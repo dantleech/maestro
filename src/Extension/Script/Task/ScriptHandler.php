@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Script\Task;
 
 use Amp\Promise;
-use Maestro\Extension\Script\Model\ScriptResult;
-use Maestro\Extension\Script\Model\ScriptRunner;
+use Maestro\Library\Script\ScriptResult;
+use Maestro\Library\Script\ScriptRunner;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\ProvidingTaskHandler;

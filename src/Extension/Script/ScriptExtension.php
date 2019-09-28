@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Script;
 
-use Maestro\Extension\Script\Model\ScriptRunner;
+use Maestro\Library\Script\ScriptRunner;
 use Maestro\Extension\Script\Task\ScriptHandler;
 use Maestro\Extension\Script\Task\ScriptTask;
 use Maestro\Extension\Task\TaskExtension;

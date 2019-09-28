@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Tests\Unit\Extension\Script\Model;
+namespace Maestro\Tests\Unit\Library\Script;
 
-use Maestro\Extension\Script\Model\ScriptResult;
-use Maestro\Extension\Script\Model\ScriptRunner;
+use Maestro\Library\Script\ScriptResult;
+use Maestro\Library\Script\ScriptRunner;
 use Maestro\Tests\IntegrationTestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;

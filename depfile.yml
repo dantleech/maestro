@@ -34,15 +34,25 @@ layers:
           - type: directory
             regex: "src/Library/Util/.*"
 
-    - name: lib-workspace
+    - name: lib-vcs
       collectors:
           - type: directory
-            regex: "src/Library/Workspace/.*"
+            regex: "src/Library/Vcs/.*"
+
+    - name: lib-git
+      collectors:
+          - type: directory
+            regex: "src/Library/Git/.*"
 
     - name: lib-workspace
       collectors:
           - type: directory
             regex: "src/Library/Workspace/.*"
+
+    - name: lib-script
+      collectors:
+          - type: directory
+            regex: "src/Library/Script/.*"
 
     # Extensions
     - name: ex-runner
@@ -71,6 +81,10 @@ layers:
             regex: "src/Extension/Workspace/.*"
 
 ruleset:
+    lib-git:
+        - lib-vcs
+        - lib-script
+
     lib-graph:
         - lib-task
         - lib-instantiator
@@ -79,6 +93,9 @@ ruleset:
         - lib-instantiator
 
     lib-instantiator: ~
+
+    lib-script:
+        - lib-instantiator
 
     ex-runner:
         - lib-graph
@@ -100,6 +117,7 @@ ruleset:
         - lib-support
         - lib-util
         - lib-workspace
+        - lib-script
 
     ex-workspace:
         - lib-workspace

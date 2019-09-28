@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Script\Model;
+namespace Maestro\Library\Script;
 
 use Amp\Process\Process;
 use Amp\Promise;

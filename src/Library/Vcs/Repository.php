@@ -9,7 +9,7 @@ interface Repository
     /**
      * @return Promise<void>
      */
-    public function checkout(): Promise;
+    public function checkout(string $url): Promise;
 
     /**
      * @return Promise<Tags>

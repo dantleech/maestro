@@ -3,6 +3,7 @@
 namespace Maestro\Library\Git;
 
 use Amp\Promise;
+use Amp\Success;
 use Maestro\Extension\Git\Model\Exception\GitException;
 use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
@@ -38,8 +39,29 @@ class GitRepository implements Repository
     /**
      * {@inheritDoc}
      */
-    public function checkout(): Promise
+    public function checkout(string $url): Promise
     {
+        return \Amp\call(function () use ($url) {
+
+            $result = yield $this->runner->run(sprintf(
+                'git clone %s %s',
+                $url,
+                $this->path,
+            ), dirname($this->path), []);
+
+            assert($result instanceof ScriptResult);
+
+            if ($result->exitCode() !== 0) {
+                throw new GitException(sprintf(
+                    'Could not clone "%s" to "%s": %s',
+                    $url,
+                    $this->path,
+                    $result->stderr()
+                ));
+            }
+
+            return new Success();
+        });
     }
 
     public function listTags(): Promise

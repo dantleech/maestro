@@ -14,6 +14,8 @@ use function Amp\Promise\wait;
 
 class GitRepositoryTest extends IntegrationTestCase
 {
+    const EXAMPLE_REPO_PATH = 'base';
+
     /**
      * @var ScriptRunner
      */
@@ -27,11 +29,7 @@ class GitRepositoryTest extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->workspace()->reset();
-        $this->workspace()->put('README.md', 'Hello');
-
-        $this->exec('git init');
-        $this->exec('git add README.md');
-        $this->exec('git commit -m "Initial"');
+        $this->initExampleRepository(self::EXAMPLE_REPO_PATH);
 
         $logger = new NullLogger();
 
@@ -39,8 +37,21 @@ class GitRepositoryTest extends IntegrationTestCase
         $this->gitRepository = new GitRepository(
             $this->scriptRunner,
             $logger,
-            $this->workspace()->path('/')
+            $this->workspace()->path(self::EXAMPLE_REPO_PATH)
         );
+    }
+
+    public function testCheckout()
+    {
+        $this->workspace()->reset();
+        $this->initExampleRepository('source');
+
+        $this->assertFileNotExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
+
+        wait($this->gitRepository->checkout($this->workspace()->path('source')));
+
+        $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
+        $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/README.md'));
     }
 
     /**
@@ -128,10 +139,10 @@ class GitRepositoryTest extends IntegrationTestCase
     public function testCommitsBetween()
     {
         $this->exec('git tag 1.0.0');
-        $this->workspace()->put('foobar1', '');
+        $this->workspace()->put('base/foobar1', '');
         $this->exec('git add foobar1');
         $this->exec('git commit -m "foobar1"');
-        $this->workspace()->put('foobar2', '');
+        $this->workspace()->put('base/foobar2', '');
         $this->exec('git add foobar2');
         $this->exec('git commit -m "foobar2"');
 
@@ -145,7 +156,7 @@ class GitRepositoryTest extends IntegrationTestCase
     public function testComment()
     {
         $this->exec('git tag 1.0.0');
-        $this->workspace()->put('foobar1', '');
+        $this->workspace()->put('base/foobar1', '');
         $this->exec('git add foobar1');
         $this->exec('git commit -m "Hello World"');
 
@@ -155,9 +166,9 @@ class GitRepositoryTest extends IntegrationTestCase
         $this->assertEquals('Hello World', $message);
     }
 
-    private function exec(string $string): Process
+    private function exec(string $command, string $cwd = '/base'): Process
     {
-        $process = new Process($string, $this->workspace()->path('/'));
+        $process = new Process($command, $this->workspace()->path($cwd));
         $process->run();
 
         if ($process->getExitCode() !== 0) {
@@ -172,5 +183,14 @@ class GitRepositoryTest extends IntegrationTestCase
         }
 
         return $process;
+    }
+
+    private function initExampleRepository($baseDir = self::EXAMPLE_REPO_PATH)
+    {
+        $this->workspace()->put($baseDir .'/README.md', 'Hello');
+        
+        $this->exec('git init', $baseDir);
+        $this->exec('git add README.md', $baseDir);
+        $this->exec('git commit -m "Initial"', $baseDir);
     }
 }

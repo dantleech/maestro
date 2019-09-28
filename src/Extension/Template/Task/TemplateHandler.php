@@ -4,8 +4,8 @@ namespace Maestro\Extension\Template\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Extension\Template\EnvironmentFactory;
+use Maestro\Library\Support\ManifestPath;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailure;
@@ -27,18 +27,12 @@ class TemplateHandler
 
     public function __invoke(
         TemplateTask $task,
-        Manifest $manifest,
+        ManifestPath $manifestPath,
         Variables $variables,
         Workspace $workspace,
         Package $package
     ): Promise {
-        $paths = [];
-
-        $manifestPath = $manifest->path();
-
-        if ($manifestPath) {
-            $paths[] = dirname($manifestPath);
-        }
+        $paths = [ $manifestPath->directoryPath() ];
 
         $twigEnvironment = $this->factory->get($paths);
 

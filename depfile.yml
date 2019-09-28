@@ -3,23 +3,109 @@ paths:
 
 exclude_files: ~
 layers:
-    - name: Library-Graph
+    # Libraries
+    - name: lib-graph
       collectors:
           - type: directory
             regex: "src/Library/Graph/.*"
 
-    - name: Library-Task
+    - name: lib-task
       collectors:
           - type: directory
             regex: "src/Library/Task/.*"
 
-    - name: Library-GraphTask
+    - name: lib-graphtask
       collectors:
           - type: directory
             regex: "src/Library/GraphTask/.*"
 
-ruleset:
-    Library-Graph:
-        - Library-Task
+    - name: lib-instantiator
+      collectors:
+          - type: directory
+            regex: "src/Library/Instantiator/.*"
 
-    Library-Task: ~
+    - name: lib-support
+      collectors:
+          - type: directory
+            regex: "src/Library/Support/.*"
+
+    - name: lib-util
+      collectors:
+          - type: directory
+            regex: "src/Library/Util/.*"
+
+    - name: lib-workspace
+      collectors:
+          - type: directory
+            regex: "src/Library/Workspace/.*"
+
+    - name: lib-workspace
+      collectors:
+          - type: directory
+            regex: "src/Library/Workspace/.*"
+
+    # Extensions
+    - name: ex-runner
+      collectors:
+          - type: directory
+            regex: "src/Extension/Runner/.*"
+
+    - name: ex-script
+      collectors:
+          - type: directory
+            regex: "src/Extension/Script/.*"
+
+    - name: ex-task
+      collectors:
+          - type: directory
+            regex: "src/Extension/Task/.*"
+
+    - name: ex-template
+      collectors:
+          - type: directory
+            regex: "src/Extension/Template/.*"
+
+    - name: ex-workspace
+      collectors:
+          - type: directory
+            regex: "src/Extension/Workspace/.*"
+
+ruleset:
+    lib-graph:
+        - lib-task
+        - lib-instantiator
+
+    lib-task:
+        - lib-instantiator
+
+    lib-instantiator: ~
+
+    ex-runner:
+        - lib-graph
+        - lib-task
+        - lib-workspace
+        - lib-instantiator
+        - lib-util
+        - lib-support
+        - ex-task
+
+    ex-task:
+        - lib-task
+        - lib-instantiator
+
+    ex-script:
+        - lib-instantiator
+        - ex-task
+        - lib-task
+        - lib-support
+        - lib-util
+        - lib-workspace
+
+    ex-workspace:
+        - lib-workspace
+
+    ex-template:
+        - ex-task
+        - lib-task
+        - lib-support
+        - lib-workspace

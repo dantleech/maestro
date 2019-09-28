@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Runner\Loader\Processor;
 
-use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
+use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Runner\Loader\Processor;
 
 class TaskAliasExpandingProcessor implements Processor

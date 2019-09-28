@@ -1,12 +1,11 @@
 <?php
 
-namespace Maestro\Extension\Runner\Extension;
+namespace Maestro\Extension\Task\Extension;
 
 use ArrayIterator;
 use Iterator;
 use IteratorAggregate;
 use RuntimeException;
-use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 
 class TaskHandlerDefinitionMap implements IteratorAggregate
 {

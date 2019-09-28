@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Task;
 
 use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
-use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
+use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;

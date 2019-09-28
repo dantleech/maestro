@@ -6,7 +6,7 @@ use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
 use Maestro\Extension\Runner\Task\InitHandler;
 use Maestro\Extension\Runner\Task\InitTask;
-use Maestro\Extension\Runner\Extension\TaskHandlerDefinitionMap;
+use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;

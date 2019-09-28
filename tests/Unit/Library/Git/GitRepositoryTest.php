@@ -5,7 +5,6 @@ namespace Maestro\Tests\Unit\Library\Git;
 use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Library\Git\GitRepository;
 use Maestro\Library\Script\ScriptRunner;
-use Maestro\Library\Support\Environment\Environment;
 use Maestro\Tests\IntegrationTestCase;
 use Psr\Log\NullLogger;
 use RuntimeException;
@@ -48,7 +47,7 @@ class GitRepositoryTest extends IntegrationTestCase
 
         $this->assertFileNotExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
 
-        wait($this->gitRepository->checkout($this->workspace()->path('source'), new Environment()));
+        wait($this->gitRepository->checkout($this->workspace()->path('source'), []));
 
         $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
         $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/README.md'));

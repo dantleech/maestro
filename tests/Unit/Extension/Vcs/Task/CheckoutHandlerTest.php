@@ -58,7 +58,7 @@ class CheckoutHandlerTest extends TestCase
     {
         $this->repositoryFactory->create(self::EXAMPLE_WORKSPACE_PATH)->willReturn($this->repository->reveal());
         $this->repository->isCheckedOut()->willReturn(false);
-        $this->repository->checkout(self::EXAMPLE_REPO_URL, new Environment([]))->willReturn(new Success());
+        $this->repository->checkout(self::EXAMPLE_REPO_URL, [])->willReturn(new Success());
 
         $artifacts = HandlerTester::create($this->checkoutHandler)->handle(CheckoutTask::class, [
             'url' => self::EXAMPLE_REPO_URL,

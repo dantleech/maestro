@@ -7,7 +7,6 @@ use Amp\Success;
 use Maestro\Library\Git\Exception\GitException;
 use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
-use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Vcs\Exception\CheckoutError;
 use Maestro\Library\Vcs\Repository;
 use Psr\Log\LoggerInterface;
@@ -46,14 +45,14 @@ class GitRepository implements Repository
     /**
      * {@inheritDoc}
      */
-    public function checkout(string $url, Environment $environment): Promise
+    public function checkout(string $url, array $environment = []): Promise
     {
         return \Amp\call(function () use ($url, $environment) {
             $result = yield $this->runner->run(sprintf(
                 'git clone %s %s',
                 $url,
                 $this->path,
-            ), dirname($this->path), $environment->toArray());
+            ), dirname($this->path), $environment);
 
             assert($result instanceof ScriptResult);
 

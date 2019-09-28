@@ -33,7 +33,7 @@ class CheckoutHandler
             $workspace->purge();
 
             try {
-                yield $repository->checkout($checkoutTask->url(), $environment);
+                yield $repository->checkout($checkoutTask->url(), $environment->toArray());
             } catch (CheckoutError $e) {
                 throw new TaskFailure($e->getMessage());
             }

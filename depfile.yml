@@ -86,8 +86,7 @@ ruleset:
         - lib-script
         - lib-support
 
-    lib-vcs:
-        - lib-support
+    lib-vcs: ~
 
     lib-graph:
         - lib-task

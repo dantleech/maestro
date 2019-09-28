@@ -23,7 +23,7 @@ class PackageInitTask implements Task
      */
     private $vars;
     /**
-     * @var string
+     * @var string|null
      */
     private $version;
 

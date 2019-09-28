@@ -3,7 +3,7 @@
 namespace Maestro\Tests\Unit\Graph;
 
 use Amp\Loop;
-use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Task\Exception\TaskFailure;

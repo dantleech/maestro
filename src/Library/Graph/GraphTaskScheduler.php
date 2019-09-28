@@ -1,11 +1,12 @@
 <?php
 
-namespace Maestro\Library\GraphTask;
+namespace Maestro\Library\Graph;
 
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\Nodes;
 use Maestro\Library\Task\Queue;
+use Maestro\Library\Task\Artifacts;
 
 class GraphTaskScheduler
 {

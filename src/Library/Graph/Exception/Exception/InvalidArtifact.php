@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Library\GraphTask\Exception;
+namespace Maestro\Library\Graph\Exception;
 
 use RuntimeException;
 

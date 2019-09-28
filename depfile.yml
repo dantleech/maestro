@@ -19,10 +19,7 @@ layers:
             regex: "src/Library/GraphTask/.*"
 
 ruleset:
-    Library-GraphTask:
-        - Library-Graph
+    Library-Graph:
         - Library-Task
-
-    Library-Graph: ~
 
     Library-Task: ~

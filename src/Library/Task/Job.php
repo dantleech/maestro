@@ -4,7 +4,7 @@ namespace Maestro\Library\Task;
 
 use Amp\Deferred;
 use Amp\Promise;
-use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Task\NullTask;
 

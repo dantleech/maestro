@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Tests\Unit\Library\GraphTask;
+namespace Maestro\Tests\Unit\Library\Graph;
 
 use Closure;
-use Maestro\Library\GraphTask\GraphTaskScheduler;
+use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;

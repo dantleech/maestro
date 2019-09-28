@@ -5,7 +5,7 @@ namespace Maestro\Extension\Runner\Command\Behavior;
 use Amp\Loop;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
-use Maestro\Library\GraphTask\GraphTaskScheduler;
+use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Task\Worker;

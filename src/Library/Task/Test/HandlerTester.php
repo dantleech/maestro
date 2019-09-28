@@ -2,7 +2,7 @@
 
 namespace Maestro\Library\Task\Test;
 
-use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 
 class HandlerTester

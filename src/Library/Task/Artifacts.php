@@ -1,9 +1,10 @@
 <?php
 
-namespace Maestro\Library\GraphTask;
+namespace Maestro\Library\Task;
 
 use Countable;
-use Maestro\Library\GraphTask\Exception\ArtifactNotFound;
+use Maestro\Library\Task\Exception\ArtifactNotFound;
+use Maestro\Library\Task\Artifacts;
 
 class Artifacts implements Countable
 {

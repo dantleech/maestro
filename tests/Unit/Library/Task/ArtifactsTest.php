@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Tests\Unit\Library\GraphTask;
+namespace Maestro\Tests\Unit\Library\Task;
 
-use Maestro\Library\GraphTask\Artifacts;
-use Maestro\Library\GraphTask\Exception\ArtifactNotFound;
+use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Task\Exception\ArtifactNotFound;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 

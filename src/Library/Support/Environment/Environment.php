@@ -9,7 +9,7 @@ class Environment
      */
     private $env;
 
-    public function __construct(array $env)
+    public function __construct(array $env = [])
     {
         $this->env = $env;
     }

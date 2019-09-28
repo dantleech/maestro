@@ -6,7 +6,7 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use Maestro\Library\Git\Exception\GitException;
+use Maestro\Library\Vcs\Exception\VcsException;
 
 class Tags implements IteratorAggregate, Countable
 {
@@ -43,7 +43,7 @@ class Tags implements IteratorAggregate, Countable
     public function mostRecent(): Tag
     {
         if (count($this->tags) === 0) {
-            throw new GitException(
+            throw new VcsException(
                 'Must have at least one tag in order to retrieve the most recent'
             );
         }

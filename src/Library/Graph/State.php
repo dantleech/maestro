@@ -62,6 +62,11 @@ final class State
         return $this->state === self::FAILED;
     }
 
+    public function isCancelled(): bool
+    {
+        return $this->state === self::CANCELLED;
+    }
+
     public function toString(): string
     {
         return $this->state;

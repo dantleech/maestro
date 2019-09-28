@@ -4,6 +4,7 @@ namespace Maestro\Extension\Runner\Report;
 
 use Generator;
 use Maestro\Library\Graph\Graph;
+use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -34,7 +35,8 @@ class RunReport
         $table->setColumnMaxWidth(0, 30);
         $table->setColumnMaxWidth(1, 30);
         $table->setColumnMaxWidth(2, 30);
-        $table->setColumnMaxWidth(3, 60);
+        $table->setColumnMaxWidth(3, 30);
+        $table->setColumnMaxWidth(4, 50);
 
         foreach ($graph->roots() as $root) {
             foreach ($graph->dependentsFor($root->id()) as $packageNode) {
@@ -54,8 +56,9 @@ class RunReport
         }
         $table->render();
         $output->writeln(sprintf(
-            '<options=bold;bg=%s;fg=white> %s nodes, %s succeeded, %s cancelled, %s failed</>',
+            '<options=bold;bg=%s;fg=%s> %s nodes, %s succeeded, %s cancelled, %s cancelled </>',
             $graph->nodes()->byState(State::FAILED())->count() ? 'red' : 'green',
+            $graph->nodes()->byState(State::FAILED())->count() ? 'white' : 'black',
             $graph->nodes()->count(),
             $graph->nodes()->byState(State::DONE())->count(),
             $graph->nodes()->byState(State::CANCELLED())->count(),
@@ -79,11 +82,26 @@ class RunReport
                 $taskNode->task()->description(),
                 sprintf(
                     '%s %s',
-                    $taskNode->state()->isDone() ? '<info>✔</>' : '<fg=red>✘</>',
+                    $this->stateIcon($taskNode),
                     ''
                 ),
                 $failure ? $failure->getMessage() : ''
             ];
+        }
+    }
+
+    private function stateIcon(Node $taskNode)
+    {
+        if ($taskNode->state()->isDone()) {
+            return '<info>✔</>';
+        }
+       
+        if ($taskNode->state()->isFailed()) {
+            return '<fg=red>✘</>';
+        }
+       
+        if ($taskNode->state()->isCancelled()) {
+            return '<comment>-</>';
         }
     }
 }

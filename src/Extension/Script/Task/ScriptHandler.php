@@ -6,10 +6,10 @@ use Amp\Promise;
 use Maestro\Extension\Script\Model\ScriptResult;
 use Maestro\Extension\Script\Model\ScriptRunner;
 use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\ProvidingTaskHandler;
 use Maestro\Library\Util\StringUtil;
 use Maestro\Library\Workspace\Workspace;
-use RuntimeException;
 
 class ScriptHandler implements ProvidingTaskHandler
 {
@@ -42,7 +42,7 @@ class ScriptHandler implements ProvidingTaskHandler
             assert($result instanceof ScriptResult);
 
             if ($result->exitCode() !== 0) {
-                throw new RuntimeException(sprintf(
+                throw new TaskFailure(sprintf(
                     'Exited with code "%s": %s',
                     $result->exitCode(),
                     StringUtil::firstLine($result->stderr())

@@ -9,7 +9,7 @@ use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\TaskHandlerRegistry;
 use Maestro\Library\Task\TaskRunner\InvokingTaskRunner;
-use Maestro\Library\Task\TaskRunner\LoggingTaskRunner;
+use Maestro\Extension\Task\TaskRunner\LoggingTaskRunner;
 use Maestro\Library\Task\Task\NullHandler;
 use Maestro\Library\Task\Task\NullTask;
 use Maestro\Library\Task\Worker;

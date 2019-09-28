@@ -123,6 +123,7 @@ ruleset:
     ext-task:
         - lib-task
         - lib-instantiator
+        - lib-support
 
     ext-script:
         - lib-instantiator

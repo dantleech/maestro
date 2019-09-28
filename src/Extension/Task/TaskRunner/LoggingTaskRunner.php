@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Library\Task\TaskRunner;
+namespace Maestro\Extension\Task\TaskRunner;
 
 use Amp\Promise;
 use Maestro\Library\Support\Package\Package;

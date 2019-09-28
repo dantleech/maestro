@@ -140,5 +140,4 @@ class RunnerExtension implements Extension
             return new CliFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'console']]);
     }
-
 }

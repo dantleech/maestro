@@ -10,7 +10,6 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Task\Task\NullTask;
 
 class GraphConstructor
 {

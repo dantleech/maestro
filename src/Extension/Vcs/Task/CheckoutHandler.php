@@ -4,10 +4,8 @@ namespace Maestro\Extension\Vcs\Task;
 
 use Amp\Promise;
 use Maestro\Library\Support\Environment\Environment;
-use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Vcs\Exception\CheckoutError;
-use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Maestro\Library\Workspace\Workspace;
 

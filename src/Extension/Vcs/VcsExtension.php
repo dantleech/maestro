@@ -7,7 +7,6 @@ use Maestro\Extension\Vcs\Extension\VcsDefinition;
 use Maestro\Extension\Vcs\Task\CheckoutHandler;
 use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -25,8 +24,7 @@ class VcsExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register(RepositoryFactory::class, function(Container $container) {
-
+        $container->register(RepositoryFactory::class, function (Container $container) {
             $configuredType = $container->getParameter(self::PARAM_TYPE);
             $types = [];
 

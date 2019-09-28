@@ -49,7 +49,6 @@ class GitRepository implements Repository
     public function checkout(string $url, Environment $environment): Promise
     {
         return \Amp\call(function () use ($url, $environment) {
-
             $result = yield $this->runner->run(sprintf(
                 'git clone %s %s',
                 $url,

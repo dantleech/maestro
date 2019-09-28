@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Library\Git;
 
 use Maestro\Extension\Git\Model\ExistingTags;
-use Maestro\Extension\Git\Model\Git;
 use Maestro\Library\Git\GitRepository;
 use Maestro\Library\Script\ScriptRunner;
 use Maestro\Library\Support\Environment\Environment;

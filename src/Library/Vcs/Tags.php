@@ -7,7 +7,6 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 use Maestro\Extension\Git\Model\Exception\GitException;
-use Maestro\Library\Vcs\Tag;
 
 class Tags implements IteratorAggregate, Countable
 {

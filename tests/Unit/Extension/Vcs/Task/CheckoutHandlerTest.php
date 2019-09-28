@@ -11,7 +11,6 @@ use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Maestro\Library\Workspace\Workspace;
 use PHPUnit\Framework\TestCase;
-use function Amp\Promise\wait;
 
 class CheckoutHandlerTest extends TestCase
 {

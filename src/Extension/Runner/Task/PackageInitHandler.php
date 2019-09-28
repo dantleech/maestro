@@ -4,7 +4,6 @@ namespace Maestro\Extension\Runner\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Workspace\Workspace;

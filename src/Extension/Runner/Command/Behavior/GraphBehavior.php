@@ -66,9 +66,6 @@ class GraphBehavior
 
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($graph) {
             $this->scheduler->run($graph);
-        });
-
-        Loop::repeat(self::POLL_TIME_DISPATCH + 1, function () {
             $this->worker->start();
         });
 

@@ -5,6 +5,7 @@ namespace Maestro\Library\Graph;
 use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Job;
+use Maestro\Library\Task\JobState;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;
@@ -118,7 +119,9 @@ final class Node
             $this->state = State::DISPATCHED();
             $job = Job::create($this->task, $artifacts);
             $queue->enqueue($job);
+
             $artifacts = yield $job->result();
+
             if (!is_array($artifacts)) {
                 throw new RuntimeException(sprintf(
                     'Node Task handler for "%s" was expected to return an array of artifacts, got "%s"',
@@ -126,6 +129,12 @@ final class Node
                     gettype($artifacts)
                 ));
             }
+
+            if ($job->state()->is(JobState::FAILED())) {
+                $this->state = State::FAILED();
+                return;
+            }
+
             $this->artifacts = $artifacts;
             $this->state = State::DONE();
         });

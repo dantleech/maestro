@@ -12,6 +12,7 @@ use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use RuntimeException;
 
 class JobTest extends TestCase
 {
@@ -51,6 +52,20 @@ class JobTest extends TestCase
         });
 
         $this->assertEquals(JobState::DONE(), $job->state());
+    }
+
+    public function testJobThrowsExceptionIsMarkedAsFailed()
+    {
+        $task = new NullTask();
+        $exception = new RuntimeException('Sorry');
+        $this->taskRunner->run($task, Argument::type(Artifacts::class))->willThrow($exception);
+        $job = Job::create($task);
+        Loop::run(function () use ($job) {
+            $job->run($this->taskRunner->reveal());
+        });
+
+        $this->assertEquals(JobState::FAILED(), $job->state());
+        $this->assertSame($exception, $job->exception());
     }
 
     public function testJobCannotBeRunTwiceOrMore()

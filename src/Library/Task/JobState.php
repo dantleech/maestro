@@ -14,19 +14,24 @@ class JobState
         $this->state = $state;
     }
 
-    public static function WAITING()
+    public static function WAITING(): self
     {
         return new self('waiting');
     }
 
-    public static function PROCESSING()
+    public static function PROCESSING(): self
     {
         return new self('processing');
     }
 
-    public static function DONE()
+    public static function DONE(): self
     {
         return new self('done');
+    }
+
+    public static function FAILED(): self
+    {
+        return new self('failed');
     }
 
     public function is(JobState $state): bool

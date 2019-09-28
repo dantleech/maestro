@@ -2,8 +2,10 @@
 
 namespace Maestro\Tests\Unit\Extension\Template\Task;
 
+use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
+use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailed;
 use Maestro\Library\Task\Test\HandlerTester;
@@ -20,12 +22,24 @@ class TemplateHandlerTest extends IntegrationTestCase
      * @var TemplateHandler
      */
     private $handler;
+    private $manifest;
+
+    /**
+     * @var Package
+     */
+    private $package;
 
     protected function setUp(): void
     {
         $this->workspace()->reset();
         $this->packageWorkspace = new Workspace($this->workspace()->path('/'), 'test');
-        $this->handler = $this->container()->get(TemplateHandler::class);
+        $container = $this->container([
+            'runner.manifestPath' => $this->workspace()->path('/maestro.json')
+        ]);
+        $this->workspace()->put('/maestro.json', '{}');
+        $this->handler = $container->get(TemplateHandler::class);
+        $this->manifest = $container->get(ManifestLoader::class)->load();
+        $this->package = new Package('one/two', '1.0');
     }
 
     public function testRendersTemplate()
@@ -46,6 +60,8 @@ EOT
                 'name' => 'Dave',
             ]),
             $this->packageWorkspace,
+            $this->manifest,
+            $this->package,
         ]);
 
         $this->assertFileExists($this->workspace()->path('GREETINGS'));
@@ -70,6 +86,8 @@ EOT
                     'manifest.dir' => $this->workspace()->path('/'),
                 ]),
                 $this->packageWorkspace,
+                $this->manifest,
+                $this->package,
             ]);
             $this->fail('No exception thrown');
         } catch (TaskFailed $failed) {
@@ -93,6 +111,8 @@ EOT
                 'manifest.dir' => $this->workspace()->path('/'),
             ]),
             $this->packageWorkspace,
+            $this->manifest,
+            $this->package,
         ]);
         $this->assertFileExists($this->workspace()->path('foobar/GREETINGS'));
     }

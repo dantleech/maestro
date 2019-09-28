@@ -51,7 +51,7 @@ class GraphConstructor
                     'label' => $package->name(),
                     'task' => Instantiator::instantiate(PackageInitTask::class, [
                         'name' => $package->name(),
-                        'purgeWorkspace' => $this->purge,
+                        'purgeWorkspace' => $this->purge ?: false,
                         'env' => $package->env(),
                         'vars' => $package->vars(),
                         'version' => $package->version()

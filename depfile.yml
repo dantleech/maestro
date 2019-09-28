@@ -1,0 +1,28 @@
+paths:
+    - ./src
+
+exclude_files: ~
+layers:
+    - name: Library-Graph
+      collectors:
+          - type: directory
+            regex: "src/Library/Graph/.*"
+
+    - name: Library-Task
+      collectors:
+          - type: directory
+            regex: "src/Library/Task/.*"
+
+    - name: Library-GraphTask
+      collectors:
+          - type: directory
+            regex: "src/Library/GraphTask/.*"
+
+ruleset:
+    Library-GraphTask:
+        - Library-Graph
+        - Library-Task
+
+    Library-Graph: ~
+
+    Library-Task: ~

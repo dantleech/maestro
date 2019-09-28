@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Git\Model\Exception;
+namespace Maestro\Library\Git\Exception;
 
 use RuntimeException;
 

@@ -6,12 +6,12 @@ use ArrayIterator;
 use Countable;
 use Iterator;
 use IteratorAggregate;
-use Maestro\Extension\Git\Model\Exception\GitException;
+use Maestro\Library\Git\Exception\GitException;
 
 class Tags implements IteratorAggregate, Countable
 {
     /**
-     * @var ExistingTag[]
+     * @var Tag[]
      */
     private $tags = [];
 

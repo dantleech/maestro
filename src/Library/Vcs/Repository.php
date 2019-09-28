@@ -4,32 +4,33 @@ namespace Maestro\Library\Vcs;
 
 use Amp\Promise;
 use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Vcs\Exception\CheckoutError;
 
 interface Repository
 {
     /**
      * @throws CheckoutError
-     * @return Promise<void>
+     * @promise-return Promise<void>
      */
     public function checkout(string $url, Environment $environment): Promise;
 
     /**
-     * @return Promise<Tags>
+     * @promise-return Promise<Tags>
      */
     public function listTags(): Promise;
 
     /**
-     * @return Promise<void>
+     * @promise-return Promise<void>
      */
     public function tag(string $name): Promise;
 
     /**
-     * @return Promise<string>
+     * @promise-return Promise<string>
      */
     public function headId(): Promise;
 
     /**
-     * @return Promise<string[]>
+     * @promise-return Promise<string[]>
      */
     public function commitsBetween(string $id1, string $id2): Promise;
 

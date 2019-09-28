@@ -4,7 +4,7 @@ namespace Maestro\Library\Git;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Extension\Git\Model\Exception\GitException;
+use Maestro\Library\Git\Exception\GitException;
 use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
 use Maestro\Library\Support\Environment\Environment;
@@ -182,7 +182,7 @@ class GitRepository implements Repository
                 throw new GitException(sprintf(
                     'Could not read commit message for "%s" in "%s"',
                     $commitId,
-                    $path
+                    $this->path
                 ));
             }
 

@@ -114,11 +114,17 @@ class GraphConstructor
 
     private function addVcsNode(Package $package, GraphBuilder $builder, string $parentId): string
     {
+        $packageUrl = $package->url();
+
+        if (!$packageUrl) {
+            return $parentId;
+        }
+
         $vcsNode = Node::create(
             $package->name() . '/vcs',
             [
                 'label' => 'checkout',
-                'task' => new CheckoutTask($package->url()),
+                'task' => new CheckoutTask($packageUrl),
             ]
         );
         $builder->addNode($vcsNode);

@@ -103,6 +103,28 @@ class GraphTaskSchedulerTest extends TestCase
                 $this->assertCount(1, $job2->artifacts());
             }
         ];
+
+        yield 'cancels nodes depending on a failed node' => [
+            function (GraphBuilder $builder) {
+                $artifact = new stdClass();
+                $builder->addNode(NodeHelper::setState(Node::create('root'), State::DONE()));
+                $builder->addNode(NodeHelper::setState(Node::create('n1'), State::FAILED()));
+                $builder->addNode(NodeHelper::setState(Node::create('n2'), State::DONE()));
+                $builder->addNode(NodeHelper::setState(Node::create('n3'), State::IDLE()));
+                $builder->addNode(NodeHelper::setState(Node::create('n4'), State::IDLE()));
+                $builder->addNode(NodeHelper::setState(Node::create('n5'), State::IDLE()));
+                $builder->addEdge(Edge::create('n3', 'n1'));
+                $builder->addEdge(Edge::create('n4', 'n1'));
+                $builder->addEdge(Edge::create('n5', 'n2'));
+                $builder->addEdge(Edge::create('n1', 'root'));
+                $builder->addEdge(Edge::create('n2', 'root'));
+            },
+            function (Graph $graph, Queue $queue) {
+                $this->assertEquals(State::CANCELLED(), $graph->nodes()->get('n3')->state());
+                $this->assertEquals(State::CANCELLED(), $graph->nodes()->get('n4')->state());
+                $this->assertEquals(State::DISPATCHED(), $graph->nodes()->get('n5')->state());
+            }
+        ];
     }
 }
 

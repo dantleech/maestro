@@ -28,7 +28,8 @@ class RunReport
             'package',
             'label',
             'action',
-            '✔'
+            '✔',
+            ''
         ]);
         $table->setColumnMaxWidth(0, 30);
         $table->setColumnMaxWidth(1, 30);
@@ -53,11 +54,12 @@ class RunReport
         }
         $table->render();
         $output->writeln(sprintf(
-            '<options=bold;bg=%s;fg=white> %s tasks, %s failed, %s succeeded </>',
+            '<options=bold;bg=%s;fg=white> %s nodes, %s succeeded, %s cancelled, %s failed</>',
             $graph->nodes()->byState(State::FAILED())->count() ? 'red' : 'green',
-            $graph->nodes()->byState(State::FAILED(), State::DONE())->count(),
-            $graph->nodes()->byState(State::FAILED())->count(),
+            $graph->nodes()->count(),
             $graph->nodes()->byState(State::DONE())->count(),
+            $graph->nodes()->byState(State::CANCELLED())->count(),
+            $graph->nodes()->byState(State::FAILED())->count(),
         ));
     }
 
@@ -71,6 +73,7 @@ class RunReport
     private function taskRows(Graph $graph, string $packageId): Generator
     {
         foreach ($graph->descendantsFor($packageId) as $taskNode) {
+            $failure = $taskNode->exception();
             yield [
                 $taskNode->label(),
                 $taskNode->task()->description(),
@@ -78,7 +81,8 @@ class RunReport
                     '%s %s',
                     $taskNode->state()->isDone() ? '<info>✔</>' : '<fg=red>✘</>',
                     ''
-                )
+                ),
+                $failure ? $failure->getMessage() : ''
             ];
         }
     }

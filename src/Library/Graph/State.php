@@ -8,6 +8,7 @@ final class State
     private const DONE = 'done';
     private const DISPATCHED = 'dispatched';
     private const FAILED = 'failed';
+    private const CANCELLED = 'cancelled';
 
     private $state;
 
@@ -31,6 +32,11 @@ final class State
         return new self(self::IDLE);
     }
 
+    public static function CANCELLED(): self
+    {
+        return new self(self::CANCELLED);
+    }
+
     public static function FAILED(): self
     {
         return new self(self::FAILED);
@@ -46,9 +52,14 @@ final class State
         return $this->state === self::IDLE;
     }
 
-    public function isDispatched()
+    public function isDispatched(): bool
     {
         return $this->state === self::DISPATCHED;
+    }
+
+    public function isFailed(): bool
+    {
+        return $this->state === self::FAILED;
     }
 
     public function toString(): string

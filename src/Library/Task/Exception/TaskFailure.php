@@ -4,6 +4,6 @@ namespace Maestro\Library\Task\Exception;
 
 use RuntimeException;
 
-class TaskFailed extends RuntimeException
+class TaskFailure extends RuntimeException
 {
 }

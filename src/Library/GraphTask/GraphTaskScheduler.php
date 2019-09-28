@@ -30,6 +30,11 @@ class GraphTaskScheduler
         foreach ($nodes as $node) {
             assert($node instanceof Node);
 
+            if ($node->state()->isFailed()) {
+                $this->cancelDescendants($graph, $node);
+                continue;
+            }
+
             if ($node->state()->isIdle()) {
                 $node->run($this->queue, $artifacts);
                 continue;
@@ -40,6 +45,13 @@ class GraphTaskScheduler
                 $this->runNodes($artifacts, $graph, $graph->dependentsFor($node->id()));
                 continue;
             }
+        }
+    }
+
+    private function cancelDescendants(Graph $graph, Node $node): void
+    {
+        foreach ($graph->descendantsFor($node->id()) as $node) {
+            $node->cancel();
         }
     }
 }

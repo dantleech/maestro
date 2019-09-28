@@ -6,13 +6,13 @@ use Amp\Delayed;
 use Amp\Loop;
 use Amp\Success;
 use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;
 use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Task\Task\NullTask;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use RuntimeException;
 
 class JobTest extends TestCase
 {
@@ -57,7 +57,7 @@ class JobTest extends TestCase
     public function testJobThrowsExceptionIsMarkedAsFailed()
     {
         $task = new NullTask();
-        $exception = new RuntimeException('Sorry');
+        $exception = new TaskFailure('Sorry');
         $this->taskRunner->run($task, Argument::type(Artifacts::class))->willThrow($exception);
         $job = Job::create($task);
         Loop::run(function () use ($job) {
@@ -65,7 +65,7 @@ class JobTest extends TestCase
         });
 
         $this->assertEquals(JobState::FAILED(), $job->state());
-        $this->assertSame($exception, $job->exception());
+        $this->assertSame($exception, $job->failure());
     }
 
     public function testJobCannotBeRunTwiceOrMore()

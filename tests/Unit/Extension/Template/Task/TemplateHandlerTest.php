@@ -7,7 +7,7 @@ use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
-use Maestro\Library\Task\Exception\TaskFailed;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Test\HandlerTester;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Tests\IntegrationTestCase;
@@ -90,7 +90,7 @@ EOT
                 $this->package,
             ]);
             $this->fail('No exception thrown');
-        } catch (TaskFailed $failed) {
+        } catch (TaskFailure $failed) {
             $this->addToAssertionCount(1);
         }
     }

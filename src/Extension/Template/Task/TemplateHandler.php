@@ -8,7 +8,7 @@ use Maestro\Extension\Runner\Loader\Manifest;
 use Maestro\Extension\Template\EnvironmentFactory;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
-use Maestro\Library\Task\Exception\TaskFailed;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Workspace\Workspace;
 use RuntimeException;
 use Twig\Error\Error;
@@ -50,7 +50,7 @@ class TemplateHandler
                 ], $variables->toArray())
             );
         } catch (Error $error) {
-            throw new TaskFailed($error->getMessage());
+            throw new TaskFailure($error->getMessage());
         }
 
         $this->writeContents($workspace, $task, $rendered);

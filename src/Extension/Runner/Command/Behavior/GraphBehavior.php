@@ -7,6 +7,7 @@ use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Library\GraphTask\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
+use Maestro\Library\Graph\State;
 use Maestro\Library\Task\Worker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -67,6 +68,10 @@ class GraphBehavior
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($graph) {
             $this->scheduler->run($graph);
             $this->worker->start();
+
+            if ($graph->nodes()->byStates(State::CANCELLED(), State::FAILED(), State::DONE())->count() === $graph->nodes()->count()) {
+                Loop::stop();
+            }
         });
 
         Loop::run();

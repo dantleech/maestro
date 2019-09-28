@@ -6,11 +6,11 @@ use Amp\Loop;
 use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\TaskRunner;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class NodeTest extends TestCase
 {
@@ -41,7 +41,8 @@ class NodeTest extends TestCase
     {
         $task = $this->prophesize(Task::class);
         $taskRunner = $this->prophesize(TaskRunner::class);
-        $taskRunner->run($task->reveal())->willThrow(new RuntimeException('Sorry'));
+        $exception = new TaskFailure('Sorry');
+        $taskRunner->run($task->reveal(), new Artifacts([]))->willThrow($exception);
         $node = Node::create('root', [
             'label' => 'Foobar',
             'task' => $task->reveal(),
@@ -57,5 +58,6 @@ class NodeTest extends TestCase
         Loop::run();
 
         $this->assertEquals(State::FAILED(), $node->state());
+        $this->assertSame($exception, $node->exception());
     }
 }

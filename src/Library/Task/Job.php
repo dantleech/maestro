@@ -4,8 +4,8 @@ namespace Maestro\Library\Task;
 
 use Amp\Deferred;
 use Amp\Promise;
-use Exception;
 use Maestro\Library\GraphTask\Artifacts;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Task\NullTask;
 
 class Job
@@ -31,9 +31,9 @@ class Job
     private $artifacts;
 
     /**
-     * @var Exception|null
+     * @var TaskFailure|null
      */
-    private $exception;
+    private $failure;
 
     private function __construct(Task $task, Artifacts $artifacts)
     {
@@ -64,10 +64,10 @@ class Job
         \Amp\asyncCall(function () use ($runner) {
             try {
                 $result = yield $runner->run($this->task, $this->artifacts);
-            } catch (Exception $e) {
+            } catch (TaskFailure $e) {
                 $this->state = JobState::FAILED();
+                $this->failure = $e;
                 $this->deferred->resolve([]);
-                $this->exception = $e;
                 return;
             }
             $this->state = JobState::DONE();
@@ -95,8 +95,8 @@ class Job
         return $this->artifacts;
     }
 
-    public function exception(): ?Exception
+    public function failure(): ?TaskFailure
     {
-        return $this->exception;
+        return $this->failure;
     }
 }

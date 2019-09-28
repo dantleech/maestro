@@ -2,6 +2,7 @@
 
 namespace Maestro\Library\Graph;
 
+use Exception;
 use Maestro\Library\GraphTask\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Job;
@@ -46,6 +47,11 @@ final class Node
      * @var array
      */
     private $tags;
+
+    /**
+     * @var Exception|null
+     */
+    private $exception;
 
     public function __construct(
         string $id,
@@ -132,6 +138,7 @@ final class Node
 
             if ($job->state()->is(JobState::FAILED())) {
                 $this->state = State::FAILED();
+                $this->exception = $job->failure();
                 return;
             }
 
@@ -143,5 +150,15 @@ final class Node
     public function artifacts(): array
     {
         return $this->artifacts;
+    }
+
+    public function cancel(): void
+    {
+        $this->state = State::CANCELLED();
+    }
+
+    public function exception(): ?Exception
+    {
+        return $this->exception;
     }
 }

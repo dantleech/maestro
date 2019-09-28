@@ -55,30 +55,40 @@ layers:
             regex: "src/Library/Script/.*"
 
     # Extensions
-    - name: ex-runner
+    - name: ext-runner
       collectors:
           - type: directory
             regex: "src/Extension/Runner/.*"
 
-    - name: ex-script
+    - name: ext-script
       collectors:
           - type: directory
             regex: "src/Extension/Script/.*"
 
-    - name: ex-task
+    - name: ext-task
       collectors:
           - type: directory
             regex: "src/Extension/Task/.*"
 
-    - name: ex-template
+    - name: ext-template
       collectors:
           - type: directory
             regex: "src/Extension/Template/.*"
 
-    - name: ex-workspace
+    - name: ext-workspace
       collectors:
           - type: directory
             regex: "src/Extension/Workspace/.*"
+
+    - name: ext-git
+      collectors:
+          - type: directory
+            regex: "src/Extension/Git/.*"
+
+    - name: ext-vcs
+      collectors:
+          - type: directory
+            regex: "src/Extension/Vcs/.*"
 
 ruleset:
     lib-git:
@@ -100,33 +110,46 @@ ruleset:
     lib-script:
         - lib-instantiator
 
-    ex-runner:
+    ext-runner:
         - lib-graph
         - lib-task
         - lib-workspace
         - lib-instantiator
         - lib-util
         - lib-support
-        - ex-task
+        - ext-vcs
+        - ext-task
 
-    ex-task:
+    ext-task:
         - lib-task
         - lib-instantiator
 
-    ex-script:
+    ext-script:
         - lib-instantiator
-        - ex-task
+        - ext-task
         - lib-task
         - lib-support
         - lib-util
         - lib-workspace
         - lib-script
 
-    ex-workspace:
+    ext-workspace:
         - lib-workspace
 
-    ex-template:
-        - ex-task
+    ext-template:
+        - ext-task
         - lib-task
         - lib-support
         - lib-workspace
+
+    ext-vcs:
+        - ext-task
+        - lib-instantiator
+        - lib-vcs
+        - lib-task
+        - lib-support
+        - lib-workspace
+    ext-git:
+        - ext-vcs
+        - lib-script
+

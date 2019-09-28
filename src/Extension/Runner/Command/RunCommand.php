@@ -46,6 +46,7 @@ class RunCommand extends Command
         $graph = $this->graphBehavior->loadGraph($input);
 
         $this->graphBehavior->run($input, $output, $graph);
+        $output->writeln(PHP_EOL);
         $this->report->render($output, $graph);
 
         return $graph->nodes()->byState(State::FAILED())->count();

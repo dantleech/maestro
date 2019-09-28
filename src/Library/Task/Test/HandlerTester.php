@@ -14,7 +14,7 @@ class HandlerTester
         $this->taskHandler = $handler;
     }
 
-    public static function create($handler)
+    public static function create($handler): self
     {
         return new self($handler);
     }
@@ -30,6 +30,7 @@ class HandlerTester
             ], array_values($artifacts)),
             Instantiator::MODE_TYPE
         ));
+
         return new Artifacts($artifacts);
     }
 }

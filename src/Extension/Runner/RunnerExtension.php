@@ -19,11 +19,14 @@ use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Worker;
 use Maestro\Library\Workspace\WorkspaceManager;
+use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
+use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
+use pahanini\Monolog\Formatter\CliFormatter;
 
 class RunnerExtension implements Extension
 {
@@ -41,6 +44,7 @@ class RunnerExtension implements Extension
         $this->registerConsole($container);
         $this->registerLoader($container);
         $this->registerTask($container);
+        $this->registerLogging($container);
     }
 
     /**
@@ -126,4 +130,15 @@ class RunnerExtension implements Extension
             ]
         ]);
     }
+
+    private function registerLogging(ContainerBuilder $container): void
+    {
+        $container->register(JsonFormatter::class, function (Container $container) {
+            return new JsonFormatter();
+        }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'json']]);
+        $container->register(CliFormatter::class, function (Container $container) {
+            return new CliFormatter();
+        }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'console']]);
+    }
+
 }

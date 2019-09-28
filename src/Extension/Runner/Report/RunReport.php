@@ -8,6 +8,7 @@ use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RunReport
@@ -39,8 +40,13 @@ class RunReport
         $table->setColumnMaxWidth(4, 50);
 
         foreach ($graph->roots() as $root) {
+            $packageNo = 0;
             foreach ($graph->dependentsFor($root->id()) as $packageNode) {
                 $taskRows = $this->taskRows($graph, $packageNode->id());
+
+                if ($packageNo++ > 0) {
+                    $table->addRow(new TableSeparator());
+                }
 
                 foreach ($taskRows as $index => $taskRow) {
                     if ($index === 0) {
@@ -56,7 +62,7 @@ class RunReport
         }
         $table->render();
         $output->writeln(sprintf(
-            '<options=bold;bg=%s;fg=%s> %s nodes, %s succeeded, %s cancelled, %s cancelled </>',
+            '<options=bold;bg=%s;fg=%s> %s nodes, %s succeeded, %s cancelled, %s failed </>',
             $graph->nodes()->byState(State::FAILED())->count() ? 'red' : 'green',
             $graph->nodes()->byState(State::FAILED())->count() ? 'white' : 'black',
             $graph->nodes()->count(),

@@ -7,6 +7,8 @@ use Amp\Success;
 use Maestro\Extension\Git\Model\Exception\GitException;
 use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
+use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Vcs\Exception\CheckoutError;
 use Maestro\Library\Vcs\Repository;
 use Psr\Log\LoggerInterface;
 use Maestro\Library\Vcs\Tag;
@@ -36,23 +38,28 @@ class GitRepository implements Repository
         $this->path = $path;
     }
 
+    public function isCheckedOut(): bool
+    {
+        return file_exists($this->path . '/.git');
+    }
+
     /**
      * {@inheritDoc}
      */
-    public function checkout(string $url): Promise
+    public function checkout(string $url, Environment $environment): Promise
     {
-        return \Amp\call(function () use ($url) {
+        return \Amp\call(function () use ($url, $environment) {
 
             $result = yield $this->runner->run(sprintf(
                 'git clone %s %s',
                 $url,
                 $this->path,
-            ), dirname($this->path), []);
+            ), dirname($this->path), $environment->toArray());
 
             assert($result instanceof ScriptResult);
 
             if ($result->exitCode() !== 0) {
-                throw new GitException(sprintf(
+                throw new CheckoutError(sprintf(
                     'Could not clone "%s" to "%s": %s',
                     $url,
                     $this->path,

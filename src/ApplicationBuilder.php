@@ -2,10 +2,12 @@
 
 namespace Maestro;
 
+use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
+use Maestro\Extension\Vcs\VcsExtension;
 use Maestro\Extension\Workspace\WorkspaceExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
@@ -67,6 +69,8 @@ final class ApplicationBuilder
             TemplateExtension::class,
             TaskExtension::class,
             WorkspaceExtension::class,
+            VcsExtension::class,
+            GitExtension::class,
         ], $config);
     }
 
@@ -92,7 +96,7 @@ final class ApplicationBuilder
         $config = [
             LoggingExtension::PARAM_LEVEL => 'warning',
             LoggingExtension::PARAM_PATH => STDERR,
-            LoggingExtension::PARAM_FORMATTER => null,
+            LoggingExtension::PARAM_FORMATTER => 'console',
             RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
             RunnerExtension::PARAM_PURGE => false,
         ];

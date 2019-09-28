@@ -19,7 +19,7 @@ class InitHandler
         $path = $task->manifest()->path();
 
         if ($path) {
-            new ManifestPath($path);
+            $artifacts[] = new ManifestPath($path);
         }
 
         return new Success($artifacts);

@@ -15,4 +15,5 @@ before_script:
 script:
     - composer phpstan
     - composer php-cs-fixer
-    - ./vendor/bin/phpunit --exclude-group=tmux
+    - vendor/bin/phpunit --exclude-group=tmux
+    - vendor/bin/deptrac

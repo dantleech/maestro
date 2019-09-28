@@ -22,7 +22,7 @@ class PackageInitHandler
         $this->workspaceManager = $workspaceManager;
     }
 
-    public function __invoke(PackageInitTask $task, Manifest $manifest, Environment $enivonment): Promise
+    public function __invoke(PackageInitTask $task, Environment $enivonment): Promise
     {
         return new Success([
             $enivonment->spawnMerged([

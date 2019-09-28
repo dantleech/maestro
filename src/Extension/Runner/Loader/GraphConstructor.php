@@ -4,6 +4,7 @@ namespace Maestro\Extension\Runner\Loader;
 
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Extension\Runner\Task\PackageInitTask;
+use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
@@ -117,8 +118,8 @@ class GraphConstructor
         $vcsNode = Node::create(
             $package->name() . '/vcs',
             [
-                'label' => 'VCS checkout',
-                'task' => new NullTask(),
+                'label' => 'checkout',
+                'task' => new CheckoutTask($package->url()),
             ]
         );
         $builder->addNode($vcsNode);

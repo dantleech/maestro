@@ -37,8 +37,10 @@ class WorkspaceExtension implements Extension
      */
     public function configure(Resolver $schema)
     {
+        $schema->setDefaults([
+            self::PARAM_WORKSPACE_NAMESPACE => '',
+        ]);
         $schema->setRequired([
-            self::PARAM_WORKSPACE_NAMESPACE,
             self::PARAM_WORKSPACE_PATH
         ]);
         $schema->setCallback(self::PARAM_WORKSPACE_PATH, function ($config) {

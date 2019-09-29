@@ -2,8 +2,10 @@
 
 namespace Maestro\Tests\Unit\Extension\Template\Task;
 
+use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Template\Task\TemplateHandler;
 use Maestro\Extension\Template\Task\TemplateTask;
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use Maestro\Library\Support\ManifestPath;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
@@ -39,7 +41,8 @@ class TemplateHandlerTest extends IntegrationTestCase
         $this->packageWorkspace = new Workspace($this->workspace()->path('/'), 'test');
         $this->workspace()->put('/maestro.json', '{}');
         $container = $this->container([
-            'runner.manifestPath' => $this->workspace()->path('/maestro.json')
+            RunnerExtension::PARAM_MANIFEST_PATH => $this->workspace()->path('/maestro.json'),
+            WorkspaceExtension::PARAM_WORKSPACE_PATH => $this->workspace()->path('test-workspace'),
         ]);
         $this->handler = $container->get(TemplateHandler::class);
         $this->manifestPath = new ManifestPath($this->workspace()->path('/foo.json'));

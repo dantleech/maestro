@@ -18,6 +18,7 @@ use Maestro\Extension\Runner\Task\PackageInitTask;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
+use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Task\Worker;
 use Maestro\Library\Workspace\WorkspaceManager;
 use Monolog\Formatter\JsonFormatter;

@@ -2,6 +2,7 @@
 
 namespace Maestro;
 
+use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
@@ -72,6 +73,7 @@ final class ApplicationBuilder
             WorkspaceExtension::class,
             VcsExtension::class,
             GitExtension::class,
+            FileExtension::class,
         ], $config);
     }
 

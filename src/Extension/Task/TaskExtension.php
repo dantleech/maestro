@@ -4,10 +4,12 @@ namespace Maestro\Extension\Task;
 
 use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
+use Maestro\Extension\Task\TaskRunner\TaskRunnerInjectingRunner;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\TaskHandlerRegistry;
+use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Task\TaskRunner\InvokingTaskRunner;
 use Maestro\Extension\Task\TaskRunner\LoggingTaskRunner;
 use Maestro\Library\Task\Task\NullHandler;
@@ -34,18 +36,18 @@ class TaskExtension implements Extension
     {
         $container->register(Worker::class, function (Container $container) {
             return new Worker(
-                $container->get(InvokingTaskRunner::class),
+                $container->get(TaskRunner::class),
                 $container->get(Queue::class),
                 $container->getParameter(self::PARAM_MILLISLEEP),
                 $container->getParameter(self::PARAM_CONCURRENCY),
             );
         });
 
-        $container->register(InvokingTaskRunner::class, function (Container $container) {
-            return new LoggingTaskRunner(
+        $container->register(TaskRunner::class, function (Container $container) {
+            return new TaskRunnerInjectingRunner(new LoggingTaskRunner(
                 new InvokingTaskRunner($container->get(TaskHandlerRegistry::class)),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
-            );
+            ));
         });
 
         $container->register(Queue::class, function (Container $container) {

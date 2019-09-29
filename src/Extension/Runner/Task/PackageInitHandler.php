@@ -4,10 +4,21 @@ namespace Maestro\Extension\Runner\Task;
 
 use Amp\Promise;
 use Amp\Success;
+use Generator;
+use Maestro\Extension\File\Task\PurgeDirectoryTask;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\Package\Package;
+use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Task\Job;
+use Maestro\Library\Task\Queue;
+use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
+use function Amp\File\{
+    rmdir,
+    mkdir,
+    exists
+};
 
 class PackageInitHandler
 {
@@ -21,26 +32,28 @@ class PackageInitHandler
         $this->workspaceManager = $workspaceManager;
     }
 
-    public function __invoke(PackageInitTask $task, Environment $enivonment): Promise
+    public function __invoke(PackageInitTask $task, Environment $enivonment, TaskRunner $taskRunner): Promise
     {
-        return new Success([
-            $enivonment->spawnMerged([
-                'PACKAGE_NAME' => $task->name()
-            ]),
-            new Package(
-                $task->name(),
-                $task->version()
-            ),
-            $this->createWorkspace($task)
-        ]);
+        return \Amp\call(function () use ($task, $enivonment, $taskRunner) {
+            return new Success([
+                $enivonment->spawnMerged([
+                    'PACKAGE_NAME' => $task->name()
+                ]),
+                new Package(
+                    $task->name(),
+                    $task->version()
+                ),
+                yield from $this->createWorkspace($taskRunner, $task)
+            ]);
+        });
     }
 
-    private function createWorkspace(PackageInitTask $task): Workspace
+    private function createWorkspace(TaskRunner $taskRunner, PackageInitTask $task): Generator
     {
         $workspace = $this->workspaceManager->createNamedWorkspace($task->name());
 
         if ($task->purgeWorkspace()) {
-            $workspace->purge();
+            yield $taskRunner->run(new PurgeDirectoryTask($workspace->absolutePath()), new Artifacts());
         }
 
         if (!file_exists($workspace->absolutePath())) {

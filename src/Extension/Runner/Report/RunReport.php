@@ -66,7 +66,7 @@ class RunReport
             $this->resolveStatusColor($graph),
             $graph->nodes()->count(),
             $graph->nodes()->byState(State::IDLE())->count(),
-            $graph->nodes()->byState(State::DONE())->count(),
+            $graph->nodes()->byState(State::SUCCEEDED())->count(),
             $graph->nodes()->byState(State::CANCELLED())->count(),
             $graph->nodes()->byState(State::FAILED())->count(),
         ));
@@ -117,7 +117,7 @@ class RunReport
             return 'fg=white;bg=red';
         }
 
-        if ($graph->nodes()->byState(State::DONE()) === $graph->nodes()->count()) {
+        if ($graph->nodes()->byState(State::SUCCEEDED())->count() === $graph->nodes()->count()) {
             return 'fg=black;bg=green';
         }
 

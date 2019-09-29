@@ -143,7 +143,7 @@ final class Node
             }
 
             $this->artifacts = $artifacts;
-            $this->state = State::DONE();
+            $this->state = State::SUCCEEDED();
         });
     }
 

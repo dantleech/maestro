@@ -64,7 +64,7 @@ class GraphTaskSchedulerTest extends TestCase
         yield 'runs children when parent node is done' => [
             function (GraphBuilder $builder) {
                 $builder->addNode(
-                    NodeHelper::setState(Node::create('root'), State::DONE())
+                    NodeHelper::setState(Node::create('root'), State::SUCCEEDED())
                 );
                 $builder->addNode(Node::create('1'));
                 $builder->addNode(Node::create('2'));
@@ -72,7 +72,7 @@ class GraphTaskSchedulerTest extends TestCase
                 $builder->addEdge(Edge::create('2', 'root'));
             },
             function (Graph $graph, Queue $queue) {
-                $this->assertEquals(State::DONE(), $graph->nodes()->get('root')->state());
+                $this->assertEquals(State::SUCCEEDED(), $graph->nodes()->get('root')->state());
                 $this->assertEquals(State::DISPATCHED(), $graph->nodes()->get('1')->state());
                 $this->assertEquals(State::DISPATCHED(), $graph->nodes()->get('2')->state());
                 $this->assertCount(2, $queue);
@@ -87,7 +87,7 @@ class GraphTaskSchedulerTest extends TestCase
                         'artifacts' => [
                             $artifact
                         ],
-                    ]), State::DONE())
+                    ]), State::SUCCEEDED())
                 );
                 $builder->addNode(Node::create('1'));
                 $builder->addNode(Node::create('2'));
@@ -106,9 +106,9 @@ class GraphTaskSchedulerTest extends TestCase
         yield 'cancels nodes depending on a failed node' => [
             function (GraphBuilder $builder) {
                 $artifact = new stdClass();
-                $builder->addNode(NodeHelper::setState(Node::create('root'), State::DONE()));
+                $builder->addNode(NodeHelper::setState(Node::create('root'), State::SUCCEEDED()));
                 $builder->addNode(NodeHelper::setState(Node::create('n1'), State::FAILED()));
-                $builder->addNode(NodeHelper::setState(Node::create('n2'), State::DONE()));
+                $builder->addNode(NodeHelper::setState(Node::create('n2'), State::SUCCEEDED()));
                 $builder->addNode(NodeHelper::setState(Node::create('n3'), State::IDLE()));
                 $builder->addNode(NodeHelper::setState(Node::create('n4'), State::IDLE()));
                 $builder->addNode(NodeHelper::setState(Node::create('n5'), State::IDLE()));

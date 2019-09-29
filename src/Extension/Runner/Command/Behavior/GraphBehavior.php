@@ -91,7 +91,7 @@ class GraphBehavior
             $this->worker->start();
 
 
-            if ($graph->nodes()->byStates(State::CANCELLED(), State::FAILED(), State::DONE())->count() === $graph->nodes()->count()) {
+            if ($graph->nodes()->byStates(State::CANCELLED(), State::FAILED(), State::SUCCEEDED())->count() === $graph->nodes()->count()) {
                 Loop::stop();
             }
         });
@@ -107,7 +107,7 @@ class GraphBehavior
             $completed = $nodes->byStates(
                 State::CANCELLED(),
                 State::FAILED(),
-                State::DONE()
+                State::SUCCEEDED()
             )->count();
 
             $this->logger->notice(sprintf(
@@ -120,7 +120,7 @@ class GraphBehavior
                 $this->worker->processingJobCount(),
                 $nodes->byState(State::FAILED())->count(),
                 $nodes->byState(State::CANCELLED())->count(),
-                $nodes->byState(State::DONE())->count(),
+                $nodes->byState(State::SUCCEEDED())->count(),
             ));
         });
 

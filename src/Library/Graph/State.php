@@ -22,7 +22,7 @@ final class State
         return new self(self::DISPATCHED);
     }
 
-    public static function DONE(): self
+    public static function SUCCEEDED(): self
     {
         return new self(self::DONE);
     }

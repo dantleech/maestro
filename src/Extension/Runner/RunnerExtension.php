@@ -27,7 +27,6 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
-use pahanini\Monolog\Formatter\CliFormatter;
 
 class RunnerExtension implements Extension
 {
@@ -140,7 +139,7 @@ class RunnerExtension implements Extension
             return new JsonFormatter();
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'json']]);
 
-        $container->register(CliFormatter::class, function (Container $container) {
+        $container->register(MaestroColoredLineFormatter::class, function (Container $container) {
             return new MaestroColoredLineFormatter(null, "[%elapsed%] %message% %context% %extra%\n", 'U.u');
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'console']]);
     }

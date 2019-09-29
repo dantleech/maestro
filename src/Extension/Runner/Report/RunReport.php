@@ -62,10 +62,10 @@ class RunReport
         }
         $table->render();
         $output->writeln(sprintf(
-            '<options=bold;bg=%s;fg=%s> %s nodes, %s succeeded, %s cancelled, %s failed </>',
-            $graph->nodes()->byState(State::FAILED())->count() ? 'red' : 'green',
-            $graph->nodes()->byState(State::FAILED())->count() ? 'white' : 'black',
+            '<options=bold;%s> %s nodes, %s pending %s succeeded, %s cancelled, %s failed </>',
+            $this->resolveStatusColor($graph),
             $graph->nodes()->count(),
+            $graph->nodes()->byState(State::IDLE())->count(),
             $graph->nodes()->byState(State::DONE())->count(),
             $graph->nodes()->byState(State::CANCELLED())->count(),
             $graph->nodes()->byState(State::FAILED())->count(),
@@ -109,5 +109,18 @@ class RunReport
         if ($taskNode->state()->isCancelled()) {
             return '<comment>-</>';
         }
+    }
+
+    private function resolveStatusColor(Graph $graph): string
+    {
+        if ($graph->nodes()->byState(State::FAILED())->count()) {
+            return 'fg=white;bg=red';
+        }
+
+        if ($graph->nodes()->byState(State::DONE()) === $graph->nodes()->count()) {
+            return 'fg=black;bg=green';
+        }
+
+        return 'fg=black;bg=yellow';
     }
 }

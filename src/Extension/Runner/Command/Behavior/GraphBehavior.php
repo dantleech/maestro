@@ -96,6 +96,11 @@ class GraphBehavior
             }
         });
 
+        Loop::onSignal(SIGINT, function () {
+            $this->logger->notice('SIGINT received, shutting down');
+            Loop::stop();
+        });
+
         Loop::repeat(1000, function () use ($graph) {
             $nodes = $graph->nodes();
 

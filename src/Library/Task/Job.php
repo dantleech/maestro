@@ -58,7 +58,7 @@ class Job
             return;
         }
 
-        $this->state = JobState::PROCESSING();
+        $this->state = JobState::BUSY();
 
         \Amp\asyncCall(function () use ($runner) {
             try {
@@ -69,7 +69,7 @@ class Job
                 $this->deferred->resolve([]);
                 return;
             }
-            $this->state = JobState::DONE();
+            $this->state = JobState::SUCCEEDED();
             $this->deferred->resolve($result);
         });
     }

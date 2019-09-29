@@ -19,14 +19,14 @@ class JobState
         return new self('waiting');
     }
 
-    public static function PROCESSING(): self
+    public static function BUSY(): self
     {
-        return new self('processing');
+        return new self('busy');
     }
 
-    public static function DONE(): self
+    public static function SUCCEEDED(): self
     {
-        return new self('done');
+        return new self('succeeded');
     }
 
     public static function FAILED(): self

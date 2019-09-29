@@ -3,9 +3,12 @@
 namespace Maestro\Tests\Unit\Library\Task;
 
 use Amp\Delayed;
+use Amp\Failure;
 use Amp\Loop;
 use Amp\Success;
+use Exception;
 use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;
 use Maestro\Library\Task\Queue\FifoQueue;
@@ -49,11 +52,11 @@ class WorkerTest extends TestCase
             $worker->start();
         });
 
-        $this->assertEquals(JobState::DONE(), $job1->state());
-        $this->assertEquals(JobState::DONE(), $job2->state());
+        $this->assertEquals(JobState::SUCCEEDED(), $job1->state());
+        $this->assertEquals(JobState::SUCCEEDED(), $job2->state());
     }
 
-    public function testRespectsConcurrencyOfOne()
+    public function testFailedJobsAreRemoved()
     {
         $worker = $this->createWorker(10, 1);
         $job1 = Job::createNull();
@@ -65,24 +68,19 @@ class WorkerTest extends TestCase
         $this->taskRunner->run(
             $job1->task(),
             Argument::type(Artifacts::class)
-        )->willReturn(new Delayed(10));
+        )->willReturn(new Failure(new TaskFailure('no')));
+
         $this->taskRunner->run(
             $job2->task(),
             Argument::type(Artifacts::class)
-        )->willReturn(new Delayed(10));
+        )->willReturn(new Failure(new TaskFailure('no')));
 
-        Loop::delay(5, function () use ($job1, $job2) {
-            $this->assertFalse(
-                $job1->state()->is(JobState::PROCESSING()) && $job2->state()->is(JobState::PROCESSING()),
-                'The two jobs should not overlap'
-            );
-        });
         Loop::run(function () use ($worker) {
             $worker->start();
         });
 
-        $this->assertEquals(JobState::DONE(), $job1->state());
-        $this->assertEquals(JobState::DONE(), $job2->state());
+        $this->assertEquals(JobState::FAILED(), $job1->state());
+        $this->assertEquals(JobState::FAILED(), $job2->state());
     }
 
     private function createWorker($sleep = 10, $concurrency = 10): Worker

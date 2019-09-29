@@ -39,7 +39,7 @@ class JobTest extends TestCase
         $job = Job::create($task);
         $job->run($this->taskRunner->reveal());
 
-        $this->assertEquals(JobState::PROCESSING(), $job->state());
+        $this->assertEquals(JobState::BUSY(), $job->state());
     }
 
     public function testJobStateIsDoneAfterRunning()
@@ -51,7 +51,7 @@ class JobTest extends TestCase
             $job->run($this->taskRunner->reveal());
         });
 
-        $this->assertEquals(JobState::DONE(), $job->state());
+        $this->assertEquals(JobState::SUCCEEDED(), $job->state());
     }
 
     public function testJobThrowsExceptionIsMarkedAsFailed()
@@ -83,6 +83,6 @@ class JobTest extends TestCase
             $job->run($this->taskRunner->reveal());
         });
 
-        $this->assertEquals(JobState::DONE(), $job->state());
+        $this->assertEquals(JobState::SUCCEEDED(), $job->state());
     }
 }

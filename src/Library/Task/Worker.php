@@ -13,7 +13,7 @@ class Worker
 
     /**
      * @var TaskRunner
-     */
+     '*/
     private $taskRunner;
 
     /**
@@ -26,6 +26,9 @@ class Worker
      */
     private $concurrency;
 
+    /**
+     * @var Job[]
+     */
     private $jobs = [];
 
     public function __construct(
@@ -52,7 +55,7 @@ class Worker
                         continue;
                     }
 
-                    if ($job->state()->is(JobState::DONE())) {
+                    if (false === $job->state()->is(JobState::BUSY())) {
                         unset($this->jobs[$index]);
                     }
                 }
@@ -66,7 +69,7 @@ class Worker
     public function processingJobCount(): int
     {
         return array_reduce($this->jobs, function ($inc, Job $job) {
-            if ($job->state()->is(JobState::PROCESSING())) {
+            if ($job->state()->is(JobState::BUSY())) {
                 $inc++;
             }
 

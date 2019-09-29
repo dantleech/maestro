@@ -20,6 +20,8 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Webmozart\PathUtil\Path;
+use XdgBaseDir\Xdg;
 
 final class ApplicationBuilder
 {
@@ -28,9 +30,9 @@ final class ApplicationBuilder
     private const OPTION_LOG_LEVEL = 'log-level';
     private const OPTION_LOG_FORMAT = 'log-format';
     private const OPTION_CONCURRENCY = 'concurrency';
-    private const OPTION_WORKSPACE_DIRECTORY = 'workspace-dir';
+    private const OPTION_WORKSPACE_PATH = 'workspace-dir';
     private const OPTION_WORKING_DIRECTORY = 'working-dir';
-    private const OPTION_NAMESPACE = 'namespace';
+    private const OPTION_WORKSPACE_NAMESPACE = 'namespace';
     private const OPTION_MANIFEST_PATH = 'plan';
     private const OPTION_PURGE = 'purge';
 
@@ -85,9 +87,9 @@ final class ApplicationBuilder
             new InputOption(self::OPTION_LOG_PATH, null, InputOption::VALUE_REQUIRED, 'File to log to', 'maestro.json'),
             new InputOption(self::OPTION_LOG_FORMAT, null, InputOption::VALUE_REQUIRED, 'Log format', ''),
             new InputOption(self::OPTION_LOG_LEVEL, null, InputOption::VALUE_REQUIRED, 'Log level', 'warning'),
-            new InputOption(self::OPTION_WORKSPACE_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Path to workspace'),
+            new InputOption(self::OPTION_WORKSPACE_PATH, null, InputOption::VALUE_REQUIRED, 'Path to workspace'),
             new InputOption(self::OPTION_WORKING_DIRECTORY, null, InputOption::VALUE_REQUIRED, 'Working directory'),
-            new InputOption(self::OPTION_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
+            new InputOption(self::OPTION_WORKSPACE_NAMESPACE, null, InputOption::VALUE_REQUIRED, 'Namepace (defaults to value based on cwd)'),
             new InputOption(self::OPTION_MANIFEST_PATH, null, InputOption::VALUE_REQUIRED, 'Path to manifest (plan) defaults to maestro.json'),
             new InputOption(self::OPTION_PURGE, null, InputOption::VALUE_NONE, 'Purge workspace before starting'),
             new InputOption(self::OPTION_CONCURRENCY, null, InputOption::VALUE_REQUIRED, 'Set worker job concurrency'),
@@ -103,7 +105,9 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_FORMATTER => 'console',
             RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
             RunnerExtension::PARAM_PURGE => false,
-            TaskExtension::PARAM_CONCURRENCY => 10
+            TaskExtension::PARAM_CONCURRENCY => 10,
+            WorkspaceExtension::PARAM_WORKSPACE_PATH => Path::join([(new Xdg())->getHomeDataDir(), 'maestro']),
+            WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE => md5(getcwd()),
         ];
 
         foreach ([
@@ -115,6 +119,8 @@ final class ApplicationBuilder
             RunnerExtension::PARAM_MANIFEST_PATH => self::OPTION_MANIFEST_PATH,
             RunnerExtension::PARAM_PURGE => self::OPTION_PURGE,
             TaskExtension::PARAM_CONCURRENCY => self::OPTION_CONCURRENCY,
+            WorkspaceExtension::PARAM_WORKSPACE_PATH => self::OPTION_WORKSPACE_PATH,
+            WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE => self::OPTION_WORKSPACE_NAMESPACE,
         ] as $configKey => $optionName) {
             $option = $definition->getOption($optionName);
             $optionName = '--' . $optionName;

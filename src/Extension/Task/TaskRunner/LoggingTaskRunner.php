@@ -39,6 +39,10 @@ class LoggingTaskRunner implements TaskRunner
 
         $this->logger->info('I\'m ' . $task->description(), $context);
 
-        return $this->innerTaskRunner->run($task, $artifacts);
+        return \Amp\call(function () use ($task, $artifacts) {
+            $result = yield $this->innerTaskRunner->run($task, $artifacts);
+            $this->logger->debug(sprintf('Finished %s', $task->description()));
+            return $result;
+        });
     }
 }

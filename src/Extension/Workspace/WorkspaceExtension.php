@@ -37,9 +37,17 @@ class WorkspaceExtension implements Extension
      */
     public function configure(Resolver $schema)
     {
-        $schema->setDefaults([
-            self::PARAM_WORKSPACE_NAMESPACE => md5(getcwd()),
-            self::PARAM_WORKSPACE_PATH => Path::join([(new Xdg())->getHomeDataDir(), 'maestro'])
+        $schema->setRequired([
+            self::PARAM_WORKSPACE_NAMESPACE,
+            self::PARAM_WORKSPACE_PATH
         ]);
+        $schema->setCallback(self::PARAM_WORKSPACE_PATH, function ($config) {
+            $path = $config[self::PARAM_WORKSPACE_PATH];
+            if (Path::isAbsolute($path)) {
+                return $path;
+            }
+
+            return Path::join([getcwd(), $path]);
+        });
     }
 }

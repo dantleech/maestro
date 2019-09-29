@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\File\Task;
+namespace Maestro\Extension\File\Amp\Task;
 
 use Amp\Parallel\Worker\Environment;
 use Amp\Parallel\Worker\Task;

@@ -27,7 +27,11 @@ class ScriptRunner
             $env = array_merge(getenv(), $env);
 
             if (!file_exists($workingDirectory)) {
-                throw new RuntimeException(sprintf('Working directory "%s" does not exist (trying to run "%s")', $workingDirectory, $script));
+                throw new RuntimeException(sprintf(
+                    'Working directory "%s" does not exist (trying to run "%s")',
+                    $workingDirectory,
+                    $script
+                ));
             }
 
             $process = new Process($script, $workingDirectory, $env);

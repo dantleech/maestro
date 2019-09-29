@@ -57,7 +57,8 @@ class PackageInitHandler
         }
 
         if (!file_exists($workspace->absolutePath())) {
-            mkdir($workspace->absolutePath(), 0777, true);
+            // if we don't yield, then the directory doesn't get created
+            yield mkdir($workspace->absolutePath(), 0777, true);
         }
 
         return $workspace;

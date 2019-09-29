@@ -64,7 +64,7 @@ class GraphConstructor
             $parentId = $package->name();
 
             if ($package->url()) {
-                $parentId = $this->addVcsNode($package, $builder, $parentId);
+                $parentId = $this->addCheckoutNode($package, $builder, $parentId);
             }
 
             $this->walkPackage($parentId, $package, $builder);
@@ -112,7 +112,7 @@ class GraphConstructor
         );
     }
 
-    private function addVcsNode(Package $package, GraphBuilder $builder, string $parentId): string
+    private function addCheckoutNode(Package $package, GraphBuilder $builder, string $parentId): string
     {
         $packageUrl = $package->url();
 
@@ -120,16 +120,16 @@ class GraphConstructor
             return $parentId;
         }
 
-        $vcsNode = Node::create(
+        $checkoutNode = Node::create(
             $package->name() . '/vcs',
             [
                 'label' => 'checkout',
                 'task' => new CheckoutTask($packageUrl),
             ]
         );
-        $builder->addNode($vcsNode);
-        $builder->addEdge(Edge::create($vcsNode->id(), $parentId));
-        $parentId = $vcsNode->id();
-        return $parentId;
+        $builder->addNode($checkoutNode);
+        $builder->addEdge(Edge::create($checkoutNode->id(), $parentId));
+
+        return $checkoutNode->id();
     }
 }

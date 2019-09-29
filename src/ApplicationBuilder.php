@@ -22,6 +22,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Webmozart\PathUtil\Path;
 use XdgBaseDir\Xdg;
+use function Safe\getcwd;
 
 final class ApplicationBuilder
 {

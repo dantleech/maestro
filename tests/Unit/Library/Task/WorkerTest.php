@@ -2,11 +2,9 @@
 
 namespace Maestro\Tests\Unit\Library\Task;
 
-use Amp\Delayed;
 use Amp\Failure;
 use Amp\Loop;
 use Amp\Success;
-use Exception;
 use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Job;

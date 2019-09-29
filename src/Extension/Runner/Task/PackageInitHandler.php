@@ -9,16 +9,9 @@ use Maestro\Extension\File\Task\PurgeDirectoryTask;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Task\Artifacts;
-use Maestro\Library\Task\Job;
-use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\TaskRunner;
-use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
-use function Amp\File\{
-    rmdir,
-    mkdir,
-    exists
-};
+use function Amp\File\mkdir;
 
 class PackageInitHandler
 {

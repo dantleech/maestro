@@ -10,7 +10,7 @@ interface Surveyor
     /**
      * Promise must yield \Maestro\Extension\Survey\Model\SurveyResult>
      *
-     * @return Promise
-     */
-    public function survey(Environment $environment): Promise;
+     * @return Promise<SurveyResult>
+     *
+    /** public function __invoke(...): Promise; */
 }

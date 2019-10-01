@@ -19,7 +19,7 @@ class HandlerTester
         return new self($handler);
     }
 
-    public function handle(string $taskFqn, array $args, array $artifacts = []): Artifacts
+    public function handle(string $taskFqn, array $args = [], array $artifacts = []): Artifacts
     {
         $task = Instantiator::instantiate($taskFqn, $args);
         $artifacts = \Amp\Promise\wait(Instantiator::call(

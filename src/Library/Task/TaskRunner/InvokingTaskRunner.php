@@ -27,6 +27,7 @@ class InvokingTaskRunner implements TaskRunner
             $this->registry->getHandlerFor($task),
             '__invoke',
             array_merge([
+                $artifacts,
                 $task
             ], $artifacts->toArray()),
             Instantiator::MODE_TYPE

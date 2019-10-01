@@ -56,4 +56,12 @@ final class Survey implements IteratorAggregate
     {
         return new ArrayIterator($this->results);
     }
+
+    /**
+     * @return SurveyResult[]
+     */
+    public function toArray(): array
+    {
+        return $this->results;
+    }
 }

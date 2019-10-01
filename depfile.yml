@@ -160,6 +160,7 @@ ruleset:
         - lib-task
         - lib-support
         - lib-workspace
+        - lib-survey
 
     ext-git:
         - ext-vcs
@@ -167,6 +168,9 @@ ruleset:
 
     ext-survey:
         - lib-survey
+        - ext-task
+        - lib-task
+        - lib-instantiator
 
 
 

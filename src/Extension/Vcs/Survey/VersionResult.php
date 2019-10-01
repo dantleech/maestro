@@ -41,8 +41,7 @@ class VersionResult
         ?string $headId,
         ?string $headComment,
         array $commitsBetween
-    )
-    {
+    ) {
         $this->packageName = $packageName;
         $this->configuredVersion = $configuredVersion;
         $this->mostRecentTagName = $mostRecentTagName;

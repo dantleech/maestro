@@ -4,7 +4,6 @@ namespace Maestro\Tests\Unit\Extension\Vcs\Survey;
 
 use Maestro\Extension\Vcs\Survey\VersionResult;
 use Maestro\Extension\Vcs\Survey\VersionSurveyor;
-use Maestro\Library\Git\GitRepository;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Tests\IntegrationTestCase;
@@ -101,7 +100,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $this->execPackageCommand(self::PACKAGE_NAME, 'git commit -m "another commit"');
 
         $configuredTag = '1.0.1';
-		$package = new Package('one/two', $configuredTag);
+        $package = new Package('one/two', $configuredTag);
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($package, $this->workspace));
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);

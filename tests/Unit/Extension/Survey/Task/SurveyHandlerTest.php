@@ -11,6 +11,7 @@ use Maestro\Library\Survey\Surveyors;
 use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use stdClass;
 
 class SurveyHandlerTest extends TestCase
@@ -34,8 +35,12 @@ class SurveyHandlerTest extends TestCase
     public function testSurveys()
     {
         $surveyor = new class() implements Surveyor {
-            public function __invoke(stdClass $foobar) {
-
+            public function description():string
+            {
+                return 'hello';
+            }
+            public function __invoke(stdClass $foobar)
+            {
                 $object = new stdClass();
                 $object->foo = $foobar->bar;
 
@@ -47,11 +52,9 @@ class SurveyHandlerTest extends TestCase
         $inputArtifact->bar = 'bar';
 
         $artifacts = HandlerTester::create(
-
             $this->createHandler(new Surveyors([
                 $surveyor,
             ]))
-
         )->handle(SurveyTask::class, [], [
             new Artifacts([
                 $inputArtifact
@@ -65,7 +68,6 @@ class SurveyHandlerTest extends TestCase
 
     private function createHandler(Surveyors $surveyors): SurveyHandler
     {
-        return new SurveyHandler($surveyors);
+        return new SurveyHandler($surveyors, new NullLogger());
     }
-
 }

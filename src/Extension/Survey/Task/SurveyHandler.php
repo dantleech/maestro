@@ -34,7 +34,6 @@ class SurveyHandler
             $surveyBuilder = new SurveyBuilder();
 
             foreach ($this->surveyors as $surveyor) {
-
                 $this->logger->info('Making survey: ' . $surveyor->description());
 
                 $result = yield Instantiator::call(

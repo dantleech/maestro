@@ -3,7 +3,6 @@
 namespace Maestro\Library\Survey;
 
 use Amp\Promise;
-use Maestro\Graph\Environment;
 
 interface Surveyor
 {

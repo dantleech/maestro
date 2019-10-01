@@ -2,8 +2,6 @@
 namespace Maestro\Extension\Vcs\Survey;
 
 use Amp\Promise;
-use Maestro\Extension\Version\Survey\VcsResult;
-use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Survey\Surveyor;
 use Maestro\Library\Task\Exception\TaskFailure;
@@ -31,8 +29,7 @@ class VersionSurveyor implements Surveyor
     public function __invoke(
         Package $package,
         Workspace $workspace
-    ): Promise
-    {
+    ): Promise {
         return \Amp\call(function () use ($package, $workspace) {
             $repoPath = $workspace->absolutePath();
             $repository = $this->repositoryFactory->create($repoPath);

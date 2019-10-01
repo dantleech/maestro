@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Survey;
 
-use Maestro\Extension\Maestro\MaestroExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Extension\Survey\Task\SurveyHandler;
@@ -33,7 +32,6 @@ class SurveyExtension implements Extension
                 new Surveyors($surveyors),
                 $container->get(LoggingExtension::SERVICE_LOGGER)
             );
-
         }, [ TaskExtension::TAG_TASK_HANDLER => [
             'alias' => 'survey',
             'taskClass' => SurveyTask::class,

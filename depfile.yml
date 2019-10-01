@@ -54,6 +54,11 @@ layers:
           - type: directory
             regex: "src/Library/Script/.*"
 
+    - name: lib-survey
+      collectors:
+          - type: directory
+            regex: "src/Library/Survey/.*"
+
     # Extensions
     - name: ext-runner
       collectors:
@@ -89,6 +94,11 @@ layers:
       collectors:
           - type: directory
             regex: "src/Extension/Vcs/.*"
+
+    - name: ext-survey
+      collectors:
+          - type: directory
+            regex: "src/Extension/Survey/.*"
 
 ruleset:
     lib-git:
@@ -150,7 +160,14 @@ ruleset:
         - lib-task
         - lib-support
         - lib-workspace
+
     ext-git:
         - ext-vcs
         - lib-script
+
+    ext-survey:
+        - lib-survey
+
+
+
 

@@ -9,23 +9,23 @@ class VersionResult
      */
     private $packageName;
     /**
-     * @var string
+     * @var string|null
      */
     private $configuredVersion;
     /**
-     * @var string
+     * @var string|null
      */
     private $mostRecentTagName;
     /**
-     * @var string
+     * @var string|null
      */
     private $mostRecentTagCommitId;
     /**
-     * @var string
+     * @var string|null
      */
     private $headId;
     /**
-     * @var string
+     * @var string|null
      */
     private $headComment;
     /**
@@ -35,7 +35,7 @@ class VersionResult
 
     public function __construct(
         string $packageName,
-        string $configuredVersion,
+        ?string $configuredVersion,
         ?string $mostRecentTagName,
         ?string $mostRecentTagCommitId,
         ?string $headId,
@@ -61,12 +61,12 @@ class VersionResult
         return $this->commitsBetween;
     }
 
-    public function headComment(): string
+    public function headComment(): ?string
     {
         return $this->headComment;
     }
 
-    public function headId(): string
+    public function headId(): ?string
     {
         return $this->headId;
     }
@@ -86,7 +86,7 @@ class VersionResult
         return $this->packageName;
     }
 
-    public function configuredVersion(): string
+    public function configuredVersion(): ?string
     {
         return $this->configuredVersion;
     }

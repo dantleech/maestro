@@ -34,4 +34,6 @@ interface Repository
     public function commitsBetween(string $id1, string $id2): Promise;
 
     public function isCheckedOut(): bool;
+
+    public function message(string $headId): Promise;
 }

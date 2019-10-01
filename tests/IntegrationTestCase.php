@@ -3,6 +3,8 @@
 namespace Maestro\Tests;
 
 use Maestro\ApplicationBuilder;
+use Maestro\Extension\Runner\RunnerExtension;
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use PHPUnit\Framework\TestCase;
 use Phpactor\Container\Container;
 use Phpactor\TestUtils\Workspace;
@@ -17,6 +19,10 @@ class IntegrationTestCase extends TestCase
 
     public function container(array $config = []): Container
     {
+        $config = array_merge([
+            RunnerExtension::PARAM_MANIFEST_PATH => $this->workspace()->path('/maestro.json'),
+            WorkspaceExtension::PARAM_WORKSPACE_PATH => $this->workspace()->path('workspace'),
+        ], $config);
         return (new ApplicationBuilder)->buildContainer($config);
     }
 

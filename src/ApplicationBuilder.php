@@ -6,6 +6,7 @@ use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
+use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
 use Maestro\Extension\Vcs\VcsExtension;
@@ -77,6 +78,7 @@ final class ApplicationBuilder
             VcsExtension::class,
             GitExtension::class,
             FileExtension::class,
+            SurveyExtension::class,
         ], $config);
     }
 

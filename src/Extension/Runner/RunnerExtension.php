@@ -2,6 +2,8 @@
 
 namespace Maestro\Extension\Runner;
 
+use Maestro\Extension\Report\Model\ConsoleReportRegistry;
+use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
@@ -45,6 +47,7 @@ class RunnerExtension implements Extension
         $this->registerLoader($container);
         $this->registerTask($container);
         $this->registerLogging($container);
+        $this->registerReport($container);
     }
 
     /**
@@ -66,7 +69,7 @@ class RunnerExtension implements Extension
         $container->register(RunCommand::class, function (Container $container) {
             return new RunCommand(
                 $container->get(GraphBehavior::class),
-                $container->get(RunReport::class)
+                $container->get(ConsoleReportRegistry::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
         
@@ -142,5 +145,16 @@ class RunnerExtension implements Extension
         $container->register(MaestroColoredLineFormatter::class, function (Container $container) {
             return new MaestroColoredLineFormatter(null, "[%elapsed%] %message% %context% %extra%\n", 'U.u');
         }, [ LoggingExtension::TAG_FORMATTER => ['alias' => 'console']]);
+    }
+
+    private function registerReport(ContainerBuilder $container)
+    {
+        $container->register(RunReport::class, function (Container $container) {
+            return new RunReport();
+        }, [
+            ReportExtension::TAG_REPORT_CONSOLE => [
+                'name' => 'run'
+            ]
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace Maestro;
 
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
+use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
 use Maestro\Extension\Survey\SurveyExtension;
@@ -79,6 +80,7 @@ final class ApplicationBuilder
             GitExtension::class,
             FileExtension::class,
             SurveyExtension::class,
+            ReportExtension::class,
         ], $config);
     }
 

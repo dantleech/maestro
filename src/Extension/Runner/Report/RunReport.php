@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Report;
 
 use Generator;
+use Maestro\Extension\Report\Model\ConsoleReport;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
@@ -11,7 +12,7 @@ use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RunReport
+class RunReport implements ConsoleReport
 {
     /**
      * @var int
@@ -23,7 +24,17 @@ class RunReport
         $this->aggregationDepth = $aggregationDepth;
     }
 
-    public function render(OutputInterface $output, Graph $graph)
+    public function title(): string
+    {
+        return 'Run Report';
+    }
+
+    public function description(): string
+    {
+        return 'Summary of all tasks executed during run';
+    }
+
+    public function render(OutputInterface $output, Graph $graph): void
     {
         $table = new Table($output);
         $table->setHeaders([

@@ -168,4 +168,20 @@ class RunCommandTest extends EndToEndTestCase
         $this->command('run --namespace="" --purge');
         $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
     }
+
+    public function testRendersReport()
+    {
+        $this->createPlan(self::EXAMPLE_PLAN_NAME, [
+            'packages' => [
+                'mypackage' => [
+                ],
+                'foobar' => [
+                ],
+            ],
+        ]);
+
+        $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
+        $process = $this->command('run --report=run --report=run');
+        $this->assertStringContainsString('Run Report', $process->getOutput());
+    }
 }

@@ -2,9 +2,11 @@
 
 namespace Maestro\Extension\Vcs;
 
+use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Vcs\Extension\VcsDefinition;
+use Maestro\Extension\Vcs\Report\VersionReport;
 use Maestro\Extension\Vcs\Survey\VersionSurveyor;
 use Maestro\Extension\Vcs\Task\CheckoutHandler;
 use Maestro\Extension\Vcs\Task\CheckoutTask;
@@ -62,6 +64,14 @@ class VcsExtension implements Extension
             return new VersionSurveyor($container->get(RepositoryFactory::class));
         }, [
             SurveyExtension::TAG_SURVERYOR => []
+        ]);
+
+        $container->register(VersionReport::class, function (Container $container) {
+            return new VersionReport();
+        }, [
+            ReportExtension::TAG_REPORT_CONSOLE => [
+                'name' => 'version',
+            ]
         ]);
     }
 

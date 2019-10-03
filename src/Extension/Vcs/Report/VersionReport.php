@@ -1,17 +1,32 @@
 <?php
 
-namespace Maestro\Extension\Version\Console;
+namespace Maestro\Extension\Vcs\Report;
 
+use Maestro\Extension\Composer\Survery\ComposerConfigResult;
 use Maestro\Extension\Report\Model\ConsoleReport;
 use Maestro\Extension\Survey\Task\SurveyTask;
+use Maestro\Extension\Vcs\Survey\VersionResult;
+use Maestro\Library\Composer\PackagistPackageInfo;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Survey\Survey;
+use Maestro\Library\Util\StringUtil;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class VersionReport implements ConsoleReport
 {
-    public function render(OutputInterface $output, Graph $graph)
+    public function title(): string
+    {
+        return 'Version Report';
+    }
+
+    public function description(): string
+    {
+        return 'Detailed version overview for each package';
+    }
+
+    public function render(OutputInterface $output, Graph $graph): void
     {
         $table = new Table($output);
         $table->setHeaders([
@@ -37,19 +52,18 @@ class VersionReport implements ConsoleReport
             $versionReport = $survey->get(VersionResult::class);
             assert($versionReport instanceof VersionResult);
 
-            $packageReport = $survey->get(PackageResult::class, new PackageResult());
-
+            $packageReport = $survey->get(ComposerConfigResult::class, new ComposerConfigResult());
             $packagistReport = $survey->get(PackagistPackageInfo::class);
             assert($packagistReport instanceof PackagistPackageInfo);
             $table->addRow([
                 $versionReport->packageName(),
                 $this->formatConfiguredVersion($versionReport),
-                $versionReport->taggedVersion(),
+                $versionReport->mostRecentTagName(),
                 $packageReport->branchAlias(),
                 $this->formatPackagistVersion($versionReport, $packagistReport),
-                substr($versionReport->taggedCommit() ?? '', 0, 10),
+                substr($versionReport->mostRecentTagCommitId() ?? '', 0, 10),
                 $this->formatHeadCommit($versionReport),
-                StringUtil::firstLine($versionReport->headMessage()),
+                StringUtil::firstLine($versionReport->headComment()),
             ]);
         }
 
@@ -57,7 +71,7 @@ class VersionReport implements ConsoleReport
         $table->render();
     }
 
-    private function formatConfiguredVersion(VcsResult $versionReport)
+    private function formatConfiguredVersion(VersionResult $versionReport)
     {
         if ($versionReport->willBeTagged()) {
             return sprintf('<bg=black;fg=yellow>%s</>', $versionReport->configuredVersion());
@@ -66,26 +80,26 @@ class VersionReport implements ConsoleReport
         return $versionReport->configuredVersion();
     }
 
-    private function formatPackagistVersion(VcsResult $versionReport, PackagistPackageInfo $packageReport)
+    private function formatPackagistVersion(VersionResult $versionReport, PackagistPackageInfo $packageReport)
     {
-        if ($versionReport->taggedVersion() !== $packageReport->latestVersion()) {
+        if ($versionReport->mostRecentTagName() !== $packageReport->latestVersion()) {
             return sprintf('<bg=black;fg=yellow>%s</>', $packageReport->latestVersion());
         }
 
         return $packageReport->latestVersion();
     }
 
-    private function formatHeadCommit(VcsResult $versionReport)
+    private function formatHeadCommit(VersionResult $versionReport)
     {
         if ($versionReport->divergence() > 0) {
             return sprintf(
                 '%s <fg=yellow;bg=black>+%s</>',
-                substr($versionReport->headCommit(), 0, 10),
+                substr($versionReport->headId(), 0, 10),
                 $versionReport->divergence()
             );
         }
 
-        return substr($versionReport->headCommit(), 0, 10);
+        return substr($versionReport->headId(), 0, 10);
     }
 
     private function renderLegend(OutputInterface $output): void
@@ -94,4 +108,4 @@ class VersionReport implements ConsoleReport
         $output->writeln('<info>dev</>: development version (branch alias), <info>reg</>: package registry version');
         $output->writeln('<info>tag-id</>: commit-id of lastest tag, <info>head-id</info>: commit-id of latest commit + number of commits ahead of latest tag');
     }
-}<Paste>
+}

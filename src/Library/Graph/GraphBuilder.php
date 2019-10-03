@@ -26,14 +26,16 @@ final class GraphBuilder
         return new self();
     }
 
-    public function addNode(Node $node): void
+    public function addNode(Node $node): self
     {
         $this->nodes[] = $node;
+        return $this;
     }
 
-    public function addEdge(Edge $edge): void
+    public function addEdge(Edge $edge): self
     {
         $this->edges[] = $edge;
+        return $this;
     }
 
     public function build(): Graph

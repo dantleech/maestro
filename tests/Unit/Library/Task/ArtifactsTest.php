@@ -56,10 +56,10 @@ class ArtifactsTest extends TestCase
         };
 
         $container1 = new Artifacts([$object1]);
-        $container2= $container1->spawnMutated([
+        $container2= $container1->spawnMutated(new Artifacts([
             $object2,
             $object3
-        ]);
+        ]));
 
         $this->assertNotSame($container1, $container2);
         $this->assertSame($object1, $container2->get(get_class($object1)));

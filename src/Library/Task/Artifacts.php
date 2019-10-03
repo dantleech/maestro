@@ -36,9 +36,9 @@ class Artifacts implements Countable
         $this->artifacts[get_class($artifact)] = $artifact;
     }
 
-    public function spawnMutated(array $artifacts): Artifacts
+    public function spawnMutated(self $artifacts): Artifacts
     {
-        return new self(array_merge($this->artifacts, $artifacts));
+        return new self(array_merge($this->artifacts, $artifacts->artifacts));
     }
 
     public function toArray(): array

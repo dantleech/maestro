@@ -205,4 +205,11 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
     {
         return new self(array_reverse($this->nodes));
     }
+
+    public function byTaskClass(string $taskClass): Nodes
+    {
+        return Nodes::fromNodes(array_filter($this->nodes, function (Node $node) use ($taskClass) {
+            return get_class($node->task()) === $taskClass;
+        }));
+    }
 }

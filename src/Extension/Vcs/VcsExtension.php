@@ -2,8 +2,10 @@
 
 namespace Maestro\Extension\Vcs;
 
+use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Vcs\Extension\VcsDefinition;
+use Maestro\Extension\Vcs\Survey\VersionSurveyor;
 use Maestro\Extension\Vcs\Task\CheckoutHandler;
 use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Instantiator\Instantiator;
@@ -54,6 +56,12 @@ class VcsExtension implements Extension
                 'alias' => 'checkout',
                 'taskClass' => CheckoutTask::class
             ]
+        ]);
+
+        $container->register(VersionSurveyor::class, function (Container $container) {
+            return new VersionSurveyor($container->get(RepositoryFactory::class));
+        }, [
+            SurveyExtension::TAG_SURVERYOR => []
         ]);
     }
 

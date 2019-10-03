@@ -21,8 +21,8 @@ class TaskRunnerInjectingRunner implements TaskRunner
 
     public function run(Task $task, Artifacts $artifacts): Promise
     {
-        return $this->innerTaskRunner->run($task, $artifacts->spawnMutated([
+        return $this->innerTaskRunner->run($task, $artifacts->spawnMutated(new Artifacts([
             $this
-        ]));
+        ])));
     }
 }

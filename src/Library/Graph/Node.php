@@ -27,9 +27,9 @@ final class Node
     private $task;
 
     /**
-     * @var object[]
+     * @var Artifacts
      */
-    private $artifacts = [];
+    private $artifacts;
 
     private $id;
 
@@ -65,7 +65,7 @@ final class Node
         $this->state = State::IDLE();
         $this->task = $task ?: new NullTask();
         $this->tags = $tags;
-        $this->artifacts = $artifacts;
+        $this->artifacts = new Artifacts($artifacts);
     }
 
     /**
@@ -142,12 +142,12 @@ final class Node
                 return;
             }
 
-            $this->artifacts = $artifacts;
+            $this->artifacts = new Artifacts($artifacts);
             $this->state = State::SUCCEEDED();
         });
     }
 
-    public function artifacts(): array
+    public function artifacts(): Artifacts
     {
         return $this->artifacts;
     }

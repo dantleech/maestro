@@ -2,6 +2,8 @@
 
 namespace Maestro\Extension\Survey;
 
+use Maestro\Extension\Report\ReportExtension;
+use Maestro\Extension\Survey\Report\SurveyReport;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Extension\Survey\Task\SurveyHandler;
@@ -36,6 +38,14 @@ class SurveyExtension implements Extension
             'alias' => 'survey',
             'taskClass' => SurveyTask::class,
         ]]);
+
+        $container->register(SurveyReport::class, function (Container $container) {
+            return new SurveyReport();
+        }, [
+            ReportExtension::TAG_REPORT_CONSOLE => [
+                'name' => 'survey',
+            ]
+        ]);
     }
 
     /**

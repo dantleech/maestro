@@ -2,6 +2,7 @@
 
 namespace Maestro;
 
+use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\Report\ReportExtension;
@@ -81,6 +82,7 @@ final class ApplicationBuilder
             FileExtension::class,
             SurveyExtension::class,
             ReportExtension::class,
+            ComposerExtension::class,
         ], $config);
     }
 

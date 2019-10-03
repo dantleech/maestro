@@ -40,10 +40,9 @@ class SurveyReport implements ConsoleReport
             }
 
             $style->section($node->id());
-            $table = new Table($output);
             $survey = $node->artifacts()->get(Survey::class);
-            $headers = [];
             foreach ($survey as $surveyResult) {
+                $table = new Table($output);
                 $style->block(get_class($surveyResult));
 
                 $reflection = new ReflectionClass($surveyResult);
@@ -55,8 +54,9 @@ class SurveyReport implements ConsoleReport
                         json_encode($property->getValue($surveyResult))
                     ]);
                 }
+                $table->render();
+                $output->write(PHP_EOL);
             }
-            $table->render();
         }
 
     }

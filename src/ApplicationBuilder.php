@@ -5,6 +5,7 @@ namespace Maestro;
 use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
+use Maestro\Extension\HttpClient\HttpClientExtension;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
@@ -83,6 +84,7 @@ final class ApplicationBuilder
             SurveyExtension::class,
             ReportExtension::class,
             ComposerExtension::class,
+            HttpClientExtension::class,
         ], $config);
     }
 

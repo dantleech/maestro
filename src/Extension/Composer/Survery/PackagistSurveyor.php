@@ -7,9 +7,8 @@ use Amp\Success;
 use Maestro\Library\Composer\Exception\PackagistError;
 use Maestro\Library\Composer\Packagist;
 use Maestro\Library\Composer\PackagistPackageInfo;
-use Maestro\Extension\Survey\Model\Surveyor;
-use Maestro\Graph\Environment;
-use Maestro\Package\Package;
+use Maestro\Library\Support\Package\Package;
+use Maestro\Library\Survey\Surveyor;
 use Psr\Log\LoggerInterface;
 
 class PackagistSurveyor implements Surveyor
@@ -33,12 +32,8 @@ class PackagistSurveyor implements Surveyor
     /**
      * {@inheritDoc}
      */
-    public function survey(Environment $environment): Promise
+    public function __invoke(Package $package): Promise
     {
-        $workspace = $environment->workspace();
-        $package = $environment->vars()->get('package');
-        assert($package instanceof Package);
-
         return \Amp\call(function () use ($package) {
             try {
                 return yield $this->packagist->packageInfo($package->name());
@@ -52,5 +47,13 @@ class PackagistSurveyor implements Surveyor
                 );
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function description(): string
+    {
+        return 'surveying package data from packagist';
     }
 }

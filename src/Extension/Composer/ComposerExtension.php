@@ -24,12 +24,12 @@ class ComposerExtension implements Extension
             return new ComposerConfigSurveryor();
         }, [ SurveyExtension::TAG_SURVERYOR => []]);
 
-        //$container->register(PackagistSurveyor::class, function (Container $container) {
-        //    return new PackagistSurveyor(
-        //        $container->get(Packagist::class),
-        //        $container->get(LoggingExtension::SERVICE_LOGGER)
-        //    );
-        //}, [ SurveyExtension::TAG_SURVERYOR => []]);
+        $container->register(PackagistSurveyor::class, function (Container $container) {
+            return new PackagistSurveyor(
+                $container->get(Packagist::class),
+                $container->get(LoggingExtension::SERVICE_LOGGER)
+            );
+        }, [ SurveyExtension::TAG_SURVERYOR => []]);
 
         $container->register(Packagist::class, function (Container $container) {
             return new Packagist($container->get(Client::class));

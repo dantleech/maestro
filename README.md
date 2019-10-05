@@ -18,7 +18,7 @@ In the future it is hoped that it will:
 
 - Automate releases.
 
-![out](![maestro](https://user-images.githubusercontent.com/530801/66256252-dc0bbe80-e783-11e9-9c68-26e9bcb2ce9e.png)
+![maestro](https://user-images.githubusercontent.com/530801/66256252-dc0bbe80-e783-11e9-9c68-26e9bcb2ce9e.png)
 
 *Task Graph*
 

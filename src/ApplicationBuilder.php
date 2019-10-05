@@ -62,7 +62,7 @@ final class ApplicationBuilder
         $application->setCommandLoader(
             $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
         );
-        $container->get(LoggingExtension::SERVICE_LOGGER)->info(
+        $container->get(LoggingExtension::SERVICE_LOGGER)->debug(
             sprintf('Built application in %s', microtime(true) - $start)
         );
 
@@ -111,7 +111,8 @@ final class ApplicationBuilder
     private function buildConfiguration(InputDefinition $definition): array
     {
         $config = [
-            LoggingExtension::PARAM_LEVEL => 'warning',
+            LoggingExtension::PARAM_ENABLED => true,
+            LoggingExtension::PARAM_LEVEL => 'notice',
             LoggingExtension::PARAM_PATH => STDERR,
             LoggingExtension::PARAM_FORMATTER => 'console',
             RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
@@ -183,7 +184,6 @@ final class ApplicationBuilder
     private function configureMetaStates(array $config)
     {
         if ($this->input->hasParameterOption(['-v','--verbose'])) {
-            $config[LoggingExtension::PARAM_ENABLED] = true;
             $config[LoggingExtension::PARAM_LEVEL] = 'info';
         }
 

@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
+use Maestro\Extension\Runner\Console\TagParser;
 use Maestro\Extension\Runner\Loader\GraphConstructor;
 use Maestro\Extension\Runner\Loader\ManifestLoader;
 use Maestro\Library\Graph\GraphTaskScheduler;
@@ -10,9 +11,11 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Worker;
+use Maestro\Library\Util\Cast;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -22,6 +25,7 @@ class GraphBehavior
 
     private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
+    private const OPTION_TAGS = 'tags';
 
     /**
      * @var ManifestLoader
@@ -53,13 +57,19 @@ class GraphBehavior
      */
     private $queue;
 
+    /**
+     * @var TagParser
+     */
+    private $tagParser;
+
     public function __construct(
         ManifestLoader $loader,
         GraphConstructor $constructor,
         GraphTaskScheduler $scheduler,
         Worker $worker,
         LoggerInterface $logger,
-        Queue $queue
+        Queue $queue,
+        TagParser $tagParser
     ) {
         $this->loader = $loader;
         $this->constructor = $constructor;
@@ -67,17 +77,30 @@ class GraphBehavior
         $this->worker = $worker;
         $this->logger = $logger;
         $this->queue = $queue;
+        $this->tagParser = $tagParser;
     }
 
     public function configure(Command $command): void
     {
+        $command->addOption(self::OPTION_TAGS, 't', InputOption::VALUE_REQUIRED, 'Comma separated list of tags');
     }
 
     public function loadGraph(InputInterface $input): Graph
     {
-        return $this->constructor->construct(
+        $graph = $this->constructor->construct(
             $this->loader->load()
         );
+
+        $tags = $input->getOption(self::OPTION_TAGS);
+        if ($tags) {
+            $tags = $this->tagParser->parse(Cast::toString($tags));
+            $this->logger->notice(sprintf('Pruning graph for tags: "%s"', implode('", "', $tags)));
+            $graph = $graph->pruneForTags(
+                ...$tags
+            );
+        }
+
+        return $graph;
     }
 
     public function run(InputInterface $input, OutputInterface $output, Graph $graph)

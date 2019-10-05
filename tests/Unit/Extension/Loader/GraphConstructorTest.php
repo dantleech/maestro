@@ -81,6 +81,27 @@ class GraphConstructorTest extends TestCase
                 $this->assertContains('one', $node->tags());
             }
         ];
+
+        yield 'task inherits package tags' => [
+            [
+                'packages' => [
+                    'phpactor/phpactor' => [
+                        'tags' => ['three'],
+                        'tasks' => [
+                            'task1' => [
+                                'type' => NullTask::class,
+                                'tags' => ['one'],
+                            ],
+                        ],
+                    ],
+                ]
+            ],
+            function (Graph $graph) {
+                $node = $graph->nodes()->get('phpactor/phpactor/task1');
+                $this->assertContains('one', $node->tags());
+                $this->assertContains('three', $node->tags());
+            }
+        ];
     }
 }
 

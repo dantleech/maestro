@@ -6,6 +6,7 @@ use Maestro\Extension\Report\Model\ConsoleReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
+use Maestro\Extension\Runner\Console\TagParser;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
 use Maestro\Extension\Runner\Task\InitHandler;
 use Maestro\Extension\Runner\Task\InitTask;
@@ -80,7 +81,8 @@ class RunnerExtension implements Extension
                 $container->get(GraphTaskScheduler::class),
                 $container->get(Worker::class),
                 $container->get(LoggingExtension::SERVICE_LOGGER),
-                $container->get(Queue::class)
+                $container->get(Queue::class),
+                new TagParser()
             );
         });
 

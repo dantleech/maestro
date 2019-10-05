@@ -184,4 +184,33 @@ class RunCommandTest extends EndToEndTestCase
         $process = $this->command('run --report=run --report=run');
         $this->assertStringContainsString('Run Report', $process->getOutput());
     }
+
+    public function testRunsOnlyTags()
+    {
+        $this->createPlan(self::EXAMPLE_PLAN_NAME, [
+            'packages' => [
+                'mypackage' => [
+                    'tags' => ['one'],
+                    'tasks' => [
+                        'say hello' => [
+                            'type' => 'null',
+                        ]
+                    ],
+                ],
+                'foobar' => [
+                    'tags' => [],
+                    'tasks' => [
+                        'say goodbye' => [
+                            'type' => 'null',
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+
+        $process = $this->command('run --tags=one --report=run');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('mypackage', $process->getOutput());
+        $this->assertStringNotContainsString('foobar', $process->getOutput());
+    }
 }

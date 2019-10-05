@@ -85,7 +85,7 @@ class GraphConstructor
                         $task->type(),
                         $task->args()
                     ),
-                    'tags' => $task->tags(),
+                    'tags' => array_merge($task->tags(), $package->tags())
                 ]
             ));
 

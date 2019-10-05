@@ -5,21 +5,20 @@ Maestro
 
 **This project is still in an experimental phase and has not been used to  orchestrate anything at this stage**
 
-Maestro will be a micro-package orchestration and management tool.
+Maestro will be a package orchestration and management tool.
 
-Use it, for many packages in parallel, to:
+Use it, for many packages in parallel, to (for example):
 
 - Apply file templates.
-- Execute arbitrary commands(e.g. git commit, push etc).
-- Run QA, fixer and migration tools (e.g. phpunit, phpcs, rector, whatevver).
+- Run scripts.
+- Gather version information
+- Generate reports.
 
-It may also, in the future:
+In the future it is hoped that it will:
 
-- Be able to create new packages (including github repo creation, possibly publishing to packagist)
-- Perform releases
-- Run as a local CI server
+- Automate releases.
 
-![out](https://user-images.githubusercontent.com/530801/58695020-3d61f200-838c-11e9-8ca0-de086cb7450a.png)
+![out](![maestro](https://user-images.githubusercontent.com/530801/66256252-dc0bbe80-e783-11e9-9c68-26e9bcb2ce9e.png)
 
 *Task Graph*
 

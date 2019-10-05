@@ -11,12 +11,6 @@
   "pre-commit": {
     "enabled": true,
     "actions": [
-      {
-        "action": "./vendor/bin/php-cs-fixer fix --dry-run"
-      },
-      {
-        "action": "./vendor/bin/phpstan analyse --level=7 src"
-      }
     ]
   },
   "pre-push": {
@@ -24,6 +18,15 @@
     "actions": [
       {
         "action": "./vendor/bin/phpunit"
+      },
+      {
+        "action": "./vendor/bin/php-cs-fixer fix --dry-run"
+      },
+      {
+        "action": "./vendor/bin/phpstan analyse --level=7 src"
+      },
+      {
+        "action": "./vendor/bin/deptrac"
       }
     ]
   }

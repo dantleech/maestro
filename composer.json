@@ -1,12 +1,12 @@
 {
     "name": "dantleech/maestro",
-    "description": "Co-ordinate and manage micro packages",
-    "license": "MIT",
+    "description": "co-ordinate and manage micro packages",
+    "license": "mit",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
-            "name": "Daniel Leech",
+            "name": "daniel leech",
             "email": "daniel@dantleech.com"
         }
     ],
@@ -21,15 +21,19 @@
         "amphp/process": "^1.1",
         "twig/twig": "^2.11",
         "thecodingmachine/safe": "^0.1.16",
-        "amphp/http-client": "^3.0"
+        "amphp/http-client": "^3.0",
+        "bramus/monolog-colored-line-formatter": "^3.0"
     },
     "require-dev": {
+        "sensiolabs-de/deptrac-shim": "^0.5.0",
         "friendsofphp/php-cs-fixer": "^2.13",
         "phpactor/test-utils": "^1.0.1",
         "phpunit/phpunit": "^8.0",
         "phpstan/phpstan": "^0.11.4",
         "symfony/property-access": "^4.2",
-        "captainhook/captainhook": "~4.0"
+        "captainhook/captainhook": "~4.0",
+        "symfony/debug": "^4.3",
+        "symfony/var-dumper": "^4.3"
     },
     "autoload": {
         "psr-4": {
@@ -42,17 +46,19 @@
         }
     },
     "extra": {
-        "phpactor.extension_class": "Phpactor\\Extension\\Maestro\\MaestroExtension",
+        "phpactor.extension_class": "phpactor\\extension\\maestro\\maestroextension",
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
     },
     "scripts": {
-        "test": [
+        "integrate": [
             "@php-cs-fixer",
             "@phpstan",
+            "@deptrac",
             "@phpunit"
         ],
+        "deptrac": "./vendor/bin/deptrac",
         "phpstan": "./vendor/bin/phpstan analyse --level=7 --ansi src",
         "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --ansi --dry-run",
         "phpunit": "./vendor/bin/phpunit --colors=always"

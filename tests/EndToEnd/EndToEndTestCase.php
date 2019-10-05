@@ -7,12 +7,12 @@ use Symfony\Component\Process\Process;
 
 class EndToEndTestCase extends IntegrationTestCase
 {
-    protected function command(string $command): Process
+    protected function command(string $command, string $workspaceDir = null): Process
     {
-        $process = new Process(sprintf(
-            __DIR__ . '/../../bin/maestro %s --workspace-dir=%s',
+        $process = new Process($cmd = sprintf(
+            __DIR__ . '/../../bin/maestro %s -vvv --workspace-dir=%s',
             $command,
-            $this->workspace()->path('/workspace')
+            $workspaceDir ?? $this->workspace()->path('/workspace')
         ), $this->workspace()->path('/'));
         $process->run();
 

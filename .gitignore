@@ -1,3 +1,6 @@
 /vendor
 /composer.lock
 /tests/Workspace
+/.deptrac.cache
+/.phpcs.cache
+/.phpunit.result.cache

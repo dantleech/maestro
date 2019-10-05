@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Survey\Task;
 
-use Maestro\Graph\Task;
+use Maestro\Library\Task\Task;
 
 class SurveyTask implements Task
 {

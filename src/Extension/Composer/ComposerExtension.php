@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Composer;
 
 use Amp\Artax\Client;
-use Maestro\Extension\Composer\Model\Packagist;
-use Maestro\Extension\Composer\Survery\ComposerSurveryor;
+use Maestro\Library\Composer\Packagist;
+use Maestro\Extension\Composer\Survery\ComposerConfigSurveryor;
 use Maestro\Extension\Composer\Survery\PackagistSurveyor;
 use Maestro\Extension\Survey\SurveyExtension;
 use Phpactor\Container\Container;
@@ -20,8 +20,8 @@ class ComposerExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register(ComposerSurveryor::class, function (Container $container) {
-            return new ComposerSurveryor();
+        $container->register(ComposerConfigSurveryor::class, function (Container $container) {
+            return new ComposerConfigSurveryor();
         }, [ SurveyExtension::TAG_SURVERYOR => []]);
 
         $container->register(PackagistSurveyor::class, function (Container $container) {

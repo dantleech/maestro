@@ -23,17 +23,16 @@ It may also, in the future:
 
 *Task Graph*
 
-![Untitled](https://user-images.githubusercontent.com/530801/58994540-c643b800-87e8-11e9-8c83-83e8347298f9.png)
-
-*Progress*
-
 Background
 ----------
 
 Maestro reads a configuration file in which you define the packages that you
-wish to manage.
+wish to manage, and tasks that you wish to perform upon the packages.
 
-It can then clone these packages into a workspace directory (e.g.
+This configuration file is converted into a graph representing the plan of
+execution.
+
+The packages are checked out into a workspace directory (e.g.
 `.local/share/maestro/123412312-my-project`).
 
 Usage
@@ -161,79 +160,7 @@ e.g.
 }
 ```
 
-###### `json_file`
-
-Create or manipulate a JSON file
-
-e.g.
-
-```javascript
-{
-    "type": "json",
-    "args": {
-        "targetPath": "composer.json",
-        "merge": {
-            "require-dev": {
-                 "phpunit": "~7.0"
-            },
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.1.x-dev"
-                }
-            }
-        }
-    }
-}
-```
-
-### Schedules
-
-Schedules determine how often and/or when a task will be executed. They are
-defined at the task level as follows:
-
-```javascript
-{
-    "type": "git",
-    "args": {
-        "url": "git@github.com:$PACKAGE_NAME"
-    },
-    "schedule": {
-        "type": "repeat",
-        "args": {
-            "delay": 10
-        }
-    }
-}
-```
-
-If omitted the default is the `asap` schedule.
-
-#### `asap`
-
-The ASAP schedule will execute the task once as soon as possible.  This is the
-default schedule.
-
-```javascript
-"schedule": {
-    "type": "asap"
-}
-```
-
-#### `repeat`
-
-The ASAP schedule will execute the task once as soon as possible.  This is the
-default schedule.
-
-```javascript
-"schedule": {
-    "type": "repeat",
-    "args": {
-        "delay": 10
-    }
-}
-```
-
-### Twig
+### Template
 
 This extension allows you to apply templates to packages.
 
@@ -255,39 +182,6 @@ e.g.
 
 - **path**: Where the template is located, relative to the Manifest file.
 - **targetPath**: Where to put the rendered template, relative to the package path.
-
-### Tmux
-
-Automatically setup and switch to [Tmux](https://github.com/tmux/tmux/wiki)
-sessions for package workspaces [tmux]
-
-```bash
-$ maestro tmux phpactor/worse-reflection
-```
-
-- If there is an existing Tmux session called `phpactor/worse-reflection`,
-  then switch to it.
-- If no session, exists create one.
-- Switch the current tmux session to the new or existing one.
-
-This is very useful to quicly create an environment where you can
-manipulate the package after maestro has executed.
-
-Note that this only works if you are already inside a Tmux session.
-
-### `git`
-
-This extension provides some functionality around GIT.
-
-#### Commands
-
-##### `git:versions`
-
-Generate a report for all the versions of your packages.
-
-##### `git:tag`
-
-Tag the packages _configured_ version.
 
 Documentation
 -------------

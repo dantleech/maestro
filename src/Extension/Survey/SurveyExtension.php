@@ -2,14 +2,16 @@
 
 namespace Maestro\Extension\Survey;
 
-use Maestro\Extension\Maestro\MaestroExtension;
-use Maestro\Extension\Version\Console\VersionReport;
-use Maestro\Extension\Survey\Model\Surveyors;
+use Maestro\Extension\Report\ReportExtension;
+use Maestro\Extension\Survey\Report\SurveyReport;
+use Maestro\Extension\Task\TaskExtension;
+use Maestro\Library\Survey\Surveyors;
 use Maestro\Extension\Survey\Task\SurveyHandler;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 
 class SurveyExtension implements Extension
@@ -29,16 +31,21 @@ class SurveyExtension implements Extension
             }
 
             return new SurveyHandler(
-                new Surveyors($surveyors)
+                new Surveyors($surveyors),
+                $container->get(LoggingExtension::SERVICE_LOGGER)
             );
-        }, [ MaestroExtension::TAG_TASK_HANDLER => [
+        }, [ TaskExtension::TAG_TASK_HANDLER => [
             'alias' => 'survey',
             'taskClass' => SurveyTask::class,
         ]]);
 
-        $container->register(VersionReport::class, function (Container $container) {
-            return new VersionReport();
-        });
+        $container->register(SurveyReport::class, function (Container $container) {
+            return new SurveyReport();
+        }, [
+            ReportExtension::TAG_REPORT_CONSOLE => [
+                'name' => 'survey',
+            ]
+        ]);
     }
 
     /**

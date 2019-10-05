@@ -3,31 +3,45 @@
 namespace Maestro\Extension\Survey\Task;
 
 use Amp\Promise;
-use Maestro\Extension\Survey\Model\SurveyBuilder;
-use Maestro\Extension\Survey\Model\Surveyors;
-use Maestro\Extension\Survey\Model\Surveyor;
-use Maestro\Graph\Environment;
-use Maestro\Graph\Task;
-use Maestro\Graph\TaskHandler;
+use Maestro\Library\Instantiator\Instantiator;
+use Maestro\Library\Survey\SurveyBuilder;
+use Maestro\Library\Survey\Surveyors;
+use Maestro\Library\Survey\Surveyor;
+use Maestro\Library\Task\Artifacts;
+use Psr\Log\LoggerInterface;
 
-class SurveyHandler implements TaskHandler
+class SurveyHandler
 {
     /**
      * @var Surveyors<Surveyor>
      */
     private $surveyors;
 
-    public function __construct(Surveyors $surveyors)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(Surveyors $surveyors, LoggerInterface $logger)
     {
         $this->surveyors = $surveyors;
+        $this->logger = $logger;
     }
 
-    public function execute(Task $task, Environment $environment): Promise
+    public function __invoke(SurveyTask $task, Artifacts $artifacts): Promise
     {
-        return \Amp\call(function () use ($environment) {
+        return \Amp\call(function () use ($artifacts) {
             $surveyBuilder = new SurveyBuilder();
+
             foreach ($this->surveyors as $surveyor) {
-                $result = yield $surveyor->survey($environment);
+                $this->logger->info('Making survey: ' . $surveyor->description());
+
+                $result = yield Instantiator::call(
+                    $surveyor,
+                    '__invoke',
+                    $artifacts->toArray(),
+                    Instantiator::MODE_TYPE
+                );
                 if ($result === null) {
                     continue;
                 }
@@ -35,10 +49,9 @@ class SurveyHandler implements TaskHandler
                 $surveyBuilder->addResult($result);
             }
 
-            return $environment->builder()
-               ->withVars([
-                   'survey' => $surveyBuilder->build(),
-               ])->build();
+            return [
+                $surveyBuilder->build(),
+            ];
         });
     }
 }

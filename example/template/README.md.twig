@@ -1,0 +1,21 @@
+{{ package.name }}
+{% for i in range(1, package.name|length) %}={% endfor %}
+
+
+[![Build Status](https://travis-ci.org/{{ package.name }}.svg?branch=master)](https://travis-ci.org/{{ package.name }})
+
+Installation
+------------
+
+This package is part of [phpactor](https://github.com/phpactor/phpactor). It is
+not necessarily supposed to be used independently.
+
+```
+composer require {{ package.name }}
+```
+
+Contributing
+------------
+
+Contributions are always welcome. Please raise any issues or suggestions as an issue on the
+main [Phpactor](https://github.com/phpactor/phpactor) repository.

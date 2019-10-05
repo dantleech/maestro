@@ -13,7 +13,4 @@ before_script:
     - composer install
 
 script:
-    - composer phpstan
-    - composer php-cs-fixer
-    - vendor/bin/phpunit --exclude-group=tmux
-    - vendor/bin/deptrac
+    - composer integrate

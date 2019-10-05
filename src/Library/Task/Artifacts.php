@@ -2,10 +2,12 @@
 
 namespace Maestro\Library\Task;
 
+use ArrayIterator;
 use Countable;
+use IteratorAggregate;
 use Maestro\Library\Task\Exception\ArtifactNotFound;
 
-class Artifacts implements Countable
+class Artifacts implements Countable, IteratorAggregate
 {
     /**
      * @var array<string,object>
@@ -57,5 +59,13 @@ class Artifacts implements Countable
     public function has(string $artifactFqn): bool
     {
         return isset($this->artifacts[$artifactFqn]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->artifacts);
     }
 }

@@ -12,38 +12,47 @@ class ArtifactsTest extends TestCase
     public function testSetAndGetObject()
     {
         $object = new stdClass();
-        $container = new Artifacts();
-        $container->set($object);
-        $this->assertSame($object, $container->get(stdClass::class));
+        $artifacts = new Artifacts();
+        $artifacts->set($object);
+        $this->assertSame($object, $artifacts->get(stdClass::class));
     }
 
     public function testCreateFromArrayOfObjects()
     {
         $object = new stdClass();
-        $container = new Artifacts([
+        $artifacts = new Artifacts([
             $object
         ]);
-        $container->set($object);
-        $this->assertSame($object, $container->get(stdClass::class));
+        $artifacts->set($object);
+        $this->assertSame($object, $artifacts->get(stdClass::class));
+    }
+
+    public function testCanBeIterated()
+    {
+        $object = new stdClass();
+        $artifacts = new Artifacts([
+            $object
+        ]);
+        $this->assertIsIterable($artifacts);
     }
 
     public function testArtifactsCanBeOverwritten()
     {
         $object1 = new stdClass();
         $object2 = new stdClass();
-        $container = new Artifacts();
-        $container->set($object1);
-        $container->set($object2);
-        $this->assertNotSame($object1, $container->get(stdClass::class));
-        $this->assertSame($object2, $container->get(stdClass::class));
+        $artifacts = new Artifacts();
+        $artifacts->set($object1);
+        $artifacts->set($object2);
+        $this->assertNotSame($object1, $artifacts->get(stdClass::class));
+        $this->assertSame($object2, $artifacts->get(stdClass::class));
     }
 
     public function testThrowsExceptionWhenTryingToGetNonExistingArtifact()
     {
         $this->expectException(ArtifactNotFound::class);
 
-        $container = new Artifacts();
-        $container->get(stdClass::class);
+        $artifacts = new Artifacts();
+        $artifacts->get(stdClass::class);
     }
 
     public function testSpawnsNewContainerMergingGivenArtifacts()
@@ -55,13 +64,13 @@ class ArtifactsTest extends TestCase
         $object3 = new class extends stdClass {
         };
 
-        $container1 = new Artifacts([$object1]);
-        $container2= $container1->spawnMutated(new Artifacts([
+        $artifacts1 = new Artifacts([$object1]);
+        $artifacts2= $artifacts1->spawnMutated(new Artifacts([
             $object2,
             $object3
         ]));
 
-        $this->assertNotSame($container1, $container2);
-        $this->assertSame($object1, $container2->get(get_class($object1)));
+        $this->assertNotSame($artifacts1, $artifacts2);
+        $this->assertSame($object1, $artifacts2->get(get_class($object1)));
     }
 }

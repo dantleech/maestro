@@ -3,6 +3,7 @@
 namespace Maestro;
 
 use Maestro\Extension\Composer\ComposerExtension;
+use Maestro\Extension\Dot\DotExtension;
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\HttpClient\HttpClientExtension;
@@ -85,6 +86,7 @@ final class ApplicationBuilder
             ReportExtension::class,
             ComposerExtension::class,
             HttpClientExtension::class,
+            DotExtension::class,
         ], $config);
     }
 

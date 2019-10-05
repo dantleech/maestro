@@ -125,6 +125,7 @@ class GraphConstructor
             [
                 'label' => 'checkout',
                 'task' => new CheckoutTask($packageUrl),
+                'tags' => ['checkout'],
             ]
         );
         $builder->addNode($checkoutNode);

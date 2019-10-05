@@ -72,11 +72,16 @@ class DotReport implements ConsoleReport
 
     private function buildNodeMetaHtml(Node $node)
     {
-        $html = [
-            '<br/>',
-            '<font point-size=\'10\'>',
-        ];
-        $html[] = sprintf('<font color=\'blue\'>was %s</font><br/>', addslashes($node->task()->description()));
+        $tags = $node->tags();
+        if ($tags) {
+            $html[] = sprintf('<font point-size=\'12\' color="darkgreen"><b>%s</b></font>', implode(',', $tags));
+        }
+        $html[] = '<br/>';
+        $html[] = '<font point-size=\'10\'>';
+        $html[] = sprintf(
+            '<font color=\'blue\'>was %s</font><br/>',
+            addslashes($node->task()->description())
+        );
         foreach ($node->artifacts() as $artifact) {
             $html[] = sprintf('Artifact: <i>%s</i><br/>', addslashes(get_class($artifact)));
         }

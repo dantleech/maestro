@@ -1,10 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Unit\Extension\Loader;
+namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 
 use Closure;
-use Maestro\Extension\Runner\Loader\GraphConstructor;
-use Maestro\Extension\Runner\Loader\Manifest;
+use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
+use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Task\Task;
@@ -18,9 +18,9 @@ class GraphConstructorTest extends TestCase
      */
     public function testBuildGraph(array $manifest, Closure $assertion)
     {
-        $constructor = new GraphConstructor();
         $manifest = Manifest::loadFromArray($manifest);
-        $graph = $constructor->construct($manifest);
+        $constructor = new GraphConstructor($manifest);
+        $graph = $constructor->construct();
 
         $assertion($graph);
     }

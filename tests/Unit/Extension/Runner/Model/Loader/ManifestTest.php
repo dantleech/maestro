@@ -2,7 +2,7 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
-use Maestro\Extension\Runner\Loader\Manifest;
+use Maestro\Extension\Runner\Model\Loader\Manifest;
 use PHPUnit\Framework\TestCase;
 
 class ManifestTest extends TestCase

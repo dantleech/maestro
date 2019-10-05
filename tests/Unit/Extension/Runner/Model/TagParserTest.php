@@ -1,8 +1,8 @@
 <?php
 
-namespace Maestro\Tests\Unit\Extension\Runner\Console;
+namespace Maestro\Tests\Unit\Extension\Runner\Model;
 
-use Maestro\Extension\Runner\Console\TagParser;
+use Maestro\Extension\Runner\Model\TagParser;
 use PHPUnit\Framework\TestCase;
 
 class TagParserTest extends TestCase

@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Console;
+namespace Maestro\Extension\Runner\Model;
 
 class TagParser
 {

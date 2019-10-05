@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader;
+namespace Maestro\Extension\Runner\Model\Loader;
 
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Extension\Runner\Task\PackageInitTask;
@@ -20,31 +20,34 @@ class GraphConstructor
      */
     private $purge;
 
-    public function __construct(?bool $purge = null)
+    /**
+     * @var Manifest
+     */
+    private $manifest;
+
+    public function __construct(Manifest $manifest, ?bool $purge = null)
     {
         $this->purge = $purge;
+        $this->manifest = $manifest;
     }
 
-    public function construct(
-        Manifest $manifest
-    ): Graph {
+    public function construct(): Graph
+    {
         $builder = GraphBuilder::create();
         $builder->addNode(
             Node::create(self::NODE_ROOT, [
                 'label' => 'root',
-                'task' => Instantiator::instantiate(InitTask::class, [
-                    'manifest' => $manifest
-                ]),
+                'task' => Instantiator::instantiate(InitTask::class)
             ])
         );
-        $this->walkPackages($manifest, $builder);
+        $this->walkPackages($this->manifest, $builder);
 
         return $builder->build();
     }
 
     private function walkPackages(Manifest $manifest, GraphBuilder $builder)
     {
-        foreach ($manifest->packages() as $package) {
+        foreach ($this->manifest->packages() as $package) {
             $builder->addNode($packageNode = Node::create(
                 $package->name(),
                 [

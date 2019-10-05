@@ -3,9 +3,9 @@
 namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
-use Maestro\Extension\Runner\Console\TagParser;
-use Maestro\Extension\Runner\Loader\GraphConstructor;
-use Maestro\Extension\Runner\Loader\ManifestLoader;
+use Maestro\Extension\Runner\Model\TagParser;
+use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
+use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
 use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\State;
@@ -21,16 +21,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GraphBehavior
 {
-    private const ARG_MANIFEST = 'manifest';
-
     private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
     private const OPTION_TAGS = 'tags';
-
-    /**
-     * @var ManifestLoader
-     */
-    private $loader;
 
     /**
      * @var GraphConstructor
@@ -63,7 +56,6 @@ class GraphBehavior
     private $tagParser;
 
     public function __construct(
-        ManifestLoader $loader,
         GraphConstructor $constructor,
         GraphTaskScheduler $scheduler,
         Worker $worker,
@@ -71,7 +63,6 @@ class GraphBehavior
         Queue $queue,
         TagParser $tagParser
     ) {
-        $this->loader = $loader;
         $this->constructor = $constructor;
         $this->scheduler = $scheduler;
         $this->worker = $worker;
@@ -87,9 +78,7 @@ class GraphBehavior
 
     public function loadGraph(InputInterface $input): Graph
     {
-        $graph = $this->constructor->construct(
-            $this->loader->load()
-        );
+        $graph = $this->constructor->construct();
 
         $tags = $input->getOption(self::OPTION_TAGS);
         if ($tags) {

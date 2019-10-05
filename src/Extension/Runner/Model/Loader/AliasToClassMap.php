@@ -1,8 +1,8 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader;
+namespace Maestro\Extension\Runner\Model\Loader;
 
-use Maestro\Extension\Runner\Loader\Exception\UnknownAlias;
+use Maestro\Extension\Runner\Model\Loader\Exception\UnknownAlias;
 
 class AliasToClassMap
 {

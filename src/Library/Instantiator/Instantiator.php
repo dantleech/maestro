@@ -21,7 +21,7 @@ class Instantiator
      */
     private $mode;
 
-    public static function instantiate(string $className, array $data, $mode = self::MODE_NAME)
+    public static function instantiate(string $className, array $data = [], $mode = self::MODE_NAME)
     {
         return (new self($mode))->doInstantiate($className, $data);
     }

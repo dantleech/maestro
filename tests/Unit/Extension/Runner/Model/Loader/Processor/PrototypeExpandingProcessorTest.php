@@ -2,8 +2,8 @@
 
 namespace Maestro\Tests\Unit\Loader\Processor;
 
-use Maestro\Extension\Runner\Loader\Exception\PrototypeNotFound;
-use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
+use Maestro\Extension\Runner\Model\Loader\Exception\PrototypeNotFound;
+use Maestro\Extension\Runner\Model\Loader\Processor\PrototypeExpandingProcessor;
 use PHPUnit\Framework\TestCase;
 
 class PrototypeExpandingProcessorTest extends TestCase

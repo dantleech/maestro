@@ -1,10 +1,11 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader;
+namespace Maestro\Extension\Runner\Model\Loader;
 
 use Maestro\Library\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
+use Maestro\Extension\Runner\Model\Loader\Manifest;
 
 class ManifestLoader
 {

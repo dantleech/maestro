@@ -1,9 +1,9 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader\Processor;
+namespace Maestro\Extension\Runner\Model\Loader\Processor;
 
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
-use Maestro\Extension\Runner\Loader\Processor;
+use Maestro\Extension\Runner\Model\Loader\Processor;
 
 class TaskAliasExpandingProcessor implements Processor
 {

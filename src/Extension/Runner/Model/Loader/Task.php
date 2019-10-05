@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader;
+namespace Maestro\Extension\Runner\Model\Loader;
 
 class Task
 {

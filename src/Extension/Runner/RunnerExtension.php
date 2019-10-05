@@ -6,15 +6,16 @@ use Maestro\Extension\Report\Model\ConsoleReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
-use Maestro\Extension\Runner\Console\TagParser;
+use Maestro\Extension\Runner\Model\Loader\Manifest;
+use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
 use Maestro\Extension\Runner\Task\InitHandler;
 use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
-use Maestro\Extension\Runner\Loader\GraphConstructor;
-use Maestro\Extension\Runner\Loader\ManifestLoader;
-use Maestro\Extension\Runner\Loader\Processor\PrototypeExpandingProcessor;
-use Maestro\Extension\Runner\Loader\Processor\TaskAliasExpandingProcessor;
+use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
+use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
+use Maestro\Extension\Runner\Model\Loader\Processor\PrototypeExpandingProcessor;
+use Maestro\Extension\Runner\Model\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
 use Maestro\Extension\Runner\Task\PackageInitHandler;
 use Maestro\Extension\Runner\Task\PackageInitTask;
@@ -76,7 +77,6 @@ class RunnerExtension implements Extension
         
         $container->register(GraphBehavior::class, function (Container $container) {
             return new GraphBehavior(
-                $container->get(ManifestLoader::class),
                 $container->get(GraphConstructor::class),
                 $container->get(GraphTaskScheduler::class),
                 $container->get(Worker::class),
@@ -93,21 +93,15 @@ class RunnerExtension implements Extension
 
     private function registerLoader(ContainerBuilder $container)
     {
-        $container->register(ManifestLoader::class, function (Container $container) {
-            return new ManifestLoader(
-                $container->getParameter(self::PARAM_WORKING_DIRECTORY),
-                $container->getParameter(self::PARAM_MANIFEST_PATH),
-                [
-                    new PrototypeExpandingProcessor(),
-                    new TaskAliasExpandingProcessor(
-                        $container->get(TaskHandlerDefinitionMap::class),
-                    )
-                ]
-            );
+        $container->register(Manifest::class, function (Container $container) {
+            return $this->createManifestLoader($container)->load();
         });
 
         $container->register(GraphConstructor::class, function (Container $container) {
-            return new GraphConstructor($container->getParameter(self::PARAM_PURGE));
+            return new GraphConstructor(
+                $container->get(Manifest::class),
+                $container->getParameter(self::PARAM_PURGE)
+            );
         });
     }
 
@@ -118,7 +112,9 @@ class RunnerExtension implements Extension
         });
 
         $container->register(InitHandler::class, function (Container $container) {
-            return new InitHandler();
+            return new InitHandler(
+                $container->get(Manifest::class)
+            );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => InitTask::class,
@@ -158,5 +154,19 @@ class RunnerExtension implements Extension
                 'name' => 'run'
             ]
         ]);
+    }
+
+    private function createManifestLoader(Container $container): ManifestLoader
+    {
+        return new ManifestLoader(
+            $container->getParameter(self::PARAM_WORKING_DIRECTORY),
+            $container->getParameter(self::PARAM_MANIFEST_PATH),
+            [
+                new PrototypeExpandingProcessor(),
+                new TaskAliasExpandingProcessor(
+                    $container->get(TaskHandlerDefinitionMap::class),
+                )
+            ]
+        );
     }
 }

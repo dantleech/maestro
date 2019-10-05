@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Loader\Exception;
+namespace Maestro\Extension\Runner\Model\Loader\Exception;
 
 use RuntimeException;
 

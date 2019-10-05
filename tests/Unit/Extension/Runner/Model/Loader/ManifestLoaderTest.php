@@ -2,9 +2,9 @@
 
 namespace Maestro\Tests\Unit\Loader;
 
-use Maestro\Extension\Runner\Loader\ManifestLoader;
-use Maestro\Extension\Runner\Loader\Manifest;
-use Maestro\Extension\Runner\Loader\Processor;
+use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
+use Maestro\Extension\Runner\Model\Loader\Manifest;
+use Maestro\Extension\Runner\Model\Loader\Processor;
 use Maestro\Tests\IntegrationTestCase;
 
 class ManifestLoaderTest extends IntegrationTestCase

@@ -1,0 +1,19 @@
+{
+    "packages": {
+        "phpactor/container": {
+            "version": "1.5",
+            "tasks": {
+                "tests": {
+                    "type":"script",
+                    "args": {
+                        "script": "true"
+                    }
+                },
+                "tag": {
+                    "type": "tag",
+                    "depends": ["tests"]
+                }
+            }
+        }
+    }
+}

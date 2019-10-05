@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Task;
 
+use Maestro\Extension\Task\Command\DebugTaskCommand;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Extension\Task\TaskRunner\TaskRunnerInjectingRunner;
@@ -18,6 +19,7 @@ use Maestro\Library\Task\Worker;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 
@@ -84,6 +86,12 @@ class TaskExtension implements Extension
                 'alias' => 'null',
             ]
         ]);
+
+        $container->register(DebugTaskCommand::class, function (Container $container) {
+            return new DebugTaskCommand(
+                $container->get(TaskHandlerDefinitionMap::class)
+            );
+        }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'debug:task']]);
     }
 
     /**

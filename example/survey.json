@@ -1,0 +1,13 @@
+{
+    "packages": {
+        "phpactor/container": {
+            "url": "https://github.com/phpactor/container",
+            "tasks": {
+                "survey": {
+                    "type": "survey"
+                }
+            }
+        }
+    }
+}
+

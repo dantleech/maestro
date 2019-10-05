@@ -10,6 +10,10 @@
         "phpactor": {
             "url": "git@github.com:$PACKAGE_NAME",
             "tasks": {
+                "survey": {
+                    "type": "survey",
+                    "tags": ["checkout"]
+                },
                 "init": {
                     "type": "null",
                     "depends": ["composer install"]
@@ -58,9 +62,6 @@
         }
     },
     "packages": {
-        "foobar/barfoo": {
-            "url": "https://git.foobar.com/foobar"
-        },
         "phpactor/config-loader": {
             "version": "1.3.0",
             "vars": {

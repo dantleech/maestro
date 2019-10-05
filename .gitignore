@@ -4,3 +4,4 @@
 /.deptrac.cache
 /.phpcs.cache
 /.phpunit.result.cache
+/doc/build

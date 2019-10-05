@@ -1,0 +1,15 @@
+{
+    "packages": {
+        "example/package": {
+            "tasks": {
+                "hello": {
+                    "type": "script",
+                    "args": {
+                        "script": "cowsay Moooo"
+                    }
+                }
+            }
+        }
+    }
+}
+

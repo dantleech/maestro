@@ -21,6 +21,9 @@ class TaskAliasExpandingProcessor implements Processor
     {
         foreach ($manifest['packages'] ?? [] as $packageName => &$package) {
             foreach ($package['tasks'] ?? [] as $taskName => &$task) {
+                if (!isset($task['type'])) {
+                    $task['type'] = 'null';
+                }
                 $manifest['packages'][$packageName]['tasks'][$taskName]['type'] = $this->map->getDefinitionByAlias($task['type'])->taskClass();
             }
         }

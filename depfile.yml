@@ -134,6 +134,7 @@ ruleset:
         - lib-task
         - lib-instantiator
         - lib-support
+        - lib-util
 
     ext-script:
         - lib-instantiator

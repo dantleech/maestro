@@ -44,4 +44,9 @@ class Cast
     {
         return (bool) $value;
     }
+
+    public static function toArray($value): array
+    {
+        return (array) $value;
+    }
 }

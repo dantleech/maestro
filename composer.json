@@ -1,12 +1,12 @@
 {
     "name": "dantleech/maestro",
-    "description": "Co-ordinate and manage micro packages",
-    "license": "MIT",
+    "description": "co-ordinate and manage micro packages",
+    "license": "mit",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
-            "name": "Daniel Leech",
+            "name": "daniel leech",
             "email": "daniel@dantleech.com"
         }
     ],
@@ -37,22 +37,22 @@
     },
     "autoload": {
         "psr-4": {
-            "Maestro\\": "src/"
+            "maestro\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Maestro\\Tests\\": "tests/"
+            "maestro\\tests\\": "tests/"
         }
     },
     "extra": {
-        "phpactor.extension_class": "Phpactor\\Extension\\Maestro\\MaestroExtension",
+        "phpactor.extension_class": "phpactor\\extension\\maestro\\maestroextension",
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
     },
     "scripts": {
-        "test": [
+        "integrate": [
             "@php-cs-fixer",
             "@phpstan",
             "@phpunit"

@@ -5,10 +5,7 @@ namespace Maestro\Extension\Dot\Report;
 use Maestro\Extension\Report\Model\ConsoleReport;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
-use RuntimeException;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\ExecutableFinder;
-use Symfony\Component\Process\Process;
 use function Safe\file_put_contents;
 use Webmozart\PathUtil\Path;
 
@@ -37,12 +34,12 @@ class DotReport implements ConsoleReport
     public function render(OutputInterface $output, Graph $graph): void
     {
         $dotContents = $this->buildDotFileContents($graph);
-        $dotFileName = 'maestro.dot';
+        $outputPath = Path::join([$this->directory, 'maestro.dot']);
         $imageFileName = 'maestro.png';
 
-        $output->writeln(sprintf('<info>Writing dot file to:</info> %s', $dotFileName));
-        file_put_contents(Path::join([$this->directory, $dotFileName]), $dotContents);
-        $command = sprintf('dot %s -Tpng -o %s', $dotFileName, $imageFileName);
+        $output->writeln(sprintf('<info>Writing dot file to:</info> %s', $outputPath));
+        file_put_contents($outputPath, $dotContents);
+        $command = sprintf('dot %s -Tpng -o %s', $outputPath, $imageFileName);
         $output->writeln(sprintf('<info>Generate the image with:</info> %s', $command));
     }
 

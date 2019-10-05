@@ -3,15 +3,10 @@
 namespace Maestro\Tests\Unit\Extension\Dot\Report;
 
 use Maestro\Extension\Dot\Report\DotReport;
-use Maestro\Extension\Survey\Report\SurveyReport;
-use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Survey\Survey;
-use Maestro\Library\Survey\SurveyResult;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class DotReportTest extends IntegrationTestCase

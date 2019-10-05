@@ -20,7 +20,6 @@ class ReportExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register(ConsoleReportRegistry::class, function (Container $container) {
-
             $reports = [];
             foreach ($container->getServiceIdsForTag(self::TAG_REPORT_CONSOLE) as $serviceId => $definition) {
                 $definition = Instantiator::instantiate(ConsoleReportDefinition::class, array_merge([

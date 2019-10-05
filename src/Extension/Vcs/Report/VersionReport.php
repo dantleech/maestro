@@ -63,7 +63,7 @@ class VersionReport implements ConsoleReport
                 $this->formatPackagistVersion($versionReport, $packagistReport),
                 substr($versionReport->mostRecentTagCommitId() ?? '', 0, 10),
                 $this->formatHeadCommit($versionReport),
-                StringUtil::firstLine($versionReport->headComment()),
+                StringUtil::firstLine((string)$versionReport->headComment()),
             ]);
         }
 
@@ -94,12 +94,12 @@ class VersionReport implements ConsoleReport
         if ($versionReport->divergence() > 0) {
             return sprintf(
                 '%s <fg=yellow;bg=black>+%s</>',
-                substr($versionReport->headId(), 0, 10),
+                substr((string)$versionReport->headId(), 0, 10),
                 $versionReport->divergence()
             );
         }
 
-        return substr($versionReport->headId(), 0, 10);
+        return substr((string)$versionReport->headId(), 0, 10);
     }
 
     private function renderLegend(OutputInterface $output): void

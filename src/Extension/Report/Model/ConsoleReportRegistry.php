@@ -23,7 +23,8 @@ class ConsoleReportRegistry
         if (!isset($this->reports[$name])) {
             throw new ReportNotFound(sprintf(
                 'Report "%s" not found, known reports "%s"',
-                $name, implode('", "', array_keys($this->reports))
+                $name,
+                implode('", "', array_keys($this->reports))
             ));
         }
 

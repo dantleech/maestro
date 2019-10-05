@@ -5,7 +5,6 @@ namespace Maestro\Extension\Runner\Command;
 use Maestro\Extension\Report\Model\ConsoleReport;
 use Maestro\Extension\Report\Model\ConsoleReportRegistry;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
-use Maestro\Extension\Runner\Report\RunReport;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Util\Cast;
 use Symfony\Component\Console\Command\Command;
@@ -56,7 +55,7 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $reports = $this->fetchReports($input->getOption(self::OPTION_REPORT), $output);
+        $reports = $this->fetchReports(Cast::toArray($input->getOption(self::OPTION_REPORT)), $output);
 
         $graph = $this->graphBehavior->loadGraph($input);
 

@@ -55,8 +55,10 @@
         "integrate": [
             "@php-cs-fixer",
             "@phpstan",
+            "@deptrac",
             "@phpunit"
         ],
+        "deptrac": "./vendor/bin/deptrac",
         "phpstan": "./vendor/bin/phpstan analyse --level=7 --ansi src",
         "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --ansi --dry-run",
         "phpunit": "./vendor/bin/phpunit --colors=always"

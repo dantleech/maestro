@@ -155,12 +155,15 @@ ruleset:
 
     ext-vcs:
         - ext-task
+        - ext-survey
         - lib-instantiator
         - lib-vcs
         - lib-task
         - lib-support
         - lib-workspace
         - lib-survey
+        - lib-graph
+        - lib-util
 
     ext-git:
         - ext-vcs
@@ -171,7 +174,4 @@ ruleset:
         - ext-task
         - lib-task
         - lib-instantiator
-
-
-
-
+        - lib-graph

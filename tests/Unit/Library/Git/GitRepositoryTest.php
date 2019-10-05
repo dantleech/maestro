@@ -2,9 +2,9 @@
 
 namespace Maestro\Tests\Unit\Library\Git;
 
-use Maestro\Extension\Git\Model\ExistingTags;
 use Maestro\Library\Git\GitRepository;
 use Maestro\Library\Script\ScriptRunner;
+use Maestro\Library\Vcs\Tags;
 use Maestro\Tests\IntegrationTestCase;
 use Psr\Log\NullLogger;
 use RuntimeException;
@@ -127,10 +127,10 @@ class GitRepositoryTest extends IntegrationTestCase
         $this->exec('git tag 1.0.0');
         $tags = wait($this->gitRepository->listTags());
         $this->assertCount(1, $tags);
-        assert($tags instanceof ExistingTags);
+        assert($tags instanceof Tags);
         $tag = $tags->mostRecent();
         $this->assertEquals(
-            wait($this->gitRepository->headId($this->workspace()->path('/'))),
+            wait($this->gitRepository->headId()),
             $tag->commitId()
         );
     }

@@ -37,12 +37,12 @@
     },
     "autoload": {
         "psr-4": {
-            "maestro\\": "src/"
+            "Maestro\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "maestro\\tests\\": "tests/"
+            "Maestro\\Tests\\": "tests/"
         }
     },
     "extra": {

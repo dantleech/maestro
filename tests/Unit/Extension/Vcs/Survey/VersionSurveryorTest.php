@@ -7,7 +7,7 @@ use Maestro\Extension\Vcs\Survey\VersionSurveyor;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Tests\IntegrationTestCase;
-use Maestro\Tests\Unit\Library\Git\GitRepositoryFactory;
+use Maestro\Library\Git\GitRepositoryFactory;
 
 class VersionSurveryorTest extends IntegrationTestCase
 {

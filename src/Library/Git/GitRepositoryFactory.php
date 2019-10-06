@@ -1,8 +1,7 @@
 <?php
 
-namespace Maestro\Tests\Unit\Library\Git;
+namespace Maestro\Library\Git;
 
-use Maestro\Library\Git\GitRepository;
 use Maestro\Library\Script\ScriptRunner;
 use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;

@@ -4,7 +4,7 @@ namespace Maestro\Extension\Git;
 
 use Maestro\Extension\Vcs\VcsExtension;
 use Maestro\Library\Script\ScriptRunner;
-use Maestro\Tests\Unit\Library\Git\GitRepositoryFactory;
+use Maestro\Library\Git\GitRepositoryFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;

@@ -1,0 +1,11 @@
+{
+    "packages": {
+        "maestrophp/example-math": {
+            "url": "git@github.com:maestrophp/example-math"
+        },
+        "maestrophp/example-science": {
+            "url": "git@github.com:maestrophp/example-science"
+        }
+    }
+}
+

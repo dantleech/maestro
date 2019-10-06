@@ -169,6 +169,7 @@ ruleset:
     ext-git:
         - ext-vcs
         - lib-script
+        - lib-git
 
     ext-survey:
         - lib-survey

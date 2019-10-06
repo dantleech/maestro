@@ -4,3 +4,7 @@ set -x
 for fname in ./example/*.json; do
     ./bin/maestro run --plan="$fname"
 done
+
+for fname in ./example/**/*.json; do
+    ./bin/maestro run --plan="$fname"
+done

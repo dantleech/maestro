@@ -1,0 +1,24 @@
+{
+    "vars": {
+        "animal": "cow",
+        "greeting": "moo"
+    },
+    "packages": {
+        "maestrophp/example-math": {
+            "url": "git@github.com:maestrophp/example-math",
+            "tasks": {
+                "readme": {
+                    "type": "template",
+                    "args": {
+                        "path": "template/readme.md.twig",
+                        "targetPath": "README.md"
+                    }
+                }
+            }
+        },
+        "maestrophp/example-science": {
+            "url": "git@github.com:maestrophp/example-science"
+        }
+    }
+}
+

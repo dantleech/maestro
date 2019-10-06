@@ -1,0 +1,59 @@
+{
+    "packages": {
+        "phpactor/path-finder": {
+            "url": "git@github.com:phpactor/path-finder",
+            "tasks": {
+                "composer.json": {
+                    "type": "json_file",
+                    "args": {
+                        "targetPath": "composer.json",
+                        "data": [
+                            {
+                                "require-dev": {
+                                    "phpunit/phpunit": "^7.0"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "composer install": {
+                    "type": "script",
+                    "args": {
+                        "script": "composer install"
+                    },
+                    "depends": [ "composer.json" ]
+                }
+            }
+        },
+        "phpactor/container": {
+            "url": "git@github.com:phpactor/container",
+            "tasks": {
+                "composer.json": {
+                    "type": "json_file",
+                    "args": {
+                        "targetPath": "composer.json",
+                        "data": {
+                            "require-dev": {
+                                "phpunit/phpunit": "^7.0"
+                            }
+                        }
+                    }
+                },
+                "composer install": {
+                    "type": "script",
+                    "args": {
+                        "script": "composer install"
+                    },
+                    "depends": [ "composer.json" ]
+                },
+                "phpunit": {
+                    "type": "script",
+                    "args": {
+                        "script": "./vendor/bin/phpunit"
+                    },
+                    "depends": [ "composer install" ]
+                }
+            }
+        }
+    }
+}

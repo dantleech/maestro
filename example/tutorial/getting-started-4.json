@@ -15,7 +15,7 @@
     },
     "prototypes": {
         "example": {
-            "url": "git@github.com:$PACKAGE_NAME",
+            "url": "https://github.com/$PACKAGE_NAME",
             "tasks": {
                 "readme": {
                     "type": "template",

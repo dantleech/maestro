@@ -7,13 +7,11 @@
                     "type": "json_file",
                     "args": {
                         "targetPath": "composer.json",
-                        "data": [
-                            {
-                                "require-dev": {
-                                    "phpunit/phpunit": "^7.0"
-                                }
+                        "data": {
+                            "require-dev": {
+                                "phpunit/phpunit": "^7.0"
                             }
-                        ]
+                        }
                     }
                 },
                 "composer install": {

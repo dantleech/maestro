@@ -1,7 +1,7 @@
 {
     "packages": {
         "maestrophp/example-math": {
-            "url": "https://github.com:maestrophp/example-math",
+            "url": "https://github.com/maestrophp/example-math",
             "tasks": {
                 "composer.json": {
                     "type": "json_file",
@@ -24,7 +24,7 @@
             }
         },
         "maestrophp/example-science": {
-            "url": "https://github.com:maestrophp/example-science",
+            "url": "https://github.com/maestrophp/example-science",
             "tasks": {
                 "composer.json": {
                     "type": "json_file",

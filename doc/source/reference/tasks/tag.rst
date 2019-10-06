@@ -10,9 +10,9 @@ tag
 Tag a packages configured version only if the latest semantic version is
 different from the configured version.
 
-.. literalinclude:: ../../../../example/tag.json
-   :language: json
-
 .. note::
 
-   Use the ``version`` report to check which packages will be tagged.
+   Use the :doc:`/reference/reports/version` report to check which packages will be tagged.
+
+.. literalinclude:: ../../../../example/tag.json
+   :language: json

@@ -5,7 +5,23 @@ use Amp\Loop;
 use Maestro\ApplicationBuilder;
 use Symfony\Component\Console\Application;
 
-require __DIR__ . '/../vendor/autoload.php';
+
+$autoloadPath = null;
+foreach ([
+    __DIR__ . '/../vendor/autoload.php',
+    __DIR__ . '/../../../../vendor/autoload.php',
+] as $candidate) {
+    if (file_exists($candidate)) {
+        $autoloadPath = $candidate;
+    }
+}
+
+if (!$autoloadPath) {
+    echo 'Could not find autoload.php, maybe you need to "composer install"?';
+    exit(1);
+}
+
+require($autoloadPath);
 
 if (class_exists(Symfony\Component\Debug\Debug::class)) {
     Symfony\Component\Debug\Debug::enable();

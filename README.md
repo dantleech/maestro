@@ -18,9 +18,13 @@ In the future it is hoped that it will:
 
 - Automate releases.
 
+Execution graph:
+
 ![maestro](https://user-images.githubusercontent.com/530801/66256252-dc0bbe80-e783-11e9-9c68-26e9bcb2ce9e.png)
 
-*Task Graph*
+Running maestro:
+
+![screencast](https://github.com/dantleech/maestro/raw/master/doc/source/images/project_run.gif)
 
 Documentation
 -------------

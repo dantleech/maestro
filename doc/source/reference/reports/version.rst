@@ -14,6 +14,11 @@ packages versions, including:
 
     This report depends on a :doc:`/reference//tasks/survey` task being performed.
 
+If there are discrepencies the version number will be highlighted in yellow.
+If for example the configured version is different than the most recent tagged
+version, you will know that it will be tagged the next time a
+:doc:`/reference/tasks/tag` task is performed.
+
 .. code:: bash
 
     ./bin/maestro run --plan=example/test.json --report=version

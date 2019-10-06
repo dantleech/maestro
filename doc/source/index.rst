@@ -5,4 +5,5 @@ Maestro
    :maxdepth: 3
 
    introduction
+   getting-started
    reference

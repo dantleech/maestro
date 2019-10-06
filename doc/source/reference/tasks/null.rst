@@ -1,9 +1,9 @@
 null
 ====
 
-- **Alias**: null
-- **Task**: Maestro\Library\Task\Task\NullTask
-- **Handler**: Maestro\Library\Task\Task\NullHandler
+- **Alias**: ``null``
+- **Task**: ``Maestro\Library\Task\Task\NullTask``
+- **Handler**: ``Maestro\Library\Task\Task\NullHandler``
 - **Arguments**:
    - *This task has no arguments*
 

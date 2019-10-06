@@ -1,9 +1,9 @@
 survey
 ======
 
-- **Alias**: survey
-- **Task**: Maestro\Extension\Survey\Task\SurveyTask
-- **Handler**: Maestro\Extension\Survey\Task\SurveyHandler
+- **Alias**: ``survey``
+- **Task**: ``Maestro\Extension\Survey\Task\SurveyTask``
+- **Handler**: ``Maestro\Extension\Survey\Task\SurveyHandler``
 - **Arguments**:
     - *This task has no arguments*
 

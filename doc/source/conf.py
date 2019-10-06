@@ -84,7 +84,8 @@ html_theme = 'alabaster'
 # html_theme_options = {}
 html_theme_options = {
         'fixed_sidebar': True,
-        'github_repo': 'dantleech/maestro',
+        'github_user': 'dantleech',
+        'github_repo': 'maestro',
         'sidebar_collapse': False
 }
 

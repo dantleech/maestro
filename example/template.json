@@ -1,6 +1,7 @@
 {
     "vars": {
-        "php_versions": [ 7.1, 7.2, 7.3 ]
+        "php_versions": [ 7.1, 7.2, 7.3 ],
+        "phpstan_level": 7
     },
     "packages": {
         "example/package": {

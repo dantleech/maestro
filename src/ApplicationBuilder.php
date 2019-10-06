@@ -7,6 +7,7 @@ use Maestro\Extension\Dot\DotExtension;
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
 use Maestro\Extension\HttpClient\HttpClientExtension;
+use Maestro\Extension\Json\JsonExtension;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
@@ -87,6 +88,7 @@ final class ApplicationBuilder
             ComposerExtension::class,
             HttpClientExtension::class,
             DotExtension::class,
+            JsonExtension::class,
         ], $config);
     }
 

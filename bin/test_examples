@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -x
+
+for fname in ./example/*.json; do
+    ./bin/maestro run --plan="$fname"
+done

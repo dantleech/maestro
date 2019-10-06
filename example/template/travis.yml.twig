@@ -3,7 +3,7 @@ language: php
 sudo: false
 
 php:
-    {% for version in parameters.php_versions -%}
+    {% for version in php_versions -%}
       - {{ version }}
     {% endfor %}
 
@@ -16,6 +16,6 @@ before_script:
 
 script:
     - ./vendor/bin/php-cs-fixer fix --dry-run
-    - ./vendor/bin/phpstan analyse --level={{ parameters.phpstan_level }} lib
+    - ./vendor/bin/phpstan analyse --level={{ phpstan_level }} lib
     - ./vendor/bin/phpunit
 

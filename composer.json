@@ -51,17 +51,21 @@
       "dev-master": "0.1.x-dev"
     }
   },
+  "bin": ["bin/maestro"],
   "scripts": {
     "integrate": [
       "@php-cs-fixer",
       "@phpstan",
       "@deptrac",
-      "@phpunit"
+      "@phpunit",
+      "@examples",
+      "@docs"
     ],
     "deptrac": "./vendor/bin/deptrac",
     "phpstan": "./vendor/bin/phpstan analyse --level=7 --ansi src",
     "php-cs-fixer": "./vendor/bin/php-cs-fixer fix --ansi --dry-run",
     "phpunit": "./vendor/bin/phpunit --colors=always",
-    "docs": "make -C./doc html"
+    "docs": "make -C./doc html",
+    "examples": "./bin/test_examples"
   }
 }

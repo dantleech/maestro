@@ -6,7 +6,7 @@ In this example you are the maintainer of two PHP packages
 ``maestrophp/example-science``.
 
 Installation
--------------
+------------
 
 You can install it as a project dependency:
 
@@ -15,7 +15,7 @@ You can install it as a project dependency:
    $ composer require dantleech/maestro
 
 Create a configuration file
---------------------------
+--------------------------~
 
 Let's start by creating a ``maestro.json`` configuration file:
 
@@ -93,18 +93,18 @@ Declare versions for your packages and then generate a version report.
 Note:
 
 - We added the ``version`` key to each of our packages.
-- We added a :doc:`reference/tasks/tag`` task to the prototype: this will automatically tag the version if it is
+- We added a :doc:`/reference/tasks/tag` task to the prototype: this will automatically tag the version if it is
   not existing.
 - The ``tag`` task *depends* on the README task to succeed. In real life this would depend on
   all tests passing.
 
 Then, for extra points we:
 
-- We added a :doc:`reference/tasks/survey` task to gather versioning
+- We added a :doc:`/reference/tasks/survey` task to gather versioning
   information.
 
-We can then run our plan and generate both :doc:`reference/reports/run` and
-a :doc:`reference/reports/version` reports:
+We can then run our plan and generate both :doc:`/reference/reports/run` and
+a :doc:`/reference/reports/version` reports:
 
 .. code-block:: bash
 

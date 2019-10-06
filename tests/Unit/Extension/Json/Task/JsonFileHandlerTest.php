@@ -7,8 +7,6 @@ use Maestro\Extension\Json\Task\JsonFileTask;
 use Maestro\Library\Task\Test\HandlerTester;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Tests\IntegrationTestCase;
-use function Safe\json_decode;
-use function Safe\json_encode;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 
@@ -33,19 +31,19 @@ class JsonFileHandlerTest extends IntegrationTestCase
     /**
      * @dataProvider provideJsonFileHandler
      */
-    public function testJsonFileHandler(array $config, ?array $existingData, array $expectedData)
+    public function testJsonFileHandler(array $config, ?string $existingData, string $expected)
     {
         if (null !== $existingData) {
-            file_put_contents($this->packageWorkspace->absolutePath($config['targetPath']), json_encode($existingData, JSON_PRETTY_PRINT));
+            file_put_contents($this->packageWorkspace->absolutePath($config['targetPath']), $existingData);
         }
         $artifacts = HandlerTester::create(new JsonFileHandler())->handle(JsonFileTask::class, $config, [
             $this->packageWorkspace,
         ]);
 
-        $this->assertEquals($expectedData, json_decode(
-            file_get_contents($this->packageWorkspace->absolutePath($config['targetPath'])),
-            true
-        ));
+        $this->assertEquals(
+            $expected,
+            file_get_contents($this->packageWorkspace->absolutePath($config['targetPath']))
+        );
     }
 
     public function provideJsonFileHandler()
@@ -55,16 +53,19 @@ class JsonFileHandlerTest extends IntegrationTestCase
                 'targetPath' => 'composer.json',
                 'data' => [
                     'require' => [
-                        'composer.json'
+                        'hello' => 'world',
                     ],
                 ]
             ],
             null,
-            [
-                'require' => [
-                    'composer.json',
-                ],
-            ]
+            <<<'EOT'
+            {
+                "require": {
+                    "hello": "world"
+                }
+            }
+            EOT
+            ,
         ];
 
         yield 'data with existing' => [
@@ -77,20 +78,71 @@ class JsonFileHandlerTest extends IntegrationTestCase
                     ],
                 ]
             ],
+            <<<'EOT'
+            {
+                "name": "example",
+                "require": {
+                    "someother": "1.0.0",
+                    "mypackage": "1.0.0"
+                }
+            }
+            EOT
+            ,
+            <<<'EOT'
+            {
+                "name": "example",
+                "require": {
+                    "someother": "1.0.0",
+                    "mypackage": "2.0.0"
+                }
+            }
+            EOT
+        ];
+
+        yield 'preserves objects' => [
             [
-                'name' => 'example',
-                'require' => [
-                    'someother' => '1.0.0',
-                    'mypackage' => '1.0.0',
-                ],
+                'targetPath' => 'composer.json',
+                'data' => [
+                    'require' => []
+                ]
             ],
+            <<<'EOT'
+            {
+                "name": "example",
+                "require": {}
+            }
+            EOT,
+            <<<'EOT'
+            {
+                "name": "example",
+                "require": {}
+            }
+            EOT
+        ];
+
+        yield 'preserves nested objects' => [
             [
-                'name' => 'example',
-                'require' => [
-                    'someother' => '1.0.0',
-                    'mypackage' => '2.0.0',
-                ],
+                'targetPath' => 'composer.json',
+                'data' => [
+                    'one' => [
+                        'two' => [],
+                    ]
+                ]
             ],
+            <<<'EOT'
+            {
+                "one": {
+                    "two": {}
+                }
+            }
+            EOT,
+            <<<'EOT'
+            {
+                "one": {
+                    "two": {}
+                }
+            }
+            EOT
         ];
     }
 }

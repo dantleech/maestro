@@ -15,7 +15,7 @@ You can install it as a project dependency:
    $ composer require dantleech/maestro
 
 Create a configuration file
---------------------------~
+---------------------------
 
 Let's start by creating a ``maestro.json`` configuration file:
 

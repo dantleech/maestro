@@ -83,7 +83,7 @@ html_theme = 'alabaster'
 #
 # html_theme_options = {}
 html_theme_options = {
-        'fixed_sidebar': True,
+        'fixed_sidebar': False,
         'github_user': 'dantleech',
         'github_repo': 'maestro',
         'sidebar_collapse': False,

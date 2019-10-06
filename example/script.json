@@ -5,7 +5,7 @@
                 "hello": {
                     "type": "script",
                     "args": {
-                        "script": "cowsay Moooo"
+                        "script": "echo \"Hello\""
                     }
                 }
             }

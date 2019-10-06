@@ -25,7 +25,7 @@ In the future it is hoped that it will:
 Documentation
 -------------
 
-Documentation is a work-in-progress [here](doc).
+Documentation is [hosted on readthedocs](https://maestrophp.readthedocs.io/en/latest/)
 
 Contribution
 ------------

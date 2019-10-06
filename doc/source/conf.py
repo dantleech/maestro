@@ -87,7 +87,7 @@ html_theme_options = {
         'github_user': 'dantleech',
         'github_repo': 'maestro',
         'sidebar_collapse': False,
-        'description': 'Automated package maintainence',
+        'description': 'Automated phpackage maintainence',
         'github_banner': True,
         'github_button': True,
         'travis_button': True,

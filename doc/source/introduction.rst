@@ -1,4 +1,4 @@
-Maestro is a tool for **automating package maintainence**.
+Maestro is a PHP tool for **automating package maintainence**.
 
 It is intended for people who maintain package ecosystems - that is many
 packages which are related in someway.

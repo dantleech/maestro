@@ -1,9 +1,10 @@
 Maestro
 =======
 
+.. include:: introduction.rst
+
 .. toctree::
    :maxdepth: 3
 
-   introduction
    getting-started
    reference

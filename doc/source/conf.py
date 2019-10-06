@@ -86,7 +86,11 @@ html_theme_options = {
         'fixed_sidebar': True,
         'github_user': 'dantleech',
         'github_repo': 'maestro',
-        'sidebar_collapse': False
+        'sidebar_collapse': False,
+        'description': 'Automated package maintainence',
+        'github_banner': True,
+        'github_button': True,
+        'travis_button': True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

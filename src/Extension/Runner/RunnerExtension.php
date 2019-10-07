@@ -6,6 +6,7 @@ use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
+use Maestro\Extension\Runner\Command\TaskCommand;
 use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
@@ -74,6 +75,13 @@ class RunnerExtension implements Extension
                 $container->get(ReportRegistry::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
+
+        $container->register(TaskCommand::class, function (Container $container) {
+            return new TaskCommand(
+                $container->get(GraphBehavior::class),
+                $container->get(TaskHandlerDefinitionMap::class),
+            );
+        }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'task']]);
         
         $container->register(GraphBehavior::class, function (Container $container) {
             return new GraphBehavior(

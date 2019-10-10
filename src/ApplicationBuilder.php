@@ -16,6 +16,7 @@ use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
 use Maestro\Extension\Vcs\VcsExtension;
 use Maestro\Extension\Workspace\WorkspaceExtension;
+use Phpactor\ConfigLoader\ConfigLoaderBuilder;
 use Phpactor\Container\Container;
 use Phpactor\Container\PhpactorContainer;
 use Phpactor\Extension\Console\ConsoleExtension;
@@ -32,6 +33,7 @@ use function Safe\getcwd;
 
 final class ApplicationBuilder
 {
+    private const CONFIG_FILENAME = 'maestro.config.json';
     private const OPTION_LOGGING_ENABLED = 'log-enable';
     private const OPTION_LOG_PATH = 'log-path';
     private const OPTION_LOG_LEVEL = 'log-level';
@@ -72,7 +74,11 @@ final class ApplicationBuilder
 
     public function buildContainer(array $config): Container
     {
-        return PhpactorContainer::fromExtensions([
+        $config = array_merge([
+            PhpactorContainer::PARAM_EXTENSION_CLASSES => [],
+        ], $config);
+
+        return PhpactorContainer::fromExtensions(array_merge([
             ConsoleExtension::class,
             LoggingExtension::class,
             RunnerExtension::class,
@@ -89,7 +95,7 @@ final class ApplicationBuilder
             HttpClientExtension::class,
             DotExtension::class,
             JsonExtension::class,
-        ], $config);
+        ], $config[PhpactorContainer::PARAM_EXTENSION_CLASSES]), $config);
     }
 
     private function defineGlobalOptions(Application $application): InputDefinition
@@ -113,6 +119,7 @@ final class ApplicationBuilder
     private function buildConfiguration(InputDefinition $definition): array
     {
         $config = [
+            PhpactorContainer::PARAM_EXTENSION_CLASSES => [],
             LoggingExtension::PARAM_ENABLED => true,
             LoggingExtension::PARAM_LEVEL => 'notice',
             LoggingExtension::PARAM_PATH => STDERR,
@@ -123,6 +130,12 @@ final class ApplicationBuilder
             WorkspaceExtension::PARAM_WORKSPACE_PATH => Path::join([(new Xdg())->getHomeDataDir(), 'maestro']),
             WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE => md5(getcwd()),
         ];
+
+        $config = array_merge($config, ConfigLoaderBuilder::create()
+            ->addCandidate(Path::join([getcwd(), self::CONFIG_FILENAME]), 'json')
+            ->addXdgCandidate('maestro', self::CONFIG_FILENAME, 'json')
+            ->enableJsonDeserializer('json')
+            ->loader()->load());
 
         foreach ([
             LoggingExtension::PARAM_ENABLED => self::OPTION_LOGGING_ENABLED,

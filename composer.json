@@ -23,7 +23,8 @@
     "thecodingmachine/safe": "^0.1.16",
     "amphp/http-client": "^3.0",
     "bramus/monolog-colored-line-formatter": "^3.0",
-    "symfony/filesystem": "^4.0"
+    "symfony/filesystem": "^4.0",
+    "phpactor/config-loader": "^0.1.1"
   },
   "require-dev": {
     "sensiolabs-de/deptrac-shim": "^0.5.0",

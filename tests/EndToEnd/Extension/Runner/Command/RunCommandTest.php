@@ -213,4 +213,16 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertStringContainsString('mypackage', $process->getOutput());
         $this->assertStringNotContainsString('foobar', $process->getOutput());
     }
+
+    public function testLoadsConfigIfProvided()
+    {
+        $this->createPlan(self::EXAMPLE_PLAN_NAME, []);
+        $this->workspace()->put('maestro.config.json', json_encode([
+            'foobar' => [],
+        ]));
+
+        $process = $this->command('run -c some_config.json');
+        $this->assertProcessFailure($process);
+        $this->assertStringContainsString('Key(s) "foobar" are not known', $process->getErrorOutput());
+    }
 }

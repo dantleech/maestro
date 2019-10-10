@@ -17,12 +17,18 @@ class IntegrationTestCase extends TestCase
 
     private $workspace;
 
+    protected function setUp(): void
+    {
+        $this->workspace()->reset();
+    }
+
     public function container(array $config = []): Container
     {
         $config = array_merge([
             RunnerExtension::PARAM_MANIFEST_PATH => $this->workspace()->path('/maestro.json'),
             WorkspaceExtension::PARAM_WORKSPACE_PATH => $this->workspace()->path('workspace'),
         ], $config);
+
         return (new ApplicationBuilder)->buildContainer($config);
     }
 

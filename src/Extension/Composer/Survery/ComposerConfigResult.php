@@ -2,9 +2,9 @@
 
 namespace Maestro\Extension\Composer\Survery;
 
-use Maestro\Library\Survey\SurveyResult;
+use Maestro\Library\Artifact\Artifact;
 
-class ComposerConfigResult implements SurveyResult
+class ComposerConfigResult implements Artifact
 {
     /**
      * @var ?string

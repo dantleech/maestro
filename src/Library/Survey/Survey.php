@@ -59,7 +59,7 @@ final class Survey implements IteratorAggregate, Artifact
     }
 
     /**
-     * @return SurveyResult[]
+     * @return Artifact[]
      */
     public function toArray(): array
     {

@@ -2,7 +2,9 @@
 
 namespace Maestro\Extension\Vcs\Survey;
 
-class VersionResult
+use Maestro\Library\Artifact\Artifact;
+
+class VersionResult implements Artifact
 {
     /**
      * @var string

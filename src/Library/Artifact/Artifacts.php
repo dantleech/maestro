@@ -6,7 +6,6 @@ use ArrayIterator;
 use Countable;
 use IteratorAggregate;
 use Maestro\Library\Artifact\Exception\ArtifactNotFound;
-use Maestro\Library\Artifact\Artifacts;
 
 class Artifacts implements Countable, IteratorAggregate
 {

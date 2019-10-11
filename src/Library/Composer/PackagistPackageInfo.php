@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Composer;
 
-class PackagistPackageInfo
+use Maestro\Library\Artifact\Artifact;
+
+class PackagistPackageInfo implements Artifact
 {
     /**
      * @var string

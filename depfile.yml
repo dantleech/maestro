@@ -180,6 +180,7 @@ ruleset:
         - lib-instantiator
         - lib-vcs
         - lib-task
+        - lib-artifact
         - lib-support
         - lib-workspace
         - lib-survey

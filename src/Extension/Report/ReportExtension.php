@@ -12,7 +12,7 @@ use Phpactor\MapResolver\Resolver;
 
 class ReportExtension implements Extension
 {
-    const TAG_REPORT_CONSOLE = 'report.console';
+    const TAG_REPORT = 'report.console';
 
     /**
      * {@inheritDoc}
@@ -21,7 +21,7 @@ class ReportExtension implements Extension
     {
         $container->register(ReportRegistry::class, function (Container $container) {
             $reports = [];
-            foreach ($container->getServiceIdsForTag(self::TAG_REPORT_CONSOLE) as $serviceId => $definition) {
+            foreach ($container->getServiceIdsForTag(self::TAG_REPORT) as $serviceId => $definition) {
                 $definition = Instantiator::instantiate(ConsoleReportDefinition::class, array_merge([
                     'serviceId' => $serviceId,
                 ], $definition));

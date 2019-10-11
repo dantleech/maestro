@@ -24,7 +24,7 @@ class DotExtension implements Extension
                 $container->get(ConsoleExtension::SERVICE_OUTPUT)
             );
         }, [
-            ReportExtension::TAG_REPORT_CONSOLE => [
+            ReportExtension::TAG_REPORT => [
                 'name' => 'dot'
             ]
         ]);

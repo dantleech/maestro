@@ -149,7 +149,7 @@ class RunnerExtension implements Extension
                 $container->get(ConsoleExtension::SERVICE_OUTPUT)
             );
         }, [
-            ReportExtension::TAG_REPORT_CONSOLE => [
+            ReportExtension::TAG_REPORT => [
                 'name' => 'run'
             ]
         ]);
@@ -161,8 +161,8 @@ class RunnerExtension implements Extension
                 $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             );
         }, [
-            ReportExtension::TAG_REPORT_CONSOLE => [
-                'name' => 'json_run',
+            ReportExtension::TAG_REPORT => [
+                'name' => 'json',
             ]
         ]);
     }

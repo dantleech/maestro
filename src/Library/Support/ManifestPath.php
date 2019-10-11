@@ -2,9 +2,10 @@
 
 namespace Maestro\Library\Support;
 
+use Maestro\Library\Task\Artifact;
 use Webmozart\PathUtil\Path;
 
-class ManifestPath
+class ManifestPath implements Artifact
 {
     /**
      * @var string

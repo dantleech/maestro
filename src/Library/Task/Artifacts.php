@@ -33,7 +33,7 @@ class Artifacts implements Countable, IteratorAggregate
         return $this->artifacts[$artifactFqn];
     }
 
-    public function set(object $artifact): void
+    public function set(Artifact $artifact): void
     {
         $this->artifacts[get_class($artifact)] = $artifact;
     }

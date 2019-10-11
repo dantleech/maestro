@@ -3,8 +3,9 @@
 namespace Maestro\Library\Support\Variables;
 
 use Maestro\Library\Support\Variables\Exception\VariableNotFound;
+use Maestro\Library\Task\Artifact;
 
-class Variables
+class Variables implements Artifact
 {
     /**
      * @var array

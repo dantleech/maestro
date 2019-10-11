@@ -9,11 +9,11 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
+use Maestro\Library\Task\Artifact;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\Task;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 class GraphTaskSchedulerTest extends TestCase
 {
@@ -81,7 +81,7 @@ class GraphTaskSchedulerTest extends TestCase
 
         yield 'artifacts from parent nodes are passed to jobs of child nodes' => [
             function (GraphBuilder $builder) {
-                $artifact = new stdClass();
+                $artifact = new TestArtifact();
                 $builder->addNode(
                     NodeHelper::setState(Node::create('root', [
                         'artifacts' => [
@@ -105,7 +105,7 @@ class GraphTaskSchedulerTest extends TestCase
 
         yield 'cancels nodes depending on a failed node' => [
             function (GraphBuilder $builder) {
-                $artifact = new stdClass();
+                $artifact = new TestArtifact();
                 $builder->addNode(NodeHelper::setState(Node::create('root'), State::SUCCEEDED()));
                 $builder->addNode(NodeHelper::setState(Node::create('n1'), State::FAILED()));
                 $builder->addNode(NodeHelper::setState(Node::create('n2'), State::SUCCEEDED()));
@@ -133,4 +133,8 @@ class TestTask implements Task
     {
         return 'hello';
     }
+}
+
+class TestArtifact implements Artifact
+{
 }

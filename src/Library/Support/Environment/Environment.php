@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Support\Environment;
 
-class Environment
+use Maestro\Library\Task\Artifact;
+
+class Environment implements Artifact
 {
     /**
      * @var array

@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Support\Package;
 
-class Package
+use Maestro\Library\Task\Artifact;
+
+class Package implements Artifact
 {
     /**
      * @var string

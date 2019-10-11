@@ -8,6 +8,7 @@ use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Library\Survey\Survey;
 use Maestro\Library\Survey\Surveyor;
 use Maestro\Library\Survey\Surveyors;
+use Maestro\Library\Task\Artifact;
 use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
@@ -39,16 +40,16 @@ class SurveyHandlerTest extends TestCase
             {
                 return 'hello';
             }
-            public function __invoke(stdClass $foobar)
+            public function __invoke(Artifact $foobar)
             {
-                $object = new stdClass();
+                $object = new TestArtifact();
                 $object->foo = $foobar->bar;
 
                 return new Success($object);
             }
         };
 
-        $inputArtifact = new stdClass();
+        $inputArtifact = new TestArtifact();
         $inputArtifact->bar = 'bar';
 
         $artifacts = HandlerTester::create(
@@ -63,11 +64,16 @@ class SurveyHandlerTest extends TestCase
 
         $survey = $artifacts->get(Survey::class);
         $this->assertInstanceOf(Survey::class, $survey);
-        $this->assertEquals('bar', $survey->get(stdClass::class)->foo);
+        $this->assertEquals('bar', $survey->get(TestArtifact::class)->foo);
     }
 
     private function createHandler(Surveyors $surveyors): SurveyHandler
     {
         return new SurveyHandler($surveyors, new NullLogger());
     }
+}
+
+class TestArtifact implements Artifact
+{
+    public $bar;
 }

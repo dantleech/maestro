@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Script;
 
-class ScriptResult
+use Maestro\Library\Task\Artifact;
+
+class ScriptResult implements Artifact
 {
     /**
      * @var int

@@ -2,10 +2,11 @@
 
 namespace Maestro\Library\Workspace;
 
+use Maestro\Library\Task\Artifact;
 use Symfony\Component\Filesystem\Filesystem;
 use Webmozart\PathUtil\Path;
 
-class Workspace
+class Workspace implements Artifact
 {
     /**
      * @var string

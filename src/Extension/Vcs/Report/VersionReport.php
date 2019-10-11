@@ -9,7 +9,6 @@ use Maestro\Extension\Vcs\Survey\VersionResult;
 use Maestro\Library\Composer\PackagistPackageInfo;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Survey\Survey;
 use Maestro\Library\Util\StringUtil;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -48,17 +47,13 @@ class VersionReport implements Report
         foreach ($graph->nodes()->byTaskClass(SurveyTask::class) as $node) {
             assert($node instanceof Node);
             $artifacts = $node->artifacts();
-            if (!$artifacts->has(Survey::class)) {
-                continue;
-            }
-            $survey = $artifacts->get(Survey::class);
-            assert($survey instanceof Survey);
 
-            $versionReport = $survey->get(VersionResult::class);
+            $versionReport = $artifacts->get(VersionResult::class);
             assert($versionReport instanceof VersionResult);
 
-            $packageReport = $survey->get(ComposerConfigResult::class, new ComposerConfigResult());
-            $packagistReport = $survey->get(PackagistPackageInfo::class);
+            $packageReport = $artifacts->has(ComposerConfigResult::class) ? $artifacts->get(ComposerConfigResult::class) : new ComposerConfigResult();
+            assert($packageReport instanceof ComposerConfigResult);
+            $packagistReport = $artifacts->get(PackagistPackageInfo::class);
             assert($packagistReport instanceof PackagistPackageInfo);
             $table->addRow([
                 $versionReport->packageName(),

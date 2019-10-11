@@ -7,7 +7,6 @@ use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Survey\Survey;
 use Maestro\Library\Artifact\Artifact;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -50,7 +49,7 @@ class SurveyReportTest extends TestCase
             ->addNode(Node::create('foo2', [
                 'task' => new SurveyTask(),
                 'artifacts' => [
-                    new Survey([$surveyResult->reveal()])
+                    $surveyResult->reveal()
                 ]
             ]))
             ->addNode(Node::create('foo3'))

@@ -6,7 +6,6 @@ use Maestro\Library\Report\Report;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Survey\Survey;
 use ReflectionClass;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -37,15 +36,12 @@ class SurveyReport implements Report
         $style = new SymfonyStyle(new ArrayInput([]), $this->output);
 
         foreach ($nodes as $node) {
-            if (false === $node->artifacts()->has(Survey::class)) {
+            if (0 === $node->artifacts()->count()) {
                 continue;
             }
 
             $style->section($node->id());
-            $survey = $node->artifacts()->get(Survey::class);
-            assert($survey instanceof Survey);
-
-            foreach ($survey as $surveyResult) {
+            foreach ($node->artifacts() as $surveyResult) {
                 $table = new Table($this->output);
                 $style->block(get_class($surveyResult));
 

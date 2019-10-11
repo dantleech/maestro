@@ -4,7 +4,6 @@ namespace Maestro\Extension\Survey\Task;
 
 use Amp\Promise;
 use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Survey\SurveyBuilder;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Library\Survey\Surveyor;
 use Maestro\Library\Artifact\Artifacts;
@@ -31,7 +30,7 @@ class SurveyHandler
     public function __invoke(SurveyTask $task, Artifacts $artifacts): Promise
     {
         return \Amp\call(function () use ($artifacts) {
-            $surveyBuilder = new SurveyBuilder();
+            $results = [];
 
             foreach ($this->surveyors as $surveyor) {
                 $this->logger->info('Making survey: ' . $surveyor->description());
@@ -46,12 +45,10 @@ class SurveyHandler
                     continue;
                 }
 
-                $surveyBuilder->addResult($result);
+                $results[] = $result;
             }
 
-            return [
-                $surveyBuilder->build(),
-            ];
+            return $results;
         });
     }
 }

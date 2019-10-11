@@ -5,7 +5,6 @@ namespace Maestro\Tests\Unit\Extension\Survey\Task;
 use Amp\Success;
 use Maestro\Extension\Survey\Task\SurveyHandler;
 use Maestro\Extension\Survey\Task\SurveyTask;
-use Maestro\Library\Survey\Survey;
 use Maestro\Library\Survey\Surveyor;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Library\Artifact\Artifact;
@@ -24,12 +23,7 @@ class SurveyHandlerTest extends TestCase
             new Artifacts(),
         ]);
 
-        $survey = $artifacts->get(Survey::class);
-        $this->assertInstanceOf(
-            Survey::class,
-            $survey
-        );
-        $this->assertEmpty($survey->toArray());
+        $this->assertEmpty($artifacts);
     }
 
     public function testSurveys()
@@ -61,9 +55,7 @@ class SurveyHandlerTest extends TestCase
             ]),
         ]);
 
-        $survey = $artifacts->get(Survey::class);
-        $this->assertInstanceOf(Survey::class, $survey);
-        $this->assertEquals('bar', $survey->get(TestArtifact::class)->foo);
+        $this->assertEquals('bar', $artifacts->get(TestArtifact::class)->foo);
     }
 
     private function createHandler(Surveyors $surveyors): SurveyHandler

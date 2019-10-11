@@ -9,12 +9,15 @@ use RuntimeException;
 
 class TaskHandlerDefinitionMap implements IteratorAggregate
 {
+    /**
+     * @var array
+     */
     private $definitions = [];
 
     /**
      * @var array
      */
-    private $definitionsByClass;
+    private $definitionsByClass = [];
 
 
     public function __construct(array $definitions)

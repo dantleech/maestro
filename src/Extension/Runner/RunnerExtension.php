@@ -157,7 +157,8 @@ class RunnerExtension implements Extension
         $container->register(JsonReport::class, function (Container $container) {
             return new JsonReport(
                 $container->get(ConsoleExtension::SERVICE_OUTPUT),
-                $container->get(TaskHandlerDefinitionMap::class)
+                $container->get(TaskHandlerDefinitionMap::class),
+                $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             );
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [

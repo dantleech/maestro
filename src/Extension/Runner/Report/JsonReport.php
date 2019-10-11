@@ -14,6 +14,7 @@ use Maestro\Library\Report\Report;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Output\OutputInterface;
+use Webmozart\PathUtil\Path;
 
 class JsonReport implements Report
 {
@@ -27,16 +28,21 @@ class JsonReport implements Report
      */
     private $definitionMap;
 
+    /**
+     * @var string
+     */
+    private $directory;
 
-    public function __construct(OutputInterface $output, TaskHandlerDefinitionMap $definitionMap)
+    public function __construct(OutputInterface $output, TaskHandlerDefinitionMap $definitionMap, string $directory)
     {
         $this->output = $output;
         $this->definitionMap = $definitionMap;
+        $this->directory = $directory;
     }
 
     public function render(Graph $graph): void
     {
-        $filePath = 'graph-report.json';
+        $filePath = Path::join([$this->directory, 'graph-report.json']);
         $json = json_encode($this->graphToArray($graph), JSON_PRETTY_PRINT);
         file_put_contents($filePath, $json);
         $this->output->writeln(sprintf('<info>Writing JSON report to</info>: %s', $filePath));
@@ -93,7 +99,7 @@ class JsonReport implements Report
 
     private function serializeArtifacts(Artifacts $artifacts): array
     {
-        return array_combine(
+        return (array)array_combine(
             array_map(function (Artifact $artifact) {
                 return $this->className($artifact);
             }, $artifacts->toArray()),
@@ -108,7 +114,7 @@ class JsonReport implements Report
         $reflection = new ReflectionClass($task);
         $properties = $reflection->getProperties();
 
-        return array_combine(
+        return (array)array_combine(
             array_map(function (ReflectionProperty $property) {
                 return $property->getName();
             }, $properties),

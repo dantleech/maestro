@@ -25,4 +25,9 @@ class Environment implements Artifact
     {
         return new self(array_merge($this->env, $env));
     }
+
+    public function serialize(): array
+    {
+        return $this->env;
+    }
 }

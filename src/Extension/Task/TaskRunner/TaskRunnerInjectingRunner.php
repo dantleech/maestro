@@ -26,4 +26,9 @@ class TaskRunnerInjectingRunner implements TaskRunner, Artifact
             $this
         ])));
     }
+
+    public function serialize(): array
+    {
+        return [];
+    }
 }

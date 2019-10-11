@@ -74,6 +74,10 @@ class ArtifactsTest extends TestCase
 
 class TestArtifact implements Artifact
 {
+    public function serialize(): array
+    {
+        return [];
+    }
 }
 class TestArtifact2 extends TestArtifact
 {

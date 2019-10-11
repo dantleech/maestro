@@ -51,4 +51,12 @@ class Workspace implements Artifact
     {
         return $this->name;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'path' => $this->rootPath,
+            'nmae' => $this->name,
+        ];
+    }
 }

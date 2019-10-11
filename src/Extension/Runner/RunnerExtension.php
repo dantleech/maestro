@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Runner;
 
+use Maestro\Extension\Runner\Report\JsonReport;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -150,6 +151,17 @@ class RunnerExtension implements Extension
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [
                 'name' => 'run'
+            ]
+        ]);
+
+        $container->register(JsonReport::class, function (Container $container) {
+            return new JsonReport(
+                $container->get(ConsoleExtension::SERVICE_OUTPUT),
+                $container->get(TaskHandlerDefinitionMap::class)
+            );
+        }, [
+            ReportExtension::TAG_REPORT_CONSOLE => [
+                'name' => 'json_run',
             ]
         ]);
     }

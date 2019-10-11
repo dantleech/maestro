@@ -40,4 +40,13 @@ class ScriptResult implements Artifact
     {
         return $this->exitCode;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'exisCode' => $this->exitCode,
+            'stderr' => $this->stderr,
+            'stdout' => $this->stdout,
+        ];
+    }
 }

@@ -134,4 +134,12 @@ final class Edges implements IteratorAggregate, Countable
     {
         return array_unique(array_merge($this->toIds(), $this->fromIds()));
     }
+
+    /**
+     * @return Edge[]
+     */
+    public function toArray(): array
+    {
+        return $this->edges;
+    }
 }

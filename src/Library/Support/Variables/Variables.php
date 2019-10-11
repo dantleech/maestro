@@ -30,4 +30,9 @@ class Variables implements Artifact
     {
         return $this->variables;
     }
+
+    public function serialize(): array
+    {
+        return $this->toArray();
+    }
 }

@@ -31,4 +31,12 @@ class Package implements Artifact
     {
         return $this->version;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'name' => $this->name,
+            'version' => $this->version,
+        ];
+    }
 }

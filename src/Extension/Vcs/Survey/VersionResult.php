@@ -103,4 +103,16 @@ class VersionResult implements Artifact
     {
         return $this->configuredVersion !== null && $this->mostRecentTagName !== $this->configuredVersion;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'configuredVersion' => $this->configuredVersion,
+            'mostRecentTagName' => $this->mostRecentTagName,
+            'mostRecentTagCommitId' => $this->mostRecentTagCommitId,
+            'headId' => $this->headId,
+            'headComment' => $this->headComment,
+            'nbCommitsAhead' => $this->nbCommitsAhead
+        ];
+    }
 }

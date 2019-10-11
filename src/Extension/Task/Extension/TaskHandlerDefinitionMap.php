@@ -11,6 +11,12 @@ class TaskHandlerDefinitionMap implements IteratorAggregate
 {
     private $definitions = [];
 
+    /**
+     * @var array
+     */
+    private $definitionsByClass;
+
+
     public function __construct(array $definitions)
     {
         foreach ($definitions as $definition) {
@@ -33,9 +39,25 @@ class TaskHandlerDefinitionMap implements IteratorAggregate
         return $this->definitions[$alias];
     }
 
+    public function getDefinitionByClass(string $taskClass): TaskHandlerDefinition
+    {
+        if (!isset($this->definitionsByClass[$taskClass])) {
+            throw new RuntimeException(sprintf(
+                'Unknown task definitinon "%s", known definitions: "%s"',
+                $taskClass,
+                implode('", "', array_map(function (TaskHandlerDefinition $definition) {
+                    return $definition->taskClass();
+                }, $this->definitionsByClass))
+            ));
+        }
+
+        return $this->definitionsByClass[$taskClass];
+    }
+
     private function add(TaskHandlerDefinition $definition): void
     {
         $this->definitions[$definition->alias()] = $definition;
+        $this->definitionsByClass[$definition->taskClass()] = $definition;
     }
 
     public function getIterator(): Iterator

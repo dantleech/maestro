@@ -212,4 +212,12 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
             return get_class($node->task()) === $taskClass;
         }));
     }
+
+    /**
+     * @return Node[]
+     */
+    public function toArray()
+    {
+        return $this->nodes;
+    }
 }

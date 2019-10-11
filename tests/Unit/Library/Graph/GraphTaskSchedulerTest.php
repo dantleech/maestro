@@ -137,4 +137,8 @@ class TestTask implements Task
 
 class TestArtifact implements Artifact
 {
+    public function serialize(): array
+    {
+        return [];
+    }
 }

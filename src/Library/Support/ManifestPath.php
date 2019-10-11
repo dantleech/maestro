@@ -26,4 +26,11 @@ class ManifestPath implements Artifact
     {
         return Path::getDirectory($this->path);
     }
+
+    public function serialize(): array
+    {
+        return [
+            'path' => $this->path
+        ];
+    }
 }

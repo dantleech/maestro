@@ -20,4 +20,11 @@ class ComposerConfigResult implements Artifact
     {
         return $this->branchAlias;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'branchAlias' => $this->branchAlias
+        ];
+    }
 }

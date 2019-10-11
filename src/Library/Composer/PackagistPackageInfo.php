@@ -31,4 +31,11 @@ class PackagistPackageInfo implements Artifact
     {
         return $this->version;
     }
+
+    public function serialize(): array
+    {
+        return [
+            'lastestVersion' => $this->version
+        ];
+    }
 }

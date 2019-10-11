@@ -67,4 +67,9 @@ class SurveyHandlerTest extends TestCase
 class TestArtifact implements Artifact
 {
     public $bar;
+
+    public function serialize(): array
+    {
+        return [];
+    }
 }

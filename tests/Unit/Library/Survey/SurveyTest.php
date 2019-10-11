@@ -4,15 +4,14 @@ namespace Maestro\Tests\Unit\Library\Survey;
 
 use Maestro\Library\Survey\Exception\ResultNotRegistered;
 use Maestro\Library\Survey\Survey;
-use Maestro\Library\Survey\SurveyResult;
+use Maestro\Library\Task\Artifact;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class SurveyTest extends TestCase
 {
     public function testReturnsResultByFqn()
     {
-        $result = new class implements SurveyResult {
+        $result = new class implements Artifact {
         };
 
         $survey = new Survey([
@@ -20,14 +19,6 @@ class SurveyTest extends TestCase
         ]);
 
         $this->assertSame($result, $survey->get(get_class($result)));
-    }
-
-    public function testThrowsExceptionIfResultIsNotAnObject()
-    {
-        $this->expectException(RuntimeException::class);
-        $survey = new Survey([
-            'hello'
-        ]);
     }
 
     public function testThrowsExceptionIfResultNotSet()

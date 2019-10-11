@@ -22,7 +22,7 @@ final class Survey implements IteratorAggregate, Artifact
         }
     }
 
-    private function add($result)
+    private function add(Artifact $result)
     {
         if (!is_object($result)) {
             throw new RuntimeException(sprintf(

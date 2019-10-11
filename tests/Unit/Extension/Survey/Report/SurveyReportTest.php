@@ -8,7 +8,7 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Survey\Survey;
-use Maestro\Library\Survey\SurveyResult;
+use Maestro\Library\Task\Artifact;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -42,7 +42,7 @@ class SurveyReportTest extends TestCase
 
     public function testIgnoresNodesWithNoSurveyResult()
     {
-        $surveyResult = $this->prophesize(SurveyResult::class);
+        $surveyResult = $this->prophesize(Artifact::class);
         $graph = GraphBuilder::create()
             ->addNode(Node::create('foo1', [
                 'task' => new SurveyTask()

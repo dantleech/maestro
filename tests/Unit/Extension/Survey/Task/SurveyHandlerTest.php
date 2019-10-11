@@ -13,7 +13,6 @@ use Maestro\Library\Task\Artifacts;
 use Maestro\Library\Task\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use stdClass;
 
 class SurveyHandlerTest extends TestCase
 {

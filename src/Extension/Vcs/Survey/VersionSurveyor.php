@@ -44,10 +44,10 @@ class VersionSurveyor implements Surveyor
             $headId = yield $repository->headId();
             $headComment = yield $repository->message($headId);
 
-            $diff = yield $repository->commitsBetween(
+            $nbCommitsAhead = count(yield $repository->commitsBetween(
                 $mostRecentTag ? $mostRecentTag->commitId() : $headId,
                 $headId
-            );
+            ));
 
             return new VersionResult(
                 $package->name(),
@@ -56,7 +56,7 @@ class VersionSurveyor implements Surveyor
                 $mostRecentTag ? $mostRecentTag->commitId() : null,
                 $headId,
                 $headComment,
-                $diff
+                $nbCommitsAhead
             );
         });
     }

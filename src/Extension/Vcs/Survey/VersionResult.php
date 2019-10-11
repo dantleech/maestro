@@ -10,30 +10,36 @@ class VersionResult implements Artifact
      * @var string
      */
     private $packageName;
+
     /**
      * @var string|null
      */
     private $configuredVersion;
+
     /**
      * @var string|null
      */
     private $mostRecentTagName;
+
     /**
      * @var string|null
      */
     private $mostRecentTagCommitId;
+
     /**
      * @var string|null
      */
     private $headId;
+
     /**
      * @var string|null
      */
     private $headComment;
+
     /**
-     * @var array
+     * @var int|null
      */
-    private $commitsBetween;
+    private $nbCommitsAhead;
 
     public function __construct(
         string $packageName,
@@ -42,7 +48,7 @@ class VersionResult implements Artifact
         ?string $mostRecentTagCommitId,
         ?string $headId,
         ?string $headComment,
-        array $commitsBetween
+        ?int $nbCommitsAhead
     ) {
         $this->packageName = $packageName;
         $this->configuredVersion = $configuredVersion;
@@ -50,17 +56,12 @@ class VersionResult implements Artifact
         $this->mostRecentTagCommitId = $mostRecentTagCommitId;
         $this->headId = $headId;
         $this->headComment = $headComment;
-        $this->commitsBetween = $commitsBetween;
+        $this->nbCommitsAhead = $nbCommitsAhead;
     }
 
-    public function divergence(): int
+    public function nbCommitsAhead(): ?int
     {
-        return count($this->commitsBetween);
-    }
-
-    public function commitsBetween(): array
-    {
-        return $this->commitsBetween;
+        return $this->nbCommitsAhead;
     }
 
     public function headComment(): ?string

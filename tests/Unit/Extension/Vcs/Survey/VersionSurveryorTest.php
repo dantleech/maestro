@@ -58,9 +58,8 @@ class VersionSurveryorTest extends IntegrationTestCase
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($this->package, $this->workspace));
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
-        $this->assertCount(0, $versionReport->commitsBetween());
+        $this->assertEquals(0, $versionReport->nbCommitsAhead());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
-        $this->assertEquals(0, $versionReport->divergence());
         $this->assertLikeCommitId($versionReport->headId());
         $this->assertEquals(self::GIT_INITIAL_MESSAGE, $versionReport->headComment());
         $this->assertEquals(self::PACKAGE_NAME, $versionReport->packageName());
@@ -81,9 +80,8 @@ class VersionSurveryorTest extends IntegrationTestCase
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($this->package, $this->workspace));
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
-        $this->assertCount(1, $versionReport->commitsBetween());
+        $this->assertEquals(1, $versionReport->nbCommitsAhead());
         $this->assertEquals($configuredTag, $versionReport->configuredVersion());
-        $this->assertEquals(1, $versionReport->divergence());
         $this->assertEquals('another commit', $versionReport->headComment());
         $this->assertEquals(self::PACKAGE_NAME, $versionReport->packageName());
         $this->assertLikeCommitId($versionReport->mostRecentTagCommitId());

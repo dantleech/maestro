@@ -91,11 +91,11 @@ class VersionReport implements Report
 
     private function formatHeadCommit(VersionResult $versionReport)
     {
-        if ($versionReport->divergence() > 0) {
+        if ($versionReport->nbCommitsAhead() > 0) {
             return sprintf(
                 '%s <fg=yellow;bg=black>+%s</>',
                 substr((string)$versionReport->headId(), 0, 10),
-                $versionReport->divergence()
+                $versionReport->nbCommitsAhead()
             );
         }
 

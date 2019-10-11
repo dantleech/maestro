@@ -6,6 +6,7 @@ use Amp\Deferred;
 use Amp\Promise;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Task\NullTask;
+use Maestro\Library\Artifact\Artifacts;
 
 class Job
 {

@@ -3,7 +3,7 @@
 namespace Maestro\Library\Support\Variables;
 
 use Maestro\Library\Support\Variables\Exception\VariableNotFound;
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 
 class Variables implements Artifact
 {

@@ -4,6 +4,11 @@ paths:
 exclude_files: ~
 layers:
     # Libraries
+    - name: lib-artifact
+      collectors:
+          - type: directory
+            regex: "src/Library/Artifact/.*"
+
     - name: lib-graph
       collectors:
           - type: directory
@@ -111,14 +116,27 @@ ruleset:
     lib-graph:
         - lib-task
         - lib-instantiator
+        - lib-artifact
 
     lib-task:
         - lib-instantiator
+        - lib-artifact
 
     lib-instantiator: ~
 
+    lib-support:
+        - lib-artifact
+
     lib-script:
         - lib-instantiator
+        - lib-task
+        - lib-artifact
+
+    lib-workspace:
+        - lib-artifact
+
+    lib-survey:
+        - lib-artifact
 
     ext-runner:
         - lib-graph
@@ -127,11 +145,13 @@ ruleset:
         - lib-instantiator
         - lib-util
         - lib-support
+        - lib-artifact
         - ext-vcs
         - ext-task
 
     ext-task:
         - lib-task
+        - lib-artifact
         - lib-instantiator
         - lib-support
         - lib-util
@@ -177,3 +197,4 @@ ruleset:
         - lib-task
         - lib-instantiator
         - lib-graph
+        - lib-artifact

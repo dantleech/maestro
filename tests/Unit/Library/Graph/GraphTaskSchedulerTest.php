@@ -9,7 +9,7 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;
 use Maestro\Library\Task\Task;

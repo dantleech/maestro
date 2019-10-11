@@ -2,7 +2,7 @@
 
 namespace Maestro\Library\Support\Environment;
 
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 
 class Environment implements Artifact
 {

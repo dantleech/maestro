@@ -2,7 +2,7 @@
 
 namespace Maestro\Library\Script;
 
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 
 class ScriptResult implements Artifact
 {

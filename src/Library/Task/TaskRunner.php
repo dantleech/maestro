@@ -3,6 +3,7 @@
 namespace Maestro\Library\Task;
 
 use Amp\Promise;
+use Maestro\Library\Artifact\Artifacts;
 
 interface TaskRunner
 {

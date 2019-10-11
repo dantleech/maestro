@@ -8,7 +8,7 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Survey\Survey;
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 

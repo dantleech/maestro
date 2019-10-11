@@ -5,7 +5,7 @@ namespace Maestro\Extension\Publisher\Task;
 use Amp\Promise;
 use Amp\Success;
 use Maestro\Library\Support\Package\Package;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Webmozart\PathUtil\Path;
 
 class PublishHandler

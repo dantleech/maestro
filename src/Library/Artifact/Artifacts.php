@@ -1,11 +1,12 @@
 <?php
 
-namespace Maestro\Library\Task;
+namespace Maestro\Library\Artifact;
 
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
-use Maestro\Library\Task\Exception\ArtifactNotFound;
+use Maestro\Library\Artifact\Exception\ArtifactNotFound;
+use Maestro\Library\Artifact\Artifacts;
 
 class Artifacts implements Countable, IteratorAggregate
 {

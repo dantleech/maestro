@@ -3,7 +3,7 @@
 namespace Maestro\Library\Graph;
 
 use Maestro\Library\Task\Queue;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 
 class GraphTaskScheduler
 {

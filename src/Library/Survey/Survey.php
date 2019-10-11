@@ -5,7 +5,7 @@ namespace Maestro\Library\Survey;
 use ArrayIterator;
 use IteratorAggregate;
 use Maestro\Library\Survey\Exception\ResultNotRegistered;
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 use RuntimeException;
 
 final class Survey implements IteratorAggregate, Artifact

@@ -5,7 +5,7 @@ namespace Maestro\Tests\Unit\Library\Task;
 use Amp\Delayed;
 use Amp\Loop;
 use Amp\Success;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;

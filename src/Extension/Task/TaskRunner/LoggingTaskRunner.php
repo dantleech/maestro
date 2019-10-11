@@ -4,7 +4,7 @@ namespace Maestro\Extension\Task\TaskRunner;
 
 use Amp\Promise;
 use Maestro\Library\Support\Package\Package;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\TaskRunner;
 use Psr\Log\LoggerInterface;

@@ -2,7 +2,7 @@
 
 namespace Maestro\Library\Support\Package;
 
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 
 class Package implements Artifact
 {

@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Task\TaskRunner;
 
 use Amp\Promise;
-use Maestro\Library\Task\Artifact;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifact;
+use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\TaskRunner;
 

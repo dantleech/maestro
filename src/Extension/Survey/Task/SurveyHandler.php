@@ -7,7 +7,7 @@ use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Survey\SurveyBuilder;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Library\Survey\Surveyor;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Psr\Log\LoggerInterface;
 
 class SurveyHandler

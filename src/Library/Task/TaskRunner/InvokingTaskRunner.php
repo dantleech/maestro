@@ -4,7 +4,7 @@ namespace Maestro\Library\Task\TaskRunner;
 
 use Amp\Promise;
 use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\TaskHandlerRegistry;
 use Maestro\Library\Task\TaskRunner;

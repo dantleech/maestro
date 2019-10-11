@@ -3,7 +3,7 @@
 namespace Maestro\Library\Graph;
 
 use Exception;
-use Maestro\Library\Task\Artifacts;
+use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Job;
 use Maestro\Library\Task\JobState;

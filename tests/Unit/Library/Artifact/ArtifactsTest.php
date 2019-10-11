@@ -1,10 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Unit\Library\Task;
+namespace Maestro\Tests\Unit\Library\Artifact;
 
-use Maestro\Library\Task\Artifact;
-use Maestro\Library\Task\Artifacts;
-use Maestro\Library\Task\Exception\ArtifactNotFound;
+use Maestro\Library\Artifact\Artifact;
+use Maestro\Library\Artifact\Artifacts;
+use Maestro\Library\Artifact\Exception\ArtifactNotFound;
 use PHPUnit\Framework\TestCase;
 
 class ArtifactsTest extends TestCase

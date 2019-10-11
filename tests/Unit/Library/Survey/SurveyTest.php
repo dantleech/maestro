@@ -4,7 +4,7 @@ namespace Maestro\Tests\Unit\Library\Survey;
 
 use Maestro\Library\Survey\Exception\ResultNotRegistered;
 use Maestro\Library\Survey\Survey;
-use Maestro\Library\Task\Artifact;
+use Maestro\Library\Artifact\Artifact;
 use PHPUnit\Framework\TestCase;
 
 class SurveyTest extends TestCase

@@ -25,8 +25,8 @@ class SurveyReportTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->report = new SurveyReport();
         $this->output = new BufferedOutput();
+        $this->report = new SurveyReport($this->output);
     }
 
     public function testRendersNothingIfNoNodesHaveSurveyTask()
@@ -63,7 +63,7 @@ class SurveyReportTest extends TestCase
 
     private function render(Graph $graph)
     {
-        $this->report->render($this->output, $graph);
+        $this->report->render($graph);
         return $this->output->fetch();
     }
 }

@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Vcs\Report;
 
 use Maestro\Extension\Composer\Survery\ComposerConfigResult;
-use Maestro\Extension\Report\Model\ConsoleReport;
+use Maestro\Library\Report\Report;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Extension\Vcs\Survey\VersionResult;
 use Maestro\Library\Composer\PackagistPackageInfo;
@@ -14,11 +14,16 @@ use Maestro\Library\Util\StringUtil;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class VersionReport implements ConsoleReport
+class VersionReport implements Report
 {
-    public function title(): string
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(OutputInterface $output)
     {
-        return 'Version Report';
+        $this->output = $output;
     }
 
     public function description(): string
@@ -26,9 +31,9 @@ class VersionReport implements ConsoleReport
         return 'Detailed version overview for each package';
     }
 
-    public function render(OutputInterface $output, Graph $graph): void
+    public function render(Graph $graph): void
     {
-        $table = new Table($output);
+        $table = new Table($this->output);
         $table->setHeaders([
             'package',
             'conf',
@@ -67,7 +72,7 @@ class VersionReport implements ConsoleReport
             ]);
         }
 
-        $this->renderLegend($output);
+        $this->renderLegend($this->output);
         $table->render();
     }
 

@@ -3,7 +3,7 @@
 namespace Maestro\Extension\Runner\Report;
 
 use Generator;
-use Maestro\Extension\Report\Model\ConsoleReport;
+use Maestro\Library\Report\Report;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
@@ -12,21 +12,22 @@ use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RunReport implements ConsoleReport
+class RunReport implements Report
 {
     /**
      * @var int
      */
     private $aggregationDepth;
 
-    public function __construct(int $aggregationDepth = 1)
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(OutputInterface $output, int $aggregationDepth = 1)
     {
         $this->aggregationDepth = $aggregationDepth;
-    }
-
-    public function title(): string
-    {
-        return 'Run Report';
+        $this->output = $output;
     }
 
     public function description(): string
@@ -34,9 +35,9 @@ class RunReport implements ConsoleReport
         return 'Summary of all tasks executed during run';
     }
 
-    public function render(OutputInterface $output, Graph $graph): void
+    public function render(Graph $graph): void
     {
-        $table = new Table($output);
+        $table = new Table($this->output);
         $table->setHeaders([
             'package',
             'label',
@@ -72,7 +73,7 @@ class RunReport implements ConsoleReport
             }
         }
         $table->render();
-        $output->writeln(sprintf(
+        $this->output->writeln(sprintf(
             '<options=bold;%s> %s nodes, %s pending %s succeeded, %s cancelled, %s failed </>',
             $this->resolveStatusColor($graph),
             $graph->nodes()->count(),

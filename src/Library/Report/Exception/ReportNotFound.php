@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Report\Model\Exception;
+namespace Maestro\Library\Report\Exception;
 
 use RuntimeException;
 

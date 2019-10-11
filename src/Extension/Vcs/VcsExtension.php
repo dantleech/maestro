@@ -17,6 +17,7 @@ use Maestro\Library\Vcs\RepositoryFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 use RuntimeException;
@@ -83,7 +84,9 @@ class VcsExtension implements Extension
     private function registerReports(ContainerBuilder $container)
     {
         $container->register(VersionReport::class, function (Container $container) {
-            return new VersionReport();
+            return new VersionReport(
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
+            );
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [
                 'name' => 'version',

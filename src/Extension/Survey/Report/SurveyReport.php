@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Survey\Report;
 
-use Maestro\Extension\Report\Model\ConsoleReport;
+use Maestro\Library\Report\Report;
 use Maestro\Extension\Survey\Task\SurveyTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
@@ -13,11 +13,16 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class SurveyReport implements ConsoleReport
+class SurveyReport implements Report
 {
-    public function title(): string
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(OutputInterface $output)
     {
-        return 'Survey results';
+        $this->output = $output;
     }
 
     public function description(): string
@@ -25,11 +30,11 @@ class SurveyReport implements ConsoleReport
         return 'Shows all the information collected during any surveys';
     }
 
-    public function render(OutputInterface $output, Graph $graph): void
+    public function render(Graph $graph): void
     {
         /** @var Node[] $nodes */
         $nodes = $graph->nodes()->byTaskClass(SurveyTask::class);
-        $style = new SymfonyStyle(new ArrayInput([]), $output);
+        $style = new SymfonyStyle(new ArrayInput([]), $this->output);
 
         foreach ($nodes as $node) {
             if (false === $node->artifacts()->has(Survey::class)) {
@@ -41,7 +46,7 @@ class SurveyReport implements ConsoleReport
             assert($survey instanceof Survey);
 
             foreach ($survey as $surveyResult) {
-                $table = new Table($output);
+                $table = new Table($this->output);
                 $style->block(get_class($surveyResult));
 
                 $reflection = new ReflectionClass($surveyResult);
@@ -54,7 +59,7 @@ class SurveyReport implements ConsoleReport
                     ]);
                 }
                 $table->render();
-                $output->write(PHP_EOL);
+                $this->output->write(PHP_EOL);
             }
         }
     }

@@ -2,8 +2,8 @@
 
 namespace Maestro\Extension\Runner\Command;
 
-use Maestro\Extension\Report\Model\ConsoleReport;
-use Maestro\Extension\Report\Model\ConsoleReportRegistry;
+use Maestro\Library\Report\Report;
+use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Util\Cast;
@@ -24,13 +24,13 @@ class RunCommand extends Command
     private $graphBehavior;
 
     /**
-     * @var ConsoleReportRegistry
+     * @var ReportRegistry
      */
     private $reportRegistry;
 
     public function __construct(
         GraphBehavior $graphBehavior,
-        ConsoleReportRegistry $reportRegistry
+        ReportRegistry $reportRegistry
     ) {
         $this->graphBehavior = $graphBehavior;
         $this->reportRegistry = $reportRegistry;
@@ -62,10 +62,10 @@ class RunCommand extends Command
         $this->graphBehavior->run($input, $output, $graph);
         $style = new SymfonyStyle($input, $output);
 
-        foreach ($reports as $report) {
-            $style->title($report->title());
+        foreach ($reports as $name => $report) {
+            $style->title($name);
             $style->block($report->description());
-            $report->render($output, $graph);
+            $report->render($graph);
         }
 
 
@@ -73,12 +73,12 @@ class RunCommand extends Command
     }
 
     /**
-     * @return ConsoleReport[]
+     * @return Report[]
      */
     private function fetchReports(array $reports, ConsoleOutputInterface $output): array
     {
-        return array_map(function (string $reportName) {
+        return (array)array_combine(array_map('ucfirst', $reports), array_map(function (string $reportName) {
             return $this->reportRegistry->get($reportName);
-        }, $reports);
+        }, $reports));
     }
 }

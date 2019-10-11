@@ -11,6 +11,7 @@ use Maestro\Extension\Survey\Task\SurveyTask;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 
@@ -40,7 +41,9 @@ class SurveyExtension implements Extension
         ]]);
 
         $container->register(SurveyReport::class, function (Container $container) {
-            return new SurveyReport();
+            return new SurveyReport(
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
+            );
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [
                 'name' => 'survey',

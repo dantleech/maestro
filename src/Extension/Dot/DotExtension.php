@@ -8,6 +8,7 @@ use Maestro\Extension\Runner\RunnerExtension;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\MapResolver\Resolver;
 
 class DotExtension implements Extension
@@ -18,7 +19,10 @@ class DotExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register(DotReport::class, function (Container $container) {
-            return new DotReport($container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY));
+            return new DotReport(
+                $container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY),
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
+            );
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [
                 'name' => 'dot'

@@ -1,10 +1,10 @@
 <?php
 
-namespace Maestro\Extension\Report\Model;
+namespace Maestro\Library\Report;
 
-use Maestro\Extension\Report\Model\Exception\ReportNotFound;
+use Maestro\Library\Report\Exception\ReportNotFound;
 
-class ConsoleReportRegistry
+class ReportRegistry
 {
     /**
      * @var array
@@ -18,7 +18,7 @@ class ConsoleReportRegistry
         }
     }
 
-    public function get(string $name): ConsoleReport
+    public function get(string $name): Report
     {
         if (!isset($this->reports[$name])) {
             throw new ReportNotFound(sprintf(
@@ -31,7 +31,7 @@ class ConsoleReportRegistry
         return $this->reports[$name];
     }
 
-    private function add(string $name, ConsoleReport $report)
+    private function add(string $name, Report $report)
     {
         $this->reports[$name] = $report;
     }

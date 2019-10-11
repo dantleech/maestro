@@ -2,28 +2,29 @@
 
 namespace Maestro\Extension\Dot\Report;
 
-use Maestro\Extension\Report\Model\ConsoleReport;
+use Maestro\Library\Report\Report;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Symfony\Component\Console\Output\OutputInterface;
 use function Safe\file_put_contents;
 use Webmozart\PathUtil\Path;
 
-class DotReport implements ConsoleReport
+class DotReport implements Report
 {
     /**
      * @var string
      */
     private $directory;
 
-    public function __construct(string $directory)
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    public function __construct(string $directory, OutputInterface $output)
     {
         $this->directory = $directory;
-    }
-
-    public function title(): string
-    {
-        return 'Dot graph';
+        $this->output = $output;
     }
 
     public function description(): string
@@ -31,16 +32,16 @@ class DotReport implements ConsoleReport
         return 'Dump the graph to a dotfile';
     }
 
-    public function render(OutputInterface $output, Graph $graph): void
+    public function render(Graph $graph): void
     {
         $dotContents = $this->buildDotFileContents($graph);
         $outputPath = Path::join([$this->directory, 'maestro.dot']);
         $imageFileName = 'maestro.png';
 
-        $output->writeln(sprintf('<info>Writing dot file to:</info> %s', $outputPath));
+        $this->output->writeln(sprintf('<info>Writing dot file to:</info> %s', $outputPath));
         file_put_contents($outputPath, $dotContents);
         $command = sprintf('dot %s -Tpng -o %s', $outputPath, $imageFileName);
-        $output->writeln(sprintf('<info>Generate the image with:</info> %s', $command));
+        $this->output->writeln(sprintf('<info>Generate the image with:</info> %s', $command));
     }
 
     private function buildDotFileContents(Graph $graph)

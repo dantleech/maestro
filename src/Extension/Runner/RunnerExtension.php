@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Runner;
 
-use Maestro\Extension\Report\Model\ConsoleReportRegistry;
+use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
@@ -71,7 +71,7 @@ class RunnerExtension implements Extension
         $container->register(RunCommand::class, function (Container $container) {
             return new RunCommand(
                 $container->get(GraphBehavior::class),
-                $container->get(ConsoleReportRegistry::class)
+                $container->get(ReportRegistry::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
         
@@ -84,10 +84,6 @@ class RunnerExtension implements Extension
                 $container->get(Queue::class),
                 new TagParser()
             );
-        });
-
-        $container->register(RunReport::class, function (Container $container) {
-            return new RunReport();
         });
     }
 
@@ -148,7 +144,9 @@ class RunnerExtension implements Extension
     private function registerReport(ContainerBuilder $container)
     {
         $container->register(RunReport::class, function (Container $container) {
-            return new RunReport();
+            return new RunReport(
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
+            );
         }, [
             ReportExtension::TAG_REPORT_CONSOLE => [
                 'name' => 'run'

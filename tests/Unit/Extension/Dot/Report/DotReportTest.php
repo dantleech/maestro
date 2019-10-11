@@ -23,8 +23,8 @@ class DotReportTest extends IntegrationTestCase
     protected function setUp(): void
     {
         $this->workspace()->reset();
-        $this->report = new DotReport($this->workspace()->path('/'));
         $this->output = new BufferedOutput();
+        $this->report = new DotReport($this->workspace()->path('/'), $this->output);
     }
 
     public function testWritesDotFileToFile()
@@ -41,7 +41,7 @@ class DotReportTest extends IntegrationTestCase
 
     private function render(Graph $graph)
     {
-        $this->report->render($this->output, $graph);
+        $this->report->render($graph);
         return $this->output->fetch();
     }
 }

@@ -158,8 +158,7 @@ class RunnerExtension implements Extension
         $container->register(JsonReport::class, function (Container $container) {
             return new JsonReport(
                 $container->get(Serializer::class),
-                $container->getParameter(self::PARAM_WORKING_DIRECTORY),
-                $container->get(LoggingExtension::SERVICE_LOGGER),
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
             );
         }, [
             ReportExtension::TAG_REPORT => [

@@ -3,12 +3,11 @@
 namespace Maestro\Extension\Runner\Report;
 
 use Maestro\Library\Graph\Graph;
-use Maestro\Library\Report\GraphSerializer;
 use Maestro\Library\Report\Report;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 use Webmozart\PathUtil\Path;
+use function Safe\file_put_contents;
 
 class JsonReport implements Report
 {
@@ -18,7 +17,7 @@ class JsonReport implements Report
     private $directory;
 
     /**
-     * @var GraphSerializer
+     * @var SerializerInterface
      */
     private $serializer;
 
@@ -27,7 +26,7 @@ class JsonReport implements Report
      */
     private $logger;
 
-    public function __construct(Serializer $serializer, string $directory, LoggerInterface $logger)
+    public function __construct(SerializerInterface $serializer, string $directory, LoggerInterface $logger)
     {
         $this->directory = $directory;
         $this->serializer = $serializer;
@@ -36,8 +35,9 @@ class JsonReport implements Report
 
     public function render(Graph $graph): void
     {
+        $content = $this->serializer->serialize($graph, 'json');
         $filePath = Path::join([$this->directory, 'graph-report.json']);
-        echo $this->serializer->serialize($graph, 'json');
         $this->logger->notice(sprintf('Writing JSON report to: %s', $filePath));
+        file_put_contents($filePath, $content);
     }
 }

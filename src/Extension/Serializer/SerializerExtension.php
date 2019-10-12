@@ -71,5 +71,4 @@ class SerializerExtension implements Extension
             return $container->get($serviceId);
         }, array_keys($container->getServiceIdsForTag(self::TAG_ENCODER)));
     }
-
 }

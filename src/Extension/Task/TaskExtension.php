@@ -34,7 +34,6 @@ class TaskExtension implements Extension
     const PARAM_MILLISLEEP = 'task.milliSleep';
     const PARAM_CONCURRENCY = 'task.concurrency';
 
-
     /**
      * {@inheritDoc}
      */
@@ -113,14 +112,14 @@ class TaskExtension implements Extension
 
     private function registerSerializer(ContainerBuilder $container)
     {
-        $container->register(TaskNormalizer::class, function () use ($container) {
+        $container->register(TaskNormalizer::class, function (Container $container) {
             return new TaskNormalizer(
                 $container->get(TaskHandlerDefinitionMap::class),
                 $container->get(PropertyNormalizer::class)
             );
         }, [ SerializerExtension::TAG_NORMALIZER => [] ]);
 
-        $container->register(ArtifactNormalizer::class, function () use ($container) {
+        $container->register(ArtifactNormalizer::class, function (Container $container) {
             return new ArtifactNormalizer(
                 $container->get(PropertyNormalizer::class)
             );

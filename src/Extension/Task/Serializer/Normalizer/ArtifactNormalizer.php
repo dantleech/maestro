@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Task\Serializer\Normalizer;
 
-use Maestro\Extension\Artifact\Extension\ArtifactHandlerDefinitionMap;
 use Maestro\Library\Artifact\Artifact;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
@@ -21,8 +20,8 @@ class ArtifactNormalizer implements NormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function normalize($artifact, $format = null, array $context = array (
-    ))
+    public function normalize($artifact, $format = null, array $context = [
+    ])
     {
         assert($artifact instanceof Artifact);
 
@@ -40,4 +39,3 @@ class ArtifactNormalizer implements NormalizerInterface
         return $data instanceof Artifact;
     }
 }
-

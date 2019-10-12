@@ -28,8 +28,8 @@ class TaskNormalizer implements NormalizerInterface
     /**
      * {@inheritDoc}
      */
-    public function normalize($task, $format = null, array $context = array (
-    ))
+    public function normalize($task, $format = null, array $context = [
+    ])
     {
         assert($task instanceof Task);
 

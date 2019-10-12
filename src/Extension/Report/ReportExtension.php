@@ -3,9 +3,6 @@
 namespace Maestro\Extension\Report;
 
 use Maestro\Extension\Report\Extension\ConsoleReportDefinition;
-use Maestro\Extension\Report\Model\MaestroGraphSerializer;
-use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
-use Maestro\Library\Report\GraphSerializer;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Library\Instantiator\Instantiator;
 use Phpactor\Container\Container;
@@ -33,10 +30,6 @@ class ReportExtension implements Extension
             }
 
             return new ReportRegistry($reports);
-        });
-
-        $container->register(GraphSerializer::class, function (Container $container) {
-            return new MaestroGraphSerializer($container->get(TaskHandlerDefinitionMap::class));
         });
     }
 

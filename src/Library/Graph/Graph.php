@@ -4,7 +4,6 @@ namespace Maestro\Library\Graph;
 
 use Maestro\Library\Graph\Exception\GraphContainsCircularDependencies;
 use Maestro\Library\Graph\Exception\NodeDoesNotExist;
-use RuntimeException;
 
 class Graph
 {
@@ -22,12 +21,6 @@ class Graph
     {
         $this->nodes = $nodes;
         $this->edges = $edges;
-
-        if ($nodes->count() === 0) {
-            throw new RuntimeException(
-                'Graph must have at least one node'
-            );
-        }
 
         $this->validateEdges();
         $this->validateCircularDependencies();

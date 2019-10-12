@@ -3,13 +3,11 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Report;
 
 use Maestro\Extension\Runner\Report\JsonReport;
-use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
-use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Task\Task\NullTask;
+use Maestro\Library\Report\GraphSerializer;
 use Maestro\Tests\IntegrationTestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -26,29 +24,24 @@ class JsonReportTest extends IntegrationTestCase
     private $report;
 
     /**
-     * @var TaskHandlerDefinitionMap
+     * @var ObjectProphecy
      */
-    private $definitionMap;
+    private $serializer;
 
     protected function setUp(): void
     {
         $this->workspace()->reset();
         $this->output = new BufferedOutput();
-        $this->definitionMap = new TaskHandlerDefinitionMap([
-            new TaskHandlerDefinition('foo', 'null', NullTask::class),
-        ]);
-        $this->report = new JsonReport($this->output, $this->definitionMap, $this->workspace()->path('/'));
+        $this->serializer = $this->prophesize(GraphSerializer::class);
+        $this->report = new JsonReport($this->output, $this->serializer->reveal(), $this->workspace()->path('/'));
     }
 
     public function testWritesJsonReport()
     {
         $graph = GraphBuilder::create()
-            ->addEdge(Edge::create('foo3', 'foo2'))
-            ->addNode(Node::create('foo1'))
-            ->addNode(Node::create('foo2'))
-            ->addNode(Node::create('foo3'))
             ->build();
 
+        $this->serializer->serialize($graph)->willReturn([]);
         $this->assertStringContainsString('Writing JSON report to', $this->render($graph));
         $this->assertFileExists($this->workspace()->path('graph-report.json'));
     }

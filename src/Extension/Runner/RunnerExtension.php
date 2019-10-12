@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner;
 
 use Maestro\Extension\Runner\Report\JsonReport;
+use Maestro\Library\Report\GraphSerializer;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -157,7 +158,7 @@ class RunnerExtension implements Extension
         $container->register(JsonReport::class, function (Container $container) {
             return new JsonReport(
                 $container->get(ConsoleExtension::SERVICE_OUTPUT),
-                $container->get(TaskHandlerDefinitionMap::class),
+                $container->get(GraphSerializer::class),
                 $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             );
         }, [

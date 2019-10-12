@@ -431,13 +431,6 @@ class GraphTest extends TestCase
         ];
     }
 
-    public function testExceptionIsThrownWhenNoNodesAreGiven()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Graph must have at least one node');
-        Graph::create([], []);
-    }
-
     public function testReturnsLeafNodes()
     {
         $graph = Graph::create(

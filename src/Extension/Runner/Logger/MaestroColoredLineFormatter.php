@@ -8,12 +8,14 @@ class MaestroColoredLineFormatter extends ColoredLineFormatter
 {
     private $start;
 
+    public function __construct($colorScheme = null, $format = null, $dateFormat = null, $allowInlineLineBreaks = false, $ignoreEmptyContextAndExtra = false)
+    {
+        parent::__construct($colorScheme, $format, $dateFormat, $allowInlineLineBreaks, $ignoreEmptyContextAndExtra);
+        $this->start = microtime(true);
+    }
+
     public function format(array $record): string
     {
-        if (null === $this->start) {
-            $this->start = microtime(true);
-        }
-
         $record['elapsed'] = number_format(microtime(true) - $this->start, 4);
 
         return parent::format($record);

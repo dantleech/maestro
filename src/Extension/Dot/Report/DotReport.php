@@ -27,11 +27,6 @@ class DotReport implements Report
         $this->output = $output;
     }
 
-    public function description(): string
-    {
-        return 'Dump the graph to a dotfile';
-    }
-
     public function render(Graph $graph): void
     {
         $dotContents = $this->buildDotFileContents($graph);

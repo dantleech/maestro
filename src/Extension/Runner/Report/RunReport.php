@@ -30,11 +30,6 @@ class RunReport implements Report
         $this->output = $output;
     }
 
-    public function description(): string
-    {
-        return 'Summary of all tasks executed during run';
-    }
-
     public function render(Graph $graph): void
     {
         $table = new Table($this->output);

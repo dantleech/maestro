@@ -63,8 +63,6 @@ class RunCommand extends Command
         $style = new SymfonyStyle($input, $output);
 
         foreach ($reports as $name => $report) {
-            $style->title($name);
-            $style->block($report->description());
             $report->render($graph);
         }
 

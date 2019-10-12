@@ -32,16 +32,11 @@ class JsonReport implements Report
         $this->serializer = $serializer;
     }
 
-    public function description(): string
-    {
-        return 'renders the whole graph in JSON';
-    }
-
     public function render(Graph $graph): void
     {
         $filePath = Path::join([$this->directory, 'graph-report.json']);
-        $json = json_encode($this->serializer->serialize($graph));
+        echo $json = json_encode($this->serializer->serialize($graph));
         file_put_contents($filePath, $json);
-        $this->output->writeln(sprintf('<info>Writing JSON report to</info>: %s', $filePath));
+        //$this->output->writeln(sprintf('<info>Writing JSON report to</info>: %s', $filePath));
     }
 }

@@ -24,11 +24,6 @@ class SurveyReport implements Report
         $this->output = $output;
     }
 
-    public function description(): string
-    {
-        return 'Shows all the information collected during any surveys';
-    }
-
     public function render(Graph $graph): void
     {
         /** @var Node[] $nodes */

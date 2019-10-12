@@ -25,11 +25,6 @@ class VersionReport implements Report
         $this->output = $output;
     }
 
-    public function description(): string
-    {
-        return 'Detailed version overview for each package';
-    }
-
     public function render(Graph $graph): void
     {
         $table = new Table($this->output);

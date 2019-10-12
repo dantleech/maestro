@@ -25,7 +25,8 @@
     "bramus/monolog-colored-line-formatter": "^3.0",
     "symfony/filesystem": "^4.0",
     "phpactor/config-loader": "^0.1.1",
-    "symfony/serializer": "^4.3"
+    "symfony/serializer": "^4.3",
+    "symfony/property-access": "^4.3"
   },
   "require-dev": {
     "sensiolabs-de/deptrac-shim": "^0.5.0",
@@ -33,7 +34,6 @@
     "phpactor/test-utils": "^1.0.1",
     "phpunit/phpunit": "^8.0",
     "phpstan/phpstan": "^0.11.4",
-    "symfony/property-access": "^4.2",
     "captainhook/captainhook": "~4.0",
     "symfony/debug": "^4.3",
     "symfony/var-dumper": "^4.3"

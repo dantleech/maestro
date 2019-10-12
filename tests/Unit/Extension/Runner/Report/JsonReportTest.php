@@ -3,10 +3,8 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Report;
 
 use Maestro\Extension\Runner\Report\JsonReport;
-use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
-use Maestro\Library\Graph\Node;
 use Maestro\Library\Report\GraphSerializer;
 use Maestro\Tests\IntegrationTestCase;
 use Symfony\Component\Console\Output\BufferedOutput;

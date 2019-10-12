@@ -9,15 +9,15 @@ class ScriptResult implements Artifact
     /**
      * @var int
      */
-    private $exitCode;
+    public $exitCode;
     /**
      * @var string
      */
-    private $stdout;
+    public $stdout;
     /**
      * @var string
      */
-    private $stderr;
+    public $stderr;
 
     public function __construct(int $exitCode, string $stdout, string $stderr)
     {

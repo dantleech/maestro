@@ -9,12 +9,12 @@ class Package implements Artifact
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * @var string|null
      */
-    private $version;
+    public $version;
 
     public function __construct(string $name, ?string $version)
     {
@@ -30,13 +30,5 @@ class Package implements Artifact
     public function version(): ?string
     {
         return $this->version;
-    }
-
-    public function serialize(): array
-    {
-        return [
-            'name' => $this->name,
-            'version' => $this->version,
-        ];
     }
 }

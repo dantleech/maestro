@@ -9,7 +9,7 @@ class ComposerConfigResult implements Artifact
     /**
      * @var ?string
      */
-    private $branchAlias;
+    public $branchAlias;
 
     public function __construct(?string $branchAlias = null)
     {
@@ -19,12 +19,5 @@ class ComposerConfigResult implements Artifact
     public function branchAlias(): ?string
     {
         return $this->branchAlias;
-    }
-
-    public function serialize(): array
-    {
-        return [
-            'branchAlias' => $this->branchAlias
-        ];
     }
 }

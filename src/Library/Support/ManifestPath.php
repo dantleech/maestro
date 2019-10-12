@@ -10,7 +10,7 @@ class ManifestPath implements Artifact
     /**
      * @var string
      */
-    private $path;
+    public $path;
 
     public function __construct(string $path)
     {

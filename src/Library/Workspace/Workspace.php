@@ -11,7 +11,7 @@ class Workspace implements Artifact
     /**
      * @var string
      */
-    private $rootPath;
+    public $rootPath;
 
     /**
      * @var Filesystem
@@ -21,7 +21,7 @@ class Workspace implements Artifact
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     public function __construct(string $rootPath, string $name)
     {
@@ -50,13 +50,5 @@ class Workspace implements Artifact
     public function name(): string
     {
         return $this->name;
-    }
-
-    public function serialize(): array
-    {
-        return [
-            'path' => $this->rootPath,
-            'nmae' => $this->name,
-        ];
     }
 }

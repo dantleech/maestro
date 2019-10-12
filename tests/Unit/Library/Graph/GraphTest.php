@@ -10,7 +10,6 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\Nodes;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 class GraphTest extends TestCase
 {

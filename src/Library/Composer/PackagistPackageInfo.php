@@ -9,12 +9,12 @@ class PackagistPackageInfo implements Artifact
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * @var string|null
      */
-    private $version;
+    public $version;
 
     public function __construct(string $name, ?string $version = null)
     {
@@ -30,12 +30,5 @@ class PackagistPackageInfo implements Artifact
     public function latestVersion(): ?string
     {
         return $this->version;
-    }
-
-    public function serialize(): array
-    {
-        return [
-            'lastestVersion' => $this->version
-        ];
     }
 }

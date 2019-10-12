@@ -10,7 +10,7 @@ class Variables implements Artifact
     /**
      * @var array
      */
-    private $variables;
+    public $variables;
 
     public function __construct(array $variables)
     {

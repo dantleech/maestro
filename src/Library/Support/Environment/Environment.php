@@ -9,7 +9,7 @@ class Environment implements Artifact
     /**
      * @var array
      */
-    private $env;
+    public $env;
 
     public function __construct(array $env = [])
     {
@@ -24,10 +24,5 @@ class Environment implements Artifact
     public function spawnMerged(array $env): Environment
     {
         return new self(array_merge($this->env, $env));
-    }
-
-    public function serialize(): array
-    {
-        return $this->env;
     }
 }

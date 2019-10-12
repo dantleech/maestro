@@ -9,37 +9,37 @@ class VersionResult implements Artifact
     /**
      * @var string
      */
-    private $packageName;
+    public $packageName;
 
     /**
      * @var string|null
      */
-    private $configuredVersion;
+    public $configuredVersion;
 
     /**
      * @var string|null
      */
-    private $mostRecentTagName;
+    public $mostRecentTagName;
 
     /**
      * @var string|null
      */
-    private $mostRecentTagCommitId;
+    public $mostRecentTagCommitId;
 
     /**
      * @var string|null
      */
-    private $headId;
+    public $headId;
 
     /**
      * @var string|null
      */
-    private $headComment;
+    public $headComment;
 
     /**
      * @var int|null
      */
-    private $nbCommitsAhead;
+    public $nbCommitsAhead;
 
     public function __construct(
         string $packageName,
@@ -102,17 +102,5 @@ class VersionResult implements Artifact
     public function willBeTagged(): bool
     {
         return $this->configuredVersion !== null && $this->mostRecentTagName !== $this->configuredVersion;
-    }
-
-    public function serialize(): array
-    {
-        return [
-            'configuredVersion' => $this->configuredVersion,
-            'mostRecentTagName' => $this->mostRecentTagName,
-            'mostRecentTagCommitId' => $this->mostRecentTagCommitId,
-            'headId' => $this->headId,
-            'headComment' => $this->headComment,
-            'nbCommitsAhead' => $this->nbCommitsAhead
-        ];
     }
 }

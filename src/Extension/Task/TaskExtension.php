@@ -2,9 +2,12 @@
 
 namespace Maestro\Extension\Task;
 
+use Maestro\Extension\Serializer\SerializerExtension;
 use Maestro\Extension\Task\Command\DebugTaskCommand;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
+use Maestro\Extension\Task\Serializer\Normalizer\ArtifactNormalizer;
+use Maestro\Extension\Task\Serializer\Normalizer\TaskNormalizer;
 use Maestro\Extension\Task\TaskRunner\TaskRunnerInjectingRunner;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Queue;
@@ -22,6 +25,7 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
+use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 
 class TaskExtension implements Extension
 {
@@ -92,6 +96,8 @@ class TaskExtension implements Extension
                 $container->get(TaskHandlerDefinitionMap::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'debug:task']]);
+
+        $this->registerSerializer($container);
     }
 
     /**
@@ -103,5 +109,21 @@ class TaskExtension implements Extension
             self::PARAM_MILLISLEEP => 1,
             self::PARAM_CONCURRENCY => 10
         ]);
+    }
+
+    private function registerSerializer(ContainerBuilder $container)
+    {
+        $container->register(TaskNormalizer::class, function () use ($container) {
+            return new TaskNormalizer(
+                $container->get(TaskHandlerDefinitionMap::class),
+                $container->get(PropertyNormalizer::class)
+            );
+        }, [ SerializerExtension::TAG_NORMALIZER => [] ]);
+
+        $container->register(ArtifactNormalizer::class, function () use ($container) {
+            return new ArtifactNormalizer(
+                $container->get(PropertyNormalizer::class)
+            );
+        }, [ SerializerExtension::TAG_NORMALIZER => [] ]);
     }
 }

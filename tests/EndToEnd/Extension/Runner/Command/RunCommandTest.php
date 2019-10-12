@@ -182,7 +182,7 @@ class RunCommandTest extends EndToEndTestCase
 
         $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
         $process = $this->command('run --report=run --report=run');
-        $this->assertStringContainsString('Run', $process->getOutput());
+        $this->assertStringContainsString('action', $process->getOutput());
     }
 
     public function testRunsOnlyTags()

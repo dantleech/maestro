@@ -11,6 +11,7 @@ use Maestro\Extension\Json\JsonExtension;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Script\ScriptExtension;
+use Maestro\Extension\Serializer\SerializerExtension;
 use Maestro\Extension\Survey\SurveyExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Template\TemplateExtension;
@@ -95,6 +96,7 @@ final class ApplicationBuilder
             HttpClientExtension::class,
             DotExtension::class,
             JsonExtension::class,
+            SerializerExtension::class,
         ], $config[PhpactorContainer::PARAM_EXTENSION_CLASSES]), $config);
     }
 

@@ -33,6 +33,7 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
+use Symfony\Component\Serializer\Serializer;
 
 class RunnerExtension implements Extension
 {
@@ -157,9 +158,9 @@ class RunnerExtension implements Extension
 
         $container->register(JsonReport::class, function (Container $container) {
             return new JsonReport(
-                $container->get(ConsoleExtension::SERVICE_OUTPUT),
-                $container->get(GraphSerializer::class),
+                $container->get(Serializer::class),
                 $container->getParameter(self::PARAM_WORKING_DIRECTORY),
+                $container->get(LoggingExtension::SERVICE_LOGGER),
             );
         }, [
             ReportExtension::TAG_REPORT => [

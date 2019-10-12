@@ -45,6 +45,7 @@ class VersionSurveryorTest extends IntegrationTestCase
     public function testGathersInfoWithNoTags()
     {
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($this->package, $this->workspace));
+        $versionReport = $versionReport[0];
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
         $this->assertNull($versionReport->mostRecentTagName());
@@ -56,6 +57,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $this->execPackageCommand(self::PACKAGE_NAME, 'git tag 1.0.0');
         $configuredTag = '1.0.0';
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($this->package, $this->workspace));
+        $versionReport = $versionReport[0];
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
         $this->assertEquals(0, $versionReport->nbCommitsAhead());
@@ -78,6 +80,7 @@ class VersionSurveryorTest extends IntegrationTestCase
 
         $configuredTag = '1.0.0';
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($this->package, $this->workspace));
+        $versionReport = $versionReport[0];
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
         $this->assertEquals(1, $versionReport->nbCommitsAhead());
@@ -100,6 +103,7 @@ class VersionSurveryorTest extends IntegrationTestCase
         $configuredTag = '1.0.1';
         $package = new Package('one/two', $configuredTag);
         $versionReport = \Amp\Promise\wait($this->surveyor->__invoke($package, $this->workspace));
+        $versionReport = $versionReport[0];
 
         $this->assertInstanceOf(VersionResult::class, $versionReport);
         $this->assertTrue($versionReport->willBeTagged());

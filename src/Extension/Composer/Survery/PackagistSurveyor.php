@@ -36,15 +36,15 @@ class PackagistSurveyor implements Surveyor
     {
         return \Amp\call(function () use ($package) {
             try {
-                return yield $this->packagist->packageInfo($package->name());
+                return [yield $this->packagist->packageInfo($package->name())];
             } catch (PackagistError $error) {
                 $this->logger->warning(sprintf(
                     'Packagist had a problem, using empty packagist data: "%s"',
                     $error->getMessage()
                 ));
-                return new Success(
+                return new Success([
                     new PackagistPackageInfo($package->name())
-                );
+                ]);
             }
         });
     }

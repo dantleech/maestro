@@ -49,15 +49,17 @@ class VersionSurveyor implements Surveyor
                 $headId
             ));
 
-            return new VersionResult(
-                $package->name(),
-                $package->version(),
-                $mostRecentTag ? $mostRecentTag->name() : null,
-                $mostRecentTag ? $mostRecentTag->commitId() : null,
-                $headId,
-                $headComment,
-                $nbCommitsAhead
-            );
+            return [
+                new VersionResult(
+                    $package->name(),
+                    $package->version(),
+                    $mostRecentTag ? $mostRecentTag->name() : null,
+                    $mostRecentTag ? $mostRecentTag->commitId() : null,
+                    $headId,
+                    $headComment,
+                    $nbCommitsAhead
+                )
+            ];
         });
     }
 

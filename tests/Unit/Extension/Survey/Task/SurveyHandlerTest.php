@@ -12,6 +12,7 @@ use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\Test\HandlerTester;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
+use RuntimeException;
 
 class SurveyHandlerTest extends TestCase
 {
@@ -38,7 +39,7 @@ class SurveyHandlerTest extends TestCase
                 $object = new TestArtifact();
                 $object->foo = $foobar->bar;
 
-                return new Success($object);
+                return new Success([$object]);
             }
         };
 
@@ -56,6 +57,30 @@ class SurveyHandlerTest extends TestCase
         ]);
 
         $this->assertEquals('bar', $artifacts->get(TestArtifact::class)->foo);
+    }
+
+    public function testThrowsExceptionIfSurveyDoesNotReturnArray()
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Survey must return an array');
+        $surveyor = new class() implements Surveyor {
+            public function description():string
+            {
+                return 'hello';
+            }
+            public function __invoke()
+            {
+                return new Success('hello');
+            }
+        };
+
+        $artifacts = HandlerTester::create(
+            $this->createHandler(new Surveyors([
+                $surveyor,
+            ]))
+        )->handle(SurveyTask::class, [], [
+            new Artifacts([]),
+        ]);
     }
 
     private function createHandler(Surveyors $surveyors): SurveyHandler

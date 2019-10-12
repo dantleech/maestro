@@ -34,7 +34,9 @@ class ComposerConfigSurveryor implements Surveyor
             $info = $this->processExtra($composer['extra'], $info);
         }
 
-        return new Success(Instantiator::instantiate(ComposerConfigResult::class, $info));
+        return new Success([
+            Instantiator::instantiate(ComposerConfigResult::class, $info)
+        ]);
     }
 
     private function processExtra(array $data, array $info): array

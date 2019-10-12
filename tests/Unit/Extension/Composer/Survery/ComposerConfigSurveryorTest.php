@@ -44,6 +44,7 @@ EOT
 
         $workspace = new Workspace($this->workspace()->path('/'), 'default');
         $result = \Amp\Promise\wait($this->surveyor->__invoke($workspace));
+        $result = $result[0];
         $this->assertEquals('0.1.x-dev', $result->branchAlias());
     }
 }

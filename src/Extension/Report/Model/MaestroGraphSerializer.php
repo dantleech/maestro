@@ -82,7 +82,7 @@ class MaestroGraphSerializer implements GraphSerializer
 
         return array_merge([
             'class' => $this->className($artifact),
-        ], array_combine(
+        ], (array)array_combine(
             array_map(function (ReflectionProperty $property) {
                 return $property->getName();
             }, $properties),

@@ -3,7 +3,6 @@
 namespace Maestro\Extension\Survey\Task;
 
 use Amp\Promise;
-use Maestro\Library\Artifact\Artifact;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Survey\Surveyors;
 use Maestro\Library\Survey\Surveyor;
@@ -44,7 +43,7 @@ class SurveyHandler
                     Instantiator::MODE_TYPE
                 );
 
-                if ($artifacts === null) {
+                if ($artifact === null) {
                     continue;
                 }
 

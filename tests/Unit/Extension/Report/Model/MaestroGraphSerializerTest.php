@@ -74,7 +74,8 @@ class MaestroGraphSerializerTest extends TestCase
                 'nodes' => [
                     'n1' => $this->nodeRepresentation('n1', [
                         'artifacts' => [
-                            'Maestro-Tests-Unit-Extension-Report-Model-TestArtifact' => [
+                            [
+                                'class' => 'Maestro-Tests-Unit-Extension-Report-Model-TestArtifact',
                                 'pub' => 'bar',
                             ],
                         ],

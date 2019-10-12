@@ -70,6 +70,17 @@ class ArtifactsTest extends TestCase
         $this->assertNotSame($artifacts1, $artifacts2);
         $this->assertSame($object1, $artifacts2->get(get_class($object1)));
     }
+
+    public function testCanHaveMultipleArtifactsOfSameType()
+    {
+        $object1 = new TestArtifact();
+        $object2 = new TestArtifact();
+        $object3 = new TestArtifact2();
+
+        $artifacts1 = new Artifacts([$object1, $object2, $object3]);
+
+        $this->assertCount(3, $artifacts1);
+    }
 }
 
 class TestArtifact implements Artifact

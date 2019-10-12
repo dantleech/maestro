@@ -67,14 +67,9 @@ class MaestroGraphSerializer implements GraphSerializer
 
     private function serializeArtifacts(Artifacts $artifacts): array
     {
-        return (array)array_combine(
-            array_map(function (Artifact $artifact) {
-                return $this->className($artifact);
-            }, $artifacts->toArray()),
-            array_map(function (Artifact $artifact) {
-                return $this->serializeArtifact($artifact);
-            }, $artifacts->toArray())
-        );
+        return array_map(function (Artifact $artifact) {
+            return $this->serializeArtifact($artifact);
+        }, $artifacts->toArray());
     }
 
     private function serializeArtifact(Artifact $artifact)
@@ -85,14 +80,16 @@ class MaestroGraphSerializer implements GraphSerializer
             return $property->isPublic();
         });
 
-        return array_combine(
+        return array_merge([
+            'class' => $this->className($artifact),
+        ], array_combine(
             array_map(function (ReflectionProperty $property) {
                 return $property->getName();
             }, $properties),
             array_map(function (ReflectionProperty $property) use ($artifact) {
                 return $property->getValue($artifact);
             }, $properties)
-        );
+        ));
     }
 
     private function serializeTaskArgs(object $task): array

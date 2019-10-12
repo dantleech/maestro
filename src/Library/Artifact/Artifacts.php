@@ -12,6 +12,11 @@ class Artifacts implements Countable, IteratorAggregate
     /**
      * @var array<string,object>
      */
+    private $artifactsByClass = [];
+
+    /**
+     * @var array
+     */
     private $artifacts = [];
 
     public function __construct(array $artifacts = [])
@@ -26,21 +31,22 @@ class Artifacts implements Countable, IteratorAggregate
      */
     public function get(string $artifactFqn): object
     {
-        if (!isset($this->artifacts[$artifactFqn])) {
-            throw new ArtifactNotFound($artifactFqn, array_keys($this->artifacts));
+        if (!isset($this->artifactsByClass[$artifactFqn])) {
+            throw new ArtifactNotFound($artifactFqn, array_keys($this->artifactsByClass));
         }
 
-        return $this->artifacts[$artifactFqn];
+        return $this->artifactsByClass[$artifactFqn];
     }
 
     public function set(Artifact $artifact): void
     {
-        $this->artifacts[get_class($artifact)] = $artifact;
+        $this->artifactsByClass[get_class($artifact)] = $artifact;
+        $this->artifacts[] = $artifact;
     }
 
     public function spawnMutated(self $artifacts): Artifacts
     {
-        return new self(array_merge($this->artifacts, $artifacts->artifacts));
+        return new self(array_merge($this->artifactsByClass, $artifacts->artifactsByClass));
     }
 
     public function toArray(): array
@@ -58,7 +64,7 @@ class Artifacts implements Countable, IteratorAggregate
 
     public function has(string $artifactFqn): bool
     {
-        return isset($this->artifacts[$artifactFqn]);
+        return isset($this->artifactsByClass[$artifactFqn]);
     }
 
     /**

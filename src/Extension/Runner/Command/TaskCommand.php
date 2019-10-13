@@ -4,7 +4,6 @@ namespace Maestro\Extension\Runner\Command;
 
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Console\MethodToInputDefinitionConverter;
-use Maestro\Extension\Runner\Report\RunReport;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Library\Graph\Edge;

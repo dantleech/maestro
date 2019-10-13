@@ -20,4 +20,9 @@ class MaestroColoredLineFormatter extends ColoredLineFormatter
 
         return parent::format($record);
     }
+
+    public function stringify($value)
+    {
+        return trim($this->convertToString($value));
+    }
 }

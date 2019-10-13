@@ -2,17 +2,12 @@
 
 namespace Maestro\Extension\Runner\Command;
 
-use Maestro\Library\Report\Report;
-use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Library\Graph\State;
-use Maestro\Library\Util\Cast;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RunCommand extends Command
 {

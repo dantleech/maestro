@@ -3,10 +3,13 @@
 namespace Maestro\Extension\Serializer;
 
 use Maestro\Extension\Report\ReportExtension;
+use Maestro\Extension\Serializer\Extension\NormalizerDefinition;
 use Maestro\Extension\Serializer\Report\JsonReport;
+use Maestro\Library\Instantiator\Instantiator;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
+use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -38,7 +41,6 @@ class SerializerExtension implements Extension
                 $this->collectNormalizers($container),
                 $this->collectEncoders($container)
             );
-            $this->fixTheBrokenNormalizers($container, $serializer);
             return $serializer;
         });
 
@@ -51,7 +53,9 @@ class SerializerExtension implements Extension
     {
         $container->register(ObjectNormalizer::class, function () {
             return new ObjectNormalizer();
-        }, [ self::TAG_NORMALIZER => []]);
+        }, [ self::TAG_NORMALIZER => [
+            'priority' => -10,
+        ]]);
 
     }
 
@@ -64,9 +68,21 @@ class SerializerExtension implements Extension
 
     private function collectNormalizers(Container $container)
     {
-        return array_map(function (string $serviceId) use ($container) {
-            return $container->get($serviceId);
-        }, array_keys($container->getServiceIdsForTag(self::TAG_NORMALIZER)));
+        $definitions = array_map(function (string $serviceId, array $attrs) use ($container) {
+            return Instantiator::instantiate(NormalizerDefinition::class, array_merge([
+                'serviceId' => $serviceId,
+            ], $attrs));
+        }, array_keys(
+            $container->getServiceIdsForTag(self::TAG_NORMALIZER)
+        ), $container->getServiceIdsForTag(self::TAG_NORMALIZER));
+
+        usort($definitions, function (NormalizerDefinition $a, NormalizerDefinition $b) {
+            return $b->priority() <=> $a->priority();
+        });
+
+        return array_map(function (NormalizerDefinition $definition) use ($container) {
+            return $container->get($definition->serviceId());
+        }, $definitions);
     }
 
     private function collectEncoders(Container $container)
@@ -74,15 +90,6 @@ class SerializerExtension implements Extension
         return array_map(function (string $serviceId) use ($container) {
             return $container->get($serviceId);
         }, array_keys($container->getServiceIdsForTag(self::TAG_ENCODER)));
-    }
-
-    private function fixTheBrokenNormalizers(Container $container, Serializer $serializer)
-    {
-        return;
-        return array_map(function (string $serviceId) use ($serializer) {
-            if ($normalizer instanceof SerializerAwareInterface) {
-            }
-        }, array_keys($container->getServiceIdsForTag(self::TAG_NORMALIZER)));
     }
 
     private function registerReports(ContainerBuilder $container)

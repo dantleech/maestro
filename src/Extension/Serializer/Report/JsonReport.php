@@ -1,6 +1,6 @@
 <?php
 
-namespace Maestro\Extension\Runner\Report;
+namespace Maestro\Extension\Serializer\Report;
 
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Report\Report;

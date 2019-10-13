@@ -2,6 +2,8 @@
 
 namespace Maestro\Extension\Serializer;
 
+use Maestro\Extension\Report\ReportExtension;
+use Maestro\Extension\Serializer\Report\JsonReport;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -42,6 +44,7 @@ class SerializerExtension implements Extension
 
         $this->registerNormalizers($container);
         $this->registerEncoders($container);
+        $this->registerReports($container);
     }
 
     private function registerNormalizers(ContainerBuilder $container): void
@@ -49,6 +52,7 @@ class SerializerExtension implements Extension
         $container->register(ObjectNormalizer::class, function () {
             return new ObjectNormalizer();
         }, [ self::TAG_NORMALIZER => []]);
+
     }
 
     private function registerEncoders(ContainerBuilder $container): void
@@ -79,5 +83,19 @@ class SerializerExtension implements Extension
             if ($normalizer instanceof SerializerAwareInterface) {
             }
         }, array_keys($container->getServiceIdsForTag(self::TAG_NORMALIZER)));
+    }
+
+    private function registerReports(ContainerBuilder $container)
+    {
+        $container->register(JsonReport::class, function (Container $container) {
+            return new JsonReport(
+                $container->get(Serializer::class),
+                $container->get(ConsoleExtension::SERVICE_OUTPUT)
+            );
+        }, [
+            ReportExtension::TAG_REPORT => [
+                'name' => 'json',
+            ]
+        ]);
     }
 }

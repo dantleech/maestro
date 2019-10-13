@@ -1,8 +1,8 @@
 <?php
 
-namespace Maestro\Tests\Unit\Extension\Runner\Report;
+namespace Maestro\Tests\Unit\Extension\Serializer\Report;
 
-use Maestro\Extension\Runner\Report\JsonReport;
+use Maestro\Extension\Serializer\Report\JsonReport;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Tests\IntegrationTestCase;

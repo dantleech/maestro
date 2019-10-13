@@ -12,7 +12,6 @@ use Maestro\Library\Graph\State;
 use Maestro\Library\Artifact\Artifact;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Queue\FifoQueue;
-use Maestro\Library\Task\Task;
 use PHPUnit\Framework\TestCase;
 
 class GraphTaskSchedulerTest extends TestCase
@@ -126,7 +125,6 @@ class GraphTaskSchedulerTest extends TestCase
                 $builder->addEdge(Edge::create('p2.task1', 'p2'));
             },
             function (Graph $graph, Queue $queue, GraphTaskScheduler $scheduler) {
-
                 $this->assertCount(2, $queue, 'p1 and p2');
                 $queue->dequeue();
                 $queue->dequeue();

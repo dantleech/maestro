@@ -71,6 +71,18 @@ class ArtifactsTest extends TestCase
         $this->assertSame($object1, $artifacts2->get(get_class($object1)));
     }
 
+    public function testSpawnWillAllowManyInstancesOfTheSameArtifact()
+    {
+        $object1 = new TestArtifact();
+
+        $artifacts1 = new Artifacts([$object1]);
+        $artifacts2 = $artifacts1->spawnMutated(new Artifacts([
+            $object1,
+        ]));
+
+        $this->assertCount(2, $artifacts2);
+    }
+
     public function testCanHaveMultipleArtifactsOfSameType()
     {
         $object1 = new TestArtifact();

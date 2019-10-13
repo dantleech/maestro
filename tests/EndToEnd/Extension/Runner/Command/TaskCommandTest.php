@@ -40,6 +40,7 @@ class TaskCommandTest extends EndToEndTestCase
 
     public function testTemplateTaskWithArguments()
     {
+        $this->workspace()->put('source', 'content');
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'packages' => [
                 'package/one' => [],

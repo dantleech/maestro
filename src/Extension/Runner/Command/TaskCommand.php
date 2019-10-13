@@ -9,6 +9,7 @@ use Maestro\Extension\Task\Extension\TaskHandlerDefinition;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Node;
+use Maestro\Library\Graph\State;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Util\Cast;
@@ -62,6 +63,8 @@ class TaskCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $reports = $this->behavior->fetchReports($input);
+
         $taskName = Cast::toString($input->getArgument('task'));
         $definition = $this->definitionMap->getDefinitionByAlias($taskName);
         $taskInput = $this->bindNewInput($input, $taskName, $definition);
@@ -78,8 +81,9 @@ class TaskCommand extends Command
         }
         $graph = $builder->build();
         $this->behavior->run($input, $output, $graph);
-        $report = new RunReport();
-        $report->render($output, $graph);
+        $this->behavior->renderReports($graph, ...$reports);
+
+        return $graph->nodes()->byState(State::FAILED())->count();
     }
 
     private function bindNewInput(InputInterface $input, string $taskName, TaskHandlerDefinition $definition)

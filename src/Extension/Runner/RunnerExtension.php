@@ -72,8 +72,7 @@ class RunnerExtension implements Extension
     {
         $container->register(RunCommand::class, function (Container $container) {
             return new RunCommand(
-                $container->get(GraphBehavior::class),
-                $container->get(ReportRegistry::class)
+                $container->get(GraphBehavior::class)
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'run']]);
 
@@ -92,7 +91,8 @@ class RunnerExtension implements Extension
                 $container->get(Worker::class),
                 $container->get(LoggingExtension::SERVICE_LOGGER),
                 $container->get(Queue::class),
-                new TagParser()
+                new TagParser(),
+                $container->get(ReportRegistry::class)
             );
         });
     }

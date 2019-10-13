@@ -15,18 +15,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RunReport implements Report
 {
     /**
-     * @var int
-     */
-    private $aggregationDepth;
-
-    /**
      * @var OutputInterface
      */
     private $output;
 
-    public function __construct(OutputInterface $output, int $aggregationDepth = 1)
+    public function __construct(OutputInterface $output)
     {
-        $this->aggregationDepth = $aggregationDepth;
         $this->output = $output;
     }
 

@@ -16,37 +16,21 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class RunCommand extends Command
 {
-    const OPTION_REPORT = 'report';
-
     /**
      * @var GraphBehavior
      */
     private $graphBehavior;
 
-    /**
-     * @var ReportRegistry
-     */
-    private $reportRegistry;
-
     public function __construct(
-        GraphBehavior $graphBehavior,
-        ReportRegistry $reportRegistry
+        GraphBehavior $graphBehavior
     ) {
         $this->graphBehavior = $graphBehavior;
-        $this->reportRegistry = $reportRegistry;
         parent::__construct();
     }
 
     protected function configure()
     {
         $this->setDescription('Run the plan');
-        $this->addOption(
-            self::OPTION_REPORT,
-            'r',
-            InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
-            'Reports to render',
-            ['run']
-        );
         $this->graphBehavior->configure($this);
     }
 
@@ -55,28 +39,13 @@ class RunCommand extends Command
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
 
-        $reports = $this->fetchReports(Cast::toArray($input->getOption(self::OPTION_REPORT)), $output);
-
         $graph = $this->graphBehavior->loadGraph($input);
+        $reports = $this->graphBehavior->fetchReports($input);
 
         $this->graphBehavior->run($input, $output, $graph);
-        $style = new SymfonyStyle($input, $output);
-
-        foreach ($reports as $name => $report) {
-            $report->render($graph);
-        }
+        $this->graphBehavior->renderReports($graph, ...$reports);
 
 
         return $graph->nodes()->byState(State::FAILED())->count();
-    }
-
-    /**
-     * @return Report[]
-     */
-    private function fetchReports(array $reports, ConsoleOutputInterface $output): array
-    {
-        return (array)array_combine(array_map('ucfirst', $reports), array_map(function (string $reportName) {
-            return $this->reportRegistry->get($reportName);
-        }, $reports));
     }
 }

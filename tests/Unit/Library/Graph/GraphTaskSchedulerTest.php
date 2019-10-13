@@ -22,14 +22,14 @@ class GraphTaskSchedulerTest extends TestCase
      */
     public function testSchedule(Closure $builderCallback, Closure $assertionCallback)
     {
-        $builder = GraphBuilder::create();
-        $builderCallback($builder);
-        $graph = $builder->build();
-
         $queue = new FifoQueue();
         $runner = new GraphTaskScheduler($queue);
+        $builder = GraphBuilder::create();
+        $builderCallback($builder, $runner);
+        $graph = $builder->build();
+
         $runner->run($graph);
-        $assertionCallback($graph, $queue);
+        $assertionCallback($graph, $queue, $runner);
     }
 
     public function provideSchedule()
@@ -103,6 +103,47 @@ class GraphTaskSchedulerTest extends TestCase
             }
         ];
 
+        yield 'artifacts state does not leak on subsequent iterations' => [
+            function (GraphBuilder $builder, GraphTaskScheduler $scheduler) {
+                $artifact1 = new TestArtifact();
+                $artifact1->id = 1;
+
+                $builder->addNode(
+                    NodeHelper::setState(Node::create('root'), State::SUCCEEDED())
+                );
+                $builder->addNode(Node::create('p1', [
+                    'artifacts' => [
+                        $artifact1
+                    ]
+                ]));
+                $builder->addNode(Node::create('p2'));
+                $builder->addNode(Node::create('p1.task1'));
+                $builder->addNode(Node::create('p2.task1'));
+
+                $builder->addEdge(Edge::create('p1', 'root'));
+                $builder->addEdge(Edge::create('p2', 'root'));
+                $builder->addEdge(Edge::create('p1.task1', 'p1'));
+                $builder->addEdge(Edge::create('p2.task1', 'p2'));
+            },
+            function (Graph $graph, Queue $queue, GraphTaskScheduler $scheduler) {
+
+                $this->assertCount(2, $queue, 'p1 and p2');
+                $queue->dequeue();
+                $queue->dequeue();
+
+                NodeHelper::setState($graph->nodes()->get('p1'), State::SUCCEEDED());
+                NodeHelper::setState($graph->nodes()->get('p2'), State::SUCCEEDED());
+
+                $scheduler->run($graph);
+
+                $this->assertCount(2, $queue, 'p1.task1 and p2.task1');
+                $job1 = $queue->dequeue();
+                $this->assertCount(1, $job1->artifacts(), 'p1.task1 inherits from package artifacts');
+                $job2 = $queue->dequeue();
+                $this->assertCount(0, $job2->artifacts(), 'p2.task1 inherits nothing from it\'s package');
+            }
+        ];
+
         yield 'cancels nodes depending on a failed node' => [
             function (GraphBuilder $builder) {
                 $artifact = new TestArtifact();
@@ -127,16 +168,9 @@ class GraphTaskSchedulerTest extends TestCase
     }
 }
 
-class TestTask implements Task
-{
-    public function description(): string
-    {
-        return 'hello';
-    }
-}
-
 class TestArtifact implements Artifact
 {
+    public $id;
     public function serialize(): array
     {
         return [];

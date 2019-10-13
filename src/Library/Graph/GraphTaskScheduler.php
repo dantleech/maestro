@@ -39,7 +39,12 @@ class GraphTaskScheduler
             }
 
             if ($node->state()->isDone()) {
-                $this->runNodes($artifacts->spawnMutated($node->artifacts()), $graph, $graph->dependentsFor($node->id()));
+                ;
+                $this->runNodes(
+                    $artifacts->spawnMutated($node->artifacts()),
+                    $graph,
+                    $graph->dependentsFor($node->id())
+                );
                 continue;
             }
         }

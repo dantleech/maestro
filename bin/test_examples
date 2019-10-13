@@ -10,4 +10,3 @@ for fname in ./example/**/*.json; do
 done
 
 echo "Done"
-exit 0

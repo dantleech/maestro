@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 
-class MethodToInputDefinitionConverter
+final class MethodToInputDefinitionConverter
 {
     public function inputDefinitionFor(
         string $className,

@@ -39,15 +39,16 @@ class TaskCommand extends Command
     /**
      * @var MethodToInputDefinitionConverter
      */
-    private $converter;
+    private $methodToDefinitionConverter;
 
     public function __construct(
         GraphBehavior $behavior,
-        TaskHandlerDefinitionMap $definitionMap
+        TaskHandlerDefinitionMap $definitionMap,
+        MethodToInputDefinitionConverter $methodToDefinitionConverter
     ) {
         $this->definitionMap = $definitionMap;
         $this->behavior = $behavior;
-        $this->converter = new MethodToInputDefinitionConverter();
+        $this->methodToDefinitionConverter = $methodToDefinitionConverter;
         parent::__construct();
     }
 
@@ -98,7 +99,7 @@ class TaskCommand extends Command
         );
         $taskParams = substr($fullString, $matches[0][1] + strlen($matches[0][0]));
         $input = new StringInput($taskParams);
-        $inputDefinition = $this->converter->inputDefinitionFor($definition->taskClass(), '__construct');
+        $inputDefinition = $this->methodToDefinitionConverter->inputDefinitionFor($definition->taskClass(), '__construct');
         $input->bind($inputDefinition);
         $input->validate();
         return $input;

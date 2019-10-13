@@ -7,6 +7,7 @@ use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
 use Maestro\Extension\Runner\Command\TaskCommand;
+use Maestro\Extension\Runner\Console\MethodToInputDefinitionConverter;
 use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
@@ -80,6 +81,7 @@ class RunnerExtension implements Extension
             return new TaskCommand(
                 $container->get(GraphBehavior::class),
                 $container->get(TaskHandlerDefinitionMap::class),
+                new MethodToInputDefinitionConverter(),
             );
         }, [ ConsoleExtension::TAG_COMMAND => ['name' => 'task']]);
         

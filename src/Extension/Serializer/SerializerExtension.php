@@ -7,9 +7,11 @@ use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerAwareInterface;
 
 class SerializerExtension implements Extension
 {
@@ -30,10 +32,12 @@ class SerializerExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register(Serializer::class, function (Container $container) {
-            return new Serializer(
+            $serializer = new Serializer(
                 $this->collectNormalizers($container),
                 $this->collectEncoders($container)
             );
+            $this->fixTheBrokenNormalizers($container, $serializer);
+            return $serializer;
         });
 
         $this->registerNormalizers($container);
@@ -42,10 +46,6 @@ class SerializerExtension implements Extension
 
     private function registerNormalizers(ContainerBuilder $container): void
     {
-        $container->register(PropertyNormalizer::class, function () {
-            return new PropertyNormalizer();
-        }, [ self::TAG_NORMALIZER => []]);
-        
         $container->register(ObjectNormalizer::class, function () {
             return new ObjectNormalizer();
         }, [ self::TAG_NORMALIZER => []]);
@@ -70,5 +70,14 @@ class SerializerExtension implements Extension
         return array_map(function (string $serviceId) use ($container) {
             return $container->get($serviceId);
         }, array_keys($container->getServiceIdsForTag(self::TAG_ENCODER)));
+    }
+
+    private function fixTheBrokenNormalizers(Container $container, Serializer $serializer)
+    {
+        return;
+        return array_map(function (string $serviceId) use ($serializer) {
+            if ($normalizer instanceof SerializerAwareInterface) {
+            }
+        }, array_keys($container->getServiceIdsForTag(self::TAG_NORMALIZER)));
     }
 }

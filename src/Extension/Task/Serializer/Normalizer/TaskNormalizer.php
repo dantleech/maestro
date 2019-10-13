@@ -20,7 +20,7 @@ class TaskNormalizer implements NormalizerInterface
     private $normalizer;
 
 
-    public function __construct(TaskHandlerDefinitionMap $map, PropertyNormalizer $normalizer)
+    public function __construct(TaskHandlerDefinitionMap $map, NormalizerInterface $normalizer)
     {
         $this->map = $map;
         $this->normalizer = $normalizer;

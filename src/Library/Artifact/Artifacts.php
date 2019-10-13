@@ -46,7 +46,7 @@ class Artifacts implements Countable, IteratorAggregate
 
     public function spawnMutated(self $artifacts): Artifacts
     {
-        return new self(array_merge($this->artifactsByClass, $artifacts->artifactsByClass));
+        return new self(array_merge($this->artifacts, $artifacts->artifacts));
     }
 
     public function toArray(): array

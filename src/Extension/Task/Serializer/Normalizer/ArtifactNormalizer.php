@@ -13,7 +13,7 @@ class ArtifactNormalizer implements NormalizerInterface
      */
     private $normalizer;
 
-    public function __construct(PropertyNormalizer $normalizer)
+    public function __construct(NormalizerInterface $normalizer)
     {
         $this->normalizer = $normalizer;
     }

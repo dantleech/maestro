@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Runner;
 
-use Maestro\Extension\Runner\Report\JsonReport;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -32,7 +31,6 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
-use Symfony\Component\Serializer\Serializer;
 
 class RunnerExtension implements Extension
 {
@@ -152,17 +150,6 @@ class RunnerExtension implements Extension
         }, [
             ReportExtension::TAG_REPORT => [
                 'name' => 'run'
-            ]
-        ]);
-
-        $container->register(JsonReport::class, function (Container $container) {
-            return new JsonReport(
-                $container->get(Serializer::class),
-                $container->get(ConsoleExtension::SERVICE_OUTPUT)
-            );
-        }, [
-            ReportExtension::TAG_REPORT => [
-                'name' => 'json',
             ]
         ]);
     }

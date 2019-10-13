@@ -22,7 +22,7 @@ class Artifacts implements Countable, IteratorAggregate
     public function __construct(array $artifacts = [])
     {
         foreach ($artifacts as $artifact) {
-            $this->set($artifact);
+            $this->add($artifact);
         }
     }
 
@@ -38,7 +38,7 @@ class Artifacts implements Countable, IteratorAggregate
         return $this->artifactsByClass[$artifactFqn];
     }
 
-    public function set(Artifact $artifact): void
+    public function add(Artifact $artifact): void
     {
         $this->artifactsByClass[get_class($artifact)] = $artifact;
         $this->artifacts[] = $artifact;
@@ -46,7 +46,7 @@ class Artifacts implements Countable, IteratorAggregate
 
     public function spawnMutated(self $artifacts): Artifacts
     {
-        return new self(array_merge($this->artifactsByClass, $artifacts->artifactsByClass));
+        return new self(array_merge($this->artifacts, $artifacts->artifacts));
     }
 
     public function toArray(): array

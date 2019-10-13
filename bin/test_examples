@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -x
+set -xe
 
 for fname in ./example/*.json; do
     ./bin/maestro run --plan="$fname"
@@ -8,3 +8,6 @@ done
 for fname in ./example/**/*.json; do
     ./bin/maestro run --plan="$fname"
 done
+
+echo "Done"
+exit 0

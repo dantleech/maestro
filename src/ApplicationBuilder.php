@@ -6,6 +6,7 @@ use Maestro\Extension\Composer\ComposerExtension;
 use Maestro\Extension\Dot\DotExtension;
 use Maestro\Extension\File\FileExtension;
 use Maestro\Extension\Git\GitExtension;
+use Maestro\Extension\Graph\GraphExtension;
 use Maestro\Extension\HttpClient\HttpClientExtension;
 use Maestro\Extension\Json\JsonExtension;
 use Maestro\Extension\Report\ReportExtension;
@@ -97,6 +98,7 @@ final class ApplicationBuilder
             DotExtension::class,
             JsonExtension::class,
             SerializerExtension::class,
+            GraphExtension::class,
         ], $config[PhpactorContainer::PARAM_EXTENSION_CLASSES]), $config);
     }
 

@@ -169,7 +169,10 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
     }
 
-    public function testRendersReport()
+    /**
+     * @dataProvider provideRendersReport
+     */
+    public function testRendersReport(string $report, string $expected)
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'packages' => [
@@ -181,8 +184,21 @@ class RunCommandTest extends EndToEndTestCase
         ]);
 
         $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
-        $process = $this->command('run --report=run --report=run');
-        $this->assertStringContainsString('action', $process->getOutput());
+        $process = $this->command(sprintf('run --report=%s', $report));
+        $this->assertStringContainsString($expected, $process->getOutput());
+    }
+
+    public function provideRendersReport()
+    {
+        yield 'run' => [
+            'run',
+            'action'
+        ];
+
+        yield 'json' => [
+            'json',
+            'edges'
+        ];
     }
 
     public function testRunsOnlyTags()

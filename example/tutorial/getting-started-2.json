@@ -10,7 +10,7 @@
                 "readme": {
                     "type": "template",
                     "args": {
-                        "path": "template/readme.md.twig",
+                        "path": "templates/readme.md.twig",
                         "targetPath": "README.md"
                     }
                 }

@@ -25,7 +25,7 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class TaskExtension implements Extension
 {
@@ -115,13 +115,13 @@ class TaskExtension implements Extension
         $container->register(TaskNormalizer::class, function (Container $container) {
             return new TaskNormalizer(
                 $container->get(TaskHandlerDefinitionMap::class),
-                $container->get(PropertyNormalizer::class)
+                $container->get(ObjectNormalizer::class)
             );
         }, [ SerializerExtension::TAG_NORMALIZER => [] ]);
 
         $container->register(ArtifactNormalizer::class, function (Container $container) {
             return new ArtifactNormalizer(
-                $container->get(PropertyNormalizer::class)
+                $container->get(ObjectNormalizer::class)
             );
         }, [ SerializerExtension::TAG_NORMALIZER => [] ]);
     }

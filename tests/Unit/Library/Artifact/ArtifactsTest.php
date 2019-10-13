@@ -13,7 +13,7 @@ class ArtifactsTest extends TestCase
     {
         $object = new TestArtifact();
         $artifacts = new Artifacts();
-        $artifacts->set($object);
+        $artifacts->add($object);
         $this->assertSame($object, $artifacts->get(TestArtifact::class));
     }
 
@@ -23,7 +23,7 @@ class ArtifactsTest extends TestCase
         $artifacts = new Artifacts([
             $object
         ]);
-        $artifacts->set($object);
+        $artifacts->add($object);
         $this->assertSame($object, $artifacts->get(TestArtifact::class));
     }
 
@@ -41,8 +41,8 @@ class ArtifactsTest extends TestCase
         $object1 = new TestArtifact();
         $object2 = new TestArtifact();
         $artifacts = new Artifacts();
-        $artifacts->set($object1);
-        $artifacts->set($object2);
+        $artifacts->add($object1);
+        $artifacts->add($object2);
         $this->assertNotSame($object1, $artifacts->get(TestArtifact::class));
         $this->assertSame($object2, $artifacts->get(TestArtifact::class));
     }

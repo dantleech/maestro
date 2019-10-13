@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Runner;
 
-use Maestro\Extension\Serializer\Report\JsonReport;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -32,7 +31,6 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
-use Symfony\Component\Serializer\Serializer;
 
 class RunnerExtension implements Extension
 {

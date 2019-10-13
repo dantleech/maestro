@@ -26,7 +26,6 @@ use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 
 class TaskExtension implements Extension
 {

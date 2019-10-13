@@ -12,11 +12,10 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerAwareInterface;
 
 class SerializerExtension implements Extension
 {
@@ -37,10 +36,12 @@ class SerializerExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register(Serializer::class, function (Container $container) {
+            $normalizers = $this->collectNormalizers($container);
             $serializer = new Serializer(
-                $this->collectNormalizers($container),
+                $normalizers,
                 $this->collectEncoders($container)
             );
+            $this->addMissingNormalizerDependencies($normalizers, $serializer);
             return $serializer;
         });
 
@@ -56,7 +57,6 @@ class SerializerExtension implements Extension
         }, [ self::TAG_NORMALIZER => [
             'priority' => -10,
         ]]);
-
     }
 
     private function registerEncoders(ContainerBuilder $container): void
@@ -68,7 +68,7 @@ class SerializerExtension implements Extension
 
     private function collectNormalizers(Container $container)
     {
-        $definitions = array_map(function (string $serviceId, array $attrs) use ($container) {
+        $definitions = array_map(function (string $serviceId, array $attrs) {
             return Instantiator::instantiate(NormalizerDefinition::class, array_merge([
                 'serviceId' => $serviceId,
             ], $attrs));
@@ -104,5 +104,14 @@ class SerializerExtension implements Extension
                 'name' => 'json',
             ]
         ]);
+    }
+
+    private function addMissingNormalizerDependencies(array $normalizers, Serializer $serializer)
+    {
+        return array_map(function (NormalizerInterface $normalizer) use ($serializer) {
+            if ($normalizer instanceof NormalizerAwareInterface) {
+                $normalizer->setNormalizer($serializer);
+            }
+        }, $normalizers);
     }
 }

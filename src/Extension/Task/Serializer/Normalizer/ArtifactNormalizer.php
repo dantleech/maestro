@@ -4,12 +4,11 @@ namespace Maestro\Extension\Task\Serializer\Normalizer;
 
 use Maestro\Library\Artifact\Artifact;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 
 class ArtifactNormalizer implements NormalizerInterface
 {
     /**
-     * @var PropertyNormalizer
+     * @var NormalizerInterface
      */
     private $normalizer;
 

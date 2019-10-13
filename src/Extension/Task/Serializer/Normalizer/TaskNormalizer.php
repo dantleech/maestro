@@ -5,7 +5,6 @@ namespace Maestro\Extension\Task\Serializer\Normalizer;
 use Maestro\Extension\Task\Extension\TaskHandlerDefinitionMap;
 use Maestro\Library\Task\Task;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\PropertyNormalizer;
 
 class TaskNormalizer implements NormalizerInterface
 {
@@ -15,10 +14,9 @@ class TaskNormalizer implements NormalizerInterface
     private $map;
 
     /**
-     * @var PropertyNormalizer
+     * @var NormalizerInterface
      */
     private $normalizer;
-
 
     public function __construct(TaskHandlerDefinitionMap $map, NormalizerInterface $normalizer)
     {

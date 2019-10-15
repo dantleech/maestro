@@ -55,8 +55,8 @@ class TaskCommand extends Command
     protected function configure()
     {
         $this->behavior->configure($this);
-        $this->setDescription('Run the plan and execute task on each leaf');
-        $this->addArgument('task', InputArgument::REQUIRED);
+        $this->setDescription('Run the plan and execute given task with (given options) on each leaf.');
+        $this->addArgument('task', InputArgument::REQUIRED, 'Task name (with options, e.g. <comment>script --script="uptime"</>)');
         $this->ignoreValidationErrors();
     }
 

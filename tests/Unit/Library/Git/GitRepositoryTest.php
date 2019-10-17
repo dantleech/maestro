@@ -14,6 +14,8 @@ use function Amp\Promise\wait;
 class GitRepositoryTest extends IntegrationTestCase
 {
     const EXAMPLE_REPO_PATH = 'base';
+    const EXAMPLE_REMOTE_REPO_PATH = 'source';
+
 
     /**
      * @var ScriptRunner
@@ -43,11 +45,11 @@ class GitRepositoryTest extends IntegrationTestCase
     public function testCheckout()
     {
         $this->workspace()->reset();
-        $this->initExampleRepository('source');
+        $this->initExampleRepository(self::EXAMPLE_REMOTE_REPO_PATH);
 
         $this->assertFileNotExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
 
-        wait($this->gitRepository->checkout($this->workspace()->path('source'), []));
+        wait($this->gitRepository->checkout($this->workspace()->path(self::EXAMPLE_REMOTE_REPO_PATH), []));
 
         $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH));
         $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/README.md'));
@@ -163,6 +165,41 @@ class GitRepositoryTest extends IntegrationTestCase
             wait($this->gitRepository->headId())
         ));
         $this->assertEquals('Hello World', $message);
+    }
+
+    public function testUpdate()
+    {
+        $this->workspace()->reset();
+        $this->initExampleRepository(self::EXAMPLE_REMOTE_REPO_PATH);
+
+        wait($this->gitRepository->checkout($this->workspace()->path(self::EXAMPLE_REMOTE_REPO_PATH), []));
+
+        $this->workspace()->put(self::EXAMPLE_REMOTE_REPO_PATH . '/foobar1', 'hello');
+        $this->exec('git add foobar1', self::EXAMPLE_REMOTE_REPO_PATH);
+        $this->exec('git commit -m "Hello World"', self::EXAMPLE_REMOTE_REPO_PATH);
+
+        $this->assertFileNotExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/foobar1', 'hello'));
+
+        wait($this->gitRepository->update());
+
+        $this->assertFileExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/foobar1', 'hello'));
+    }
+
+    public function testUpdateWillResetAndClean()
+    {
+        $this->workspace()->reset();
+        $this->initExampleRepository(self::EXAMPLE_REMOTE_REPO_PATH);
+
+        wait($this->gitRepository->checkout($this->workspace()->path(self::EXAMPLE_REMOTE_REPO_PATH), []));
+
+        $this->workspace()->put(self::EXAMPLE_REMOTE_REPO_PATH . '/foobar1', 'hello');
+        $this->exec('git add foobar1', self::EXAMPLE_REMOTE_REPO_PATH);
+        $this->exec('git commit -m "Hello World"', self::EXAMPLE_REMOTE_REPO_PATH);
+
+        $this->assertFileNotExists($this->workspace()->path(self::EXAMPLE_REPO_PATH . '/foobar1', 'hello'));
+        $this->workspace()->put(self::EXAMPLE_REPO_PATH . '/foobar1', 'barfoo');
+
+        wait($this->gitRepository->update());
     }
 
     private function exec(string $command, string $cwd = '/base'): Process

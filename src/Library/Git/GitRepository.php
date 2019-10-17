@@ -4,6 +4,7 @@ namespace Maestro\Library\Git;
 
 use Amp\Promise;
 use Amp\Success;
+use Generator;
 use Maestro\Library\Git\Exception\GitException;
 use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
@@ -188,5 +189,32 @@ class GitRepository implements Repository
 
             return trim($result->stdout());
         });
+    }
+
+    public function update(): Promise
+    {
+        return \Amp\call(function () {
+            $result = yield from $this->execGit('reset --hard');
+            $result = yield from $this->execGit('clean -fd');
+            $result = yield from $this->execGit('pull');
+
+            return trim($result->stdout());
+        });
+    }
+
+    private function execGit(string $cmd): Generator
+    {
+        $result = yield $this->runner->run('git ' . $cmd, $this->path, []);
+
+        if ($result->exitCode() !== 0) {
+            throw new GitException(sprintf(
+                'Could not execute %s in "%s": %s',
+                $cmd,
+                $this->path,
+                $result->stderr()
+            ));
+        }
+
+        return $result;
     }
 }

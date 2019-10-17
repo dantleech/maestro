@@ -69,4 +69,21 @@ class CheckoutHandlerTest extends TestCase
 
         $this->assertCount(0, $artifacts);
     }
+
+    public function testUpdatesRepositoryWhenSpecified()
+    {
+        $this->repositoryFactory->create(self::EXAMPLE_WORKSPACE_PATH)->willReturn($this->repository->reveal());
+        $this->repository->isCheckedOut()->willReturn(true);
+        $this->repository->update()->willReturn(new Success())->shouldBeCalled();
+
+        $artifacts = HandlerTester::create($this->checkoutHandler)->handle(CheckoutTask::class, [
+            'url' => self::EXAMPLE_REPO_URL,
+            'update' => true,
+        ], [
+            new Workspace(self::EXAMPLE_WORKSPACE_PATH, 'name'),
+            new Environment([]),
+        ]);
+
+        $this->assertCount(0, $artifacts);
+    }
 }

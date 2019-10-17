@@ -58,9 +58,10 @@ class GitRepository implements Repository
 
             if ($result->exitCode() !== 0) {
                 throw new CheckoutError(sprintf(
-                    'Could not clone "%s" to "%s": %s',
+                    'Could not clone "%s" to "%s" exit code "%s": %s',
                     $url,
                     $this->path,
+                    $result->exitCode(),
                     $result->stderr()
                 ));
             }

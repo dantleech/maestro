@@ -35,5 +35,7 @@ interface Repository
 
     public function isCheckedOut(): bool;
 
-    public function message(string $headId): Promise;
+    public function message(string $commitId): Promise;
+
+    public function update(): Promise;
 }

@@ -11,9 +11,15 @@ class CheckoutTask implements Task
      */
     private $url;
 
-    public function __construct(string $url)
+    /**
+     * @var bool
+     */
+    private $update;
+
+    public function __construct(string $url, bool $update = true)
     {
         $this->url = $url;
+        $this->update = $update;
     }
 
     public function url(): string
@@ -24,5 +30,10 @@ class CheckoutTask implements Task
     public function description(): string
     {
         return sprintf('checking out %s', $this->url);
+    }
+
+    public function update(): bool
+    {
+        return $this->update;
     }
 }

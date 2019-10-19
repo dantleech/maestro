@@ -71,9 +71,13 @@ class RunCommandTest extends EndToEndTestCase
     public function testRunWithCustomWorkspaceAndNamespace()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
-                    'tasks' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
+                    'nodes' => [
                         'say hello' => [
                             'type' => 'script',
                             'args' => [
@@ -102,9 +106,13 @@ class RunCommandTest extends EndToEndTestCase
     public function testVerboseModeLogsDebugMessagesToStderr()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
-                    'tasks' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
+                    'nodes' => [
                         'hello' => [
                             'type' => 'script',
                             'args' => [
@@ -123,9 +131,13 @@ class RunCommandTest extends EndToEndTestCase
     public function testExitsWithNumberOfFailedTasksAsCode()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
-                    'tasks' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
+                    'nodes' => [
                         'hello' => [
                             'type' => 'script',
                             'args' => [
@@ -156,10 +168,18 @@ class RunCommandTest extends EndToEndTestCase
     public function testPurgesWorkspaces()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
                 ],
                 'foobar' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'foobar',
+                    ],
                 ],
             ],
         ]);
@@ -175,10 +195,18 @@ class RunCommandTest extends EndToEndTestCase
     public function testRendersReport(string $report, string $expected)
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
                 ],
                 'foobar' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
                 ],
             ],
         ]);
@@ -204,18 +232,26 @@ class RunCommandTest extends EndToEndTestCase
     public function testRunsOnlyTags()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'mypackage' => [
-                    'tags' => ['one'],
-                    'tasks' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
+                    'nodes' => [
                         'say hello' => [
                             'type' => 'null',
+                            'tags' => ['one'],
                         ]
                     ],
                 ],
                 'foobar' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'foobar',
+                    ],
                     'tags' => [],
-                    'tasks' => [
+                    'nodes' => [
                         'say goodbye' => [
                             'type' => 'null',
                         ]

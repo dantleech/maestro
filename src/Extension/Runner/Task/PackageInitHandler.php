@@ -20,9 +20,16 @@ class PackageInitHandler
      */
     private $workspaceManager;
 
-    public function __construct(WorkspaceManager $workspaceManager)
+    /**
+     * @var bool
+     */
+    private $purge;
+
+
+    public function __construct(WorkspaceManager $workspaceManager, bool $purge = false)
     {
         $this->workspaceManager = $workspaceManager;
+        $this->purge = $purge;
     }
 
     public function __invoke(PackageInitTask $task, Environment $enivonment, TaskRunner $taskRunner): Promise
@@ -45,7 +52,7 @@ class PackageInitHandler
     {
         $workspace = $this->workspaceManager->createNamedWorkspace($task->name());
 
-        if ($task->purgeWorkspace()) {
+        if ($this->purge || $task->purgeWorkspace()) {
             yield $taskRunner->run(new PurgeDirectoryTask($workspace->absolutePath()), new Artifacts());
         }
 

@@ -41,7 +41,7 @@ class ManifestLoader
         }
 
         return ManifestNode::fromArray(array_merge($data, [
-            'name' => '/',
+            'name' => '',
             'type' => InitTask::class,
             'args' => array_merge($data['args'] ?? [], [
                 'path' => $path

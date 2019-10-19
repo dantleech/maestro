@@ -107,8 +107,7 @@ class RunnerExtension implements Extension
         $container->register(GraphConstructor::class, function (Container $container) {
             return new GraphConstructor(
                 new PathExpander(),
-                $container->get(ManifestNode::class),
-                $container->getParameter(self::PARAM_PURGE)
+                $container->get(ManifestNode::class)
             );
         });
     }
@@ -130,7 +129,8 @@ class RunnerExtension implements Extension
 
         $container->register(PackageInitHandler::class, function (Container $container) {
             return new PackageInitHandler(
-                $container->get(WorkspaceManager::class)
+                $container->get(WorkspaceManager::class),
+                $container->getParameter(self::PARAM_PURGE)
             );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [

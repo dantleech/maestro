@@ -42,8 +42,13 @@ class TaskCommandTest extends EndToEndTestCase
     {
         $this->workspace()->put('source', 'content');
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
-                'package/one' => [],
+            'nodes' => [
+                'package/one' => [
+                    'type' => 'package_init',
+                    'args' => [
+                        'name' => 'package/one',
+                    ],
+                ],
             ]
         ]);
         $process = $this->command('task template --path=source --targetPath=dest');
@@ -53,7 +58,7 @@ class TaskCommandTest extends EndToEndTestCase
     public function testFailIfRequiredOptionMissing()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
-            'packages' => [
+            'nodes' => [
                 'package/one' => [],
             ]
         ]);

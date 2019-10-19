@@ -14,11 +14,6 @@ class GraphConstructor
     const NODE_ROOT = 'root';
 
     /**
-     * @var bool|null
-     */
-    private $purge;
-
-    /**
      * @var ManifestNode
      */
     private $manifest;
@@ -28,9 +23,8 @@ class GraphConstructor
      */
     private $pathExpander;
 
-    public function __construct(PathExpander $pathExpander, ManifestNode $manifest, ?bool $purge = null)
+    public function __construct(PathExpander $pathExpander, ManifestNode $manifest)
     {
-        $this->purge = $purge;
         $this->manifest = $manifest;
         $this->pathExpander = $pathExpander;
     }

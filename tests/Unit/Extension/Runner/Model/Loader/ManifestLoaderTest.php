@@ -3,7 +3,6 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 
 use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
-use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\Processor;
 use Maestro\Tests\IntegrationTestCase;

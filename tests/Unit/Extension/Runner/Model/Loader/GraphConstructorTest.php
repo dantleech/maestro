@@ -4,10 +4,8 @@ namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 
 use Closure;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
-use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
-use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;

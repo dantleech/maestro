@@ -27,11 +27,17 @@ class PackageInitTask implements Task
      */
     private $version;
 
+    /**
+     * @var string
+     */
+    private $url;
+
     public function __construct(
         string $name,
-        bool $purgeWorkspace,
-        array $env,
-        array $vars,
+        bool $purgeWorkspace = false,
+        ?string $url = null,
+        array $env = [],
+        array $vars = [],
         ?string $version = null
     ) {
         $this->name = $name;
@@ -39,6 +45,7 @@ class PackageInitTask implements Task
         $this->env = $env;
         $this->vars = $vars;
         $this->version = $version;
+        $this->url = $url;
     }
     public function description(): string
     {
@@ -68,5 +75,10 @@ class PackageInitTask implements Task
     public function version(): ?string
     {
         return $this->version;
+    }
+
+    public function url(): string
+    {
+        return $this->url;
     }
 }

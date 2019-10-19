@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Runner;
 
+use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -105,6 +106,7 @@ class RunnerExtension implements Extension
 
         $container->register(GraphConstructor::class, function (Container $container) {
             return new GraphConstructor(
+                new PathExpander(),
                 $container->get(Manifest::class),
                 $container->getParameter(self::PARAM_PURGE)
             );
@@ -118,9 +120,7 @@ class RunnerExtension implements Extension
         });
 
         $container->register(InitHandler::class, function (Container $container) {
-            return new InitHandler(
-                $container->get(Manifest::class)
-            );
+            return new InitHandler();
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => InitTask::class,

@@ -10,24 +10,14 @@ use Maestro\Library\Support\Variables\Variables;
 
 class InitHandler
 {
-    /**
-     * @var Manifest
-     */
-    private $manifest;
-
-    public function __construct(Manifest $manifest)
-    {
-        $this->manifest = $manifest;
-    }
-
     public function __invoke(InitTask $task)
     {
         $artifacts = [
-            new Environment($this->manifest->env()),
-            new Variables($this->manifest->vars()),
+            new Environment($task->env()),
+            new Variables($task->vars()),
         ];
 
-        $path = $this->manifest->path();
+        $path = $task->path();
 
         if ($path) {
             $artifacts[] = new ManifestPath($path);

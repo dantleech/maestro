@@ -1,8 +1,11 @@
 {
-    "packages": {
+    "nodes": {
         "phpactor/container": {
-            "version": "1.5.0",
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "version": "1.5.0"
+            },
+            "nodes": {
                 "tests": {
                     "type":"script",
                     "args": {

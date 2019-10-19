@@ -1,11 +1,14 @@
 {
-    "vars": {
-        "php_versions": [ 7.1, 7.2, 7.3 ],
-        "phpstan_level": 7
+    "args": {
+        "vars": {
+            "php_versions": [ 7.1, 7.2, 7.3 ],
+            "phpstan_level": 7
+        }
     },
-    "packages": {
+    "nodes": {
         "example/package": {
-            "tasks": {
+            "type": "package_init",
+            "nodes": {
                 "readme": {
                     "type":"template",
                     "args": {

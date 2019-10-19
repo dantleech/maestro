@@ -7,6 +7,7 @@ use Amp\Success;
 use Generator;
 use Maestro\Extension\File\Task\PurgeDirectoryTask;
 use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Support\NodeMeta;
 use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\TaskRunner;
@@ -32,25 +33,30 @@ class PackageInitHandler
         $this->purge = $purge;
     }
 
-    public function __invoke(PackageInitTask $task, Environment $enivonment, TaskRunner $taskRunner): Promise
-    {
-        return \Amp\call(function () use ($task, $enivonment, $taskRunner) {
+    public function __invoke(
+        PackageInitTask $task,
+        Environment $enivonment,
+        TaskRunner $taskRunner,
+        NodeMeta $nodeMeta
+    ): Promise {
+        return \Amp\call(function () use ($task, $enivonment, $taskRunner, $nodeMeta) {
+            $name = $task->name() ?: $nodeMeta->name();
             return new Success([
                 $enivonment->spawnMerged([
-                    'PACKAGE_NAME' => $task->name()
+                    'PACKAGE_NAME' => $name
                 ]),
                 new Package(
-                    $task->name(),
+                    $name,
                     $task->version()
                 ),
-                yield from $this->createWorkspace($taskRunner, $task)
+                yield from $this->createWorkspace($taskRunner, $task, $name)
             ]);
         });
     }
 
-    private function createWorkspace(TaskRunner $taskRunner, PackageInitTask $task): Generator
+    private function createWorkspace(TaskRunner $taskRunner, PackageInitTask $task, string $name): Generator
     {
-        $workspace = $this->workspaceManager->createNamedWorkspace($task->name());
+        $workspace = $this->workspaceManager->createNamedWorkspace($name);
 
         if ($this->purge || $task->purgeWorkspace()) {
             yield $taskRunner->run(new PurgeDirectoryTask($workspace->absolutePath()), new Artifacts());

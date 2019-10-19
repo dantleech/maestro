@@ -1,7 +1,11 @@
 {
-    "packages": {
+    "nodes": {
         "example/package": {
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "name": "example/package"
+            },
+            "nodes": {
                 "composer json": {
                     "type": "json_file",
                     "args": {

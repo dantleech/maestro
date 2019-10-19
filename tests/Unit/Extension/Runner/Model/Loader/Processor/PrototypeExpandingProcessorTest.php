@@ -21,7 +21,7 @@ class PrototypeExpandingProcessorTest extends TestCase
     public function testIgnoresManifestWithNoPrototypes()
     {
         $manifest = [
-            'packages' => [
+            'nodes' => [
                 'foobar' => 'barfoo',
             ],
         ];
@@ -38,13 +38,13 @@ class PrototypeExpandingProcessorTest extends TestCase
                     ]
                 ],
             ],
-            'packages' => [
+            'nodes' => [
                 'foobar' => 'barfoo',
             ],
         ];
 
         $this->assertEquals([
-            'packages' => [
+            'nodes' => [
                 'foobar' => 'barfoo',
             ],
         ], $this->processor->process($manifest));
@@ -62,7 +62,7 @@ class PrototypeExpandingProcessorTest extends TestCase
                     ]
                 ],
             ],
-            'packages' => [
+            'nodes' => [
                 'foobar' => [
                     'prototype' => 'foobar',
                 ],
@@ -70,7 +70,7 @@ class PrototypeExpandingProcessorTest extends TestCase
         ];
 
         $this->assertEquals([
-            'packages' => [
+            'nodes' => [
                 'foobar' => [
                     'tasks' => [
                         'hello' => [
@@ -95,7 +95,7 @@ class PrototypeExpandingProcessorTest extends TestCase
                     ]
                 ],
             ],
-            'packages' => [
+            'nodes' => [
                 'foobar' => [
                     'prototype' => 'barfoo',
                 ],

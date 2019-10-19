@@ -1,9 +1,11 @@
 {
-    "vars": {
-        "animal": "cow",
-        "greeting": "moo"
+    "args": {
+        "vars": {
+            "animal": "cow",
+            "greeting": "moo"
+        }
     },
-    "packages": {
+    "nodes": {
         "maestrophp/example-math": {
             "prototype": "example"
         },
@@ -13,8 +15,11 @@
     },
     "prototypes": {
         "example": {
-            "url": "https://github.com/$PACKAGE_NAME",
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "url": "https://github.com/$PACKAGE_NAME"
+            },
+            "nodes": {
                 "readme": {
                     "type": "template",
                     "args": {

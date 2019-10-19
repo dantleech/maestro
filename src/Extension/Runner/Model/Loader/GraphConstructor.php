@@ -7,6 +7,7 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Instantiator\Instantiator;
+use Maestro\Library\Support\NodeMeta;
 use Webmozart\PathUtil\Path;
 
 class GraphConstructor
@@ -48,6 +49,9 @@ class GraphConstructor
             'label' => $node->name(),
             'task' => Instantiator::instantiate($node->type(), $node->args()),
             'tags' => $node->tags(),
+            'artifacts' => [
+                new NodeMeta($node->name(), $path)
+            ],
         ]));
 
         foreach ($this->pathExpander->expand($this->nodeDependencies($node, $parentPath), $parentPath) as $dependencyPath) {

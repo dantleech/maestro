@@ -7,7 +7,7 @@ use Maestro\Library\Task\Task;
 class PackageInitTask implements Task
 {
     /**
-     * @var string
+     * @var string|null
      */
     private $name;
     /**
@@ -33,7 +33,7 @@ class PackageInitTask implements Task
     private $url;
 
     public function __construct(
-        string $name,
+        ?string $name = null,
         bool $purgeWorkspace = false,
         ?string $url = null,
         array $env = [],
@@ -57,7 +57,7 @@ class PackageInitTask implements Task
         return $this->env;
     }
 
-    public function name(): string
+    public function name(): ?string
     {
         return $this->name;
     }

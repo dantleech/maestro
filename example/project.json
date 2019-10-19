@@ -1,8 +1,17 @@
 {
-    "packages": {
+    "nodes": {
+        "noteistig/example-math": {
+            "type": "package_init",
+            "args": {
+                "url": "http://dantleech.com/not"
+            }
+        },
         "maestrophp/example-math": {
-            "url": "https://github.com/maestrophp/example-math",
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "url": "https://github.com/maestrophp/example-math"
+            },
+            "nodes": {
                 "composer.json": {
                     "type": "json_file",
                     "args": {
@@ -24,8 +33,11 @@
             }
         },
         "maestrophp/example-science": {
-            "url": "https://github.com/maestrophp/example-science",
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "url": "https://github.com/maestrophp/example-science"
+            },
+            "nodes": {
                 "composer.json": {
                     "type": "json_file",
                     "args": {

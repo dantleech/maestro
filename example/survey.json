@@ -1,10 +1,17 @@
 {
-    "packages": {
+    "nodes": {
         "phpactor/container": {
-            "url": "https://github.com/phpactor/container",
-            "tasks": {
+            "type": "package_init",
+            "nodes": {
+                "checkout": {
+                    "type": "checkout",
+                    "args": {
+                        "url": "git@github.com:phpactor/container"
+                    }
+                },
                 "survey": {
-                    "type": "survey"
+                    "type": "survey",
+                    "depends": ["checkout"]
                 }
             }
         }

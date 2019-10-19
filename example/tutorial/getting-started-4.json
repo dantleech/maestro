@@ -1,22 +1,31 @@
 {
-    "vars": {
-        "animal": "cow",
-        "greeting": "moo"
+    "args": {
+        "vars": {
+            "animal": "cow",
+            "greeting": "moo"
+        }
     },
-    "packages": {
+    "nodes": {
         "maestrophp/example-math": {
-            "version": "1.0.0",
+            "args": {
+                "version": "1.0.0"
+            },
             "prototype": "example"
         },
         "maestrophp/example-science": {
-            "version": "0.1.0",
+            "args": {
+                "version": "0.1.0"
+            },
             "prototype": "example"
         }
     },
     "prototypes": {
         "example": {
-            "url": "https://github.com/$PACKAGE_NAME",
-            "tasks": {
+            "type": "package_init",
+            "args": {
+                "url": "https://github.com/$PACKAGE_NAME"
+            },
+            "nodes": {
                 "readme": {
                     "type": "template",
                     "args": {

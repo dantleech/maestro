@@ -1,9 +1,10 @@
 <?php
 
-namespace Maestro\Tests\Unit\Loader;
+namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 
 use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Model\Loader\Manifest;
+use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\Processor;
 use Maestro\Tests\IntegrationTestCase;
 
@@ -17,12 +18,12 @@ class ManifestLoaderTest extends IntegrationTestCase
     public function testLoadsManifest()
     {
         $this->createPlan('foo.json', [
-            'packages' => [
+            'nodes' => [
             ]
         ]);
 
         $this->assertInstanceOf(
-            Manifest::class,
+            ManifestNode::class,
             $this->loadManifest('foo.json')
         );
     }
@@ -30,14 +31,14 @@ class ManifestLoaderTest extends IntegrationTestCase
     public function testPreProcesses()
     {
         $this->createPlan('foo.json', [
-            'packages' => [
+            'nodes' => [
             ]
         ]);
 
         $processor = new class implements Processor {
             public function process(array $manifest): array
             {
-                $manifest['packages'] = [
+                $manifest['nodes'] = [
                     'foobar/barfoo' => []
                 ];
 
@@ -49,15 +50,15 @@ class ManifestLoaderTest extends IntegrationTestCase
             $processor
         ]);
         $this->assertInstanceOf(
-            Manifest::class,
+            ManifestNode::class,
             $manifest
         );
 
-        $this->assertCount(1, $manifest->packages());
-        $this->assertEquals('foobar/barfoo', $manifest->packages()[0]->name());
+        $this->assertCount(1, $manifest->nodes());
+        $this->assertEquals('foobar/barfoo', $manifest->nodes()[0]->name());
     }
 
-    protected function loadManifest(string $path, array $processors = []): Manifest
+    protected function loadManifest(string $path, array $processors = []): ManifestNode
     {
         return (new ManifestLoader($this->workspace()->path('/'), $path, $processors))->load($path);
     }

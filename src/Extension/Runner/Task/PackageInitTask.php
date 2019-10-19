@@ -28,7 +28,7 @@ class PackageInitTask implements Task
     private $version;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $url;
 
@@ -77,7 +77,7 @@ class PackageInitTask implements Task
         return $this->version;
     }
 
-    public function url(): string
+    public function url(): ?string
     {
         return $this->url;
     }

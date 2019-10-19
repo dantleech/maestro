@@ -3,7 +3,6 @@
 namespace Maestro\Extension\Runner\Task;
 
 use Amp\Success;
-use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\ManifestPath;
 use Maestro\Library\Support\Variables\Variables;

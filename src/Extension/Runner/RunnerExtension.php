@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Runner;
 
+use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
@@ -9,7 +10,6 @@ use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
 use Maestro\Extension\Runner\Command\RunCommand;
 use Maestro\Extension\Runner\Command\TaskCommand;
 use Maestro\Extension\Runner\Console\MethodToInputDefinitionConverter;
-use Maestro\Extension\Runner\Model\Loader\Manifest;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Logger\MaestroColoredLineFormatter;
 use Maestro\Extension\Runner\Task\InitHandler;
@@ -100,14 +100,14 @@ class RunnerExtension implements Extension
 
     private function registerLoader(ContainerBuilder $container)
     {
-        $container->register(Manifest::class, function (Container $container) {
+        $container->register(ManifestNode::class, function (Container $container) {
             return $this->createManifestLoader($container)->load();
         });
 
         $container->register(GraphConstructor::class, function (Container $container) {
             return new GraphConstructor(
                 new PathExpander(),
-                $container->get(Manifest::class),
+                $container->get(ManifestNode::class),
                 $container->getParameter(self::PARAM_PURGE)
             );
         });

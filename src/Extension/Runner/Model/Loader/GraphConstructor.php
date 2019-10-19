@@ -2,16 +2,12 @@
 
 namespace Maestro\Extension\Runner\Model\Loader;
 
-use Maestro\Extension\Runner\Task\InitTask;
-use Maestro\Extension\Runner\Task\PackageInitTask;
-use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Instantiator\Instantiator;
 use Webmozart\PathUtil\Path;
-use Maestro\Extension\Runner\Model\Loader\PathExpander;
 
 class GraphConstructor
 {
@@ -49,7 +45,8 @@ class GraphConstructor
 
     private function buildNode(GraphBuilder $builder, ManifestNode $node, ?string $parentPath): void
     {
-        $path = Path::join([$parentPath, $node->name()]);
+        $path = $parentPath ? Path::join([$parentPath, $node->name()]) : $node->name();
+
         $builder->addNode(Node::create($path, [
             'label' => $node->name(),
             'task' => Instantiator::instantiate($node->taskFqn(), $node->args()),

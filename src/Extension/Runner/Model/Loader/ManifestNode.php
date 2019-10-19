@@ -47,8 +47,7 @@ class ManifestNode
         array $args = [],
         array $nodes = [],
         array $depends = []
-    )
-    {
+    ) {
         $this->type = $type;
         $this->args = $args;
         $this->nodes = array_map(function (array $data, string $name) {

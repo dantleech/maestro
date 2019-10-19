@@ -45,11 +45,15 @@ class GraphConstructor
 
     private function buildNode(GraphBuilder $builder, ManifestNode $node, ?string $parentPath): void
     {
-        $path = $parentPath ? Path::join([$parentPath, $node->name()]) : $node->name();
+        $path = '/'.$node->name();
+        if ($parentPath) {
+            $path = Path::join([$parentPath, $node->name()]);
+        }
 
         $builder->addNode(Node::create($path, [
             'label' => $node->name(),
-            'task' => Instantiator::instantiate($node->taskFqn(), $node->args()),
+            'task' => Instantiator::instantiate($node->type(), $node->args()),
+            'tags' => $node->tags(),
         ]));
 
         foreach ($this->pathExpander->expand($this->nodeDependencies($node, $parentPath), $parentPath) as $dependencyPath) {

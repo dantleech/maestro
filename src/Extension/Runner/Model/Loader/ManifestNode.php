@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Model\Loader;
 
 use Maestro\Library\Instantiator\Instantiator;
+use Maestro\Library\Task\Task\NullTask;
 
 class ManifestNode
 {
@@ -41,24 +42,30 @@ class ManifestNode
      */
     private $depends;
 
+    /**
+     * @var array
+     */
+    private $tags;
+
     public function __construct(
         string $name,
         string $type,
         array $args = [],
         array $nodes = [],
-        array $depends = []
+        array $depends = [],
+        array $tags = []
     ) {
         $this->type = $type;
         $this->args = $args;
         $this->nodes = array_map(function (array $data, string $name) {
             return Instantiator::instantiate(ManifestNode::class, array_merge([
                 'name' => $name,
+                'type' => NullTask::class,
             ], $data));
         }, $nodes, array_keys($nodes));
         $this->name = $name;
-        $this->taskFqn = $type;
-        $this->taskArgs = $args;
         $this->depends = $depends;
+        $this->tags = $tags;
     }
 
     public function args(): array
@@ -91,13 +98,8 @@ class ManifestNode
         return $this->name;
     }
 
-    public function taskArgs(): array
+    public function tags(): array
     {
-        return $this->taskArgs;
-    }
-
-    public function taskFqn(): string
-    {
-        return $this->taskFqn;
+        return $this->tags;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Runner\Model\Loader;
 
+use Maestro\Extension\Runner\Task\InitTask;
 use Maestro\Library\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
@@ -30,7 +31,7 @@ class ManifestLoader
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function load(): Manifest
+    public function load(): ManifestNode
     {
         $path = $this->resolvePath();
         $data = $this->loadManifestArray($path);
@@ -39,8 +40,12 @@ class ManifestLoader
             $data = $processor->process($data);
         }
 
-        return Manifest::loadFromArray(array_merge($data, [
-            'path' => $path
+        return ManifestNode::fromArray(array_merge($data, [
+            'name' => '',
+            'type' => InitTask::class,
+            'args' => array_merge($data['args'] ?? [], [
+                'path' => $path
+            ]),
         ]));
     }
 

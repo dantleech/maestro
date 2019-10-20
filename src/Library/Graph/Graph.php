@@ -130,6 +130,11 @@ class Graph
         return $this->pruneFor($this->nodes->byTags(...$tags)->ids());
     }
 
+    public function descendantsForIncluding(string $nodeName): Nodes
+    {
+        return Nodes::fromNodes([$this->nodes->get($nodeName)])
+            ->merge($this->descendantsFor($nodeName));
+    }
     /**
      * @return Nodes<Node>
      */

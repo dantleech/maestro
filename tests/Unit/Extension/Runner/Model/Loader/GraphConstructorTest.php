@@ -4,8 +4,8 @@ namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 
 use Closure;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
-use Maestro\Extension\Runner\Model\Loader\Manifest;
-use Maestro\Extension\Runner\Task\InitTask;
+use Maestro\Extension\Runner\Model\Loader\ManifestNode;
+use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Task\NullTask;
@@ -18,8 +18,9 @@ class GraphConstructorTest extends TestCase
      */
     public function testBuildGraph(array $manifest, Closure $assertion)
     {
-        $manifest = Manifest::loadFromArray($manifest);
-        $constructor = new GraphConstructor($manifest);
+        $manifest = ManifestNode::fromArray($manifest);
+        $pathExpander = new PathExpander();
+        $constructor = new GraphConstructor($pathExpander, $manifest);
         $graph = $constructor->construct();
 
         $assertion($graph);
@@ -29,77 +30,44 @@ class GraphConstructorTest extends TestCase
     {
         yield 'empty' => [
             [
+                'name' => 'root',
+                'type' => NullTask::class,
             ],
             function (Graph $graph) {
-                $this->assertInstanceOf(InitTask::class, $graph->roots()->get('root')->task());
+                $this->assertCount(1, $graph->nodes());
+                $this->assertInstanceOf(NullTask::class, $graph->roots()->get('/root')->task());
             }
         ];
 
-        yield 'package' => [
+        yield 'children nodes' => [
             [
-                'packages' => [
+                'name' => 'root',
+                'type' => NullTask::class,
+                'nodes' => [
                     'phpactor/phpactor' => [
                     ],
                 ]
             ],
             function (Graph $graph) {
-                $nodes = $graph->dependentsFor('root');
+                $nodes = $graph->dependentsFor('/root');
                 $this->assertCount(1, $nodes);
-                $this->assertEquals('phpactor/phpactor', $nodes->get('phpactor/phpactor')->id());
+                $this->assertEquals('phpactor/phpactor', $nodes->get('/root/phpactor/phpactor')->label());
             }
         ];
 
-        yield 'package with tags' => [
+        yield 'node with tags' => [
             [
-                'packages' => [
+                'name' => '',
+                'type' => NullTask::class,
+                'nodes' => [
                     'phpactor/phpactor' => [
                         'tags' => [ 'one' ],
                     ],
                 ]
             ],
             function (Graph $graph) {
-                $package = $graph->nodes()->get('phpactor/phpactor');
-                $this->assertContains('one', $package->tags());
-            }
-        ];
-
-        yield 'task with tags' => [
-            [
-                'packages' => [
-                    'phpactor/phpactor' => [
-                        'tasks' => [
-                            'task1' => [
-                                'type' => NullTask::class,
-                                'tags' => ['one'],
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            function (Graph $graph) {
-                $node = $graph->nodes()->get('phpactor/phpactor/task1');
+                $node = $graph->nodes()->get('/phpactor/phpactor');
                 $this->assertContains('one', $node->tags());
-            }
-        ];
-
-        yield 'task inherits package tags' => [
-            [
-                'packages' => [
-                    'phpactor/phpactor' => [
-                        'tags' => ['three'],
-                        'tasks' => [
-                            'task1' => [
-                                'type' => NullTask::class,
-                                'tags' => ['one'],
-                            ],
-                        ],
-                    ],
-                ]
-            ],
-            function (Graph $graph) {
-                $node = $graph->nodes()->get('phpactor/phpactor/task1');
-                $this->assertContains('one', $node->tags());
-                $this->assertContains('three', $node->tags());
             }
         ];
     }

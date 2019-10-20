@@ -1,7 +1,8 @@
 {
-    "packages": {
+    "nodes": {
         "example/package": {
-            "tasks": {
+            "type": "package",
+            "nodes": {
                 "hello": {
                     "type": "script",
                     "args": {

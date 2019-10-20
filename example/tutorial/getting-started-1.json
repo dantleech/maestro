@@ -1,10 +1,16 @@
 {
-    "packages": {
+    "nodes": {
         "maestrophp/example-math": {
-            "url": "https://github.com/maestrophp/example-math"
+            "type": "package",
+            "args": {
+                "url": "https://github.com/maestrophp/example-math"
+            }
         },
         "maestrophp/example-science": {
-            "url": "https://github.com/maestrophp/example-science"
+            "type": "package",
+            "args": {
+                "url": "https://github.com/maestrophp/example-science"
+            }
         }
     }
 }

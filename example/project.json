@@ -1,8 +1,11 @@
 {
-    "packages": {
+    "nodes": {
         "maestrophp/example-math": {
-            "url": "https://github.com/maestrophp/example-math",
-            "tasks": {
+            "type": "package",
+            "args": {
+                "url": "https://github.com/maestrophp/example-math"
+            },
+            "nodes": {
                 "composer.json": {
                     "type": "json_file",
                     "args": {
@@ -24,8 +27,11 @@
             }
         },
         "maestrophp/example-science": {
-            "url": "https://github.com/maestrophp/example-science",
-            "tasks": {
+            "type": "package",
+            "args": {
+                "url": "https://github.com/maestrophp/example-science"
+            },
+            "nodes": {
                 "composer.json": {
                     "type": "json_file",
                     "args": {

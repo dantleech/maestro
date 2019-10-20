@@ -123,7 +123,7 @@ final class Node
     {
         \Amp\asyncCall(function () use ($queue, $artifacts) {
             $this->state = State::DISPATCHED();
-            $job = Job::create($this->task, $artifacts);
+            $job = Job::create($this->task, $artifacts->spawnMutated($this->artifacts));
             $queue->enqueue($job);
 
             $artifacts = yield $job->result();

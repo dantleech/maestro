@@ -17,16 +17,18 @@ class TaskAliasExpandingProcessor implements Processor
         $this->map = $map;
     }
 
-    public function process(array $manifest): array
+    public function process(array $node): array
     {
-        foreach ($manifest['packages'] ?? [] as $packageName => &$package) {
-            foreach ($package['tasks'] ?? [] as $taskName => &$task) {
-                if (!isset($task['type'])) {
-                    $task['type'] = 'null';
-                }
-                $manifest['packages'][$packageName]['tasks'][$taskName]['type'] = $this->map->getDefinitionByAlias($task['type'])->taskClass();
-            }
+        if (!isset($node['type'])) {
+            $node['type'] = 'null';
         }
-        return $manifest;
+
+        $node['type'] = $this->map->getDefinitionByAlias($node['type'])->taskClass();
+
+        foreach ($node['nodes'] ?? [] as $childName => $childNode) {
+            $node['nodes'][$childName] = $this->process($childNode);
+        }
+
+        return $node;
     }
 }

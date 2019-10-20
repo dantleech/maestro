@@ -8,7 +8,7 @@ use Maestro\Extension\Runner\Model\Loader\Processor;
 class PrototypeExpandingProcessor implements Processor
 {
     const KEY_PROTOTYPES = 'prototypes';
-    const KEY_PACKAGES = 'packages';
+    const KEY_NODES = 'nodes';
     const KEY_PROTOTYPE = 'prototype';
 
 
@@ -20,11 +20,11 @@ class PrototypeExpandingProcessor implements Processor
             unset($manifest[self::KEY_PROTOTYPES]);
         }
 
-        if (!isset($manifest[self::KEY_PACKAGES])) {
+        if (!isset($manifest[self::KEY_NODES])) {
             return $manifest;
         }
 
-        foreach ($manifest[self::KEY_PACKAGES] as $packageName => &$package) {
+        foreach ($manifest[self::KEY_NODES] as $packageName => &$package) {
             if (!isset($package[self::KEY_PROTOTYPE])) {
                 continue;
             }

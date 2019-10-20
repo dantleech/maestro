@@ -12,26 +12,25 @@ class PrototypeExpandingProcessor implements Processor
     const KEY_PROTOTYPE = 'prototype';
 
 
-    public function process(array $manifest): array
+    public function process(array $node, array $prototypes = []): array
     {
-        $prototypes = [];
-        if (isset($manifest[self::KEY_PROTOTYPES])) {
-            $prototypes = $manifest[self::KEY_PROTOTYPES];
-            unset($manifest[self::KEY_PROTOTYPES]);
+        if (isset($node[self::KEY_PROTOTYPES])) {
+            $prototypes = $node[self::KEY_PROTOTYPES];
+            unset($node[self::KEY_PROTOTYPES]);
         }
 
-        if (!isset($manifest[self::KEY_NODES])) {
-            return $manifest;
+        if (!isset($node[self::KEY_NODES])) {
+            return $node;
         }
 
-        foreach ($manifest[self::KEY_NODES] as $packageName => &$package) {
+        foreach ($node[self::KEY_NODES] as $packageName => &$package) {
             if (!isset($package[self::KEY_PROTOTYPE])) {
                 continue;
             }
 
             if (!isset($prototypes[$package[self::KEY_PROTOTYPE]])) {
                 throw new PrototypeNotFound(sprintf(
-                    'Prototype "%s" for package "%s" not found, known prototypes: "%s"',
+                    'Prototype "%s" for node "%s" not found, known prototypes: "%s"',
                     $package[self::KEY_PROTOTYPE],
                     $packageName,
                     implode('", "', array_keys($prototypes))
@@ -42,6 +41,13 @@ class PrototypeExpandingProcessor implements Processor
             unset($package[self::KEY_PROTOTYPE]);
         }
 
-        return $manifest;
+        foreach ($node['nodes'] ?? []  as $index => $childNode) {
+            if (!is_array($childNode)) {
+                continue;
+            }
+            $node['nodes'][$index] = $this->process($childNode, $prototypes);
+        }
+
+        return $node;
     }
 }

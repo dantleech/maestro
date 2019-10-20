@@ -82,6 +82,46 @@ class PrototypeExpandingProcessorTest extends TestCase
         ], $this->processor->process($manifest));
     }
 
+    public function testExpandsNestedNode()
+    {
+        $manifest = [
+            'prototypes' => [
+                'foobar' => [
+                    'nodes' => [
+                        'hello' => [
+                            'type' => 'null'
+                        ]
+                    ]
+                ],
+            ],
+            'nodes' => [
+                'foobar' => [
+                    'nodes' => [
+                        'barfoo' => [
+                            'prototype' => 'foobar',
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->assertEquals([
+            'nodes' => [
+                'foobar' => [
+                    'nodes' => [
+                        'barfoo' => [
+                            'nodes' => [
+                                'hello' => [
+                                    'type' => 'null',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ], $this->processor->process($manifest));
+    }
+
     public function testThrowsExceptionIfPrototypeNotFound()
     {
         $this->expectException(PrototypeNotFound::class);

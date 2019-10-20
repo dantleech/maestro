@@ -77,6 +77,15 @@ class Worker
         }, 0);
     }
 
+    public function processingTasks(): array
+    {
+        return array_map(function (Job $job) {
+            return $job->task();
+        }, array_filter($this->jobs, function (Job $job) {
+            return $job->state()->is(JobState::BUSY());
+        }));
+    }
+
     private function buildJobs(): void
     {
         while (count($this->jobs) < $this->concurrency && $job = $this->queue->dequeue()) {

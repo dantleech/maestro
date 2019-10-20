@@ -20,8 +20,8 @@ use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Model\Loader\Processor\PrototypeExpandingProcessor;
 use Maestro\Extension\Runner\Model\Loader\Processor\TaskAliasExpandingProcessor;
 use Maestro\Extension\Runner\Report\RunReport;
-use Maestro\Extension\Runner\Task\PackageInitHandler;
-use Maestro\Extension\Runner\Task\PackageInitTask;
+use Maestro\Extension\Runner\Task\PackageHandler;
+use Maestro\Extension\Runner\Task\PackageTask;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
@@ -127,14 +127,14 @@ class RunnerExtension implements Extension
             ]
         ]);
 
-        $container->register(PackageInitHandler::class, function (Container $container) {
-            return new PackageInitHandler(
+        $container->register(PackageHandler::class, function (Container $container) {
+            return new PackageHandler(
                 $container->get(WorkspaceManager::class),
                 $container->getParameter(self::PARAM_PURGE)
             );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
-                'taskClass' => PackageInitTask::class,
+                'taskClass' => PackageTask::class,
                 'alias' => 'package',
             ]
         ]);

@@ -13,8 +13,9 @@ use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Workspace\WorkspaceManager;
 use function Amp\File\mkdir;
+use Maestro\Extension\Runner\Task\PackageTask;
 
-class PackageInitHandler
+class PackageHandler
 {
     /**
      * @var WorkspaceManager
@@ -34,7 +35,7 @@ class PackageInitHandler
     }
 
     public function __invoke(
-        PackageInitTask $task,
+        PackageTask $task,
         Environment $enivonment,
         TaskRunner $taskRunner,
         NodeMeta $nodeMeta
@@ -54,7 +55,7 @@ class PackageInitHandler
         });
     }
 
-    private function createWorkspace(TaskRunner $taskRunner, PackageInitTask $task, string $name): Generator
+    private function createWorkspace(TaskRunner $taskRunner, PackageTask $task, string $name): Generator
     {
         $workspace = $this->workspaceManager->createNamedWorkspace($name);
 

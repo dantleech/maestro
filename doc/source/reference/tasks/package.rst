@@ -12,4 +12,4 @@ package
   - ``env``: Environment variables for dependent nodes
   - ``vars``: Variables for dependent nodes.
 
-Defines package metadata data which can be used by dependent nodes.
+Defines and initializes a package/project.

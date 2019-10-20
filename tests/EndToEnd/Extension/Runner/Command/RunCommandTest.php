@@ -185,7 +185,8 @@ class RunCommandTest extends EndToEndTestCase
         ]);
 
         $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
-        $this->command('run --namespace="" --purge');
+        $process = $this->command('run --namespace="" --purge');
+        $this->assertProcessSuccess($process);
         $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));
     }
 

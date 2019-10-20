@@ -5,7 +5,7 @@ namespace Maestro\Extension\Vcs\Task;
 use Amp\Promise;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Task\Exception\TaskFailure;
-use Maestro\Library\Vcs\Exception\CheckoutError;
+use Maestro\Library\Vcs\Exception\VcsException;
 use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Maestro\Library\Workspace\Workspace;
@@ -29,7 +29,7 @@ class CheckoutHandler
 
             try {
                 yield from $this->performOperation($checkoutTask, $workspace, $repository, $environment);
-            } catch (CheckoutError $e) {
+            } catch (VcsException $e) {
                 throw new TaskFailure($e->getMessage());
             }
 

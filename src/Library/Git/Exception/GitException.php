@@ -2,8 +2,8 @@
 
 namespace Maestro\Library\Git\Exception;
 
-use RuntimeException;
+use Maestro\Library\Vcs\Exception\VcsException;
 
-class GitException extends RuntimeException
+class GitException extends VcsException
 {
 }

@@ -208,7 +208,7 @@ class GitRepository implements Repository
 
         if ($result->exitCode() !== 0) {
             throw new GitException(sprintf(
-                'Could not execute %s in "%s": %s',
+                'Could not execute "%s" in "%s": %s',
                 $cmd,
                 $this->path,
                 $result->stderr()

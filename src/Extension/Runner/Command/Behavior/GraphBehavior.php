@@ -7,7 +7,6 @@ use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
 use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Graph\Graph;
-use Maestro\Library\Graph\Node;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Report\Report;
 use Maestro\Library\Report\ReportRegistry;
@@ -141,17 +140,22 @@ class GraphBehavior
             )->count();
 
             $this->logger->notice(sprintf(
-                '%s%% %s/%s: %s pending, %s queued, %s busy (%s), %s failed, %s cancelled, %s done',
+                '%s%% %s/%s: %s pending, %s queued, %s busy, %s failed, %s cancelled, %s done',
                 number_format(($completed / $nodes->count()) * 100),
                 $completed,
                 $nodes->count(),
                 $nodes->byState(State::IDLE())->count(),
                 $this->queue->count(),
                 $this->worker->processingJobCount(),
-                implode(',', array_map(function (Task $task) { return $task->description(); }, $this->worker->processingTasks())),
                 $nodes->byState(State::FAILED())->count(),
                 $nodes->byState(State::CANCELLED())->count(),
                 $nodes->byState(State::SUCCEEDED())->count(),
+            ));
+            $this->logger->debug(sprintf(
+                'Currently %s',
+                implode(',', array_map(function (Task $task) {
+                    return $task->description();
+                }, $this->worker->processingTasks()))
             ));
         });
 

@@ -2,12 +2,14 @@
 
 namespace Maestro\Extension\Runner\Model\Loader;
 
+use Exception;
 use Maestro\Library\Graph\Edge;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Support\NodeMeta;
+use RuntimeException;
 use Webmozart\PathUtil\Path;
 
 class GraphConstructor
@@ -47,7 +49,7 @@ class GraphConstructor
 
         $builder->addNode(Node::create($path, [
             'label' => $node->name(),
-            'task' => Instantiator::instantiate($node->type(), $node->args()),
+            'task' => $this->createTask($node),
             'tags' => $node->tags(),
             'artifacts' => [
                 new NodeMeta($node->name(), $path)
@@ -72,5 +74,17 @@ class GraphConstructor
         }
 
         return $depends;
+    }
+
+    private function createTask(ManifestNode $node)
+    {
+        try {
+            return Instantiator::instantiate($node->type(), $node->args());
+        } catch (Exception $e) {
+            throw new RuntimeException(sprintf(
+                'Could not instantiate node "%s"',
+                $node->name()
+            ), 0, $e);
+        }
     }
 }

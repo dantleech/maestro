@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Runner\Report;
 
-use Generator;
+use Maestro\Extension\Runner\Task\PackageTask;
 use Maestro\Library\Report\Report;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
@@ -40,25 +40,23 @@ class RunReport implements Report
         $table->setColumnMaxWidth(3, 30);
         $table->setColumnMaxWidth(4, 50);
 
-        foreach ($graph->roots() as $root) {
-            $packageNo = 0;
-            foreach ($graph->dependentsFor($root->id()) as $packageNode) {
-                $taskRows = $this->taskRows($graph, $packageNode->id());
+        $packageNo = 0;
+        foreach ($graph->nodes()->byTaskClass(PackageTask::class) as $packageNode) {
+            $taskRows = $this->taskRows($graph, $packageNode->id());
 
-                if ($packageNo++ > 0) {
-                    $table->addRow(new TableSeparator());
+            if ($packageNo++ > 0) {
+                $table->addRow(new TableSeparator());
+            }
+
+            foreach ($taskRows as $index => $taskRow) {
+                if ($index === 0) {
+                    $table->addRow(array_merge([
+                        $this->buildPackageRow($packageNode, count($taskRows)),
+                    ], $taskRow));
+                    continue;
                 }
 
-                foreach ($taskRows as $index => $taskRow) {
-                    if ($index === 0) {
-                        $table->addRow(array_merge([
-                            $this->buildPackageRow($graph, $packageNode->id()),
-                        ], $taskRow));
-                        continue;
-                    }
-
-                    $table->addRow($taskRow);
-                }
+                $table->addRow($taskRow);
             }
         }
         $table->render();
@@ -73,18 +71,23 @@ class RunReport implements Report
         ));
     }
 
-    private function buildPackageRow(Graph $graph, string $packageId): TableCell
+    private function buildPackageRow(Node $node, int $nbTasks): TableCell
     {
-        return new TableCell($packageId, [
-            'rowspan' => count($graph->descendantsForIncluding($packageId))
+        return new TableCell($node->label(), [
+            'rowspan' => $nbTasks
         ]);
     }
 
-    private function taskRows(Graph $graph, string $packageId): Generator
+    private function taskRows(Graph $graph, string $packageId): array
     {
+        $level = 0;
+        $rows = [];
         foreach ($graph->descendantsForIncluding($packageId) as $taskNode) {
+            if ($level++ && $taskNode->task() instanceof PackageTask) {
+                break;
+            }
             $failure = $taskNode->exception();
-            yield [
+            $rows[] = [
                 $taskNode->label(),
                 $taskNode->task()->description(),
                 sprintf(
@@ -95,6 +98,7 @@ class RunReport implements Report
                 $failure ? $failure->getMessage() : ''
             ];
         }
+        return $rows;
     }
 
     private function stateIcon(Node $taskNode)
@@ -102,11 +106,11 @@ class RunReport implements Report
         if ($taskNode->state()->isDone()) {
             return '<info>✔</>';
         }
-       
+
         if ($taskNode->state()->isFailed()) {
             return '<fg=red>✘</>';
         }
-       
+
         if ($taskNode->state()->isCancelled()) {
             return '<comment>-</>';
         }

@@ -46,6 +46,7 @@ class ScriptRunner
             }
 
             return Instantiator::instantiate(ScriptResult::class, [
+                'script' => $script,
                 'exitCode' => $exitCode,
                 'stdout' => $outs[0],
                 'stderr' => $outs[1],

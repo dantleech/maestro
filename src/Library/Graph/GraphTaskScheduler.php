@@ -19,11 +19,10 @@ class GraphTaskScheduler
 
     public function run(Graph $graph): void
     {
-        $artifacts = new Artifacts();
-        $this->runNodes($artifacts, $graph, $graph->roots());
+        $this->runNodes($graph, $graph->roots());
     }
 
-    private function runNodes(Artifacts $artifacts, Graph $graph, Nodes $nodes): void
+    private function runNodes(Graph $graph, Nodes $nodes): void
     {
         foreach ($nodes as $node) {
             assert($node instanceof Node);
@@ -34,14 +33,12 @@ class GraphTaskScheduler
             }
 
             if ($node->state()->isIdle() && $this->isSatisfied($graph, $node)) {
-                $node->run($this->queue, $artifacts);
+                $node->run($this->queue, $this->resolveArtifacts($graph, $node));
                 continue;
             }
 
             if ($node->state()->isDone()) {
-                ;
                 $this->runNodes(
-                    $artifacts->spawnMutated($node->artifacts()),
                     $graph,
                     $graph->dependentsFor($node->id())
                 );
@@ -66,5 +63,19 @@ class GraphTaskScheduler
         }
 
         return true;
+    }
+
+    private function resolveArtifacts(Graph $graph, Node $node): Artifacts
+    {
+        $artifacts = new Artifacts();
+
+        foreach ($graph->dependenciesFor($node->id()) as $artNode) {
+            $artifacts = $artifacts->spawnMutated($artNode->artifacts());
+            foreach ($graph->ancestryFor($artNode->id()) as $descNode) {
+                $artifacts = $artifacts->spawnMutated($descNode->artifacts());
+            }
+        }
+
+        return $artifacts;
     }
 }

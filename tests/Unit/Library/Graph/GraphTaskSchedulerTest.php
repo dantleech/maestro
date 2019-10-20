@@ -142,6 +142,34 @@ class GraphTaskSchedulerTest extends TestCase
             }
         ];
 
+        yield 'artifacts from multiple parent paths are aggregated and passed to jobs of child nodes' => [
+            function (GraphBuilder $builder) {
+                $artifact = new TestArtifact();
+                $builder->addNode(
+                    NodeHelper::setState(Node::create('parent1', [
+                        'artifacts' => [
+                            $artifact
+                        ],
+                    ]), State::SUCCEEDED())
+                );
+                $builder->addNode(
+                    NodeHelper::setState(Node::create('parent2', [
+                        'artifacts' => [
+                            $artifact
+                        ],
+                    ]), State::SUCCEEDED())
+                );
+                $builder->addNode(Node::create('1'));
+                $builder->addEdge(Edge::create('1', 'parent1'));
+                $builder->addEdge(Edge::create('1', 'parent2'));
+            },
+            function (Graph $graph, Queue $queue) {
+                $this->assertCount(1, $queue);
+                $job1 = $queue->dequeue();
+                $this->assertCount(2, $job1->artifacts());
+            }
+        ];
+
         yield 'cancels nodes depending on a failed node' => [
             function (GraphBuilder $builder) {
                 $artifact = new TestArtifact();

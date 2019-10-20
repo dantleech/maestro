@@ -6,7 +6,7 @@
                 "checkout": {
                     "type": "checkout",
                     "args": {
-                        "url": "git@github.com:phpactor/container"
+                        "url": "https://github.com/phpactor/container"
                     }
                 },
                 "survey": {

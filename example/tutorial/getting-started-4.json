@@ -26,28 +26,20 @@
                 "url": "https://github.com/$PACKAGE_NAME"
             },
             "nodes": {
-                "checkout": {
-                    "type": "checkout",
+                "readme": {
+                    "type": "template",
                     "args": {
-                        "url": "https://github.com/$PACKAGE_NAME"
-                    },
-                    "nodes": {
-                        "readme": {
-                            "type": "template",
-                            "args": {
-                                "path": "templates/readme.md.twig",
-                                "targetPath": "README.md"
-                            }
-                        },
-                        "tag": {
-                            "type": "tag",
-                            "depends": ["readme"]
-                        },
-                        "survey": {
-                            "type": "survey",
-                            "depends": ["tag"]
-                        }
+                        "path": "templates/readme.md.twig",
+                        "targetPath": "README.md"
                     }
+                },
+                "tag": {
+                    "type": "tag",
+                    "depends": ["readme"]
+                },
+                "survey": {
+                    "type": "survey",
+                    "depends": ["tag"]
                 }
             }
         }

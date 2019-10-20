@@ -76,13 +76,13 @@ class RunReport implements Report
     private function buildPackageRow(Graph $graph, string $packageId): TableCell
     {
         return new TableCell($packageId, [
-            'rowspan' => count($graph->descendantsFor($packageId))
+            'rowspan' => count($graph->descendantsForIncluding($packageId))
         ]);
     }
 
     private function taskRows(Graph $graph, string $packageId): Generator
     {
-        foreach ($graph->descendantsFor($packageId) as $taskNode) {
+        foreach ($graph->descendantsForIncluding($packageId) as $taskNode) {
             $failure = $taskNode->exception();
             yield [
                 $taskNode->label(),

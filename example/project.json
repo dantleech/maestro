@@ -1,11 +1,5 @@
 {
     "nodes": {
-        "noteistig/example-math": {
-            "type": "package",
-            "args": {
-                "url": "http://dantleech.com/not"
-            }
-        },
         "maestrophp/example-math": {
             "type": "package",
             "args": {

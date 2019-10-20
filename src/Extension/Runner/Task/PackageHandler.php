@@ -6,6 +6,7 @@ use Amp\Promise;
 use Amp\Success;
 use Generator;
 use Maestro\Extension\File\Task\PurgeDirectoryTask;
+use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\NodeMeta;
 use Maestro\Library\Support\Package\Package;
@@ -13,7 +14,6 @@ use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Task\TaskRunner;
 use Maestro\Library\Workspace\WorkspaceManager;
 use function Amp\File\mkdir;
-use Maestro\Extension\Runner\Task\PackageTask;
 
 class PackageHandler
 {
@@ -36,27 +36,32 @@ class PackageHandler
 
     public function __invoke(
         PackageTask $task,
-        Environment $enivonment,
+        Environment $environment,
         TaskRunner $taskRunner,
         NodeMeta $nodeMeta
     ): Promise {
-        return \Amp\call(function () use ($task, $enivonment, $taskRunner, $nodeMeta) {
+        return \Amp\call(function () use ($task, $environment, $taskRunner, $nodeMeta) {
             $name = $task->name() ?: $nodeMeta->name();
+            $environment = $environment->spawnMerged([
+                'PACKAGE_NAME' => $name
+            ]);
             return new Success([
-                $enivonment->spawnMerged([
-                    'PACKAGE_NAME' => $name
-                ]),
+                $environment,
                 new Package(
                     $name,
                     $task->version()
                 ),
-                yield from $this->createWorkspace($taskRunner, $task, $name)
+                yield from $this->createWorkspace($taskRunner, $task, $environment, $name)
             ]);
         });
     }
 
-    private function createWorkspace(TaskRunner $taskRunner, PackageTask $task, string $name): Generator
-    {
+    private function createWorkspace(
+        TaskRunner $taskRunner,
+        PackageTask $task,
+        Environment $environment,
+        string $name
+    ): Generator {
         $workspace = $this->workspaceManager->createNamedWorkspace($name);
 
         if ($this->purge || $task->purgeWorkspace()) {
@@ -66,6 +71,13 @@ class PackageHandler
         if (!file_exists($workspace->absolutePath())) {
             // if we don't yield, then the directory doesn't get created
             yield mkdir($workspace->absolutePath(), 0777, true);
+        }
+
+        $url = $task->url();
+        if ($url) {
+            yield $taskRunner->run(new CheckoutTask($url), new Artifacts([
+                $workspace, $environment
+            ]));
         }
 
         return $workspace;

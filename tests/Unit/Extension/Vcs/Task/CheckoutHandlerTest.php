@@ -46,6 +46,7 @@ class CheckoutHandlerTest extends TestCase
 
         $artifacts = HandlerTester::create($this->checkoutHandler)->handle(CheckoutTask::class, [
             'url' => self::EXAMPLE_REPO_URL,
+            'update' => false,
         ], [
             new Workspace(self::EXAMPLE_WORKSPACE_PATH, 'name'),
             new Environment([]),

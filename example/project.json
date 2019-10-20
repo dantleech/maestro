@@ -1,6 +1,7 @@
 {
-    "nodes": {
-        "maestrophp/example-math": {
+    "nodes": [
+        {
+            "name": "example-math",
             "type": "package",
             "args": {
                 "url": "https://github.com/maestrophp/example-math"
@@ -26,7 +27,8 @@
                 }
             }
         },
-        "maestrophp/example-science": {
+        {
+            "name": "example/science",
             "type": "package",
             "args": {
                 "url": "https://github.com/maestrophp/example-science"
@@ -59,5 +61,5 @@
                 }
             }
         }
-    }
+    ]
 }

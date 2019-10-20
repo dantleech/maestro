@@ -42,8 +42,7 @@ class CheckoutHandler
         Workspace $workspace,
         Repository $repository,
         Environment $environment
-    )
-    {
+    ) {
         if ($repository->isCheckedOut()) {
             yield from $this->handleExistingRepository($checkoutTask, $repository);
             return;

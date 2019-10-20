@@ -7,7 +7,7 @@
     },
     "nodes": {
         "maestrophp/example-math": {
-            "type": "package_init",
+            "type": "package",
             "args": {
                 "url": "https://github.com/maestrophp/example-math"
             },
@@ -22,7 +22,7 @@
             }
         },
         "maestrophp/example-science": {
-            "type": "package_init",
+            "type": "package",
             "args": {
                 "url": "https://github.com/maestrophp/example-science"
             }

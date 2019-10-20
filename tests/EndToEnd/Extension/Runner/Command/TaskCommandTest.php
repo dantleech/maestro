@@ -44,7 +44,7 @@ class TaskCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'package/one' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'package/one',
                     ],

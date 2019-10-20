@@ -135,7 +135,7 @@ class RunnerExtension implements Extension
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => PackageInitTask::class,
-                'alias' => 'package_init',
+                'alias' => 'package',
             ]
         ]);
     }

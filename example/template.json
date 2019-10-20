@@ -7,7 +7,7 @@
     },
     "nodes": {
         "example/package": {
-            "type": "package_init",
+            "type": "package",
             "nodes": {
                 "readme": {
                     "type":"template",

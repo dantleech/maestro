@@ -1,7 +1,7 @@
 {
     "nodes": {
         "phpactor/container": {
-            "type": "package_init",
+            "type": "package",
             "args": {
                 "version": "1.5.0"
             },

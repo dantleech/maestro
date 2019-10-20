@@ -1,7 +1,7 @@
 {
     "nodes": {
         "example/package": {
-            "type": "package_init",
+            "type": "package",
             "nodes": {
                 "hello": {
                     "type": "script",

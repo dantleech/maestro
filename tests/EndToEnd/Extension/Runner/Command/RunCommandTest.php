@@ -73,7 +73,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -108,7 +108,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -133,7 +133,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -170,13 +170,13 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
                 ],
                 'foobar' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'foobar',
                     ],
@@ -197,13 +197,13 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
                 ],
                 'foobar' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -234,7 +234,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -246,7 +246,7 @@ class RunCommandTest extends EndToEndTestCase
                     ],
                 ],
                 'foobar' => [
-                    'type' => 'package_init',
+                    'type' => 'package',
                     'args' => [
                         'name' => 'foobar',
                     ],

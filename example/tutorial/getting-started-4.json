@@ -21,7 +21,7 @@
     },
     "prototypes": {
         "example": {
-            "type": "package_init",
+            "type": "package",
             "args": {
                 "url": "https://github.com/$PACKAGE_NAME"
             },

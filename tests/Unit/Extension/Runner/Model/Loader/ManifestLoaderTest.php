@@ -59,6 +59,6 @@ class ManifestLoaderTest extends IntegrationTestCase
 
     protected function loadManifest(string $path, array $processors = []): ManifestNode
     {
-        return (new ManifestLoader($this->workspace()->path('/'), $path, $processors))->load($path);
+        return (new ManifestLoader($this->workspace()->path('/'), $processors))->load($path);
     }
 }

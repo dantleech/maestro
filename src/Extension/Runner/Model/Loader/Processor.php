@@ -4,5 +4,5 @@ namespace Maestro\Extension\Runner\Model\Loader;
 
 interface Processor
 {
-    public function process(array $manifest): array;
+    public function process(array $data): array;
 }

@@ -10,7 +10,7 @@ use Webmozart\PathUtil\Path;
 class ManifestLoader
 {
     /**
-     * @var array
+     * @var Processor[]
      */
     private $processors = [];
 
@@ -24,16 +24,15 @@ class ManifestLoader
      */
     private $workingDirectory;
 
-    public function __construct(string $workingDirectory, string $manifestPath, array $processors)
+    public function __construct(string $workingDirectory, array $processors)
     {
         $this->processors = $processors;
-        $this->manifestPath = $manifestPath;
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function load(): ManifestNode
+    public function load(string $path): ManifestNode
     {
-        $path = $this->resolvePath();
+        $path = $this->normalizePath($path);
         $data = $this->loadManifestArray($path);
 
         foreach ($this->processors as $processor) {
@@ -70,13 +69,12 @@ class ManifestLoader
         return $array;
     }
 
-    private function resolvePath(): string
+    private function normalizePath(string $path): string
     {
-        $planPath = $this->manifestPath;
-        if (Path::isAbsolute($planPath)) {
-            return $planPath;
+        if (Path::isAbsolute($path)) {
+            return $path;
         }
 
-        return Path::join($this->workingDirectory, $planPath);
+        return Path::join($this->workingDirectory, $path);
     }
 }

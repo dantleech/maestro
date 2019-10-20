@@ -101,7 +101,9 @@ class RunnerExtension implements Extension
     private function registerLoader(ContainerBuilder $container)
     {
         $container->register(ManifestNode::class, function (Container $container) {
-            return $this->createManifestLoader($container)->load();
+            return $this->createManifestLoader($container)->load(
+                $container->getParameter(self::PARAM_MANIFEST_PATH)
+            );
         });
 
         $container->register(GraphConstructor::class, function (Container $container) {
@@ -168,7 +170,6 @@ class RunnerExtension implements Extension
     {
         return new ManifestLoader(
             $container->getParameter(self::PARAM_WORKING_DIRECTORY),
-            $container->getParameter(self::PARAM_MANIFEST_PATH),
             [
                 new PrototypeExpandingProcessor(),
                 new TaskAliasExpandingProcessor(

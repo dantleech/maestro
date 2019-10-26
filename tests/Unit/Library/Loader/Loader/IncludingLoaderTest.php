@@ -2,11 +2,9 @@
 
 namespace Maestro\Tests\Unit\Library\Loader\Loader;
 
-use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
 use Maestro\Library\Loader\Loader\IncludingLoader;
 use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 
 class IncludingLoaderTest extends IntegrationTestCase
 {

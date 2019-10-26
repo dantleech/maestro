@@ -2,7 +2,9 @@
 
 namespace Maestro\Library\Loader\Loader;
 
+use Maestro\Library\Loader\Exception\LoaderError;
 use Maestro\Library\Loader\Loader;
+use Webmozart\Glob\Glob;
 use Webmozart\PathUtil\Path;
 
 class IncludingLoader implements Loader
@@ -31,13 +33,7 @@ class IncludingLoader implements Loader
     {
         foreach ($data as $key => $value) {
             if ($key === self::KEY_INCLUDE) {
-                $includePath = $this->resolvePath($value, $parentResource);
-                unset($data[self::KEY_INCLUDE]);
-
-                $data = array_merge($data, $this->inflate(
-                    $this->innerLoader->load($includePath),
-                    $includePath
-                ));
+                $data = $this->processInclude($value, $parentResource, $data);
             }
 
             if (is_array($value)) {
@@ -53,10 +49,32 @@ class IncludingLoader implements Loader
         if (Path::isAbsolute($path)) {
             throw new LoaderError(sprintf(
                 'Absolute paths not permitted when including config: "%s" in "%s"',
-                $path, $parentPath
+                $path,
+                $parentPath
             ));
         }
 
         return Path::makeAbsolute($path, Path::getDirectory($parentPath));
+    }
+
+    private function processInclude(string $includePath, string $parentResource, array $data): array
+    {
+        unset($data[self::KEY_INCLUDE]);
+        $includePath = $this->resolvePath($includePath, $parentResource);
+        if (!Glob::isDynamic($includePath)) {
+            return $this->importPath($includePath, $data);
+        }
+
+        return array_map(function (string $path) use ($data) {
+            return $this->importPath($path, $data);
+        }, Glob::glob($includePath));
+    }
+
+    private function importPath(string $includePath, array $data)
+    {
+        return array_merge($data, $this->inflate(
+            $this->innerLoader->load($includePath),
+            $includePath
+        ));
     }
 }

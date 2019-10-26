@@ -60,6 +60,50 @@ EOT
             ],
         ];
 
+        yield 'current files keys take precedence in merge' => [
+            <<<'EOT'
+// File:config.json
+{
+    "foobar": "barfoo",
+    "include": "barfoo.json"
+}
+// File:barfoo.json
+{
+    "foobar": "nooooo",
+    "barfoo": "foobar"
+}
+EOT
+            ,
+            [
+                'foobar' => 'barfoo',
+                'barfoo' => 'foobar',
+            ],
+        ];
+
+        yield 'current files keys take precedence in merge 2' => [
+            <<<'EOT'
+// File:base.json
+{
+    "name": "barfoo",
+    "args": {
+        "url": "foobar"
+    }
+}
+// File:config.json
+{
+    "include": "base.json",
+    "args": {
+        "url": "barfoo"
+    }
+}
+EOT
+            ,
+            [
+                'name' => 'barfoo',
+                'args' => ['url' => 'barfoo'],
+            ],
+        ];
+
         yield 'include relative file' => [
             <<<'EOT'
 // File:config.json

@@ -11,7 +11,6 @@ class PrototypeExpandingProcessor implements Processor
     const KEY_NODES = 'nodes';
     const KEY_PROTOTYPE = 'prototype';
 
-
     public function process(array $node, array $prototypes = []): array
     {
         if (isset($node[self::KEY_PROTOTYPES])) {
@@ -37,7 +36,7 @@ class PrototypeExpandingProcessor implements Processor
                 ));
             }
 
-            $package = array_merge_recursive($prototypes[$package[self::KEY_PROTOTYPE]], $package);
+            $package = array_replace_recursive($prototypes[$package[self::KEY_PROTOTYPE]], $package);
             unset($package[self::KEY_PROTOTYPE]);
         }
 

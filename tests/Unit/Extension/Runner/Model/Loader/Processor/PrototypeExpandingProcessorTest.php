@@ -142,4 +142,39 @@ class PrototypeExpandingProcessorTest extends TestCase
             ],
         ]);
     }
+
+    public function testOverridenValuesAreOverridden()
+    {
+        $this->assertEquals([
+            'nodes' => [
+                'foobar' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'barfoo',
+                        ],
+                    ],
+                ],
+            ]
+        ], $this->processor->process([
+            'prototypes' => [
+                'foobar' => [
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'null'
+                        ]
+                    ]
+                ],
+            ],
+            'nodes' => [
+                'foobar' => [
+                    'prototype' => 'foobar',
+                    'tasks' => [
+                        'hello' => [
+                            'type' => 'barfoo'
+                        ],
+                    ],
+                ],
+            ],
+        ]));
+    }
 }

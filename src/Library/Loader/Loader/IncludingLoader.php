@@ -72,9 +72,9 @@ class IncludingLoader implements Loader
 
     private function importPath(string $includePath, array $data)
     {
-        return array_merge($data, $this->inflate(
+        return array_merge($this->inflate(
             $this->innerLoader->load($includePath),
             $includePath
-        ));
+        ), $data);
     }
 }

@@ -159,12 +159,12 @@ class Instantiator
                 }
             }
 
-
             throw new InvalidParameterType(sprintf(
-                'Argument "%s" has type "%s" but was passed "%s"',
+                'Argument "%s" has type "%s" but was passed "%s" for "%s"',
                 $parameter->getName(),
                 $reflectionType->getName(),
-                is_object($value) ? get_class($value) : gettype($value)
+                is_object($value) ? get_class($value) : gettype($value),
+                $className
             ));
         }
     }

@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Model\Loader;
 
 use Maestro\Extension\Runner\Task\InitTask;
+use Maestro\Library\Loader\Loader;
 use Maestro\Library\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
@@ -10,7 +11,7 @@ use Webmozart\PathUtil\Path;
 class ManifestLoader
 {
     /**
-     * @var array
+     * @var Processor[]
      */
     private $processors = [];
 
@@ -24,17 +25,21 @@ class ManifestLoader
      */
     private $workingDirectory;
 
-    public function __construct(string $workingDirectory, string $manifestPath, array $processors)
+    /**
+     * @var Loader
+     */
+    private $loader;
+
+    public function __construct(Loader $loader, string $workingDirectory, array $processors)
     {
         $this->processors = $processors;
-        $this->manifestPath = $manifestPath;
         $this->workingDirectory = $workingDirectory;
+        $this->loader = $loader;
     }
 
-    public function load(): ManifestNode
+    public function load(string $path): ManifestNode
     {
-        $path = $this->resolvePath();
-        $data = $this->loadManifestArray($path);
+        $data = $this->loader->load($this->normalizePath($path));
 
         foreach ($this->processors as $processor) {
             $data = $processor->process($data);
@@ -70,13 +75,12 @@ class ManifestLoader
         return $array;
     }
 
-    private function resolvePath(): string
+    private function normalizePath(string $path): string
     {
-        $planPath = $this->manifestPath;
-        if (Path::isAbsolute($planPath)) {
-            return $planPath;
+        if (Path::isAbsolute($path)) {
+            return $path;
         }
 
-        return Path::join($this->workingDirectory, $planPath);
+        return Path::join($this->workingDirectory, $path);
     }
 }

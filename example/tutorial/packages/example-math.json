@@ -1,0 +1,8 @@
+{
+    "prototype": "example",
+    "name": "maestrophp/example-math",
+    "args": {
+        "version": "1.0.0"
+    }
+}
+

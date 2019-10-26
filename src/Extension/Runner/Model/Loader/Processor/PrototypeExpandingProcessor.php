@@ -15,7 +15,7 @@ class PrototypeExpandingProcessor implements Processor
     public function process(array $node, array $prototypes = []): array
     {
         if (isset($node[self::KEY_PROTOTYPES])) {
-            $prototypes = $node[self::KEY_PROTOTYPES];
+            $prototypes = $this->normalizePrototypes($node[self::KEY_PROTOTYPES]);
             unset($node[self::KEY_PROTOTYPES]);
         }
 
@@ -49,5 +49,24 @@ class PrototypeExpandingProcessor implements Processor
         }
 
         return $node;
+    }
+
+    private function normalizePrototypes(array $prototypes): array
+    {
+        $nodes = [];
+        foreach ($prototypes as $prototypeName => $prototype) {
+
+            // allow prototype names to be defined inline rather than array
+            // keys- this allows for glob includes of prototype objects.
+            if (isset($prototype['name'])) {
+                $name = $prototype['name'];
+                unset($prototype['name']);
+                $nodes[$name] = $prototype;
+                continue;
+            }
+
+            $nodes[$prototypeName] = $prototype;
+        }
+        return $nodes;
     }
 }

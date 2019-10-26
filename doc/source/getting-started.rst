@@ -110,6 +110,28 @@ a :doc:`/reference/reports/version` reports:
 
     ./bin/maestro run -v --report=run --report=version
 
+Including Files
+---------------
+
+When you have a large number of packages you may want to dedicate a file to
+each package. 
+
+The following example is the same as the previous one but each package has
+it's own file:
+
+.. literalinclude:: ../../example/tutorial/getting-started-5.json
+   :language: json
+
+``packages/example-math.json``:
+
+.. literalinclude:: ../../example/tutorial/packages/example-math.json
+   :language: json
+
+``packages/example-science.json``:
+
+.. literalinclude:: ../../example/tutorial/packages/example-science.json
+   :language: json
+
 Summary
 -------
 

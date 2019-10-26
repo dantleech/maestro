@@ -46,7 +46,7 @@ EOT
 // File:config.json
 {
     "foobar": "barfoo",
-    "_include": "barfoo.json"
+    "include": "barfoo.json"
 }
 // File:barfoo.json
 {
@@ -65,11 +65,11 @@ EOT
 // File:config.json
 {
     "foobar": "barfoo",
-    "_include": "barfoo/barfoo.json"
+    "include": "barfoo/barfoo.json"
 }
 // File:barfoo/barfoo.json
 {
-    "_include": "../hello.json"
+    "include": "../hello.json"
 }
 // File:hello.json
 {
@@ -88,7 +88,7 @@ EOT
 // File:config.json
 {
     "packages": {
-        "_include": "barfoo/barfoo.json"
+        "include": "barfoo/barfoo.json"
     }
 }
 // File:barfoo/barfoo.json
@@ -109,7 +109,7 @@ EOT
 // File:config.json
 {
     "packages": {
-        "_include": "packages/*.json"
+        "include": "packages/*.json"
     }
 }
 // File:packages/one.json

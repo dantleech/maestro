@@ -1,0 +1,8 @@
+{
+    "name": "maestrophp/example-science",
+    "args": {
+        "version": "0.1.0"
+    },
+    "prototype": "example"
+}
+

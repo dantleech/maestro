@@ -1,0 +1,15 @@
+{
+    "args": {
+        "vars": {
+            "animal": "cow",
+            "greeting": "moo"
+        }
+    },
+    "nodes": {
+        "include": "packages/*.json"
+    },
+    "prototypes": {
+        "include": "prototypes/*.json"
+    }
+}
+

@@ -9,7 +9,7 @@ use Webmozart\PathUtil\Path;
 
 class IncludingLoader implements Loader
 {
-    private const KEY_INCLUDE = '_include';
+    private const KEY_INCLUDE = 'include';
 
     /**
      * @var Loader

@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Model\Loader;
 
 use Maestro\Extension\Runner\Task\InitTask;
+use Maestro\Library\Loader\Loader;
 use Maestro\Library\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
@@ -24,16 +25,21 @@ class ManifestLoader
      */
     private $workingDirectory;
 
-    public function __construct(string $workingDirectory, array $processors)
+    /**
+     * @var Loader
+     */
+    private $loader;
+
+    public function __construct(Loader $loader, string $workingDirectory, array $processors)
     {
         $this->processors = $processors;
         $this->workingDirectory = $workingDirectory;
+        $this->loader = $loader;
     }
 
     public function load(string $path): ManifestNode
     {
-        $path = $this->normalizePath($path);
-        $data = $this->loadManifestArray($path);
+        $data = $this->loader->load($this->normalizePath($path));
 
         foreach ($this->processors as $processor) {
             $data = $processor->process($data);

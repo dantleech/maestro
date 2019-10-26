@@ -5,6 +5,7 @@ namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader;
 use Maestro\Extension\Runner\Model\Loader\ManifestLoader;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\Processor;
+use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Tests\IntegrationTestCase;
 
 class ManifestLoaderTest extends IntegrationTestCase
@@ -59,6 +60,6 @@ class ManifestLoaderTest extends IntegrationTestCase
 
     protected function loadManifest(string $path, array $processors = []): ManifestNode
     {
-        return (new ManifestLoader($this->workspace()->path('/'), $processors))->load($path);
+        return (new ManifestLoader(new JsonLoader(), $this->workspace()->path('/'), $processors))->load($path);
     }
 }

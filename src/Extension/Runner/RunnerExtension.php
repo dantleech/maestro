@@ -4,6 +4,8 @@ namespace Maestro\Extension\Runner;
 
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
+use Maestro\Library\Loader\Loader\IncludingLoader;
+use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Library\Report\ReportRegistry;
 use Maestro\Extension\Report\ReportExtension;
 use Maestro\Extension\Runner\Command\Behavior\GraphBehavior;
@@ -169,6 +171,9 @@ class RunnerExtension implements Extension
     private function createManifestLoader(Container $container): ManifestLoader
     {
         return new ManifestLoader(
+            new IncludingLoader(
+                new JsonLoader()
+            ),
             $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             [
                 new PrototypeExpandingProcessor(),

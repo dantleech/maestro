@@ -47,13 +47,19 @@ class ManifestNode
      */
     private $tags;
 
+    /**
+     * @var string|null
+     */
+    private $include;
+
     public function __construct(
         string $name,
         string $type,
         array $args = [],
         array $nodes = [],
         array $depends = [],
-        array $tags = []
+        array $tags = [],
+        string $include = null
     ) {
         $this->type = $type;
         $this->args = $args;
@@ -66,6 +72,7 @@ class ManifestNode
         $this->name = $name;
         $this->depends = $depends;
         $this->tags = $tags;
+        $this->include = $include;
     }
 
     public function args(): array

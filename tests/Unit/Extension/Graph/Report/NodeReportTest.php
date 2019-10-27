@@ -4,13 +4,9 @@ namespace Maestro\Tests\Unit\Extension\Graph\Report;
 
 use Maestro\Extension\Graph\Report\NodeReport;
 use Maestro\Extension\Survey\Report\SurveyReport;
-use Maestro\Extension\Survey\Task\SurveyTask;
-use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
-use Maestro\Library\Artifact\Artifact;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Serializer\SerializerInterface;
 

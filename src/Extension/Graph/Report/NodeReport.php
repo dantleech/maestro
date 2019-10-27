@@ -7,7 +7,6 @@ use Maestro\Library\Report\Report;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class NodeReport implements Report
 {
@@ -34,7 +33,7 @@ class NodeReport implements Report
         $header = [];
         foreach ($graph->nodes() as $node) {
             $rowData = array_filter(
-                $this->flatten($this->serializer->normalize($node)),
+                $this->flatten((array)$this->serializer->normalize($node)),
                 function ($key) {
                     return in_array($key, [
                         'id',

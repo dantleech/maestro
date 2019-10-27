@@ -6,17 +6,26 @@ Expression Language`_.
 
 The filter will match nodes and *all dependencies* required to reach that node.
 
-For example to run only nodes with the name "phpunit":
+Examples
+--------
+
+Nodes with the name "phpunit":
 
 .. code-block:: bash
 
    $ maestro run --filter="label == 'phpunit'"
 
-Or only containing nodes tagged "foobar":
+Containing nodes tagged "foobar":
 
 .. code-block:: bash
 
    $ maestro run --filter="'foobar' in tags"
+
+With the ``package`` task:
+
+.. code-block:: bash
+
+   $ maestro run --filter="task['alias'] == 'package'"
 
 If you just want to run a branch of the graph you can use the ``branch``
 function:
@@ -25,8 +34,20 @@ function:
 
    $ maestro run --filter="branch('/maestrophp/example-math')"
 
-You can filter on any node attribute. The attributes are determined by the
-normalized representation of the node, which is the same as produced by the
-:doc:`/reference/reports/json` report.
+Available Fields
+----------------
+
+The attributes are determined by the normalized representation of the node,
+which is the same as produced by the :doc:`/reference/reports/json` report.
+
+.. code-block:: bash
+
+    $ maestro run -rjson --no-loop | jq
+
+Or to just see a simple list of nodes:
+
+.. code-block:: bash
+
+    $ maestro run -rnode --no-loop
 
 .. _`Symfony Expression Language`: https://symfony.com/doc/current/components/expression_language.html

@@ -69,11 +69,8 @@ class GraphTaskScheduler
     {
         $artifacts = new Artifacts();
 
-        foreach ($graph->dependenciesFor($node->id()) as $artNode) {
-            $artifacts = $artifacts->spawnMutated($artNode->artifacts());
-            foreach ($graph->ancestryFor($artNode->id()) as $descNode) {
-                $artifacts = $artifacts->spawnMutated($descNode->artifacts());
-            }
+        foreach ($graph->ancestryFor($node->id()) as $ancestorNode) {
+            $artifacts = $ancestorNode->artifacts()->spawnMutated($artifacts);
         }
 
         return $artifacts;

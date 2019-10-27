@@ -170,6 +170,35 @@ class GraphTaskSchedulerTest extends TestCase
             }
         ];
 
+        yield 'artifacts closest ancestor takes precedence over further ancestors' => [
+            function (GraphBuilder $builder) {
+                ;
+                $builder->addNode(
+                    NodeHelper::setState(Node::create('grandparent', [
+                        'artifacts' => [
+                            new TestArtifact('grandparent')
+                        ],
+                    ]), State::SUCCEEDED())
+                );
+                $builder->addNode(
+                    NodeHelper::setState(Node::create('parent', [
+                        'artifacts' => [
+                            new TestArtifact('parent')
+                        ],
+                    ]), State::SUCCEEDED())
+                );
+                $builder->addNode(Node::create('child'));
+
+                $builder->addEdge(Edge::create('child', 'parent'));
+                $builder->addEdge(Edge::create('parent', 'grandparent'));
+            },
+            function (Graph $graph, Queue $queue) {
+                $this->assertCount(1, $queue);
+                $job1 = $queue->dequeue();
+                $this->assertEquals(new TestArtifact('parent'), $job1->artifacts()->get(TestArtifact::class));
+            }
+        ];
+
         yield 'cancels nodes depending on a failed node' => [
             function (GraphBuilder $builder) {
                 $artifact = new TestArtifact();
@@ -197,6 +226,10 @@ class GraphTaskSchedulerTest extends TestCase
 class TestArtifact implements Artifact
 {
     public $id;
+    public function __construct($id = null)
+    {
+        $this->id = $id;
+    }
     public function serialize(): array
     {
         return [];

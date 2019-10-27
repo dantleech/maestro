@@ -25,11 +25,7 @@ class GraphFilter
         }
 
         $expression  = new ExpressionLanguage();
-        $expression->register('path', function ($val, $a) {
-            return '';
-        }, function ($node, $val) {
-            return false !== strpos($node['id'], $val);
-        });
+        $this->registerFunctions($expression);
 
         $nodeIds = [];
         foreach ($graph->nodes() as $node) {
@@ -42,5 +38,14 @@ class GraphFilter
         }
 
         return $graph->pruneFor($nodeIds);
+    }
+
+    private function registerFunctions(ExpressionLanguage $expression)
+    {
+        $expression->register('branch', function ($val, $a) {
+            return '';
+        }, function ($node, $val) {
+            return false !== strpos($node['id'], $val);
+        });
     }
 }

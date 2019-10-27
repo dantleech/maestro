@@ -43,11 +43,11 @@ class GraphFilterTest extends IntegrationTestCase
             ['n1']
         ];
 
-        yield 'path function matches start of ID' => [
+        yield 'execute only a certain branch' => [
             function (GraphBuilder $builder) {
                 $builder->addNode(Node::create('/foobar/n1'));
             },
-            'path("/foobar")',
+            'branch("/foobar")',
             ['/foobar/n1']
         ];
     }

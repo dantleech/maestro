@@ -125,11 +125,6 @@ class Graph
         return new self($nodes, $edges);
     }
 
-    public function pruneForTags(string ...$tags): Graph
-    {
-        return $this->pruneFor($this->nodes->byTags(...$tags)->ids());
-    }
-
     public function descendantsForIncluding(string $nodeName): Nodes
     {
         return Nodes::fromNodes([$this->nodes->get($nodeName)])

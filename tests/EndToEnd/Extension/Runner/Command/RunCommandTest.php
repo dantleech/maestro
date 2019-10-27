@@ -230,7 +230,7 @@ class RunCommandTest extends EndToEndTestCase
         ];
     }
 
-    public function testRunsOnlyTags()
+    public function testFiltersGraphWithsExpression()
     {
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
@@ -261,7 +261,7 @@ class RunCommandTest extends EndToEndTestCase
             ],
         ]);
 
-        $process = $this->command('run --tags=one --report=run');
+        $process = $this->command('run --filter="\'one\' in tags" --report=run');
         $this->assertProcessSuccess($process);
         $this->assertStringContainsString('mypackage', $process->getOutput());
         $this->assertStringNotContainsString('foobar', $process->getOutput());

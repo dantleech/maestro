@@ -3,11 +3,8 @@
 namespace Maestro\Extension\Runner\Model;
 
 use Maestro\Library\Graph\Graph;
-use Maestro\Library\Graph\Node;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\ExpressionLanguage\ParsedExpression;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class GraphFilter
 {
@@ -38,7 +35,7 @@ class GraphFilter
         foreach ($graph->nodes() as $node) {
             if ($expression->evaluate(
                 $filter,
-                $this->serializer->normalize($node)
+                (array)$this->serializer->normalize($node)
             )) {
                 $nodeIds[] = $node->id();
             }

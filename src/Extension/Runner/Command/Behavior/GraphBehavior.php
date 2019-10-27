@@ -21,13 +21,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class GraphBehavior
 {
     private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
-    private const OPT_TAGS = 'tags';
     private const OPT_REPORT = 'report';
     private const OPT_NO_LOOP = 'no-loop';
     private const OPT_FILTER = 'filter';
@@ -94,7 +92,6 @@ class GraphBehavior
 
     public function configure(Command $command): void
     {
-        $command->addOption(self::OPT_TAGS, 't', InputOption::VALUE_REQUIRED, 'Comma separated list of tags');
         $command->addOption(self::OPT_NO_LOOP, null, InputOption::VALUE_NONE, 'Do not run the event loop');
         $command->addOption(self::OPT_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter');
         $command->addOption(
@@ -110,16 +107,10 @@ class GraphBehavior
     {
         $graph = $this->constructor->construct();
 
-        $filter = $input->getOption(self::OPT_FILTER);
-        $graph = $this->filter->filter($graph, $filter);
-
-        $tags = $input->getOption(self::OPT_TAGS);
-        if ($tags) {
-            $tags = $this->tagParser->parse(Cast::toString($tags));
-            $this->logger->notice(sprintf('Pruning graph for tags: "%s"', implode('", "', $tags)));
-            $graph = $graph->pruneForTags(
-                ...$tags
-            );
+        $filter = Cast::toStringOrNull($input->getOption(self::OPT_FILTER));
+        if (null !== $filter) {
+            $this->logger->notice(sprintf('Pruning graph to filter expression: "%s"', $filter));
+            $graph = $this->filter->filter($graph, $filter);
         }
 
         return $graph;

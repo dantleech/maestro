@@ -83,23 +83,4 @@ class NodesTest extends TestCase
         ]);
         $this->assertEquals(['three', 'two', 'one'], $nodes->reverse()->ids());
     }
-
-    public function testGetTaggedNodes()
-    {
-        $nodes = Nodes::fromNodes([
-            Node::create('n1', [
-                'tags' => ['one'],
-            ]),
-            Node::create('n2', [
-                'tags' => ['one'],
-            ]),
-            Node::create('n3'),
-            Node::create('n4', [
-                'tags' => ['two'],
-            ]),
-        ]);
-
-        $nodes = $nodes->byTags(...['one', 'two']);
-        $this->assertEquals(['n1','n2','n4'], $nodes->ids());
-    }
 }

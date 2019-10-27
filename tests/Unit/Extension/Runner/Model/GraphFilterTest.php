@@ -7,7 +7,6 @@ use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class GraphFilterTest extends IntegrationTestCase

@@ -4,7 +4,7 @@ Reference
 .. toctree::
    :maxdepth: 3
 
-   reference/tasks
+   reference/graph-filter
    reference/reports
-
+   reference/tasks
 

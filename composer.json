@@ -27,7 +27,8 @@
     "phpactor/config-loader": "^0.1.1",
     "symfony/serializer": "^4.3",
     "symfony/property-access": "^4.3",
-    "webmozart/glob": "^4.1"
+    "webmozart/glob": "^4.1",
+    "symfony/expression-language": "^4.3"
   },
   "require-dev": {
     "sensiolabs-de/deptrac-shim": "^0.5.0",

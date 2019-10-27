@@ -318,33 +318,6 @@ class GraphTest extends TestCase
         $this->assertCount(3, $graph->edges());
     }
 
-    public function testPrunesGraphToTagsIncludingDescendants()
-    {
-        $graph = Graph::create(
-            [
-                Node::create('n1'),
-                Node::create('n2', [
-                    'tags' => ['tag2'],
-                ]),
-                Node::create('n3'),
-                Node::create('n4'),
-                Node::create('n5'),
-                Node::create('n6'),
-            ],
-            [
-                Edge::create('n5', 'n3'),
-                Edge::create('n4', 'n3'),
-                Edge::create('n3', 'n2'),
-                Edge::create('n2', 'n1'),
-                Edge::create('n6', 'n1'),
-            ]
-        );
-
-        $graph = $graph->pruneForTags('tag2');
-        $this->assertEquals(['n1','n2','n3','n5','n4'], $graph->nodes()->ids());
-        $this->assertCount(4, $graph->edges());
-    }
-
     /**
      * @dataProvider providePrunesGraphToGivenDepth
      */

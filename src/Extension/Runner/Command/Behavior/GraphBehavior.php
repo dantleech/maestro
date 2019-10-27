@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
+use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
 use Maestro\Library\Graph\GraphTaskScheduler;
@@ -25,8 +26,9 @@ class GraphBehavior
 {
     private const POLL_TIME_DISPATCH = 10;
     private const POLL_TIME_RENDER = 100;
-    private const OPTION_TAGS = 'tags';
-    private const OPTION_REPORT = 'report';
+    private const OPT_REPORT = 'report';
+    private const OPT_NO_LOOP = 'no-loop';
+    private const OPT_FILTER = 'filter';
 
     /**
      * @var GraphConstructor
@@ -63,6 +65,11 @@ class GraphBehavior
      */
     private $reportRegistry;
 
+    /**
+     * @var GraphFilter
+     */
+    private $filter;
+
     public function __construct(
         GraphConstructor $constructor,
         GraphTaskScheduler $scheduler,
@@ -70,7 +77,8 @@ class GraphBehavior
         LoggerInterface $logger,
         Queue $queue,
         TagParser $tagParser,
-        ReportRegistry $reportRegistry
+        ReportRegistry $reportRegistry,
+        GraphFilter $filter
     ) {
         $this->constructor = $constructor;
         $this->scheduler = $scheduler;
@@ -79,13 +87,15 @@ class GraphBehavior
         $this->queue = $queue;
         $this->tagParser = $tagParser;
         $this->reportRegistry = $reportRegistry;
+        $this->filter = $filter;
     }
 
     public function configure(Command $command): void
     {
-        $command->addOption(self::OPTION_TAGS, 't', InputOption::VALUE_REQUIRED, 'Comma separated list of tags');
+        $command->addOption(self::OPT_NO_LOOP, null, InputOption::VALUE_NONE, 'Do not run the event loop');
+        $command->addOption(self::OPT_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter');
         $command->addOption(
-            self::OPTION_REPORT,
+            self::OPT_REPORT,
             'r',
             InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY,
             'Reports to render',
@@ -97,13 +107,10 @@ class GraphBehavior
     {
         $graph = $this->constructor->construct();
 
-        $tags = $input->getOption(self::OPTION_TAGS);
-        if ($tags) {
-            $tags = $this->tagParser->parse(Cast::toString($tags));
-            $this->logger->notice(sprintf('Pruning graph for tags: "%s"', implode('", "', $tags)));
-            $graph = $graph->pruneForTags(
-                ...$tags
-            );
+        $filter = Cast::toStringOrNull($input->getOption(self::OPT_FILTER));
+        if (null !== $filter) {
+            $this->logger->notice(sprintf('Pruning graph to filter expression: "%s"', $filter));
+            $graph = $this->filter->filter($graph, $filter);
         }
 
         return $graph;
@@ -113,6 +120,10 @@ class GraphBehavior
     {
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
+
+        if ($input->getOption(self::OPT_NO_LOOP)) {
+            return;
+        }
 
         Loop::repeat(self::POLL_TIME_DISPATCH, function () use ($graph) {
             static $started = false;
@@ -167,7 +178,7 @@ class GraphBehavior
      */
     public function fetchReports(InputInterface $input): array
     {
-        $reports = Cast::toArray($input->getOption(self::OPTION_REPORT));
+        $reports = Cast::toArray($input->getOption(self::OPT_REPORT));
         return array_values((array)array_combine(array_map('ucfirst', $reports), array_map(function (string $reportName) {
             return $this->reportRegistry->get($reportName);
         }, $reports)));

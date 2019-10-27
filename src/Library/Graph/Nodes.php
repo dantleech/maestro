@@ -146,18 +146,6 @@ final class Nodes implements IteratorAggregate, Countable, ArrayAccess
         });
     }
 
-    public function byTags(string ...$tags): Nodes
-    {
-        return $this->filter(function (Node $node) use ($tags) {
-            foreach ($node->tags() as $tag) {
-                if (in_array($tag, $tags)) {
-                    return true;
-                }
-            }
-            return false;
-        });
-    }
-
     public function filter(Closure $predicate): Nodes
     {
         return Nodes::fromNodes(array_filter($this->nodes, $predicate));

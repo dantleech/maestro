@@ -108,7 +108,6 @@ class Graph
             $ancestry = $this->ancestryFor($target);
             $ancestry = $ancestry->add($node);
             $nodes = $nodes->merge($ancestry);
-            $nodes = $nodes->merge($this->descendantsFor($node->id()));
         }
 
         $edges = $this->edges;
@@ -124,11 +123,6 @@ class Graph
         }
 
         return new self($nodes, $edges);
-    }
-
-    public function pruneForTags(string ...$tags): Graph
-    {
-        return $this->pruneFor($this->nodes->byTags(...$tags)->ids());
     }
 
     public function descendantsForIncluding(string $nodeName): Nodes

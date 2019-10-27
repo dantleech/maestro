@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class SerializerExtension implements Extension
 {
@@ -35,7 +36,7 @@ class SerializerExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register(Serializer::class, function (Container $container) {
+        $container->register(SerializerInterface::class, function (Container $container) {
             $normalizers = $this->collectNormalizers($container);
             $serializer = new Serializer(
                 $normalizers,
@@ -96,7 +97,7 @@ class SerializerExtension implements Extension
     {
         $container->register(JsonReport::class, function (Container $container) {
             return new JsonReport(
-                $container->get(Serializer::class),
+                $container->get(SerializerInterface::class),
                 $container->get(ConsoleExtension::SERVICE_OUTPUT)
             );
         }, [

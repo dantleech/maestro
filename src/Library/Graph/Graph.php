@@ -108,7 +108,6 @@ class Graph
             $ancestry = $this->ancestryFor($target);
             $ancestry = $ancestry->add($node);
             $nodes = $nodes->merge($ancestry);
-            $nodes = $nodes->merge($this->descendantsFor($node->id()));
         }
 
         $edges = $this->edges;

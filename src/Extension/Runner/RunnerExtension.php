@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Runner;
 
+use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Library\Loader\Loader\IncludingLoader;
@@ -36,6 +37,7 @@ use Phpactor\Container\Extension;
 use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class RunnerExtension implements Extension
 {
@@ -95,7 +97,14 @@ class RunnerExtension implements Extension
                 $container->get(LoggingExtension::SERVICE_LOGGER),
                 $container->get(Queue::class),
                 new TagParser(),
-                $container->get(ReportRegistry::class)
+                $container->get(ReportRegistry::class),
+                $container->get(GraphFilter::class),
+            );
+        });
+
+        $container->register(GraphFilter::class, function (Container $container) {
+            return new GraphFilter(
+                $container->get(SerializerInterface::class)
             );
         });
     }

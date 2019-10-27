@@ -278,4 +278,28 @@ class RunCommandTest extends EndToEndTestCase
         $this->assertProcessFailure($process);
         $this->assertStringContainsString('Key(s) "foobar" are not known', $process->getErrorOutput());
     }
+
+    public function testRunningCanBeDisabledForDebugging()
+    {
+        $this->createPlan(self::EXAMPLE_PLAN_NAME, [
+            'nodes' => [
+                'mypackage' => [
+                    'type' => 'package',
+                    'args' => [
+                        'name' => 'mypackage',
+                    ],
+                    'nodes' => [
+                        'say hello' => [
+                            'type' => 'null',
+                            'tags' => ['one'],
+                        ]
+                    ],
+                ],
+            ]
+        ]);
+
+        $process = $this->command('run --no-loop');
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('mypackage', $process->getOutput());
+    }
 }

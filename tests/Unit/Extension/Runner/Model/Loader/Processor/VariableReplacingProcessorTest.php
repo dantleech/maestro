@@ -32,6 +32,25 @@ class VariableReplacingProcessorTest extends TestCase
         ]));
     }
 
+    public function testArrayValuesReplace()
+    {
+        self::assertEquals([
+            'vars' => [
+                'var' => ['bar'],
+            ],
+            'args' => [
+                'foo' => ['bar'],
+            ],
+        ], $this->create()->process([
+            'vars' => [
+                'var' => ['bar'],
+            ],
+            'args' => [
+                'foo' => '%var%',
+            ],
+        ]));
+    }
+
     public function testRelaceNestedArgValues()
     {
         self::assertEquals([

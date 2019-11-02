@@ -40,7 +40,17 @@ class VariableReplacingProcessor implements Processor
         }
 
         foreach ($vars as $key => $varValue) {
-            $value = str_replace(self::DELIMITER.$key.self::DELIMITER, $varValue, $value);
+            $token = self::DELIMITER.$key.self::DELIMITER;
+
+            if (false === strpos($value, $token)) {
+                continue;
+            }
+
+            if (is_array($varValue)) {
+                return $varValue;
+            }
+
+            $value = str_replace($token, $varValue, $value);
         }
         return $value;
     }

@@ -25,7 +25,7 @@ class ScriptRunnerTest extends IntegrationTestCase
     {
         $this->workspace()->reset();
         $this->logger = $this->prophesize(LoggerInterface::class);
-        $this->runner = new ScriptRunner($this->logger->reveal());
+        $this->runner = new ScriptRunner($this->logger->reveal(), $this->workspace()->path('/'));
     }
 
     public function testRunsCommand()
@@ -35,6 +35,15 @@ class ScriptRunnerTest extends IntegrationTestCase
         $this->assertEquals(0, $result->exitCode());
         $this->assertStringContainsString('Hello', $result->stdout());
     }
+
+    public function testRunsCommandInDefaultWorkingDirectory()
+    {
+        $result = \Amp\Promise\wait($this->runner->run('echo Hello', null, []));
+        $this->assertInstanceOf(ScriptResult::class, $result);
+        $this->assertEquals(0, $result->exitCode());
+        $this->assertStringContainsString('Hello', $result->stdout());
+    }
+
 
     public function testRunsACommandThatFails()
     {

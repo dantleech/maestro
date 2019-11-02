@@ -30,12 +30,12 @@ class ScriptHandler implements ProvidingTaskHandler
         ];
     }
 
-    public function __invoke(ScriptTask $script, Environment $environment, Workspace $workspace): Promise
+    public function __invoke(ScriptTask $script, Environment $environment, Workspace $workspace = null): Promise
     {
         return \Amp\call(function () use ($script, $environment, $workspace) {
             $result = yield $this->scriptRunner->run(
                 $script->script(),
-                $workspace->absolutePath(),
+                $workspace ? $workspace->absolutePath() : null,
                 $environment->toArray()
             );
 

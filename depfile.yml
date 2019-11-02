@@ -160,6 +160,7 @@ ruleset:
     ext-script:
         - lib-instantiator
         - ext-task
+        - ext-workspace
         - lib-task
         - lib-support
         - lib-util

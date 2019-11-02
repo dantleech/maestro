@@ -7,4 +7,5 @@ Reference
    reference/graph-filter
    reference/reports
    reference/tasks
+   reference/variables
 

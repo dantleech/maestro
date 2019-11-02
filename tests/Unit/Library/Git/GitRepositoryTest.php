@@ -34,7 +34,7 @@ class GitRepositoryTest extends IntegrationTestCase
 
         $logger = new NullLogger();
 
-        $this->scriptRunner = new ScriptRunner($logger);
+        $this->scriptRunner = new ScriptRunner($logger, $this->workspace()->path('/'));
         $this->gitRepository = new GitRepository(
             $this->scriptRunner,
             $logger,

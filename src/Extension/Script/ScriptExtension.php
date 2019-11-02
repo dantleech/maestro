@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Script;
 
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use Maestro\Library\Script\ScriptRunner;
 use Maestro\Extension\Script\Task\ScriptHandler;
 use Maestro\Extension\Script\Task\ScriptTask;
@@ -20,7 +21,10 @@ class ScriptExtension implements Extension
     public function load(ContainerBuilder $container)
     {
         $container->register(ScriptRunner::class, function (Container $container) {
-            return new ScriptRunner($container->get(LoggingExtension::SERVICE_LOGGER));
+            return new ScriptRunner(
+                $container->get(LoggingExtension::SERVICE_LOGGER),
+                $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_PATH)
+            );
         });
 
         $container->register(ScriptHandler::class, function (Container $container) {

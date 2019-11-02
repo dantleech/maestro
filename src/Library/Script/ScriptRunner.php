@@ -16,13 +16,21 @@ class ScriptRunner
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger)
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    public function __construct(LoggerInterface $logger, string $workingDirectory)
     {
         $this->logger = $logger;
+        $this->workingDirectory = $workingDirectory;
     }
 
-    public function run(string $script, string $workingDirectory, array $env): Promise
+    public function run(string $script, string $workingDirectory = null, array $env): Promise
     {
+        $workingDirectory = $workingDirectory ?: $this->workingDirectory;
+
         return \Amp\call(function () use ($script, $workingDirectory, $env) {
             $env = array_merge(getenv(), $env);
 

@@ -12,8 +12,11 @@ use Maestro\Extension\Vcs\Task\CheckoutHandler;
 use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Extension\Vcs\Task\TagVersionHandler;
 use Maestro\Extension\Vcs\Task\TagVersionTask;
+use Maestro\Extension\Vcs\Task\VcsWorkspaceHandler;
+use Maestro\Extension\Vcs\Task\VcsWorkspaceTask;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Vcs\RepositoryFactory;
+use Maestro\Library\Workspace\WorkspaceManager;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -59,6 +62,15 @@ class VcsExtension implements Extension
             ]
         ]);
 
+        $container->register(CheckoutHandler::class, function (Container $container) {
+            return new CheckoutHandler($container->get(RepositoryFactory::class));
+        }, [
+            TaskExtension::TAG_TASK_HANDLER => [
+                'alias' => 'checkout',
+                'taskClass' => CheckoutTask::class
+            ]
+        ]);
+
         $container->register(TagVersionHandler::class, function (Container $container) {
             return new TagVersionHandler(
                 $container->get(RepositoryFactory::class),
@@ -68,6 +80,15 @@ class VcsExtension implements Extension
             TaskExtension::TAG_TASK_HANDLER => [
                 'alias' => 'tag',
                 'taskClass' => TagVersionTask::class
+            ]
+        ]);
+
+        $container->register(VcsWorkspaceHandler::class, function (Container $container) {
+            return new VcsWorkspaceHandler($container->get(WorkspaceManager::class));
+        }, [
+            TaskExtension::TAG_TASK_HANDLER => [
+                'alias' => 'vcsWorkspace',
+                'taskClass' => VcsWorkspaceTask::class
             ]
         ]);
     }

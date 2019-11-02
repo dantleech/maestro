@@ -22,8 +22,9 @@ class CheckoutHandler
         $this->repositoryFactory = $repositoryFactory;
     }
 
-    public function __invoke(CheckoutTask $checkoutTask, Workspace $workspace, Environment $environment): Promise
+    public function __invoke(CheckoutTask $checkoutTask, Workspace $workspace, Environment $environment = null): Promise
     {
+        $environment = $environment ?? new Environment();
         return \Amp\call(function () use ($checkoutTask, $workspace, $environment) {
             $repository = $this->repositoryFactory->create($workspace->absolutePath());
 

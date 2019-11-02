@@ -5,3 +5,4 @@
 /.phpcs.cache
 /.phpunit.result.cache
 /doc/build
+/example/test.json

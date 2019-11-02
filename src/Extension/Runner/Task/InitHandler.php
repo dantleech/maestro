@@ -5,7 +5,6 @@ namespace Maestro\Extension\Runner\Task;
 use Amp\Success;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Support\ManifestPath;
-use Maestro\Library\Support\Variables\Variables;
 
 class InitHandler
 {
@@ -13,7 +12,6 @@ class InitHandler
     {
         $artifacts = [
             new Environment($task->env()),
-            new Variables($task->vars()),
         ];
 
         $path = $task->path();

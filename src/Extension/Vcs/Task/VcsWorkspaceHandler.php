@@ -5,9 +5,7 @@ namespace Maestro\Extension\Vcs\Task;
 use Amp\Promise;
 use Maestro\Library\Artifact\Artifacts;
 use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Task\TaskRunner;
-use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
 
 class VcsWorkspaceHandler
@@ -27,10 +25,15 @@ class VcsWorkspaceHandler
         return \Amp\call(function () use ($task, $taskRunner) {
             $workspace = $this->workspaceManager->createNamedWorkspace($task->name());
 
-            yield $taskRunner->run(Instantiator::instantiate(CheckoutTask::class, [
+            if (!file_exists($workspace->absolutePath())) {
+                mkdir($workspace->absolutePath(), 0777, true);
+            }
+
+            yield $taskRunner->run(
+                Instantiator::instantiate(CheckoutTask::class, [
                 'url' => $task->url(),
                 'update' => $task->update(),
-            ]), 
+            ]),
                 new Artifacts([$workspace])
             );
 

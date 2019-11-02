@@ -95,5 +95,6 @@ class NodeTest extends TestCase
         Loop::run();
 
         $this->assertEquals(State::SUCCEEDED(), $node->state());
+        self::assertCount(1, $node->artifacts());
     }
 }

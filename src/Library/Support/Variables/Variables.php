@@ -12,7 +12,7 @@ class Variables implements Artifact
      */
     public $variables;
 
-    public function __construct(array $variables)
+    public function __construct(array $variables = [])
     {
         $this->variables = $variables;
     }
@@ -26,13 +26,18 @@ class Variables implements Artifact
         return $this->variables[$name];
     }
 
+    public function merge(Variables $variables): self
+    {
+        return new self(array_merge($this->variables, $variables->variables));
+    }
+
     public function toArray(): array
     {
         return $this->variables;
     }
 
-    public function serialize(): array
+    public static function fromArray(array $array): self
     {
-        return $this->toArray();
+        return new self($array);
     }
 }

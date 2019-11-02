@@ -116,4 +116,9 @@ class ManifestNode
     {
         return $this->tags;
     }
+
+    public function vars(): array
+    {
+        return $this->vars;
+    }
 }

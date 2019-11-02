@@ -1,9 +1,7 @@
 {
-    "args": {
-        "vars": {
-            "animal": "cow",
-            "greeting": "moo"
-        }
+    "vars": {
+        "animal": "cow",
+        "greeting": "moo"
     },
     "nodes": {
         "maestrophp/example-math": {

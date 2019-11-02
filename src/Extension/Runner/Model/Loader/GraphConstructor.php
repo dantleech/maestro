@@ -9,6 +9,7 @@ use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
 use Maestro\Library\Instantiator\Instantiator;
 use Maestro\Library\Support\NodeMeta;
+use Maestro\Library\Support\Variables\Variables;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
 
@@ -35,25 +36,28 @@ class GraphConstructor
     public function construct(): Graph
     {
         $builder = GraphBuilder::create();
-        $this->buildNode($builder, $this->manifest, '');
+        $this->buildNode($builder, $this->manifest, new Variables(), '');
 
         return $builder->build();
     }
 
-    private function buildNode(GraphBuilder $builder, ManifestNode $node, ?string $parentPath): void
+    private function buildNode(GraphBuilder $builder, ManifestNode $node, Variables $variables, ?string $parentPath): void
     {
         $path = '/'.$node->name();
         if ($parentPath) {
             $path = Path::join([$parentPath, $node->name()]);
         }
 
+        $variables = $variables->merge(new Variables($node->vars()));
+
         $builder->addNode(Node::create($path, [
             'label' => $node->name(),
             'task' => $this->createTask($node),
             'tags' => $node->tags(),
             'artifacts' => [
-                new NodeMeta($node->name(), $path)
-            ],
+                new NodeMeta($node->name(), $path),
+                $variables,
+            ]
         ]));
 
         foreach ($this->pathExpander->expand($this->nodeDependencies($node, $parentPath), $parentPath) as $dependencyPath) {
@@ -61,7 +65,7 @@ class GraphConstructor
         }
 
         foreach ($node->nodes() as $name => $childNode) {
-            $this->buildNode($builder, $childNode, $path);
+            $this->buildNode($builder, $childNode, $variables, $path);
         }
     }
 

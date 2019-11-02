@@ -12,19 +12,13 @@ class InitTask implements Task
     private $env;
 
     /**
-     * @var array
-     */
-    private $vars;
-
-    /**
      * @var string
      */
     private $path;
 
-    public function __construct(array $env = [], array $vars = [], string $path)
+    public function __construct(array $env = [], string $path)
     {
         $this->env = $env;
-        $this->vars = $vars;
         $this->path = $path;
     }
 
@@ -41,10 +35,5 @@ class InitTask implements Task
     public function path(): string
     {
         return $this->path;
-    }
-
-    public function vars(): array
-    {
-        return $this->vars;
     }
 }

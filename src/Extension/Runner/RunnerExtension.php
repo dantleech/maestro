@@ -5,6 +5,7 @@ namespace Maestro\Extension\Runner;
 use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
+use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
 use Maestro\Library\Loader\Loader\IncludingLoader;
 use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Library\Report\ReportRegistry;
@@ -188,7 +189,8 @@ class RunnerExtension implements Extension
                 new PrototypeExpandingProcessor(),
                 new TaskAliasExpandingProcessor(
                     $container->get(TaskHandlerDefinitionMap::class),
-                )
+                ),
+                new VariableReplacingProcessor(),
             ]
         );
     }

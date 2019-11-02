@@ -117,6 +117,7 @@ ruleset:
         - lib-task
         - lib-instantiator
         - lib-artifact
+        - lib-support
 
     lib-task:
         - lib-instantiator

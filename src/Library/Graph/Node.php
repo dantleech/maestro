@@ -142,7 +142,7 @@ final class Node
                 return;
             }
 
-            $this->artifacts = new Artifacts($artifacts);
+            $this->artifacts = $this->artifacts->spawnMutated(new Artifacts($artifacts));
             $this->state = State::SUCCEEDED();
         });
     }

@@ -9,7 +9,6 @@ package
   - ``url`` (string) canonical URL for this package.
   - ``purgeWorkspace`` (bool) Remove all data from the workspace.
   - ``version``: Current or desired semantic version for this package.
-  - ``env``: Environment variables for dependent nodes
   - ``vars``: Variables for dependent nodes.
 
 Defines and initializes a package/project.

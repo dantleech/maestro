@@ -19,11 +19,9 @@ class TaskAliasExpandingProcessor implements Processor
 
     public function process(array $node): array
     {
-        if (!isset($node['type'])) {
-            $node['type'] = 'null';
+        if (isset($node['type'])) {
+            $node['type'] = $this->map->getDefinitionByAlias($node['type'])->taskClass();
         }
-
-        $node['type'] = $this->map->getDefinitionByAlias($node['type'])->taskClass();
 
         foreach ($node['nodes'] ?? [] as $childName => $childNode) {
             $node['nodes'][$childName] = $this->process($childNode);

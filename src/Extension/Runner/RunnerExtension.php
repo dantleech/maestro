@@ -30,6 +30,7 @@ use Maestro\Extension\Task\TaskExtension;
 use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Worker;
+use Maestro\Library\TokenReplacer\TokenReplacer;
 use Maestro\Library\Workspace\WorkspaceManager;
 use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
@@ -190,7 +191,9 @@ class RunnerExtension implements Extension
                 new TaskAliasExpandingProcessor(
                     $container->get(TaskHandlerDefinitionMap::class),
                 ),
-                new VariableReplacingProcessor(),
+                new VariableReplacingProcessor(
+                    new TokenReplacer()
+                ),
             ]
         );
     }

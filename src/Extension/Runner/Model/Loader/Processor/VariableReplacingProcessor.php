@@ -3,18 +3,31 @@
 namespace Maestro\Extension\Runner\Model\Loader\Processor;
 
 use Maestro\Extension\Runner\Model\Loader\Processor;
+use Maestro\Library\TokenReplacer\TokenReplacer;
 
 class VariableReplacingProcessor implements Processor
 {
-    const DELIMITER = '%';
+    /**
+     * @var TokenReplacer
+     */
+    private $tokenReplacer;
+
+    public function __construct(TokenReplacer $tokenReplacer)
+    {
+        $this->tokenReplacer = $tokenReplacer;
+    }
 
     public function process(array $data): array
     {
         return $this->doProcess($data);
     }
 
-    private function doProcess(array $node, array $vars = []): array
+    private function doProcess(array $node, array $vars = [], string $nodeName = null): array
     {
+        if (null !== $nodeName) {
+            $vars['_name'] = $nodeName;
+        }
+
         if (isset($node['vars'])) {
             $vars = array_merge($vars, $node['vars']);
         }
@@ -24,7 +37,7 @@ class VariableReplacingProcessor implements Processor
         }
 
         foreach ($node['nodes'] ?? [] as $childName => $childNode) {
-            $node['nodes'][$childName] = $this->doProcess($childNode, $vars);
+            $node['nodes'][$childName] = $this->doProcess($childNode, $vars, $childName);
         }
 
         return $node;
@@ -39,19 +52,6 @@ class VariableReplacingProcessor implements Processor
             return $value;
         }
 
-        foreach ($vars as $key => $varValue) {
-            $token = self::DELIMITER.$key.self::DELIMITER;
-
-            if (false === strpos($value, $token)) {
-                continue;
-            }
-
-            if (is_array($varValue)) {
-                return $varValue;
-            }
-
-            $value = str_replace($token, $varValue, $value);
-        }
-        return $value;
+        return $this->tokenReplacer->replace($value, $vars);
     }
 }

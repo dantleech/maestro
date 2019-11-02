@@ -45,14 +45,15 @@ class ManifestLoader
             $data = $processor->process($data);
         }
 
-        return ManifestNode::fromArray(array_merge($data, [
-            'name' => '',
-            'type' => InitTask::class,
-            'args' => array_merge($data['args'] ?? [], [
+        if (!isset($data['type'])) {
+            $data['name'] = '';
+            $data['type'] = InitTask::class;
+            $data['args'] = [
                 'path' => $path
-            ]),
-            'vars' => $data['vars'] ?? [],
-        ]));
+            ];
+        }
+
+        return ManifestNode::fromArray($data);
     }
 
     private function loadManifestArray(string $path)

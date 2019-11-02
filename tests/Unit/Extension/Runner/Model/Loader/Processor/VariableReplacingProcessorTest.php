@@ -4,6 +4,7 @@ namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader\Processor;
 
 use Maestro\Extension\Runner\Model\Loader\Processor;
 use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
+use Maestro\Library\TokenReplacer\TokenReplacer;
 use PHPUnit\Framework\TestCase;
 
 class VariableReplacingProcessorTest extends TestCase
@@ -101,8 +102,29 @@ class VariableReplacingProcessorTest extends TestCase
         ]));
     }
 
+    public function testMagicallyIncludesNodeName()
+    {
+        self::assertEquals([
+            'nodes' => [
+                'one' => [
+                    'args' => [
+                        'bar' => 'one',
+                    ],
+                ],
+            ],
+        ], $this->create()->process([
+            'nodes' => [
+                'one' => [
+                    'args' => [
+                        'bar' => '%_name%',
+                    ],
+                ],
+            ],
+        ]));
+    }
+
     private function create(): Processor
     {
-        return new VariableReplacingProcessor();
+        return new VariableReplacingProcessor(new TokenReplacer());
     }
 }

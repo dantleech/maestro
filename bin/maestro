@@ -13,6 +13,7 @@ foreach ([
 ] as $candidate) {
     if (file_exists($candidate)) {
         $autoloadPath = $candidate;
+        break;
     }
 }
 
@@ -20,7 +21,6 @@ if (!$autoloadPath) {
     echo 'Could not find autoload.php, maybe you need to "composer install"?';
     exit(1);
 }
-
 require($autoloadPath);
 
 if (class_exists(Symfony\Component\Debug\Debug::class)) {

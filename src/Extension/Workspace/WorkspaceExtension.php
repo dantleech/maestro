@@ -2,6 +2,9 @@
 
 namespace Maestro\Extension\Workspace;
 
+use Maestro\Extension\Task\TaskExtension;
+use Maestro\Extension\Workspace\Task\MountedWorkspaceHandler;
+use Maestro\Extension\Workspace\Task\MountedWorkspaceTask;
 use Maestro\Library\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Library\Workspace\WorkspaceManager;
 use Phpactor\Container\Container;
@@ -29,6 +32,17 @@ class WorkspaceExtension implements Extension
                 $container->getParameter(self::PARAM_WORKSPACE_PATH)
             );
         });
+
+        $container->register(MountedWorkspaceHandler::class, function (Container $container) {
+            return new MountedWorkspaceHandler(
+                $container->get(WorkspaceManager::class)
+            );
+        }, [
+            TaskExtension::TAG_TASK_HANDLER => [
+                'alias' => 'mountedWorkspace',
+                'taskClass' => MountedWorkspaceTask::class
+            ]
+        ]);
     }
 
     /**

@@ -168,6 +168,8 @@ ruleset:
         - lib-script
 
     ext-workspace:
+        - ext-task
+        - lib-task
         - lib-workspace
 
     ext-template:

@@ -9,7 +9,6 @@ use Maestro\Library\Task\Test\HandlerTester;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
 use Maestro\Tests\IntegrationTestCase;
-use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 
 class MountedWorkspaceHandlerTest extends IntegrationTestCase

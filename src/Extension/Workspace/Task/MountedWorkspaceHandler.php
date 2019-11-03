@@ -3,12 +3,10 @@
 namespace Maestro\Extension\Workspace\Task;
 
 use Amp\Promise;
-use Generator;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
 use function Amp\File\symlink;
-use function Amp\File\unlink;
 use function Amp\File\exists;
 
 class MountedWorkspaceHandler
@@ -41,7 +39,8 @@ class MountedWorkspaceHandler
             if (!yield exists($targetPath)) {
                 throw new TaskFailure(sprintf(
                     'Path "%s" in workspace "%s" does not exist, is the workspace initialized?',
-                    $task->path(), $task->host()
+                    $task->path(),
+                    $task->host()
                 ));
             }
 
@@ -61,7 +60,8 @@ class MountedWorkspaceHandler
         // no async function for this...
         if (false === is_link($mountedWorkspace->absolutePath())) {
             throw new TaskFailure(sprintf(
-                'Mounted workspace path "%s" already exists and is not a link', $mountedWorkspace->absolutePath()
+                'Mounted workspace path "%s" already exists and is not a link',
+                $mountedWorkspace->absolutePath()
             ));
         }
 

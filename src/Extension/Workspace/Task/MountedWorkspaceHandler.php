@@ -3,7 +3,9 @@
 namespace Maestro\Extension\Workspace\Task;
 
 use Amp\Promise;
+use Generator;
 use Maestro\Library\Task\Exception\TaskFailure;
+use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
 use function Amp\File\symlink;
 use function Amp\File\unlink;
@@ -26,6 +28,14 @@ class MountedWorkspaceHandler
         return \Amp\call(function () use ($task) {
             $hostWorkspace = $this->manager->createNamedWorkspace($task->host());
             $mountedWorkspace = $this->manager->createNamedWorkspace($task->name());
+
+            if (!yield exists($hostWorkspace->absolutePath('/'))) {
+                throw new TaskFailure(sprintf(
+                    'Host worksapce "%s" does not exist',
+                    $task->host()
+                ));
+            }
+
             $targetPath = $hostWorkspace->absolutePath($task->path());
 
             if (!yield exists($targetPath)) {
@@ -36,9 +46,7 @@ class MountedWorkspaceHandler
             }
 
             if (yield exists($mountedWorkspace->absolutePath())) {
-                return [
-                    $mountedWorkspace
-                ];
+                return $this->handleExisting($mountedWorkspace, $targetPath);
             }
 
             yield symlink($targetPath, $mountedWorkspace->absolutePath());
@@ -46,5 +54,19 @@ class MountedWorkspaceHandler
                 $mountedWorkspace
             ];
         });
+    }
+
+    private function handleExisting(Workspace $mountedWorkspace, string $targetPath): array
+    {
+        // no async function for this...
+        if (false === is_link($mountedWorkspace->absolutePath())) {
+            throw new TaskFailure(sprintf(
+                'Mounted workspace path "%s" already exists and is not a link', $mountedWorkspace->absolutePath()
+            ));
+        }
+
+        return [
+            $mountedWorkspace
+        ];
     }
 }

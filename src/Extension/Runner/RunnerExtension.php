@@ -6,6 +6,7 @@ use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use Maestro\Library\Loader\Loader\IncludingLoader;
 use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Library\Report\ReportRegistry;
@@ -101,6 +102,7 @@ class RunnerExtension implements Extension
                 new TagParser(),
                 $container->get(ReportRegistry::class),
                 $container->get(GraphFilter::class),
+                $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_PATH)
             );
         });
 

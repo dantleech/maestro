@@ -3,6 +3,7 @@
 namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
+use Maestro\Extension\File\Task\PurgeDirectoryTask;
 use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
@@ -11,6 +12,7 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Report\Report;
 use Maestro\Library\Report\ReportRegistry;
+use Maestro\Library\Task\Job;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Worker;
@@ -29,6 +31,7 @@ class GraphBehavior
     private const OPT_REPORT = 'report';
     private const OPT_NO_LOOP = 'no-loop';
     private const OPT_FILTER = 'filter';
+    private const OPT_PURGE = 'purge';
 
     /**
      * @var GraphConstructor
@@ -70,6 +73,16 @@ class GraphBehavior
      */
     private $filter;
 
+    /**
+     * @var WorkspaceManger
+     */
+    private $workspaceManager;
+
+    /**
+     * @var string
+     */
+    private $workspacePath;
+
     public function __construct(
         GraphConstructor $constructor,
         GraphTaskScheduler $scheduler,
@@ -78,7 +91,8 @@ class GraphBehavior
         Queue $queue,
         TagParser $tagParser,
         ReportRegistry $reportRegistry,
-        GraphFilter $filter
+        GraphFilter $filter,
+        string $workspacePath
     ) {
         $this->constructor = $constructor;
         $this->scheduler = $scheduler;
@@ -88,12 +102,14 @@ class GraphBehavior
         $this->tagParser = $tagParser;
         $this->reportRegistry = $reportRegistry;
         $this->filter = $filter;
+        $this->workspacePath = $workspacePath;
     }
 
     public function configure(Command $command): void
     {
         $command->addOption(self::OPT_NO_LOOP, null, InputOption::VALUE_NONE, 'Do not run the event loop');
         $command->addOption(self::OPT_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter');
+        $command->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge workspace before starting');
         $command->addOption(
             self::OPT_REPORT,
             'r',
@@ -120,6 +136,10 @@ class GraphBehavior
     {
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
+
+        if ($input->getOption(self::OPT_PURGE)) {
+            $this->queue->enqueue(Job::create(new PurgeDirectoryTask($this->workspacePath)));
+        }
 
         if ($input->getOption(self::OPT_NO_LOOP)) {
             return;

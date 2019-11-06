@@ -41,6 +41,7 @@ use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\SerializerInterface;
+use Webmozart\PathUtil\Path;
 
 class RunnerExtension implements Extension
 {
@@ -102,7 +103,10 @@ class RunnerExtension implements Extension
                 new TagParser(),
                 $container->get(ReportRegistry::class),
                 $container->get(GraphFilter::class),
-                $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_PATH)
+                Path::join([
+                    $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_PATH),
+                    $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE)
+                ])
             );
         });
 

@@ -23,6 +23,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 class GraphBehavior
 {
@@ -138,7 +139,8 @@ class GraphBehavior
         $section = $output->section();
 
         if ($input->getOption(self::OPT_PURGE)) {
-            $this->queue->enqueue(Job::create(new PurgeDirectoryTask($this->workspacePath)));
+            $this->logger->info(sprintf('Purging workspace path "%s"', $this->workspacePath));
+            (new Filesystem())->remove($this->workspacePath);
         }
 
         if ($input->getOption(self::OPT_NO_LOOP)) {

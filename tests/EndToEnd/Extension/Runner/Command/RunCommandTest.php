@@ -170,13 +170,13 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],
                 ],
                 'foobar' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'foobar',
                     ],
@@ -185,6 +185,7 @@ class RunCommandTest extends EndToEndTestCase
         ]);
 
         $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
+        $this->assertFileExists($this->workspace()->path('workspace/foobar/foobar'));
         $process = $this->command('run --namespace="" --purge');
         $this->assertProcessSuccess($process);
         $this->assertFileNotExists($this->workspace()->path('workspace/foobar/foobar'));

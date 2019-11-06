@@ -2,7 +2,7 @@
 
 namespace Maestro\Extension\Runner\Report;
 
-use Maestro\Extension\Runner\Task\PackageTask;
+use Maestro\Library\Graph\Nodes;
 use Maestro\Library\Report\Report;
 use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\Node;
@@ -28,37 +28,14 @@ class RunReport implements Report
     {
         $table = new Table($this->output);
         $table->setHeaders([
-            'package',
-            'label',
-            'action',
+            '#',
             '✔',
-            ''
+            'node',
+            'failure',
         ]);
-        $table->setColumnMaxWidth(0, 30);
-        $table->setColumnMaxWidth(1, 30);
-        $table->setColumnMaxWidth(2, 30);
-        $table->setColumnMaxWidth(3, 30);
-        $table->setColumnMaxWidth(4, 50);
 
         $packageNo = 0;
-        foreach ($graph->nodes()->byTaskClass(PackageTask::class) as $packageNode) {
-            $taskRows = $this->taskRows($graph, $packageNode->id());
-
-            if ($packageNo++ > 0) {
-                $table->addRow(new TableSeparator());
-            }
-
-            foreach ($taskRows as $index => $taskRow) {
-                if ($index === 0) {
-                    $table->addRow(array_merge([
-                        $this->buildPackageRow($packageNode, count($taskRows)),
-                    ], $taskRow));
-                    continue;
-                }
-
-                $table->addRow($taskRow);
-            }
-        }
+        $table->addRows($this->taskRows($graph, $graph->nodes()));
         $table->render();
         $this->output->writeln(sprintf(
             '<options=bold;%s> %s nodes, %s pending %s succeeded, %s cancelled, %s failed </>',
@@ -78,26 +55,22 @@ class RunReport implements Report
         ]);
     }
 
-    private function taskRows(Graph $graph, string $packageId): array
+    private function taskRows(Graph $graph, Nodes $nodes): array
     {
-        $level = 0;
         $rows = [];
-        foreach ($graph->descendantsForIncluding($packageId) as $taskNode) {
-            if ($level++ && $taskNode->task() instanceof PackageTask) {
-                break;
-            }
-            $failure = $taskNode->exception();
+        $index = 0;
+        foreach ($nodes as $node) {
+            $failure = $node->exception();
             $rows[] = [
-                $taskNode->label(),
-                $taskNode->task()->description(),
-                sprintf(
-                    '%s %s',
-                    $this->stateIcon($taskNode),
-                    ''
-                ),
+                $index++,
+                $this->stateIcon($node),
+                sprintf("%s\n<fg=blue>%s</>", $node->id(), $node->task()->description()),
                 $failure ? $failure->getMessage() : ''
             ];
+            $rows[] = new TableSeparator();
         }
+
+
         return $rows;
     }
 

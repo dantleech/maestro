@@ -3,8 +3,8 @@
 namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
-use Maestro\Extension\File\Task\PurgeDirectoryTask;
 use Maestro\Extension\Runner\Model\GraphFilter;
+use Maestro\Extension\Runner\Model\PurgeWorkspaceModifier;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
 use Maestro\Library\Graph\GraphTaskScheduler;
@@ -12,7 +12,6 @@ use Maestro\Library\Graph\Graph;
 use Maestro\Library\Graph\State;
 use Maestro\Library\Report\Report;
 use Maestro\Library\Report\ReportRegistry;
-use Maestro\Library\Task\Job;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Task;
 use Maestro\Library\Task\Worker;
@@ -23,7 +22,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
 
 class GraphBehavior
 {
@@ -75,14 +73,9 @@ class GraphBehavior
     private $filter;
 
     /**
-     * @var WorkspaceManger
+     * @var PurgeWorkspaceModifier
      */
-    private $workspaceManager;
-
-    /**
-     * @var string
-     */
-    private $workspacePath;
+    private $purgeModifier;
 
     public function __construct(
         GraphConstructor $constructor,
@@ -93,7 +86,7 @@ class GraphBehavior
         TagParser $tagParser,
         ReportRegistry $reportRegistry,
         GraphFilter $filter,
-        string $workspacePath
+        PurgeWorkspaceModifier $purgeModifier
     ) {
         $this->constructor = $constructor;
         $this->scheduler = $scheduler;
@@ -103,7 +96,7 @@ class GraphBehavior
         $this->tagParser = $tagParser;
         $this->reportRegistry = $reportRegistry;
         $this->filter = $filter;
-        $this->workspacePath = $workspacePath;
+        $this->purgeModifier = $purgeModifier;
     }
 
     public function configure(Command $command): void
@@ -130,6 +123,10 @@ class GraphBehavior
             $graph = $this->filter->filter($graph, $filter);
         }
 
+        if ($input->getOption(self::OPT_PURGE)) {
+            $graph = $this->purgeModifier->modify($graph);
+        }
+
         return $graph;
     }
 
@@ -137,11 +134,6 @@ class GraphBehavior
     {
         assert($output instanceof ConsoleOutputInterface);
         $section = $output->section();
-
-        if ($input->getOption(self::OPT_PURGE)) {
-            $this->logger->info(sprintf('Purging workspace path "%s"', $this->workspacePath));
-            (new Filesystem())->remove($this->workspacePath);
-        }
 
         if ($input->getOption(self::OPT_NO_LOOP)) {
             return;

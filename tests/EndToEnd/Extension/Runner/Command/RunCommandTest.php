@@ -222,7 +222,7 @@ class RunCommandTest extends EndToEndTestCase
     {
         yield 'run' => [
             'run',
-            'action'
+            'node'
         ];
 
         yield 'json' => [

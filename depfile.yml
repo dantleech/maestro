@@ -149,6 +149,7 @@ ruleset:
         - lib-artifact
         - ext-vcs
         - ext-task
+        - ext-workspace
 
     ext-task:
         - lib-task

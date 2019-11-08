@@ -9,6 +9,8 @@ use Phpactor\TestUtils\Workspace;
 
 class WorkspaceManagerTest extends IntegrationTestCase
 {
+    const EMPTY_NAMESPACE = '';
+
     /**
      * @var Workspace
      */
@@ -56,9 +58,9 @@ class WorkspaceManagerTest extends IntegrationTestCase
 
     public function testListsWorkspaces()
     {
-        $this->workspace()->put('foobar/barfoo/README.md', '');
-        $this->workspace()->put('foobar/foobar/README.md', '');
-        $workspaces = $this->create('')->listWorkspaces();
+        $this->workspace()->put('foobar/barfoo/README.md', self::EMPTY_NAMESPACE);
+        $this->workspace()->put('foobar/foobar/README.md', self::EMPTY_NAMESPACE);
+        $workspaces = $this->create(self::EMPTY_NAMESPACE)->listWorkspaces();
         $this->assertCount(2, $workspaces);
         $this->assertEquals('foobar/barfoo', $workspaces->first()->name());
     }

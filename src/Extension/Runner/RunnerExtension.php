@@ -6,6 +6,8 @@ use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
+use Maestro\Extension\Runner\Model\PurgeWorkspaceModifier;
+use Maestro\Extension\Workspace\WorkspaceExtension;
 use Maestro\Library\Loader\Loader\IncludingLoader;
 use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Library\Report\ReportRegistry;
@@ -40,6 +42,7 @@ use Phpactor\Extension\Console\ConsoleExtension;
 use Phpactor\Extension\Logger\LoggingExtension;
 use Phpactor\MapResolver\Resolver;
 use Symfony\Component\Serializer\SerializerInterface;
+use Webmozart\PathUtil\Path;
 
 class RunnerExtension implements Extension
 {
@@ -101,6 +104,10 @@ class RunnerExtension implements Extension
                 new TagParser(),
                 $container->get(ReportRegistry::class),
                 $container->get(GraphFilter::class),
+                new PurgeWorkspaceModifier(Path::join([
+                    $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_PATH),
+                    $container->getParameter(WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE)
+                ]))
             );
         });
 

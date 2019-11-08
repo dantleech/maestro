@@ -4,6 +4,7 @@ namespace Maestro\Extension\Runner\Command\Behavior;
 
 use Amp\Loop;
 use Maestro\Extension\Runner\Model\GraphFilter;
+use Maestro\Extension\Runner\Model\PurgeWorkspaceModifier;
 use Maestro\Extension\Runner\Model\TagParser;
 use Maestro\Extension\Runner\Model\Loader\GraphConstructor;
 use Maestro\Library\Graph\GraphTaskScheduler;
@@ -29,6 +30,7 @@ class GraphBehavior
     private const OPT_REPORT = 'report';
     private const OPT_NO_LOOP = 'no-loop';
     private const OPT_FILTER = 'filter';
+    private const OPT_PURGE = 'purge';
 
     /**
      * @var GraphConstructor
@@ -70,6 +72,11 @@ class GraphBehavior
      */
     private $filter;
 
+    /**
+     * @var PurgeWorkspaceModifier
+     */
+    private $purgeModifier;
+
     public function __construct(
         GraphConstructor $constructor,
         GraphTaskScheduler $scheduler,
@@ -78,7 +85,8 @@ class GraphBehavior
         Queue $queue,
         TagParser $tagParser,
         ReportRegistry $reportRegistry,
-        GraphFilter $filter
+        GraphFilter $filter,
+        PurgeWorkspaceModifier $purgeModifier
     ) {
         $this->constructor = $constructor;
         $this->scheduler = $scheduler;
@@ -88,12 +96,14 @@ class GraphBehavior
         $this->tagParser = $tagParser;
         $this->reportRegistry = $reportRegistry;
         $this->filter = $filter;
+        $this->purgeModifier = $purgeModifier;
     }
 
     public function configure(Command $command): void
     {
         $command->addOption(self::OPT_NO_LOOP, null, InputOption::VALUE_NONE, 'Do not run the event loop');
         $command->addOption(self::OPT_FILTER, null, InputOption::VALUE_REQUIRED, 'Filter');
+        $command->addOption(self::OPT_PURGE, null, InputOption::VALUE_NONE, 'Purge workspace before starting');
         $command->addOption(
             self::OPT_REPORT,
             'r',
@@ -111,6 +121,10 @@ class GraphBehavior
         if (null !== $filter) {
             $this->logger->notice(sprintf('Pruning graph to filter expression: "%s"', $filter));
             $graph = $this->filter->filter($graph, $filter);
+        }
+
+        if ($input->getOption(self::OPT_PURGE)) {
+            $graph = $this->purgeModifier->modify($graph);
         }
 
         return $graph;

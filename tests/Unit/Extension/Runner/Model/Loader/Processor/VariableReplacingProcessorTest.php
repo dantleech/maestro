@@ -123,6 +123,27 @@ class VariableReplacingProcessorTest extends TestCase
         ]));
     }
 
+    public function testDoesNotConvertBoolToString()
+    {
+        self::assertEquals([
+            'nodes' => [
+                'one' => [
+                    'args' => [
+                        'bar' => true,
+                    ],
+                ],
+            ],
+        ], $this->create()->process([
+            'nodes' => [
+                'one' => [
+                    'args' => [
+                        'bar' => true,
+                    ],
+                ],
+            ],
+        ]));
+    }
+
     private function create(): Processor
     {
         return new VariableReplacingProcessor(new TokenReplacer());

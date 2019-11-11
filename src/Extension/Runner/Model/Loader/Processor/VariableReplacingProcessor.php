@@ -52,6 +52,10 @@ class VariableReplacingProcessor implements Processor
             return $value;
         }
 
+        if (!is_string($value)) {
+            return $value;
+        }
+
         return $this->tokenReplacer->replace($value, $vars);
     }
 }

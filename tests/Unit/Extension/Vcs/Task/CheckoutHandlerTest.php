@@ -6,7 +6,9 @@ use Amp\Success;
 use Maestro\Extension\Vcs\Task\CheckoutHandler;
 use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Support\Environment\Environment;
+use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Test\HandlerTester;
+use Maestro\Library\Vcs\Exception\CheckoutError;
 use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Maestro\Library\Workspace\Workspace;
@@ -86,5 +88,20 @@ class CheckoutHandlerTest extends TestCase
         ]);
 
         $this->assertCount(0, $artifacts);
+    }
+
+    public function testCheckoutErrorsRethrownAsTaskFailures()
+    {
+        $this->expectException(TaskFailure::class);
+        $this->repositoryFactory->create(self::EXAMPLE_WORKSPACE_PATH)->willReturn($this->repository->reveal());
+        $this->repository->isCheckedOut()->willReturn(false);
+        $this->repository->checkout(self::EXAMPLE_REPO_URL, [])->willThrow(new CheckoutError('No'));
+
+        HandlerTester::create($this->checkoutHandler)->handle(CheckoutTask::class, [
+            'url' => self::EXAMPLE_REPO_URL,
+        ], [
+            new Workspace(self::EXAMPLE_WORKSPACE_PATH, 'name'),
+            new Environment([]),
+        ]);
     }
 }

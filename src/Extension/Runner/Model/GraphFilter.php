@@ -2,8 +2,11 @@
 
 namespace Maestro\Extension\Runner\Model;
 
+use Maestro\Extension\Runner\Model\Exception\FilterError;
 use Maestro\Library\Graph\Graph;
+use Safe\Exceptions\FilterException;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class GraphFilter
@@ -29,7 +32,8 @@ class GraphFilter
 
         $nodeIds = [];
         foreach ($graph->nodes() as $node) {
-            if ($expression->evaluate(
+            if ($this->evaluate(
+                $expression,
                 $filter,
                 (array)$this->serializer->normalize($node)
             )) {
@@ -47,5 +51,19 @@ class GraphFilter
         }, function ($node, $val) {
             return false !== strpos($node['id'], $val);
         });
+    }
+
+    private function evaluate(ExpressionLanguage $expression, string $filter, array $variables)
+    {
+        try {
+            return $expression->evaluate($filter, $variables);
+        } catch (SyntaxError $syntaxError) {
+            if (preg_match('{variable}i', $syntaxError->getMessage())) {
+                throw new FilterError(sprintf(
+                    'Variable may not have been found. Known variables: "%s"',
+                    implode('", "', array_keys($variables))
+                ));
+            }
+        }
     }
 }

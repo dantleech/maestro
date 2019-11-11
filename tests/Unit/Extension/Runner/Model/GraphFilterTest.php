@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Model;
 
 use Closure;
+use Maestro\Extension\Runner\Model\Exception\FilterError;
 use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Library\Graph\GraphBuilder;
 use Maestro\Library\Graph\Node;
@@ -50,5 +51,19 @@ class GraphFilterTest extends IntegrationTestCase
             'branch("/foobar")',
             ['/foobar/n1']
         ];
+    }
+
+    public function testThrowsMoreUsefulExceptionIfKeyNotFound()
+    {
+        $this->expectException(FilterError::class);
+        $this->expectExceptionMessage('Variable may not');
+
+        $builder = GraphBuilder::create();
+        $builder->addNode(Node::create('foobar'));
+        $graph = $builder->build();
+
+        (new GraphFilter(
+            $this->container()->get(SerializerInterface::class)
+        ))->filter($graph, 'foobar=="bar"');
     }
 }

@@ -4,7 +4,6 @@ namespace Maestro\Extension\Runner\Model;
 
 use Maestro\Extension\Runner\Model\Exception\FilterError;
 use Maestro\Library\Graph\Graph;
-use Safe\Exceptions\FilterException;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;

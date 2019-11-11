@@ -7,7 +7,9 @@ use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
 use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
 use Maestro\Extension\Runner\Model\PurgeWorkspaceModifier;
+use Maestro\Extension\Runner\Report\ManifestReport;
 use Maestro\Extension\Workspace\WorkspaceExtension;
+use Maestro\Library\Loader\Loader;
 use Maestro\Library\Loader\Loader\IncludingLoader;
 use Maestro\Library\Loader\Loader\JsonLoader;
 use Maestro\Library\Report\ReportRegistry;
@@ -120,9 +122,15 @@ class RunnerExtension implements Extension
 
     private function registerLoader(ContainerBuilder $container)
     {
+        $container->register(Loader::class, function (Container $container) {
+            return new IncludingLoader(
+                new JsonLoader()
+            );
+        });
+
         $container->register(ManifestNode::class, function (Container $container) {
             return $this->createManifestLoader($container)->load(
-                $container->getParameter(self::PARAM_MANIFEST_PATH)
+                $this->resolveManifestPath($container)
             );
         });
 
@@ -184,14 +192,25 @@ class RunnerExtension implements Extension
                 'name' => 'run'
             ]
         ]);
+
+        $container->register(ManifestReport::class, function (Container $container) {
+            return new ManifestReport(
+                $container->get(ConsoleExtension::SERVICE_OUTPUT),
+                $container->get(Loader::class)->load(
+                    $this->resolveManifestPath($container)
+                )
+            );
+        }, [
+            ReportExtension::TAG_REPORT => [
+                'name' => 'manifest'
+            ]
+        ]);
     }
 
     private function createManifestLoader(Container $container): ManifestLoader
     {
         return new ManifestLoader(
-            new IncludingLoader(
-                new JsonLoader()
-            ),
+            $container->get(Loader::class),
             $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             [
                 new PrototypeExpandingProcessor(),
@@ -202,6 +221,14 @@ class RunnerExtension implements Extension
                     new TokenReplacer()
                 ),
             ]
+        );
+    }
+
+    private function resolveManifestPath(Container $container): string
+    {
+        return Path::makeAbsolute(
+            $container->getParameter(self::PARAM_MANIFEST_PATH),
+            $container->getParameter(self::PARAM_WORKING_DIRECTORY)
         );
     }
 }

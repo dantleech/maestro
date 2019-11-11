@@ -229,6 +229,11 @@ class RunCommandTest extends EndToEndTestCase
             'json',
             'edges'
         ];
+
+        yield 'manifest' => [
+            'manifest',
+            'mypackage'
+        ];
     }
 
     public function testFiltersGraphWithsExpression()

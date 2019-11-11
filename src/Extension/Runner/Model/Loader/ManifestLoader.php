@@ -8,7 +8,7 @@ use Maestro\Library\Util\Cast;
 use RuntimeException;
 use Webmozart\PathUtil\Path;
 
-class ManifestLoader
+final class ManifestLoader
 {
     /**
      * @var Processor[]

@@ -1,0 +1,13 @@
+{
+    "vars": {
+        "description": "Cool Project"
+    },
+    "nodes": {
+        "hello": {
+            "type": "script",
+            "args": {
+                "script": "echo This is a %description%"
+            }
+        }
+    }
+}

@@ -1,8 +1,10 @@
 {
     "name": "example",
-    "type": "package",
+    "type": "vcsWorkspace",
     "args": {
-        "url": "https://github.com/$PACKAGE_NAME"
+        "name": "%_name%",
+        "url": "https://github.com/$PACKAGE_NAME",
+        "update": false
     },
     "nodes": {
         "readme": {

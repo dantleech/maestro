@@ -5,6 +5,7 @@ namespace Maestro\Extension\Runner;
 use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Extension\Runner\Model\Loader\ManifestNode;
 use Maestro\Extension\Runner\Model\Loader\PathExpander;
+use Maestro\Extension\Runner\Model\Loader\Processor\NameNormalizingProcessor;
 use Maestro\Extension\Runner\Model\Loader\Processor\VariableReplacingProcessor;
 use Maestro\Extension\Runner\Model\PurgeWorkspaceModifier;
 use Maestro\Extension\Runner\Report\ManifestReport;
@@ -213,6 +214,8 @@ class RunnerExtension implements Extension
             $container->get(Loader::class),
             $container->getParameter(self::PARAM_WORKING_DIRECTORY),
             [
+                NameNormalizingProcessor::forPrototypes(),
+                NameNormalizingProcessor::forNodes(),
                 new PrototypeExpandingProcessor(),
                 new TaskAliasExpandingProcessor(
                     $container->get(TaskHandlerDefinitionMap::class),

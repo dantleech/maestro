@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -xe
+shopt -s extglob
 
-for fname in ./example/*.json; do
+for fname in ./example/!(test).json; do
     ./bin/maestro run --plan="$fname"
 done
 

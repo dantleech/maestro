@@ -1,7 +1,7 @@
 {
     "prototype": "example",
-    "name": "maestrophp/example-math",
-    "args": {
+    "name": "phpactor/container",
+    "vars": {
         "version": "1.0.0"
     }
 }

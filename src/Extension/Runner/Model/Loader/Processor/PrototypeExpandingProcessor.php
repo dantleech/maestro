@@ -54,16 +54,6 @@ class PrototypeExpandingProcessor implements Processor
     {
         $nodes = [];
         foreach ($prototypes as $prototypeName => $prototype) {
-
-            // allow prototype names to be defined inline rather than array
-            // keys- this allows for glob includes of prototype objects.
-            if (isset($prototype['name'])) {
-                $name = $prototype['name'];
-                unset($prototype['name']);
-                $nodes[$name] = $prototype;
-                continue;
-            }
-
             $nodes[$prototypeName] = $prototype;
         }
         return $nodes;

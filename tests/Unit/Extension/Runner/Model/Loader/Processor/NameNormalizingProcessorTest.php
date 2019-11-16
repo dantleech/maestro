@@ -3,29 +3,19 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader\Processor;
 
 use Maestro\Extension\Runner\Model\Loader\Exception\PrototypeNotFound;
-use Maestro\Extension\Runner\Model\Loader\Processor\NodeExpandingProcessor;
+use Maestro\Extension\Runner\Model\Loader\Processor\NameNormalizingProcessor;
 use Maestro\Extension\Runner\Model\Loader\Processor\PrototypeExpandingProcessor;
 use PHPUnit\Framework\TestCase;
 
-class NodeExpandingProcessorTest extends TestCase
+class NameNormalizingProcessorTest extends TestCase
 {
-    /**
-     * @var PrototypeExpandingProcessor
-     */
-    private $processor;
-
-    protected function setUp(): void
-    {
-        $this->processor = new NodeExpandingProcessor();
-    }
-
     public function testConvertsNameKeyToNodeKey()
     {
         self::assertEquals([
             'nodes' => [
                 'foobar' => [],
             ],
-        ], $this->processor->process([
+        ], NameNormalizingProcessor::forNodes()->process([
             'nodes' => [
                 [
                     'name' => 'foobar',
@@ -38,7 +28,7 @@ class NodeExpandingProcessorTest extends TestCase
     {
         self::assertEquals([
             'foobar' => [],
-        ], $this->processor->process([
+        ], NameNormalizingProcessor::forNodes()->process([
             'foobar' => [],
         ]));
     }
@@ -53,7 +43,7 @@ class NodeExpandingProcessorTest extends TestCase
                     ],
                 ],
             ],
-        ], $this->processor->process([
+        ], NameNormalizingProcessor::forNodes()->process([
             'nodes' => [
                 [
                     'name' => 'foobar',
@@ -67,4 +57,28 @@ class NodeExpandingProcessorTest extends TestCase
         ]));
     }
 
+    public function testProcessesPrototypes()
+    {
+        self::assertEquals([
+            'nodes' => [
+            ],
+            'prototypes' => [
+                'foobar' => [
+                ],
+                'barfoo' => [
+                ],
+            ],
+        ], NameNormalizingProcessor::forPrototypes()->process([
+            'nodes' => [
+            ],
+            'prototypes' => [
+                [
+                    'name' => 'foobar',
+                ],
+                [
+                    'name' => 'barfoo',
+                ],
+            ],
+        ]));
+    }
 }

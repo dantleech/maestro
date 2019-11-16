@@ -63,6 +63,8 @@ class GraphFilter
                     implode('", "', array_keys($variables))
                 ));
             }
+
+            throw $syntaxError;
         }
     }
 }

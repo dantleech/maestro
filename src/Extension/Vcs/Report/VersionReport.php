@@ -43,6 +43,10 @@ class VersionReport implements Report
             assert($node instanceof Node);
             $artifacts = $node->artifacts();
 
+            if (!$artifacts->has(VersionResult::class)) {
+                continue;
+            }
+
             $versionReport = $artifacts->get(VersionResult::class);
             assert($versionReport instanceof VersionResult);
 

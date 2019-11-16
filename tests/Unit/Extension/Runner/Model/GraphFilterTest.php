@@ -3,6 +3,7 @@
 namespace Maestro\Tests\Unit\Extension\Runner\Model;
 
 use Closure;
+use Exception;
 use Maestro\Extension\Runner\Model\Exception\FilterError;
 use Maestro\Extension\Runner\Model\GraphFilter;
 use Maestro\Library\Graph\GraphBuilder;
@@ -65,5 +66,18 @@ class GraphFilterTest extends IntegrationTestCase
         (new GraphFilter(
             $this->container()->get(SerializerInterface::class)
         ))->filter($graph, 'foobar=="bar"');
+    }
+
+    public function testOtherExceptionsPassthrough()
+    {
+        $this->expectException(Exception::class);
+
+        $builder = GraphBuilder::create();
+        $builder->addNode(Node::create('foobar'));
+        $graph = $builder->build();
+
+        (new GraphFilter(
+            $this->container()->get(SerializerInterface::class)
+        ))->filter($graph, 'task["alias"]="bar"');
     }
 }

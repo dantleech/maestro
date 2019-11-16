@@ -2,9 +2,7 @@
 
 namespace Maestro\Tests\Unit\Extension\Runner\Model\Loader\Processor;
 
-use Maestro\Extension\Runner\Model\Loader\Exception\PrototypeNotFound;
 use Maestro\Extension\Runner\Model\Loader\Processor\NameNormalizingProcessor;
-use Maestro\Extension\Runner\Model\Loader\Processor\PrototypeExpandingProcessor;
 use PHPUnit\Framework\TestCase;
 
 class NameNormalizingProcessorTest extends TestCase

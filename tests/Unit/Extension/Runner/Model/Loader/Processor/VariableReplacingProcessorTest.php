@@ -33,6 +33,54 @@ class VariableReplacingProcessorTest extends TestCase
         ]));
     }
 
+    public function testReplaceVars()
+    {
+        self::assertEquals([
+            'vars' => [
+                'var' => 'bar',
+                'bar' => 'bar',
+            ]
+        ], $this->create()->process([
+            'vars' => [
+                'var' => 'bar',
+                'bar' => '%var%',
+            ]
+        ]));
+    }
+
+    public function testReplaceVarsNested()
+    {
+        self::assertEquals([
+            'vars' => [
+                'bar' => 'bar',
+            ],
+            'nodes' => [
+                'one' => [
+                    'vars' => [
+                        'packageName' => 'bar',
+                    ],
+                    'args' => [
+                        'foo' => 'bar',
+                    ],
+                ],
+            ],
+        ], $this->create()->process([
+            'vars' => [
+                'bar' => 'bar',
+            ],
+            'nodes' => [
+                'one' => [
+                    'vars' => [
+                        'packageName' => '%bar%',
+                    ],
+                    'args' => [
+                        'foo' => '%packageName%',
+                    ],
+                ],
+            ],
+        ]));
+    }
+
     public function testArrayValuesReplace()
     {
         self::assertEquals([

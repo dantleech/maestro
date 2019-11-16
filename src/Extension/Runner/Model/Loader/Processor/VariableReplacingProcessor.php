@@ -32,6 +32,10 @@ class VariableReplacingProcessor implements Processor
             $vars = array_merge($vars, $node['vars']);
         }
 
+        foreach ($node['vars'] ?? [] as $varName => $value) {
+            $vars[$varName] = $node['vars'][$varName] = $this->replaceVars($value, $vars);
+        }
+
         foreach ($node['args'] ?? [] as $argName => $value) {
             $node['args'][$argName] = $this->replaceVars($value, $vars);
         }

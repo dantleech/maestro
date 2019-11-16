@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Runner\Model\Loader\Processor;
 
-use Maestro\Extension\Runner\Model\Loader\Exception\PrototypeNotFound;
 use Maestro\Extension\Runner\Model\Loader\Processor;
 
 class NameNormalizingProcessor implements Processor

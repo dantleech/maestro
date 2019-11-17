@@ -7,16 +7,17 @@ use Maestro\Library\Task\Task;
 class PackageTask implements Task
 {
     /**
-     * @var string|null
+     * @var string
      */
     private $name;
+
     /**
      * @var string|null
      */
     private $version;
 
     public function __construct(
-        ?string $name = null,
+        string $name,
         ?string $version = null
     ) {
         $this->name = $name;
@@ -28,7 +29,7 @@ class PackageTask implements Task
         return sprintf('sending package artifact %s downstream', $this->name);
     }
 
-    public function name(): ?string
+    public function name(): string
     {
         return $this->name;
     }

@@ -4,16 +4,8 @@ namespace Maestro\Extension\Runner\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Generator;
-use Maestro\Extension\File\Task\PurgeDirectoryTask;
-use Maestro\Extension\Vcs\Task\CheckoutTask;
 use Maestro\Library\Support\Environment\Environment;
-use Maestro\Library\Support\NodeMeta;
 use Maestro\Library\Support\Package\Package;
-use Maestro\Library\Artifact\Artifacts;
-use Maestro\Library\Task\TaskRunner;
-use Maestro\Library\Workspace\WorkspaceManager;
-use function Amp\File\mkdir;
 
 class PackageHandler
 {

@@ -2,7 +2,6 @@
 
 namespace Maestro\Extension\Workspace;
 
-use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Workspace\Task\CwdWorkspaceHandler;
 use Maestro\Extension\Workspace\Task\CwdWorkspaceTask;
@@ -24,7 +23,7 @@ class WorkspaceExtension implements Extension
 {
     const PARAM_WORKSPACE_PATH = 'workspace.path';
     const PARAM_WORKSPACE_NAMESPACE = 'workspace.namespace';
-
+    const PARAM_WORKING_DIRECTORY = 'workspace.cwd';
 
     /**
      * {@inheritDoc}
@@ -70,7 +69,7 @@ class WorkspaceExtension implements Extension
         $container->register(CwdWorkspaceHandler::class, function (Container $container) {
             return new CwdWorkspaceHandler(
                 $container->get(WorkspaceRegistry::class),
-                $container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY)
+                $container->getParameter(self::PARAM_WORKING_DIRECTORY)
             );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
@@ -89,7 +88,8 @@ class WorkspaceExtension implements Extension
             self::PARAM_WORKSPACE_NAMESPACE => '',
         ]);
         $schema->setRequired([
-            self::PARAM_WORKSPACE_PATH
+            self::PARAM_WORKSPACE_PATH,
+            self::PARAM_WORKING_DIRECTORY
         ]);
         $schema->setCallback(self::PARAM_WORKSPACE_PATH, function ($config) {
             $path = $config[self::PARAM_WORKSPACE_PATH];

@@ -10,11 +10,19 @@
                 "name": "%_name%"
             },
             "nodes": {
-                "readme": {
-                    "type":"template",
+                "package": {
+                    "type": "package",
                     "args": {
-                        "path": "./template/travis.yml.twig",
-                        "targetPath": "./.travis.yml"
+                        "name": "foobar"
+                    },
+                    "nodes": {
+                        "readme": {
+                            "type":"template",
+                            "args": {
+                                "path": "./template/travis.yml.twig",
+                                "targetPath": "./.travis.yml"
+                            }
+                        }
                     }
                 }
             }

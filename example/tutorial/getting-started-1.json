@@ -1,14 +1,16 @@
 {
     "nodes": {
         "maestrophp/example-math": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/maestrophp/example-math"
             }
         },
         "maestrophp/example-science": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/maestrophp/example-science"
             }
         }

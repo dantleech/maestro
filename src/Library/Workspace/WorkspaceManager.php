@@ -4,7 +4,6 @@
 namespace Maestro\Library\Workspace;
 
 use Webmozart\PathUtil\Path;
-use function Safe\glob;
 
 class WorkspaceManager
 {
@@ -33,8 +32,7 @@ class WorkspaceManager
         WorkspaceRegistry $registry,
         string $namespace,
         string $rootPath
-    )
-    {
+    ) {
         $this->rootPath = $rootPath;
         $this->namespace = $namespace;
         $this->pathStrategy = $pathStrategy;

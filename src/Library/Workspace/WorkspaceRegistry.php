@@ -36,7 +36,8 @@ class WorkspaceRegistry
         if (!isset($this->workspace[$string])) {
             throw new WorkspaceNotFound(sprintf(
                 'Workspace "%s" not found, known workspaces "%s"',
-                $string, implode('", "', array_keys($this->workspace))
+                $string,
+                implode('", "', array_keys($this->workspace))
             ));
         }
 

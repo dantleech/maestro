@@ -17,7 +17,6 @@ use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\MapResolver\Resolver;
-use Twig\Extension\CoreExtension;
 use Webmozart\PathUtil\Path;
 use function Safe\getcwd;
 
@@ -47,7 +46,8 @@ class WorkspaceExtension implements Extension
 
         $container->register(MountedWorkspaceHandler::class, function (Container $container) {
             return new MountedWorkspaceHandler(
-                $container->get(WorkspaceManager::class)
+                $container->get(WorkspaceManager::class),
+                $container->get(WorkspaceRegistry::class)
             );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [

@@ -3,6 +3,8 @@
 namespace Maestro\Extension\Workspace;
 
 use Maestro\Extension\Task\TaskExtension;
+use Maestro\Extension\Workspace\Task\CwdWorkspaceHandler;
+use Maestro\Extension\Workspace\Task\CwdWorkspaceTask;
 use Maestro\Extension\Workspace\Task\MountedWorkspaceHandler;
 use Maestro\Extension\Workspace\Task\MountedWorkspaceTask;
 use Maestro\Extension\Workspace\Task\WorkspaceHandler;
@@ -54,6 +56,17 @@ class WorkspaceExtension implements Extension
             TaskExtension::TAG_TASK_HANDLER => [
                 'alias' => 'workspace',
                 'taskClass' => WorkspaceTask::class
+            ]
+        ]);
+
+        $container->register(CwdWorkspaceHandler::class, function (Container $container) {
+            return new CwdWorkspaceHandler(
+                $container->get(WorkspaceManager::class)
+            );
+        }, [
+            TaskExtension::TAG_TASK_HANDLER => [
+                'alias' => 'cwdWorkspace',
+                'taskClass' => CwdWorkspaceTask::class
             ]
         ]);
     }

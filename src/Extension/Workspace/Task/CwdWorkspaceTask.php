@@ -2,7 +2,9 @@
 
 namespace Maestro\Extension\Workspace\Task;
 
-class CwdWorkspaceTask
+use Maestro\Library\Task\Task;
+
+class CwdWorkspaceTask implements Task
 {
     /**
      * @var string
@@ -17,5 +19,10 @@ class CwdWorkspaceTask
     public function name(): string
     {
         return $this->name;
+    }
+
+    public function description(): string
+    {
+        return sprintf('spawning cwd workspace "%s" downstream', $this->name);
     }
 }

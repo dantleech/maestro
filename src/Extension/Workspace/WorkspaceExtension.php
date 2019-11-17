@@ -2,6 +2,7 @@
 
 namespace Maestro\Extension\Workspace;
 
+use Maestro\Extension\Runner\RunnerExtension;
 use Maestro\Extension\Task\TaskExtension;
 use Maestro\Extension\Workspace\Task\CwdWorkspaceHandler;
 use Maestro\Extension\Workspace\Task\CwdWorkspaceTask;
@@ -11,10 +12,12 @@ use Maestro\Extension\Workspace\Task\WorkspaceHandler;
 use Maestro\Extension\Workspace\Task\WorkspaceTask;
 use Maestro\Library\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Library\Workspace\WorkspaceManager;
+use Maestro\Library\Workspace\WorkspaceRegistry;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
 use Phpactor\MapResolver\Resolver;
+use Twig\Extension\CoreExtension;
 use Webmozart\PathUtil\Path;
 use function Safe\getcwd;
 
@@ -32,9 +35,14 @@ class WorkspaceExtension implements Extension
         $container->register(WorkspaceManager::class, function (Container $container) {
             return new WorkspaceManager(
                 new NestedDirectoryStrategy(),
+                $container->get(WorkspaceRegistry::class),
                 $container->getParameter(self::PARAM_WORKSPACE_NAMESPACE),
                 $container->getParameter(self::PARAM_WORKSPACE_PATH)
             );
+        });
+
+        $container->register(WorkspaceRegistry::class, function (Container $container) {
+            return new WorkspaceRegistry();
         });
 
         $container->register(MountedWorkspaceHandler::class, function (Container $container) {
@@ -60,9 +68,7 @@ class WorkspaceExtension implements Extension
         ]);
 
         $container->register(CwdWorkspaceHandler::class, function (Container $container) {
-            return new CwdWorkspaceHandler(
-                $container->get(WorkspaceManager::class)
-            );
+            return new CwdWorkspaceHandler($container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY));
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'alias' => 'cwdWorkspace',

@@ -201,13 +201,13 @@ class RunCommandTest extends EndToEndTestCase
                 'mypackage' => [
                     'type' => 'workspace',
                     'args' => [
-                        'name' => 'mypackage',
+                        'name' => 'mypackage1',
                     ],
                 ],
                 'foobar' => [
                     'type' => 'workspace',
                     'args' => [
-                        'name' => 'mypackage',
+                        'name' => 'mypackage2',
                     ],
                 ],
             ],
@@ -215,6 +215,7 @@ class RunCommandTest extends EndToEndTestCase
 
         $this->workspace()->put('workspace/foobar/foobar', 'this-should-not-exist-later');
         $process = $this->command(sprintf('run --report=%s', $report));
+        $this->assertProcessSuccess($process);
         $this->assertStringContainsString($expected, $process->getOutput());
     }
 

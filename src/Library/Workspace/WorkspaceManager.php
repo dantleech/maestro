@@ -23,35 +23,31 @@ class WorkspaceManager
      */
     private $pathStrategy;
 
-    public function __construct(PathStrategy $pathStrategy, string $namespace, string $rootPath)
+    /**
+     * @var WorkspaceRegistry
+     */
+    private $registry;
+
+    public function __construct(
+        PathStrategy $pathStrategy,
+        WorkspaceRegistry $registry,
+        string $namespace,
+        string $rootPath
+    )
     {
         $this->rootPath = $rootPath;
         $this->namespace = $namespace;
         $this->pathStrategy = $pathStrategy;
+        $this->registry = $registry;
     }
 
     public function createNamedWorkspace(string $name): Workspace
     {
         $workspacePath = Path::join([$this->rootPath, $this->namespace, $this->pathStrategy->packageNameToSubPath($name)]);
 
-        return new Workspace($workspacePath, $name);
-    }
+        $workspace = new Workspace($workspacePath, $name);
+        $this->registry->register($workspace);
 
-    public function listWorkspaces(): Workspaces
-    {
-        return new Workspaces(array_map(function (string $path) {
-            return $this->createNamedWorkspace($this->pathStrategy->subPathToPackageName(substr(
-                $path,
-                strlen(
-                    Path::join($this->rootPath, $this->namespace)
-                ) + 1
-            )));
-        }, glob(
-            Path::join(
-                $this->rootPath,
-                $this->namespace,
-                $this->pathStrategy->listingGlobPattern()
-            )
-        )));
+        return $workspace;
     }
 }

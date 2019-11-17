@@ -73,7 +73,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -108,7 +108,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -133,7 +133,7 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],
@@ -199,13 +199,13 @@ class RunCommandTest extends EndToEndTestCase
         $this->createPlan(self::EXAMPLE_PLAN_NAME, [
             'nodes' => [
                 'mypackage' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],
                 ],
                 'foobar' => [
-                    'type' => 'package',
+                    'type' => 'workspace',
                     'args' => [
                         'name' => 'mypackage',
                     ],

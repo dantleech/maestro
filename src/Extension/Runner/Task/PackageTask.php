@@ -11,45 +11,21 @@ class PackageTask implements Task
      */
     private $name;
     /**
-     * @var bool
-     */
-    private $purgeWorkspace;
-    /**
-     * @var array
-     */
-    private $env;
-    /**
      * @var string|null
      */
     private $version;
 
-    /**
-     * @var string|null
-     */
-    private $url;
-
     public function __construct(
         ?string $name = null,
-        bool $purgeWorkspace = false,
-        ?string $url = null,
-        array $env = [],
         ?string $version = null
     ) {
         $this->name = $name;
-        $this->purgeWorkspace = $purgeWorkspace;
-        $this->env = $env;
         $this->version = $version;
-        $this->url = $url;
     }
 
     public function description(): string
     {
-        return sprintf('initializing package %s', $this->name);
-    }
-
-    public function env(): array
-    {
-        return $this->env;
+        return sprintf('sending package artifact %s downstream', $this->name);
     }
 
     public function name(): ?string
@@ -57,18 +33,8 @@ class PackageTask implements Task
         return $this->name;
     }
 
-    public function purgeWorkspace(): bool
-    {
-        return $this->purgeWorkspace;
-    }
-
     public function version(): ?string
     {
         return $this->version;
-    }
-
-    public function url(): ?string
-    {
-        return $this->url;
     }
 }

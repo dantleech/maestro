@@ -68,7 +68,10 @@ class WorkspaceExtension implements Extension
         ]);
 
         $container->register(CwdWorkspaceHandler::class, function (Container $container) {
-            return new CwdWorkspaceHandler($container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY));
+            return new CwdWorkspaceHandler(
+                $container->get(WorkspaceRegistry::class),
+                $container->getParameter(RunnerExtension::PARAM_WORKING_DIRECTORY)
+            );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'alias' => 'cwdWorkspace',

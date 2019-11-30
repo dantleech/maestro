@@ -10,6 +10,9 @@
                 "name": "%_name%",
                 "url": "https://github.com/maestrophp/example-math"
             },
+            "vars": {
+                "package": "%_name%"
+            },
             "nodes": {
                 "readme": {
                     "type": "template",

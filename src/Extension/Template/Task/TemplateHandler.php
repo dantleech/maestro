@@ -6,7 +6,6 @@ use Amp\Promise;
 use Amp\Success;
 use Maestro\Extension\Template\EnvironmentFactory;
 use Maestro\Library\Support\ManifestPath;
-use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Support\Variables\Variables;
 use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Workspace\Workspace;
@@ -29,8 +28,7 @@ class TemplateHandler
         TemplateTask $task,
         ManifestPath $manifestPath,
         Variables $variables,
-        Workspace $workspace,
-        Package $package
+        Workspace $workspace
     ): Promise {
         $paths = [ $manifestPath->directoryPath() ];
 
@@ -39,9 +37,7 @@ class TemplateHandler
         try {
             $rendered = $twigEnvironment->render(
                 $task->path(),
-                array_merge([
-                    'package' => $package
-                ], $variables->toArray())
+                $variables->toArray()
             );
         } catch (Error $error) {
             throw new TaskFailure($error->getMessage());

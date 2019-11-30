@@ -7,6 +7,7 @@ use Maestro\Library\Script\ScriptRunner;
 use Maestro\Extension\Script\Task\ScriptHandler;
 use Maestro\Extension\Script\Task\ScriptTask;
 use Maestro\Extension\Task\TaskExtension;
+use Maestro\Library\Workspace\WorkspaceRegistry;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
 use Phpactor\Container\Extension;
@@ -28,7 +29,11 @@ class ScriptExtension implements Extension
         });
 
         $container->register(ScriptHandler::class, function (Container $container) {
-            return new ScriptHandler($container->get(ScriptRunner::class));
+            return new ScriptHandler(
+                $container->get(ScriptRunner::class),
+                $container->get(WorkspaceRegistry::class)
+
+            );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => ScriptTask::class,

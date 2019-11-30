@@ -5,8 +5,6 @@ namespace Maestro\Tests\Unit\Extension\Vcs\Task;
 use Amp\Success;
 use Maestro\Extension\Vcs\Task\TagVersionHandler;
 use Maestro\Extension\Vcs\Task\TagVersionTask;
-use Maestro\Library\Instantiator\Instantiator;
-use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Task\Test\HandlerTester;
 use Maestro\Library\Vcs\Repository;
 use Maestro\Library\Vcs\RepositoryFactory;
@@ -63,14 +61,11 @@ class TagVersionHandlerTest extends TestCase
 
     public function testIsSuccessfulPackageHasNoVersion()
     {
-        $package = $this->createPackage([
-            'version' => null,
-        ]);
-
         $artifacts = HandlerTester::create(
             $this->createHandler()
-        )->handle(TagVersionTask::class, [], [
-            $package,
+        )->handle(TagVersionTask::class, [
+            'tag' => null,
+        ], [
             $this->workspace
         ]);
 
@@ -79,18 +74,15 @@ class TagVersionHandlerTest extends TestCase
 
     public function testReturnsEarlyIfTagAlreadyExists()
     {
-        $package = $this->createPackage([
-            'version' => '1.0.0',
-        ]);
-
         $this->repository->listTags()->willReturn(new Success(new Tags([
             new Tag('1.0.0', '1234')
         ])));
 
         $response = HandlerTester::create(
             $this->createHandler()
-        )->handle(TagVersionTask::class, [], [
-            $package,
+        )->handle(TagVersionTask::class, [
+            'tag' => '1.0.0',
+        ], [
             $this->workspace
         ]);
 
@@ -99,10 +91,6 @@ class TagVersionHandlerTest extends TestCase
 
     public function testTagsNewVersion()
     {
-        $package = $this->createPackage([
-            'version' => '1.0.1',
-        ]);
-
         $this->repository->listTags()->willReturn(new Success(new Tags([
             new Tag('1.0.0', '1234')
         ])));
@@ -113,16 +101,11 @@ class TagVersionHandlerTest extends TestCase
 
         HandlerTester::create(
             $this->createHandler()
-        )->handle(TagVersionTask::class, [], [
-            $package,
+        )->handle(TagVersionTask::class, [
+            'tag' => '1.0.1',
+        ], [
             $this->workspace
         ]);
-    }
-
-    private function createPackage(array $args): Package
-    {
-        $args['name'] = 'package1';
-        return Instantiator::instantiate(Package::class, $args);
     }
 
     private function createHandler(): TagVersionHandler

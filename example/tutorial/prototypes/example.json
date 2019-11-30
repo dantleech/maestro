@@ -7,14 +7,13 @@
         "update": false
     },
     "vars": {
-        "packageName": "%_name%"
+        "package": "%_name%"
     },
     "nodes": {
         "package": {
             "type": "package",
             "args": {
-                "name": "%packageName%",
-                "version": "%version%"
+                "name": "%package%"
             },
             "nodes": {
                 "readme": {

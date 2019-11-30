@@ -32,7 +32,6 @@ class ScriptExtension implements Extension
             return new ScriptHandler(
                 $container->get(ScriptRunner::class),
                 $container->get(WorkspaceRegistry::class)
-
             );
         }, [
             TaskExtension::TAG_TASK_HANDLER => [

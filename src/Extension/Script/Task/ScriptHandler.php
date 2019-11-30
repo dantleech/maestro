@@ -31,8 +31,9 @@ class ScriptHandler
 
     public function __invoke(ScriptTask $script, Environment $environment = null, Workspace $workspace = null): Promise
     {
-        if ($script->workspace()) {
-            $workspace = $this->workspaceRegistry->get($script->workspace());
+        $customWorkspace = $script->workspace();
+        if ($customWorkspace) {
+            $workspace = $this->workspaceRegistry->get($customWorkspace);
         }
 
         $environment = $environment ?: new Environment();

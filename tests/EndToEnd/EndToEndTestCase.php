@@ -9,7 +9,7 @@ class EndToEndTestCase extends IntegrationTestCase
 {
     protected function command(string $command, string $workspaceDir = null): Process
     {
-        $process = new Process($cmd = sprintf(
+        $process = Process::fromShellCommandline($cmd = sprintf(
             __DIR__ . '/../../bin/maestro -vvv --workspace-dir=%s %s ',
             $workspaceDir ?? $this->workspace()->path('/workspace'),
             $command

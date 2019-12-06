@@ -67,7 +67,7 @@ class IntegrationTestCase extends TestCase
 
     protected function execPackageCommand(string $packageName, string $command): void
     {
-        $process = new Process(sprintf(
+        $process = Process::fromShellCommandline(sprintf(
             $command,
         ), $this->packagePath($packageName));
         $process->mustRun();

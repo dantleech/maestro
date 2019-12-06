@@ -204,7 +204,7 @@ class GitRepositoryTest extends IntegrationTestCase
 
     private function exec(string $command, string $cwd = '/base'): Process
     {
-        $process = new Process($command, $this->workspace()->path($cwd));
+        $process = Process::fromShellCommandline($command, $this->workspace()->path($cwd));
         $process->run();
 
         if ($process->getExitCode() !== 0) {

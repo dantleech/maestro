@@ -61,7 +61,7 @@ class GraphFilter
                 throw new FilterError(sprintf(
                     'Variable may not have been found. Known variables: "%s"',
                     implode('", "', array_keys($variables))
-                ));
+                ), 0, $syntaxError);
             }
 
             throw $syntaxError;

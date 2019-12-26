@@ -26,6 +26,7 @@ class IntegrationTestCase extends TestCase
     {
         $config = array_merge([
             RunnerExtension::PARAM_MANIFEST_PATH => $this->workspace()->path('/maestro.json'),
+            WorkspaceExtension::PARAM_WORKING_DIRECTORY => $this->workspace()->path('/'),
             WorkspaceExtension::PARAM_WORKSPACE_PATH => $this->workspace()->path('workspace'),
         ], $config);
 

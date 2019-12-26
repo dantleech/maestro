@@ -5,9 +5,13 @@
     },
     "nodes": {
         "maestrophp/example-math": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/maestrophp/example-math"
+            },
+            "vars": {
+                "package": "%_name%"
             },
             "nodes": {
                 "readme": {
@@ -20,8 +24,9 @@
             }
         },
         "maestrophp/example-science": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/maestrophp/example-science"
             }
         }

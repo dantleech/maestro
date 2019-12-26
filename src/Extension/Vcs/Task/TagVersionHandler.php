@@ -4,7 +4,6 @@ namespace Maestro\Extension\Vcs\Task;
 
 use Amp\Promise;
 use Amp\Success;
-use Maestro\Library\Support\Package\Package;
 use Maestro\Library\Vcs\RepositoryFactory;
 use Maestro\Library\Vcs\Tags;
 use Maestro\Library\Workspace\Workspace;
@@ -28,17 +27,17 @@ class TagVersionHandler
         $this->repositoryFactory = $repositoryFactory;
     }
 
-    public function __invoke(Package $package, Workspace $workspace): Promise
+    public function __invoke(TagVersionTask $tagTask, Workspace $workspace): Promise
     {
-        $tagName = $package->version();
+        $tagName = $tagTask->tag();
 
-        if (null === $tagName) {
+        if (!$tagName) {
             return new Success([]);
         }
 
         $repository = $this->repositoryFactory->create($workspace->absolutePath());
 
-        return \Amp\call(function () use ($package, $tagName, $repository) {
+        return \Amp\call(function () use ($tagName, $repository, $workspace) {
             $existingTags = yield $repository->listTags();
             assert($existingTags instanceof Tags);
 
@@ -52,7 +51,7 @@ class TagVersionHandler
             }
 
             $this->logger->info(sprintf('Tagging version "%s"', $tagName), [
-                'package' => $package->name(),
+                'workspace' => $workspace->name(),
             ]);
             $repository->tag($tagName);
 

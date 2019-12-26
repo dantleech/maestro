@@ -45,6 +45,10 @@ class VcsWorkspaceTask implements Task
 
     public function description(): string
     {
-        return sprintf('creating VCS workspace for "%s"', $this->url);
+        return sprintf(
+            '%s VCS workspace for "%s"',
+            $this->update ? 'updating' : 'creating',
+            $this->url
+        );
     }
 }

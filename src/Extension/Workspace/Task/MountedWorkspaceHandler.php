@@ -8,6 +8,7 @@ use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
 use function Amp\File\symlink;
 use function Amp\File\exists;
+use Maestro\Library\Workspace\WorkspaceRegistry;
 
 class MountedWorkspaceHandler
 {
@@ -16,15 +17,21 @@ class MountedWorkspaceHandler
      */
     private $manager;
 
-    public function __construct(WorkspaceManager $manager)
+    /**
+     * @var WorkspaceRegistry
+     */
+    private $workspaceRegistry;
+
+    public function __construct(WorkspaceManager $manager, WorkspaceRegistry $workspaceRegistry)
     {
         $this->manager = $manager;
+        $this->workspaceRegistry = $workspaceRegistry;
     }
 
     public function __invoke(MountedWorkspaceTask $task): Promise
     {
         return \Amp\call(function () use ($task) {
-            $hostWorkspace = $this->manager->createNamedWorkspace($task->host());
+            $hostWorkspace = $this->workspaceRegistry->get($task->host());
             $mountedWorkspace = $this->manager->createNamedWorkspace($task->name());
 
             if (!yield exists($hostWorkspace->absolutePath('/'))) {

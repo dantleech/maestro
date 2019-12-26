@@ -8,6 +8,7 @@ use Maestro\Library\Task\Exception\TaskFailure;
 use Maestro\Library\Task\Test\HandlerTester;
 use Maestro\Library\Workspace\Workspace;
 use Maestro\Library\Workspace\WorkspaceManager;
+use Maestro\Library\Workspace\WorkspaceRegistry;
 use Maestro\Tests\IntegrationTestCase;
 use Prophecy\Argument;
 
@@ -26,34 +27,35 @@ class MountedWorkspaceHandlerTest extends IntegrationTestCase
      */
     private $handler;
 
+    /**
+     * @var WorkspaceRegistry
+     */
+    private $registry;
+
 
     protected function setUp(): void
     {
         $this->workspace()->reset();
         $this->workspaceManager = $this->prophesize(WorkspaceManager::class);
         $workspace = $this->workspace();
-        $this->workspaceManager->createNamedWorkspace(Argument::any())->will(function ($args) use ($workspace) {
-            return new Workspace($workspace->path('/'.$args[0]), $args[0]);
-        });
-        $this->handler = new MountedWorkspaceHandler($this->workspaceManager->reveal());
-    }
-
-    public function testFailsIfHostWorkspaceNotExists()
-    {
-        $this->expectException(TaskFailure::class);
-        $this->expectExceptionMessage('Host worksapce "nope" does not exist');
-
-        HandlerTester::create($this->handler)->handle(MountedWorkspaceTask::class, [
-            'name' => self::EXAMPLE_WS_NAME,
-            'host' => 'nope',
-            'path' => '/',
+        $this->registry = new WorkspaceRegistry(...[
+            new Workspace($this->workspace()->path(self::EXAMPLE_HOST_WS), self::EXAMPLE_HOST_WS)
         ]);
+
+        $this->workspaceManager->createNamedWorkspace(Argument::any())->will(function ($args) use ($workspace) {
+            $workspace = new Workspace($workspace->path('/'.$args[0]), $args[0]);
+
+            return $workspace;
+        });
+
+        $this->handler = new MountedWorkspaceHandler($this->workspaceManager->reveal(), $this->registry);
     }
 
     public function testFailsIfHostPathNotExists()
     {
         $this->expectException(TaskFailure::class);
         $this->workspace()->mkdir(self::EXAMPLE_HOST_WS);
+
         HandlerTester::create($this->handler)->handle(MountedWorkspaceTask::class, [
             'name' => self::EXAMPLE_WS_NAME,
             'host' => self::EXAMPLE_HOST_WS,

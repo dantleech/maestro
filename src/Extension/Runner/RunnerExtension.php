@@ -36,7 +36,6 @@ use Maestro\Library\Graph\GraphTaskScheduler;
 use Maestro\Library\Task\Queue;
 use Maestro\Library\Task\Worker;
 use Maestro\Library\TokenReplacer\TokenReplacer;
-use Maestro\Library\Workspace\WorkspaceManager;
 use Monolog\Formatter\JsonFormatter;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -159,10 +158,7 @@ class RunnerExtension implements Extension
         ]);
 
         $container->register(PackageHandler::class, function (Container $container) {
-            return new PackageHandler(
-                $container->get(WorkspaceManager::class),
-                $container->getParameter(self::PARAM_PURGE)
-            );
+            return new PackageHandler();
         }, [
             TaskExtension::TAG_TASK_HANDLER => [
                 'taskClass' => PackageTask::class,

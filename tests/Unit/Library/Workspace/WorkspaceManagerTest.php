@@ -2,6 +2,7 @@
 
 namespace Maestro\Tests\Unit\Library\Workspace;
 
+use Maestro\Library\Workspace\WorkspaceRegistry;
 use Maestro\Tests\IntegrationTestCase;
 use Maestro\Library\Workspace\PathStrategy\NestedDirectoryStrategy;
 use Maestro\Library\Workspace\WorkspaceManager;
@@ -56,17 +57,13 @@ class WorkspaceManagerTest extends IntegrationTestCase
         ];
     }
 
-    public function testListsWorkspaces()
-    {
-        $this->workspace()->put('foobar/barfoo/README.md', self::EMPTY_NAMESPACE);
-        $this->workspace()->put('foobar/foobar/README.md', self::EMPTY_NAMESPACE);
-        $workspaces = $this->create(self::EMPTY_NAMESPACE)->listWorkspaces();
-        $this->assertCount(2, $workspaces);
-        $this->assertEquals('foobar/barfoo', $workspaces->first()->name());
-    }
-
     private function create(string $namespace): WorkspaceManager
     {
-        return new WorkspaceManager(new NestedDirectoryStrategy(), $namespace, $this->workspace()->path('/'));
+        return new WorkspaceManager(
+            new NestedDirectoryStrategy(),
+            new WorkspaceRegistry(),
+            $namespace,
+            $this->workspace()->path('/')
+        );
     }
 }

@@ -3,6 +3,8 @@ Maestro
 
 [![Build Status](https://travis-ci.org/dantleech/maestro.svg?branch=master)](https://travis-ci.org/dantleech/maestro)
 
+**This project is abandoned in favour of a complete rewrite see [Maestro2](https://github.com/dantleech/maestro2)**
+
 **This project is still in an experimental phase and has not been used to  orchestrate anything at this stage**
 
 Maestro will be a package orchestration and management tool.

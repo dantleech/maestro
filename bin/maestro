@@ -5,7 +5,6 @@ use Amp\Loop;
 use Maestro\ApplicationBuilder;
 use Symfony\Component\Console\Application;
 
-
 $autoloadPath = null;
 foreach ([
     __DIR__ . '/../vendor/autoload.php',

@@ -1,20 +1,30 @@
 {
     "nodes": {
         "phpactor/container": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
-                "version": "1.5.0"
+                "name": "%_name%",
+                "url": "git@github.com/phpactor/container"
             },
             "nodes": {
-                "tests": {
-                    "type":"script",
+                "package": {
+                    "type": "package",
                     "args": {
-                        "script": "true"
+                        "name": "foo",
+                        "version": "1.5.0"
+                    },
+                    "nodes": {
+                        "tests": {
+                            "type":"script",
+                            "args": {
+                                "script": "true"
+                            }
+                        },
+                        "tag": {
+                            "type": "tag",
+                            "depends": ["tests"]
+                        }
                     }
-                },
-                "tag": {
-                    "type": "tag",
-                    "depends": ["tests"]
                 }
             }
         }

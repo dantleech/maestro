@@ -1,17 +1,22 @@
 {
     "nodes": {
         "phpactor/container": {
-            "type": "package",
+            "type": "vcsWorkspace",
+            "args": {
+                "name": "%_name%",
+                "url": "https://github.com/phpactor/container"
+            },
             "nodes": {
-                "checkout": {
-                    "type": "checkout",
+                "package": {
+                    "type": "package",
                     "args": {
-                        "url": "https://github.com/phpactor/container"
+                        "name": "foobar"
+                    },
+                    "nodes": {
+                        "survey": {
+                            "type": "survey"
+                        }
                     }
-                },
-                "survey": {
-                    "type": "survey",
-                    "depends": ["checkout"]
                 }
             }
         }

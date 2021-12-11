@@ -13,9 +13,13 @@
     },
     "prototypes": {
         "example": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/$PACKAGE_NAME"
+            },
+            "vars": {
+                "package": "%_name%"
             },
             "nodes": {
                 "readme": {

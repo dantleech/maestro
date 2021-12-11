@@ -5,13 +5,13 @@
     },
     "nodes": {
         "maestrophp/example-math": {
-            "args": {
+            "vars": {
                 "version": "1.0.0"
             },
             "prototype": "example"
         },
         "maestrophp/example-science": {
-            "args": {
+            "vars": {
                 "version": "0.1.0"
             },
             "prototype": "example"
@@ -19,28 +19,45 @@
     },
     "prototypes": {
         "example": {
-            "type": "package",
+            "type": "vcsWorkspace",
             "args": {
+                "name": "%_name%",
                 "url": "https://github.com/$PACKAGE_NAME"
             },
+            "vars": {
+                "package": "%_name%"
+            },
             "nodes": {
-                "readme": {
-                    "type": "template",
+                "package": {
+                    "type": "package",
                     "args": {
-                        "path": "templates/readme.md.twig",
-                        "targetPath": "README.md"
+                        "name": "%package%",
+                        "version": "%version%"
+                    },
+                    "nodes": {
+                        "readme": {
+                            "type": "template",
+                            "args": {
+                                "path": "templates/readme.md.twig",
+                                "targetPath": "README.md"
+                            }
+                        },
+                        "tag": {
+                            "type": "tag",
+                            "args": {
+                                "tag": "%version%"
+                            },
+                            "depends": ["readme"]
+                        },
+                        "survey": {
+                            "type": "survey",
+                            "depends": ["tag"]
+                        }
                     }
-                },
-                "tag": {
-                    "type": "tag",
-                    "depends": ["readme"]
-                },
-                "survey": {
-                    "type": "survey",
-                    "depends": ["tag"]
                 }
             }
         }
     }
 }
+
 

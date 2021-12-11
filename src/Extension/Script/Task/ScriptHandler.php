@@ -7,31 +7,35 @@ use Maestro\Library\Script\ScriptResult;
 use Maestro\Library\Script\ScriptRunner;
 use Maestro\Library\Support\Environment\Environment;
 use Maestro\Library\Task\Exception\TaskFailure;
-use Maestro\Library\Task\ProvidingTaskHandler;
 use Maestro\Library\Util\StringUtil;
 use Maestro\Library\Workspace\Workspace;
+use Maestro\Library\Workspace\WorkspaceRegistry;
 
-class ScriptHandler implements ProvidingTaskHandler
+class ScriptHandler
 {
     /**
      * @var ScriptRunner
      */
     private $scriptRunner;
 
-    public function __construct(ScriptRunner $scriptRunner)
+    /**
+     * @var WorkspaceRegistry
+     */
+    private $workspaceRegistry;
+
+    public function __construct(ScriptRunner $scriptRunner, WorkspaceRegistry $workspaceRegistry)
     {
         $this->scriptRunner = $scriptRunner;
-    }
-
-    public function provides(): array
-    {
-        return [
-            ScriptResult::class
-        ];
+        $this->workspaceRegistry = $workspaceRegistry;
     }
 
     public function __invoke(ScriptTask $script, Environment $environment = null, Workspace $workspace = null): Promise
     {
+        $customWorkspace = $script->workspace();
+        if ($customWorkspace) {
+            $workspace = $this->workspaceRegistry->get($customWorkspace);
+        }
+
         $environment = $environment ?: new Environment();
         return \Amp\call(function () use ($script, $environment, $workspace) {
             $result = yield $this->scriptRunner->run(

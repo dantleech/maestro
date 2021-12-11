@@ -130,6 +130,7 @@ final class ApplicationBuilder
             LoggingExtension::PARAM_FORMATTER => 'console',
             RunnerExtension::PARAM_MANIFEST_PATH => getcwd() . '/maestro.json',
             RunnerExtension::PARAM_PURGE => false,
+            RunnerExtension::PARAM_WORKING_DIRECTORY => getcwd(),
             TaskExtension::PARAM_CONCURRENCY => 10,
             WorkspaceExtension::PARAM_WORKSPACE_PATH => Path::join([(new Xdg())->getHomeDataDir(), 'maestro']),
             WorkspaceExtension::PARAM_WORKSPACE_NAMESPACE => md5(getcwd()),
@@ -169,6 +170,7 @@ final class ApplicationBuilder
         }
 
         $config = $this->configureMetaStates($config);
+        $config[WorkspaceExtension::PARAM_WORKING_DIRECTORY] = $config[RunnerExtension::PARAM_WORKING_DIRECTORY];
 
         return $config;
     }

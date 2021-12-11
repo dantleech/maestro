@@ -1,7 +1,10 @@
 {
     "nodes": {
         "example/package": {
-            "type": "package",
+            "type": "workspace",
+            "args": {
+                "name": "%_name"
+            },
             "nodes": {
                 "hello": {
                     "type": "script",
